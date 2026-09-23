@@ -1,0 +1,112 @@
+:root {
+  color: #e8ebe4;
+  background: #101210;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: #101210;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.foundation-shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 32px;
+  background:
+    radial-gradient(circle at 18% 18%, rgb(194 255 140 / 12%), transparent 32rem),
+    linear-gradient(145deg, #0d100e 0%, #171b17 100%);
+}
+
+.foundation-panel {
+  width: min(100%, 720px);
+  padding: clamp(32px, 7vw, 72px);
+  border: 1px solid rgb(221 255 190 / 18%);
+  border-radius: 4px;
+  background: rgb(15 18 15 / 82%);
+  box-shadow: 0 32px 90px rgb(0 0 0 / 35%);
+}
+
+.foundation-eyebrow {
+  margin: 0 0 24px;
+  color: #bdfc87;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.foundation-panel h1 {
+  max-width: 12ch;
+  margin: 0;
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  font-weight: 620;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+}
+
+.foundation-summary {
+  max-width: 52ch;
+  margin: 28px 0 0;
+  color: #a9afa6;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.foundation-status {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 48px 0 0;
+}
+
+.foundation-status div {
+  padding-top: 16px;
+  border-top: 1px solid rgb(232 235 228 / 16%);
+}
+
+.foundation-status dt {
+  color: #777e75;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.foundation-status dd {
+  margin: 8px 0 0;
+  color: #dde3d8;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 560px) {
+  .foundation-shell {
+    padding: 16px;
+  }
+
+  .foundation-status {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,65 +1,60 @@
 tasks:
-  - id: TASK-001
-    title: Establish the Web project foundation
-    role: developer
-    milestone: M1
-    priority: P0
-    status: ready
-    depends_on: []
-    contract: .project-os/tasks/ready/TASK-001.yaml
-    human_gate: false
-
-  - id: TASK-002
-    title: Implement the core domain and Scenario runtime
-    role: developer
-    milestone: M1
-    priority: P0
-    status: ready
-    depends_on:
-      - TASK-001
-    contract: .project-os/tasks/ready/TASK-002.yaml
-    human_gate: false
-
-  - id: TASK-003
-    title: Build the Company Shell and normal Shoply baseline
-    role: developer
-    milestone: M1
-    priority: P0
-    status: ready
-    depends_on:
-      - TASK-002
-    contract: .project-os/tasks/ready/TASK-003.yaml
-    human_gate: false
-
-  - id: TASK-004
-    title: Build the Test Workspace and Evidence flow
-    role: developer
-    milestone: M1
-    priority: P0
-    status: ready
-    depends_on:
-      - TASK-003
-    contract: .project-os/tasks/ready/TASK-004.yaml
-    human_gate: false
-
-  - id: TASK-005
-    title: Complete the T01 report, review, and progression pipeline
-    role: developer
-    milestone: M1
-    priority: P0
-    status: ready
-    depends_on:
-      - TASK-004
-    contract: .project-os/tasks/ready/TASK-005.yaml
-    human_gate: false
-
-  - id: TASK-006
-    title: Verify and harden the T01 first playable
-    role: developer
-    milestone: M1
-    priority: P0
-    status: ready
-    depends_on:
-      - TASK-005
-    contract: .project-os/tasks/ready/TASK-006.yaml
-    human_gate: false
+- id: TASK-001
+  title: Establish the Web project foundation
+  role: developer
+  milestone: M1
+  priority: P0
+  status: active
+  depends_on: []
+  contract: .project-os/tasks/ready/TASK-001.yaml
+  human_gate: false
+- id: TASK-002
+  title: Implement the core domain and Scenario runtime
+  role: developer
+  milestone: M1
+  priority: P0
+  status: ready
+  depends_on:
+  - TASK-001
+  contract: .project-os/tasks/ready/TASK-002.yaml
+  human_gate: false
+- id: TASK-003
+  title: Build the Company Shell and normal Shoply baseline
+  role: developer
+  milestone: M1
+  priority: P0
+  status: ready
+  depends_on:
+  - TASK-002
+  contract: .project-os/tasks/ready/TASK-003.yaml
+  human_gate: false
+- id: TASK-004
+  title: Build the Test Workspace and Evidence flow
+  role: developer
+  milestone: M1
+  priority: P0
+  status: ready
+  depends_on:
+  - TASK-003
+  contract: .project-os/tasks/ready/TASK-004.yaml
+  human_gate: false
+- id: TASK-005
+  title: Complete the T01 report, review, and progression pipeline
+  role: developer
+  milestone: M1
+  priority: P0
+  status: ready
+  depends_on:
+  - TASK-004
+  contract: .project-os/tasks/ready/TASK-005.yaml
+  human_gate: false
+- id: TASK-006
+  title: Verify and harden the T01 first playable
+  role: developer
+  milestone: M1
+  priority: P0
+  status: ready
+  depends_on:
+  - TASK-005
+  contract: .project-os/tasks/ready/TASK-006.yaml
+  human_gate: false
