@@ -1,0 +1,49 @@
+task: TASK-003
+status: pass
+summary: Implemented the complete Start, Login, Dashboard, and data-driven T01 Ticket
+  Detail flow plus an independent mutation-free Shoply Product, Cart, and Checkout
+  purchase experience with normal pricing, coupon eligibility, shipping, and primary
+  confirmation behavior.
+files_changed:
+- src/app/
+- src/components/company/
+- src/game/session/
+- src/pages/
+- src/products/shoply/
+- src/scenarios/shoply/tickets.ts
+- src/styles.css
+- tests/e2e/foundation.spec.ts
+evidence:
+- A fresh local Game State contains T01 and the Dashboard renders Player, Career,
+  XP, Reputation, Ticket list, and Ticket status.
+- T01 content is parsed through TicketSchema and rendered from a catalog rather than
+  component branches.
+- Starting T01 uses the existing Ticket state machine, persists TESTING state, and
+  opens the configured starting path.
+- Shoply business rules are pure functions and Product components have no Ticket ID,
+  T01, or ExpectedBug reference.
+- Product, Cart, coupon, quantity, shipping, Checkout, and confirmation interactions
+  are covered by component and browser tests.
+- Mutation-free Checkout renders Confirm order with the canonical primary CTA class
+  and dark primary styling.
+- Playwright screenshots visually confirmed meaningful Start and Shoply Product rendering
+  without an error overlay.
+acceptance:
+  status: pass
+  notes:
+  - Start links to Company Login; valid local credentials continue to Dashboard and
+    T01 details.
+  - The normal Shoply flow supports add, quantity change, removal, SAVE10, Basic rejection
+    of SAVE20, shipping, checkout, and confirmation.
+  - Normal rules are subtotal equals price times quantity, SAVE10 10%, SAVE20 Gold-only
+    20%, and free shipping at a pre-discount subtotal of $50.
+  - Fake Browser chrome, Evidence, Report, Review, progression rewards, and the T01
+    Mutation remain deferred.
+followups:
+- Independent reviewer must inspect TASK-003 before Project OS completion evaluation.
+- TASK-004 may wrap Shoply in the isolated Fake Browser and add Evidence without changing
+  normal Shoply rules.
+commit: 2389e2d
+kind: implementation
+role: developer
+actor: codex-developer-3
