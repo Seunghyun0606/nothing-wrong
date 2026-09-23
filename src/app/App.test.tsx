@@ -3,24 +3,29 @@ import { render, screen } from '@testing-library/react'
 import { App } from './App'
 
 describe('App', () => {
-  it('renders the foundation route', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
+  it('renders the Start route', () => {
     window.history.pushState({}, '', '/start')
 
     render(<App />)
 
-    expect(
-      screen.getByRole('heading', { name: 'Project foundation ready' }),
-    ).toBeInTheDocument()
-    expect(screen.getByText('M1 · First Playable')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'NOTHING WRONG' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /start work/i })).toHaveAttribute(
+      'href',
+      '/login',
+    )
   })
 
-  it('redirects unknown routes to the foundation route', async () => {
+  it('redirects unknown routes to Start', async () => {
     window.history.pushState({}, '', '/unknown')
 
     render(<App />)
 
     expect(
-      await screen.findByRole('heading', { name: 'Project foundation ready' }),
+      await screen.findByRole('heading', { name: 'NOTHING WRONG' }),
     ).toBeInTheDocument()
     expect(window.location.pathname).toBe('/start')
   })

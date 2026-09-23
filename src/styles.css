@@ -23,6 +23,16 @@ body {
   margin: 0;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
 button,
 input,
 textarea,
@@ -108,5 +118,1205 @@ select {
 
   .foundation-status {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Company shell */
+.kicker,
+.card-label {
+  margin: 0;
+  color: #93cc66;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.button {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+}
+
+.button-primary {
+  color: #11150f;
+  background: #b9f27c;
+  box-shadow: 0 8px 30px rgb(185 242 124 / 12%);
+}
+
+.button-primary:hover {
+  background: #c8ff8c;
+}
+
+.button-large {
+  min-width: 210px;
+  min-height: 58px;
+}
+
+.start-page {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  overflow: hidden;
+  padding: 32px;
+  background: #0d100e;
+}
+
+.start-page::before {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border: 1px solid rgb(185 242 124 / 20%);
+  border-radius: 50%;
+  box-shadow: 0 0 120px rgb(158 233 100 / 9%);
+  content: "";
+}
+
+.start-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(circle, black 0%, transparent 70%);
+}
+
+.start-content {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.start-content h1 {
+  margin: 26px 0 18px;
+  color: #f1f4ee;
+  font-size: clamp(3.5rem, 11vw, 8rem);
+  font-weight: 800;
+  letter-spacing: -0.075em;
+  line-height: 0.85;
+}
+
+.start-tagline {
+  margin: 0 0 42px;
+  color: #969d93;
+}
+
+.build-mark {
+  position: absolute;
+  right: 28px;
+  bottom: 20px;
+  color: #525851;
+  font: 0.65rem ui-monospace, monospace;
+  letter-spacing: 0.12em;
+}
+
+.auth-page {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: clamp(40px, 8vw, 130px);
+  padding: clamp(32px, 8vw, 120px);
+  background:
+    radial-gradient(circle at 15% 25%, rgb(185 242 124 / 10%), transparent 28rem),
+    #101310;
+}
+
+.auth-brand h1 {
+  max-width: 8ch;
+  margin: 24px 0;
+  font-size: clamp(3rem, 7vw, 6.8rem);
+  letter-spacing: -0.07em;
+  line-height: 0.88;
+}
+
+.auth-brand > p:last-child {
+  max-width: 46ch;
+  color: #969d93;
+  line-height: 1.7;
+}
+
+.login-card {
+  display: grid;
+  width: min(100%, 460px);
+  gap: 22px;
+  justify-self: end;
+  padding: clamp(28px, 5vw, 48px);
+  border: 1px solid #31362f;
+  background: #171a17;
+  box-shadow: 0 32px 100px rgb(0 0 0 / 35%);
+}
+
+.login-card-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #30352f;
+}
+
+.login-card-heading p,
+.login-card-heading h2 {
+  margin: 0;
+}
+
+.login-card-heading p {
+  color: #747c72;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.login-card-heading h2 {
+  margin-top: 6px;
+  font-size: 1.5rem;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: #a9ed70;
+  box-shadow: 0 0 14px #a9ed70;
+}
+
+.login-card label,
+.checkout-form label {
+  display: grid;
+  gap: 9px;
+  color: #8e968b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.login-card input {
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #343a32;
+  outline: none;
+  color: #edf1e9;
+  background: #101310;
+}
+
+.login-card input:focus {
+  border-color: #a9ed70;
+}
+
+.form-note {
+  margin: 0;
+  color: #61685e;
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+.company-page {
+  min-height: 100vh;
+  color: #e8ebe4;
+  background: #111411;
+}
+
+.company-header {
+  display: flex;
+  height: 70px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(24px, 6vw, 88px);
+  border-bottom: 1px solid #2c312b;
+  background: #0d100e;
+}
+
+.company-wordmark {
+  font-weight: 850;
+  letter-spacing: -0.035em;
+}
+
+.company-wordmark span {
+  color: #a9ed70;
+}
+
+.company-header p {
+  color: #677065;
+  font: 0.65rem ui-monospace, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.dashboard-hero,
+.career-grid,
+.ticket-section,
+.ticket-detail-toolbar,
+.ticket-detail,
+.empty-state {
+  width: min(calc(100% - 48px), 1240px);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.dashboard-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 76px 0 48px;
+}
+
+.dashboard-hero h1 {
+  margin: 15px 0 12px;
+  font-size: clamp(2.6rem, 6vw, 5.5rem);
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+}
+
+.dashboard-hero > div > p:last-child {
+  color: #858d82;
+}
+
+.availability-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid #333b31;
+  color: #b6beb3;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.career-grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+  border: 1px solid #2d322c;
+}
+
+.career-grid article {
+  min-height: 178px;
+  padding: 26px;
+  border-right: 1px solid #2d322c;
+  background: #171a17;
+}
+
+.career-grid article:last-child {
+  border: 0;
+}
+
+.profile-card {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  align-content: end;
+  align-items: center;
+  gap: 0 16px;
+}
+
+.profile-card .card-label {
+  grid-column: 1 / -1;
+  align-self: start;
+}
+
+.profile-avatar {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border: 1px solid #566050;
+  border-radius: 50%;
+  color: #b9f27c;
+  background: #20261e;
+  font-weight: 800;
+}
+
+.profile-card h2,
+.profile-card p {
+  margin: 0;
+}
+
+.profile-card h2 {
+  font-size: 1.15rem;
+}
+
+.profile-card div p,
+.metric-card span {
+  margin-top: 6px;
+  color: #7f877d;
+  font-size: 0.78rem;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.metric-card strong {
+  font-size: 2rem;
+  letter-spacing: -0.04em;
+}
+
+.ticket-section {
+  padding: 72px 0 100px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.section-heading h2 {
+  margin: 8px 0 0;
+  font-size: 2rem;
+}
+
+.section-heading > span {
+  color: #767e73;
+  font-size: 0.8rem;
+}
+
+.ticket-table {
+  border-top: 1px solid #353b33;
+}
+
+.ticket-row {
+  display: grid;
+  grid-template-columns: 70px minmax(240px, 1fr) 100px 120px 24px;
+  align-items: center;
+  gap: 22px;
+  padding: 22px 12px;
+  border-bottom: 1px solid #2c312b;
+  transition: background 150ms ease;
+}
+
+.ticket-row:hover {
+  background: #191d18;
+}
+
+.ticket-id {
+  color: #a9ed70;
+  font-family: ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.ticket-row strong,
+.ticket-row small {
+  display: block;
+}
+
+.ticket-row small {
+  margin-top: 7px;
+  color: #70786e;
+  text-transform: capitalize;
+}
+
+.priority,
+.ticket-status {
+  width: fit-content;
+  padding: 5px 8px;
+  border: 1px solid #3c4339;
+  color: #9ea69a;
+  font: 0.65rem ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.priority-high {
+  border-color: rgb(233 172 91 / 45%);
+  color: #e9ac5b;
+}
+
+.row-arrow {
+  color: #8e978a;
+}
+
+.text-link {
+  color: #a9ed70;
+  font-size: 0.82rem;
+}
+
+.ticket-detail-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 34px 0;
+}
+
+.ticket-detail {
+  padding-bottom: 100px;
+}
+
+.ticket-detail-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 48px 0;
+  border-top: 1px solid #323831;
+  border-bottom: 1px solid #323831;
+}
+
+.ticket-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ticket-detail-header h1 {
+  max-width: 20ch;
+  margin: 20px 0 12px;
+  font-size: clamp(2.4rem, 5vw, 4.6rem);
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.ticket-detail-header p {
+  color: #7f877c;
+}
+
+.ticket-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(240px, 0.7fr);
+}
+
+.ticket-detail-grid > * {
+  padding: 38px 38px 38px 0;
+  border-bottom: 1px solid #30352f;
+}
+
+.ticket-detail-grid > aside {
+  padding-left: 38px;
+  border-left: 1px solid #30352f;
+}
+
+.request-copy {
+  max-width: 58ch;
+  color: #c9cec5;
+  font-size: 1.2rem;
+  line-height: 1.7;
+}
+
+.scope-list,
+.requirement-list {
+  padding: 0;
+  list-style: none;
+}
+
+.scope-list li {
+  margin-top: 15px;
+  color: #b2b9af;
+}
+
+.scope-list li::before {
+  margin-right: 10px;
+  color: #a9ed70;
+  content: "✓";
+}
+
+.requirement-list li {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: baseline;
+  padding: 18px 0;
+  border-bottom: 1px solid #282d27;
+}
+
+.requirement-list span {
+  color: #6f786c;
+  font: 0.7rem ui-monospace, monospace;
+}
+
+.requirement-list p {
+  margin: 0;
+  color: #c4cac0;
+}
+
+.context-list div {
+  display: flex;
+  justify-content: space-between;
+  padding: 13px 0;
+  border-bottom: 1px solid #282d27;
+}
+
+.context-list dt {
+  color: #747d71;
+}
+
+.context-list dd {
+  margin: 0;
+  color: #c5cbc1;
+  font: 0.75rem ui-monospace, monospace;
+}
+
+.empty-state {
+  padding-top: 120px;
+}
+
+.empty-state h1 {
+  margin: 20px 0 30px;
+  font-size: 3rem;
+}
+
+/* Shoply normal product */
+.shoply-page {
+  min-height: 100vh;
+  color: #22201d;
+  background: #f6f2ea;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.shoply-header {
+  display: grid;
+  height: 76px;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 clamp(20px, 5vw, 72px);
+  border-bottom: 1px solid #d9d1c5;
+  background: #faf7f1;
+}
+
+.shoply-logo {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+}
+
+.shoply-logo span {
+  color: #e85d3f;
+}
+
+.shoply-header nav {
+  display: flex;
+  gap: 34px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.shoply-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+  font-size: 0.78rem;
+}
+
+.shoply-account {
+  color: #766f65;
+}
+
+.cart-link {
+  font-weight: 750;
+}
+
+.cart-link span {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  margin-left: 5px;
+  border-radius: 50%;
+  color: #fff;
+  background: #26231f;
+  font-size: 0.7rem;
+}
+
+.product-layout {
+  display: grid;
+  min-height: calc(100vh - 76px);
+  grid-template-columns: minmax(0, 1.15fr) minmax(380px, 0.85fr);
+}
+
+.product-art {
+  position: relative;
+  display: grid;
+  min-height: 650px;
+  place-items: center;
+  overflow: hidden;
+  background: #e1aa8d;
+}
+
+.product-art::before,
+.product-art::after {
+  position: absolute;
+  border: 1px solid rgb(255 255 255 / 25%);
+  border-radius: 50%;
+  content: "";
+}
+
+.product-art::before {
+  width: 540px;
+  height: 540px;
+}
+
+.product-art::after {
+  width: 340px;
+  height: 340px;
+}
+
+.pack-body {
+  position: relative;
+  z-index: 2;
+  width: 260px;
+  height: 340px;
+  border-radius: 72px 72px 38px 38px;
+  background: linear-gradient(140deg, #2d3732 0%, #17201c 80%);
+  box-shadow: inset 14px 0 30px rgb(255 255 255 / 8%), 28px 38px 50px rgb(82 43 27 / 25%);
+  transform: rotate(-5deg);
+}
+
+.pack-body::before {
+  position: absolute;
+  top: -45px;
+  left: 76px;
+  width: 104px;
+  height: 80px;
+  border: 16px solid #1c2621;
+  border-bottom: 0;
+  border-radius: 50px 50px 0 0;
+  content: "";
+}
+
+.pack-body i {
+  position: absolute;
+  inset: 55px 30px auto;
+  height: 3px;
+  background: #64736b;
+}
+
+.pack-body b {
+  position: absolute;
+  right: 30px;
+  bottom: 32px;
+  left: 30px;
+  height: 105px;
+  border: 2px solid #46534d;
+  border-radius: 12px 12px 24px 24px;
+}
+
+.pack-shadow {
+  position: absolute;
+  bottom: 18%;
+  width: 330px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgb(88 43 27 / 22%);
+  filter: blur(13px);
+}
+
+.product-art p {
+  position: absolute;
+  bottom: 28px;
+  left: 34px;
+  color: rgb(62 34 23 / 60%);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.product-copy {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(45px, 8vw, 120px);
+  background: #faf7f1;
+}
+
+.product-category {
+  margin: 0;
+  color: #8e4f39;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.product-copy h1 {
+  max-width: 8ch;
+  margin: 20px 0 14px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(3.2rem, 6vw, 6.2rem);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.9;
+}
+
+.product-price {
+  margin: 12px 0 30px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.product-description {
+  max-width: 47ch;
+  margin: 0;
+  color: #665f57;
+  line-height: 1.75;
+}
+
+.product-features {
+  width: 100%;
+  margin: 34px 0;
+  padding: 20px 0;
+  border-top: 1px solid #d8d0c4;
+  border-bottom: 1px solid #d8d0c4;
+  color: #5f5951;
+  font-size: 0.82rem;
+  line-height: 2;
+  list-style-position: inside;
+}
+
+.shoply-button {
+  display: flex;
+  width: 100%;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #25221e;
+  cursor: pointer;
+  color: #fff;
+  background: #25221e;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.shoply-button:hover {
+  background: #403b35;
+}
+
+.added-message,
+.stock-note {
+  margin: 15px 0 0;
+  color: #71695f;
+  font-size: 0.78rem;
+}
+
+.added-message a {
+  text-decoration: underline;
+}
+
+.cart-heading {
+  width: min(calc(100% - 48px), 1180px);
+  margin: 0 auto;
+  padding: 65px 0 40px;
+  border-bottom: 1px solid #d5cdbf;
+}
+
+.cart-heading p {
+  color: #8e4f39;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.cart-heading h1 {
+  margin: 10px 0 0;
+  font: 500 clamp(2.8rem, 6vw, 5.5rem) Georgia, serif;
+  letter-spacing: -0.055em;
+}
+
+.cart-layout,
+.checkout-layout {
+  display: grid;
+  width: min(calc(100% - 48px), 1180px);
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.75fr);
+  gap: clamp(40px, 8vw, 110px);
+  margin: 0 auto;
+  padding: 50px 0 100px;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 120px 1fr 80px 100px;
+  align-items: center;
+  gap: 22px;
+  padding: 24px 0;
+  border-bottom: 1px solid #d5cdbf;
+}
+
+.cart-thumbnail {
+  display: grid;
+  width: 120px;
+  height: 130px;
+  place-items: center;
+  background: #e3b197;
+}
+
+.cart-thumbnail span {
+  width: 52px;
+  height: 72px;
+  border-radius: 18px 18px 10px 10px;
+  background: #26312c;
+}
+
+.cart-item-copy p,
+.cart-item-copy h2 {
+  margin: 0;
+}
+
+.cart-item-copy p {
+  color: #81786d;
+  font-size: 0.7rem;
+}
+
+.cart-item-copy h2 {
+  margin-top: 8px;
+  font: 500 1.35rem Georgia, serif;
+}
+
+.cart-item-copy button {
+  margin-top: 20px;
+  padding: 0;
+  border: 0;
+  color: #736b61;
+  background: transparent;
+  font-size: 0.72rem;
+  text-decoration: underline;
+}
+
+.cart-item label {
+  display: grid;
+  gap: 6px;
+  color: #81786d;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.cart-item select {
+  min-height: 38px;
+  border: 1px solid #c9c0b3;
+  background: #faf7f1;
+}
+
+.coupon-form {
+  width: min(100%, 400px);
+  margin-top: 36px;
+}
+
+.coupon-form > label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.coupon-form > div {
+  display: flex;
+}
+
+.coupon-form input {
+  min-width: 0;
+  flex: 1;
+  min-height: 46px;
+  padding: 0 13px;
+  border: 1px solid #bfb5a7;
+  background: #faf7f1;
+}
+
+.coupon-form button {
+  padding: 0 20px;
+  border: 0;
+  color: #fff;
+  background: #5d574f;
+  font-weight: 700;
+}
+
+.coupon-valid,
+.coupon-error {
+  margin-top: 10px;
+  font-size: 0.75rem;
+}
+
+.coupon-valid { color: #3f713e; }
+.coupon-error { color: #a34433; }
+
+.order-summary {
+  padding: 28px;
+  border: 1px solid #d2c9bc;
+  background: #faf7f1;
+}
+
+.order-summary h2 {
+  margin: 0 0 25px;
+  font: 500 1.4rem Georgia, serif;
+}
+
+.order-summary dl {
+  margin: 0;
+}
+
+.order-summary dl > div {
+  display: flex;
+  justify-content: space-between;
+  padding: 11px 0;
+  color: #665f57;
+  font-size: 0.84rem;
+}
+
+.order-summary dd {
+  margin: 0;
+  color: #25221e;
+  font-weight: 700;
+}
+
+.order-summary .discount-row dd {
+  color: #39713d;
+}
+
+.order-summary .summary-total {
+  margin-top: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #d4ccbf;
+  color: #25221e;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.inline-button,
+.shoply-confirm-button {
+  margin-top: 18px;
+}
+
+.secure-note {
+  color: #8a8175;
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.shoply-empty,
+.confirmation-card {
+  width: min(calc(100% - 48px), 720px);
+  margin: 0 auto;
+  padding: 120px 0;
+  text-align: center;
+}
+
+.shoply-empty h1,
+.shoply-empty h2,
+.confirmation-card h1 {
+  font: 500 clamp(2.3rem, 5vw, 4.5rem) Georgia, serif;
+  letter-spacing: -0.05em;
+}
+
+.shoply-empty .inline-button {
+  width: min(100%, 360px);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.checkout-progress {
+  display: flex;
+  width: min(calc(100% - 48px), 600px);
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  margin: 35px auto 0;
+  color: #9b9286;
+  font-size: 0.67rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.checkout-progress i {
+  width: 52px;
+  height: 1px;
+  background: #ccc2b3;
+}
+
+.checkout-progress .complete,
+.checkout-progress .active {
+  color: #25221e;
+}
+
+.checkout-form h1 {
+  margin: 12px 0 38px;
+  font: 500 clamp(2.6rem, 5vw, 4.4rem) Georgia, serif;
+  letter-spacing: -0.055em;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-grid .span-two {
+  grid-column: 1 / -1;
+}
+
+.checkout-form input {
+  min-height: 49px;
+  padding: 0 13px;
+  border: 1px solid #c9c0b3;
+  outline: none;
+  color: #25221e;
+  background: #faf7f1;
+}
+
+.checkout-form input:focus {
+  border-color: #25221e;
+}
+
+.shoply-confirm-button {
+  /* This is the mutation-free canonical primary CTA. */
+  border-color: #25221e;
+  color: #fff;
+  background: #25221e;
+}
+
+.confirmation-card a {
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .auth-page,
+  .product-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .login-card {
+    justify-self: stretch;
+  }
+
+  .career-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .career-grid article:nth-child(2) {
+    border-right: 0;
+  }
+
+  .career-grid article:nth-child(-n + 2) {
+    border-bottom: 1px solid #2d322c;
+  }
+
+  .ticket-row {
+    grid-template-columns: 60px 1fr 90px;
+  }
+
+  .ticket-row .priority,
+  .ticket-row .row-arrow {
+    display: none;
+  }
+
+  .ticket-detail-grid,
+  .cart-layout,
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-detail-grid > aside {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .shoply-header nav {
+    display: none;
+  }
+
+  .shoply-header {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .product-art {
+    min-height: 520px;
+  }
+
+  .product-copy h1 {
+    max-width: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .auth-page {
+    padding: 32px 20px;
+  }
+
+  .company-header p,
+  .shoply-account {
+    display: none;
+  }
+
+  .dashboard-hero,
+  .ticket-detail-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .career-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .career-grid article {
+    border-right: 0;
+    border-bottom: 1px solid #2d322c;
+  }
+
+  .ticket-row {
+    grid-template-columns: 52px 1fr;
+  }
+
+  .ticket-row .ticket-status {
+    grid-column: 2;
+  }
+
+  .requirement-list li {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .shoply-header {
+    padding: 0 20px;
+  }
+
+  .product-art {
+    min-height: 430px;
+  }
+
+  .product-copy {
+    padding: 45px 24px;
+  }
+
+  .cart-item {
+    grid-template-columns: 80px 1fr 64px;
+  }
+
+  .cart-thumbnail {
+    width: 80px;
+    height: 100px;
+  }
+
+  .cart-item > strong {
+    grid-column: 2;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid .span-two {
+    grid-column: auto;
   }
 }
