@@ -1,0 +1,65 @@
+id: TASK-006
+title: Verify and harden the T01 first playable
+role: developer
+milestone: M1
+priority: P0
+status: ready
+
+objective: >-
+  Prove the complete T01 journey and M1 architecture assertions with automated and
+  manual evidence, fixing only defects within the approved M1 scope.
+why: >-
+  Implementation alone does not establish that the first playable is stable,
+  refresh-safe, or genuinely extensible to later Tickets.
+
+scope:
+  include:
+    - Add and pass the documented Playwright fresh-save T01 critical flow.
+    - Complete missing unit/component regression checks required by M1.
+    - Verify every M1 architecture assertion and record reproducible evidence.
+    - Perform the documented manual T01 journey and address in-scope blockers.
+    - Update development/testing documentation to match verified commands and behavior.
+  exclude:
+    - T02 through T08 implementation.
+    - Subjective T01~T04 Human Playtest, which belongs to M2 completion.
+    - UX redesign or product direction changes discovered during verification.
+    - Deployment, Tauri, Steam, backend, or online services.
+
+depends_on:
+  - TASK-005
+specs:
+  - specs/ux/first-playable-flow.md
+  - specs/architecture/system-design.md
+  - specs/feature/foundation-task.md
+relevant_files:
+  - src
+  - tests
+  - README.md
+active_decisions:
+  - .project-os/decisions/DEC-001-scenario-driven-architecture.yaml
+  - .project-os/decisions/DEC-002-react-fake-browser.yaml
+  - .project-os/decisions/DEC-003-versioned-local-persistence.yaml
+  - .project-os/decisions/DEC-004-deterministic-review.yaml
+
+acceptance:
+  - The fresh-save T01 journey passes from Start Work through resolved Dashboard return.
+  - Refresh persistence is covered by automated or explicitly recorded manual evidence.
+  - All M1 unit, component, typecheck, build, and critical-flow checks pass.
+  - The architecture acceptance list in system-design.md is answered YES with evidence applicable to T01.
+  - No unresolved critical issue remains in the M1 scope.
+  - Completion output follows the structured result and independent-review workflow.
+
+verification:
+  - Run the full configured unit and component test suites.
+  - Run typecheck and production build.
+  - Run the Playwright T01 critical flow from a fresh save.
+  - Search for Ticket-specific Product branches and NothingWrong-prefixed domain types.
+  - Execute the manual journey in specs/ux/first-playable-flow.md and record the result.
+
+human_gate: false
+risk: medium
+references:
+  - specs/feature/foundation-task.md#17-automated-tests
+  - specs/feature/foundation-task.md#18-architecture-assertions
+  - specs/feature/foundation-task.md#21-required-completion-report
+  - specs/feature/foundation-task.md#22-definition-of-done

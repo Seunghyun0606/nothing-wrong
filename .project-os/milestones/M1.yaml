@@ -1,0 +1,25 @@
+id: M1
+name: T01 First Playable Vertical Slice
+status: active
+objective: >-
+  Deliver one complete, refresh-safe QA gameplay loop from Start Work through T01
+  Review and Dashboard return on an architecture that can extend to T08.
+entry_criteria:
+  - Product direction and T01 integrated brief are available.
+  - Scenario-driven architecture decisions are active.
+exit_criteria:
+  - A fresh player can complete the documented T01 journey end to end.
+  - Shoply behaves normally with zero mutations.
+  - T01 visual defect is applied only through Scenario and Mutation data.
+  - Evidence, Report, Review, XP, Reputation, Ticket resolution, and persistence work.
+  - Unit, component, and Playwright critical-flow checks pass.
+  - Architecture assertions in specs/architecture/system-design.md are verified for T01.
+tasks:
+  - TASK-001
+  - TASK-002
+  - TASK-003
+  - TASK-004
+  - TASK-005
+  - TASK-006
+human_gate:
+  required_on_completion: false

@@ -1,0 +1,62 @@
+id: TASK-004
+title: Build the Test Workspace and Evidence flow
+role: developer
+milestone: M1
+priority: P0
+status: ready
+
+objective: >-
+  Provide the browser-like QA workspace in which a player can inspect T01, navigate
+  Shoply, take notes, switch viewport, and capture usable Evidence.
+why: >-
+  Exploration, reproduction context, and proof collection are the core interaction layer
+  between the Ticket and the final Report.
+
+scope:
+  include:
+    - Implement the Test Workspace route and layout hierarchy.
+    - Implement React Fake Browser chrome, Fake URL, Product Router, and viewport container.
+    - Implement Ticket panel, Notes, Evidence tray, Capture, Report entry action, and Viewport Switcher.
+    - Persist Ticket Notes locally without including them in Review scoring.
+    - Record Interaction History needed for reproduction-step suggestions.
+    - Capture Evidence metadata, snapshot, and preview for the current TestContext.
+  exclude:
+    - Real iframe, external website access, or PNG file generation.
+    - Account Switcher, which is unlocked with T04.
+    - Final Report submission, scoring, progression update, or T02+ content.
+
+depends_on:
+  - TASK-003
+specs:
+  - specs/ux/first-playable-flow.md
+  - specs/feature/qa-core-loop.md
+  - specs/architecture/system-design.md
+  - specs/feature/foundation-task.md
+relevant_files:
+  - src/pages
+  - src/components/fake-browser
+  - src/components/qa-tools
+  - src/game/evidence
+active_decisions:
+  - .project-os/decisions/DEC-002-react-fake-browser.yaml
+  - .project-os/decisions/DEC-003-versioned-local-persistence.yaml
+
+acceptance:
+  - Shoply is the dominant content area and is visibly distinct from Game UI.
+  - Fake Browser navigation is isolated from the Main Game Router.
+  - Desktop, Tablet, and Mobile change the actual Product content width.
+  - Notes survive the intended local lifecycle and do not alter Review data.
+  - Captured Evidence includes ticket, path, viewport, account, time, snapshot, and a visible preview.
+  - Interaction History captures the T01 journey actions needed by Report suggestions.
+
+verification:
+  - Run component tests for Fake Browser, QA Toolbar, Viewport Switcher, Notes, and Evidence capture.
+  - Manually verify Product width changes at all three viewport settings.
+  - Run typecheck, unit tests, and production build.
+
+human_gate: false
+risk: medium
+references:
+  - specs/feature/foundation-task.md#9-fake-browser
+  - specs/feature/foundation-task.md#12-test-workspace
+  - specs/feature/foundation-task.md#13-evidence

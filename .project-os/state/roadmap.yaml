@@ -1,0 +1,27 @@
+milestones:
+  - id: M1
+    name: T01 First Playable Vertical Slice
+    status: active
+    depends_on: []
+    definition: .project-os/milestones/M1.yaml
+
+  - id: M2
+    name: Core Prototype and Playtest
+    status: planned
+    depends_on:
+      - M1
+    definition: .project-os/milestones/M2.yaml
+
+  - id: M3
+    name: Complete MVP Ticket Set
+    status: planned
+    depends_on:
+      - M2
+    definition: .project-os/milestones/M3.yaml
+
+  - id: M4
+    name: MVP Hardening and Polish
+    status: planned
+    depends_on:
+      - M3
+    definition: .project-os/milestones/M4.yaml

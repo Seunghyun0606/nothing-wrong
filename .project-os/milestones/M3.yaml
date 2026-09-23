@@ -1,0 +1,16 @@
+id: M3
+name: Complete MVP Ticket Set
+status: planned
+objective: >-
+  Complete T05 through T08 and the supporting Product surfaces so the MVP covers
+  no-bug judgment, cross-screen checks, multiple bugs, and mini regression work.
+entry_criteria:
+  - M2 Human Gate approves continued content production.
+exit_criteria:
+  - T01 through T08 are playable in the defined unlock order.
+  - No Issue, Cross Screen, Multiple Bugs, and Mini Regression mechanics are covered.
+  - Junior QA can progress to QA Engineer through tested rules.
+  - Every Mutation and Scenario has the required automated reproduction coverage.
+tasks: []
+human_gate:
+  required_on_completion: false

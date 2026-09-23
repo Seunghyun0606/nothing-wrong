@@ -1,0 +1,20 @@
+id: DEC-002
+title: React-based Fake Browser with isolated product routing
+status: active
+decided_at: "2026-09-24"
+context: >-
+  Gameplay needs browser-like exploration and viewport changes without depending on
+  external websites, browser security boundaries, or network availability.
+decision: >-
+  Implement Fake Browser and Shoply entirely in React. Keep the game router and the
+  product router logically isolated; do not use an iframe or access external websites.
+consequences:
+  - Product state and Scenario context remain deterministic and testable.
+  - Viewport switching must resize the rendered Product, not only change a label.
+  - Real website crawling and real browser integration remain out of scope.
+applies_to:
+  - global
+references:
+  - specs/architecture/system-design.md
+  - specs/ux/first-playable-flow.md
+  - specs/product/00-initial-plan.md#27-fake-browser

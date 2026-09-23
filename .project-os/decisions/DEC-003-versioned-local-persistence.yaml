@@ -1,0 +1,21 @@
+id: DEC-003
+title: Versioned localStorage persistence for MVP
+status: active
+decided_at: "2026-09-24"
+context: >-
+  The Web Desktop MVP needs refresh-safe progression without introducing backend or
+  online account scope.
+decision: >-
+  Persist Game State and settings through a localStorage adapter using the
+  nothingwrong.* namespace and a versioned SaveFile envelope.
+consequences:
+  - Persistence is exposed through create, load, save, and reset APIs.
+  - Domain and engine code must not access localStorage directly.
+  - Save serialization and unsupported/corrupt input handling require tests.
+  - Backend sync and online accounts remain deferred.
+applies_to:
+  - global
+references:
+  - specs/architecture/system-design.md
+  - specs/architecture/domain-model.md
+  - specs/product/00-initial-plan.md#44-persistence

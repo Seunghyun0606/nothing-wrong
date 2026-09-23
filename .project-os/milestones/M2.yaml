@@ -1,0 +1,20 @@
+id: M2
+name: Core Prototype and Playtest
+status: planned
+objective: >-
+  Expand the proven loop through T04 so players test visual, data, behavior, and
+  conditional defects, then validate the core experience with human playtesting.
+entry_criteria:
+  - M1 is complete with its verification evidence.
+exit_criteria:
+  - T02, T03, and T04 are playable through the full QA loop.
+  - Account Switcher unlocks for T04 and obeys Scenario policy.
+  - Conditional mutation positive and negative cases are automated.
+  - Human playtest answers the questions in specs/ux/first-playable-flow.md.
+  - A human decides whether the core loop is ready for broad content production.
+tasks: []
+human_gate:
+  required_on_completion: true
+  reason: >-
+    Enjoyment, product believability, and readiness for content scaling are subjective
+    product judgments that cannot be approved by automated checks alone.

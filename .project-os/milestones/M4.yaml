@@ -1,0 +1,15 @@
+id: M4
+name: MVP Hardening and Polish
+status: planned
+objective: >-
+  Turn the complete content set into a stable, coherent Web Desktop MVP candidate.
+entry_criteria:
+  - M3 is complete.
+exit_criteria:
+  - Critical flows have regression coverage and no unresolved critical defects.
+  - UX, accessibility, responsive behavior, persistence recovery, and feedback are polished.
+  - Player-facing terminology and documentation are consistent.
+  - The MVP candidate satisfies the configured quality gates.
+tasks: []
+human_gate:
+  required_on_completion: false

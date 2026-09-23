@@ -1,0 +1,21 @@
+id: DEC-001
+title: Scenario-driven game content and mutations
+status: active
+decided_at: "2026-09-24"
+context: >-
+  Fake Product logic must remain believable and reusable while eight MVP Tickets
+  introduce different defects and conditions.
+decision: >-
+  Treat Scenario as the content unit and apply defects through a generic Mutation
+  resolver. Product components and normal business rules must not branch on Ticket IDs.
+consequences:
+  - A Scenario can change without editing Shoply components.
+  - Shoply must run correctly with zero mutations.
+  - Scenario data requires runtime validation and reproduction tests.
+  - The Mutation Engine must not depend on Shoply-specific types.
+applies_to:
+  - global
+references:
+  - specs/architecture/system-design.md
+  - specs/architecture/domain-model.md
+  - specs/product/00-initial-plan.md#30-critical-architecture-rule

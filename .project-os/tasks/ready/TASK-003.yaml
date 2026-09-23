@@ -1,0 +1,59 @@
+id: TASK-003
+title: Build the Company Shell and normal Shoply baseline
+role: developer
+milestone: M1
+priority: P0
+status: ready
+
+objective: >-
+  Build the entry, dashboard, and Ticket flow plus a mutation-free Shoply Product,
+  Cart, and Checkout baseline needed to exercise T01.
+why: >-
+  Players need a believable normal service and an understandable work context before a
+  Scenario can introduce a meaningful defect.
+
+scope:
+  include:
+    - Implement Start, Company Login, Dashboard, and T01 Ticket Detail routes.
+    - Display Player, Career, XP, Reputation, Ticket list, and Ticket status on Dashboard.
+    - Implement normal Shoply Product, Cart, and Checkout behavior and styling.
+    - Implement subtotal, coupon, Gold eligibility, and shipping business rules required by T01 and future extension.
+    - Component and unit test the shell and normal business rules.
+  exclude:
+    - Applying the T01 visual Mutation.
+    - Fake Browser chrome, Evidence capture, Report, Review, and progression updates.
+    - Shoply Orders/Profile or T02 through T08 content unless required by a normal M1 rule.
+
+depends_on:
+  - TASK-002
+specs:
+  - specs/product/mvp-scope.md
+  - specs/architecture/system-design.md
+  - specs/ux/first-playable-flow.md
+  - specs/feature/foundation-task.md
+relevant_files:
+  - src/app
+  - src/pages
+  - src/products/shoply
+active_decisions:
+  - .project-os/decisions/DEC-001-scenario-driven-architecture.yaml
+  - .project-os/decisions/DEC-003-versioned-local-persistence.yaml
+
+acceptance:
+  - A fresh player can move from Start through Login to Dashboard and open T01 details.
+  - Shoply Product, Cart, and Checkout form a usable normal purchase flow.
+  - Checkout uses the correct Primary confirm CTA when no Mutation is active.
+  - Normal Shoply rules match specs/architecture/system-design.md.
+  - Shoply contains no Ticket ID branch or embedded ExpectedBug answer.
+
+verification:
+  - Run unit tests for Shoply business rules.
+  - Run component tests for Start, Dashboard, Ticket Detail, Cart, and Checkout.
+  - Run typecheck and production build.
+  - Search src/products/shoply for ticketId-based conditions and T01 literals used as behavior switches.
+
+human_gate: false
+risk: medium
+references:
+  - specs/feature/foundation-task.md#7-company-shell
+  - specs/feature/foundation-task.md#8-shoply-baseline

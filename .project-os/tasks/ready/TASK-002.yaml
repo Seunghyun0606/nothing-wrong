@@ -1,0 +1,63 @@
+id: TASK-002
+title: Implement the core domain and Scenario runtime
+role: developer
+milestone: M1
+priority: P0
+status: ready
+
+objective: >-
+  Implement framework-independent domain contracts, validation, state transitions,
+  Scenario loading, generic Mutation resolution, and versioned persistence foundations.
+why: >-
+  T01 must prove that content drives defects while normal Product rules and gameplay
+  state remain reusable for later Tickets.
+
+scope:
+  include:
+    - Define the M1 domain types and matching Zod runtime schemas.
+    - Validate Scenario data before Runtime use with explicit development errors.
+    - Implement TestContext-aware generic Mutation condition evaluation and resolution.
+    - Implement valid Ticket state transitions and initial Game State creation.
+    - Implement the versioned localStorage adapter API and serialization boundaries.
+    - Unit test active/inactive mutations, validation, transitions, and save serialization.
+  exclude:
+    - React views and Shoply components.
+    - T02 through T08 Scenario content.
+    - Report UI and final T01 Review scoring integration.
+    - Narrative behavior beyond preserving optional metadata.
+
+depends_on:
+  - TASK-001
+specs:
+  - specs/architecture/domain-model.md
+  - specs/architecture/system-design.md
+  - specs/feature/qa-core-loop.md
+  - specs/feature/foundation-task.md
+relevant_files:
+  - src/game
+  - src/persistence
+  - src/scenarios
+active_decisions:
+  - .project-os/decisions/DEC-001-scenario-driven-architecture.yaml
+  - .project-os/decisions/DEC-003-versioned-local-persistence.yaml
+  - .project-os/decisions/DEC-004-deterministic-review.yaml
+
+acceptance:
+  - Domain names use no NothingWrong prefix.
+  - Scenario, Ticket, Mutation, ExpectedBug, Evidence, BugReport, ReviewResult, and GameState contracts validate at runtime.
+  - A missing or inactive Mutation returns the normal base value unchanged.
+  - Mutation conditions can be verified with positive and negative TestContext cases.
+  - Invalid Scenario input fails visibly instead of silently falling back.
+  - Game State serialization round-trips through a versioned SaveFile.
+
+verification:
+  - Run unit tests for schemas, mutation resolution, state transitions, and persistence serialization.
+  - Run typecheck and production build.
+  - Search Product code for Ticket ID branching once Product code exists; record this check for downstream verification.
+
+human_gate: false
+risk: medium
+references:
+  - specs/feature/foundation-task.md#5-core-domain
+  - specs/feature/foundation-task.md#6-persistence
+  - specs/feature/foundation-task.md#11-mutation-engine

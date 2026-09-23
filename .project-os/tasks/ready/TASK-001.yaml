@@ -1,0 +1,57 @@
+id: TASK-001
+title: Establish the Web project foundation
+role: developer
+milestone: M1
+priority: P0
+status: ready
+
+objective: >-
+  Create the minimal React, TypeScript, Vite, routing, and test foundation required by
+  the T01 vertical slice without implementing gameplay features.
+why: >-
+  Every later M1 task needs a reproducible build, stable module boundaries, and working
+  automated-test entry points.
+
+scope:
+  include:
+    - Initialize package metadata with the nothing-wrong package name and Nothing Wrong title.
+    - Configure React, TypeScript, Vite, React Router, Zod, Vitest, React Testing Library, and Playwright.
+    - Create the approved src module boundaries and a minimal application/router bootstrap.
+    - Add build, typecheck, unit-test, and end-to-end test scripts with smoke coverage.
+    - Document local development and verification commands.
+  exclude:
+    - Core domain and Scenario implementation.
+    - Company Shell screens beyond a bootstrap placeholder.
+    - Shoply, QA tools, T01 content, reporting, review, or progression.
+
+depends_on: []
+specs:
+  - specs/feature/foundation-task.md
+  - specs/architecture/system-design.md
+relevant_files:
+  - PROJECT.md
+  - specs/feature/foundation-task.md
+active_decisions:
+  - .project-os/decisions/DEC-001-scenario-driven-architecture.yaml
+  - .project-os/decisions/DEC-002-react-fake-browser.yaml
+  - .project-os/decisions/DEC-003-versioned-local-persistence.yaml
+
+acceptance:
+  - A clean install can start the development app and produce a production build.
+  - TypeScript strict checking and Vitest, RTL, and Playwright entry points are configured.
+  - The app router renders a minimal local route without external network or iframe dependencies.
+  - The src/app, game, products, scenarios, pages, components, and persistence boundaries exist.
+  - No T01-specific Product logic or premature post-M1 feature is introduced.
+
+verification:
+  - Run the configured typecheck command.
+  - Run the configured unit-test smoke suite.
+  - Run the configured production build.
+  - Confirm Playwright can discover its smoke test.
+
+human_gate: false
+risk: low
+references:
+  - specs/feature/foundation-task.md#3-phase-1--project-foundation
+  - specs/feature/foundation-task.md#4-directory-structure
+  - specs/feature/foundation-task.md#20-documentation

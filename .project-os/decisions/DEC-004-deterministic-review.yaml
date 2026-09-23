@@ -1,0 +1,21 @@
+id: DEC-004
+title: Deterministic pure-function report review
+status: active
+decided_at: "2026-09-24"
+context: >-
+  Player reports need explainable, repeatable evaluation in an offline MVP, and the
+  score must be testable independently from React.
+decision: >-
+  Evaluate BugReport against ExpectedBug through deterministic structural matching
+  implemented as pure functions. Do not use LLM or NLP evaluation in the MVP.
+consequences:
+  - Detection, reproduction, evidence, and severity scores are reproducible.
+  - Review behavior can be unit tested without rendering UI.
+  - Content must provide canonical reproduction conditions and valid evidence targets.
+  - Free-text flexibility is intentionally limited in the MVP.
+applies_to:
+  - global
+references:
+  - specs/feature/qa-core-loop.md
+  - specs/architecture/domain-model.md
+  - specs/product/00-initial-plan.md#39-review-matching
