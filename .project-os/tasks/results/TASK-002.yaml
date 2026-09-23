@@ -1,0 +1,58 @@
+task: TASK-002
+status: pass
+summary: Implemented Zod-backed M1 domain contracts, initial Game State, explicit
+  Ticket transitions, Scenario validation, Product-agnostic Mutation conditions/resolution,
+  and versioned Game State persistence behind an injectable storage boundary.
+files_changed:
+- src/game/domain/
+- src/game/mutations/
+- src/game/scenarios/
+- src/game/test/
+- src/game/README.md
+- src/persistence/gameStateStorage.ts
+- src/persistence/gameStateStorage.test.ts
+- src/persistence/README.md
+verification:
+  build:
+    status: pass
+    command: npm run build
+  typecheck:
+    status: pass
+    command: npm run typecheck
+  unit_test:
+    status: pass
+    command: npm test
+    result: 7 files and 36 tests passed
+  integration_test:
+    status: pass
+    command: npm run test:e2e
+    result: 1 Chromium smoke test passed
+  acceptance:
+    status: pass
+    notes:
+    - Scenario, Ticket, Mutation, ExpectedBug, Evidence, BugReport, ReviewResult,
+      and GameState have runtime schemas.
+    - Conditional Mutation tests cover all operators plus positive and negative account/product
+      cases.
+    - Missing, target-mismatched, inactive, and metadata-only Mutations preserve the
+      base value.
+    - Invalid Scenario data throws ScenarioValidationError with the failing path.
+    - Versioned SaveFile serialization round-trips and corrupt/unsupported saves throw
+      explicit errors.
+    - Game and persistence code contains no React import, NothingWrong-prefixed type,
+      or Ticket ID behavior branch.
+evidence:
+- npm run typecheck
+- npm test
+- npm run build
+- npm run test:e2e:list
+- npm run test:e2e
+- projectctl doctor
+review: null
+followups:
+- Independent reviewer must inspect TASK-002 before Project OS completion evaluation.
+- TASK-003 can begin only after TASK-002 reaches done status.
+commit: 0796fb3
+kind: implementation
+role: developer
+actor: codex-developer
