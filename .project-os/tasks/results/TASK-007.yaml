@@ -1,0 +1,56 @@
+task: TASK-007
+status: pass
+summary: Added the complete T02 data-defect loop with catalog-order unlocking, additive
+  saved-state reconciliation, a Scenario-driven quantity-two subtotal Mutation, deterministic
+  review, and a refresh-safe T01-to-T02 browser journey.
+files_changed:
+- .project-os/milestones/M1.yaml
+- .project-os/milestones/M2.yaml
+- .project-os/state/backlog.yaml
+- .project-os/state/current.yaml
+- .project-os/state/roadmap.yaml
+- .project-os/tasks/ready/TASK-007.yaml
+- .project-os/tasks/ready/TASK-008.yaml
+- .project-os/tasks/ready/TASK-009.yaml
+- .project-os/tasks/ready/TASK-010.yaml
+- README.md
+- docs/development/TESTING.md
+- src/app/providers/AppProviders.tsx
+- src/game/domain/gameState.ts
+- src/game/domain/gameState.test.ts
+- src/game/session/GameSessionProvider.tsx
+- src/pages/CompanyShell.test.tsx
+- src/pages/DashboardPage/DashboardPage.tsx
+- src/pages/ReportingFlow.test.tsx
+- src/pages/TestWorkspacePage/TestWorkspacePage.test.tsx
+- src/pages/TicketDetailPage/TicketDetailPage.tsx
+- src/products/shoply/components/OrderSummaryCard.tsx
+- src/scenarios/shoply/t02.ts
+- src/scenarios/shoply/t02.test.ts
+- src/scenarios/shoply/tickets.ts
+- src/scenarios/shoply/tickets.test.ts
+- src/styles.css
+- tests/e2e/foundation.spec.ts
+evidence:
+- T02 remains locked until T01 is resolved and is then available through the generic
+  catalog flow.
+- Existing M1 saves gain a NEW T02 entry without replacing T01 progress.
+- Quantity two on the T02 Cart displays a $50 subtotal while normal line item and
+  total calculations remain $60.
+- Wrong quantity, wrong path, and zero-Mutation cases retain the normal subtotal.
+- Quantity-two Cart Evidence produces the deterministic VALID 100/100 T02 Review at
+  MEDIUM severity.
+- The Chromium journey completes T01 and T02 sequentially and persists 200 XP and
+  104 Reputation after reload.
+acceptance:
+  status: pass
+  notes:
+  - No Shoply production code branches on Ticket or Scenario identifiers.
+  - T03, T04, Account Switcher, and human playtesting remain in later M2 tasks.
+followups:
+- Obtain independent TASK-007 review before evaluation.
+- Begin TASK-008 only after TASK-007 passes the configured completion workflow.
+commit: 8bbffa5878aa5ecc06f9ea1f2c702bacadde405a
+kind: implementation
+role: developer
+actor: codex-developer-7
