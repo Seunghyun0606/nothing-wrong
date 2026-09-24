@@ -1,0 +1,76 @@
+task: TASK-007
+status: pass
+verdict: pass
+summary: TASK-007 satisfies the T02 data-defect gameplay contract after review remediation.
+  T02 unlocks in catalog order, its subtotal defect is entirely Scenario-driven, deterministic
+  Evidence and Review behavior is covered, older saves reconcile safely, and locked
+  or unstarted Tickets cannot bypass lifecycle rules through direct Workspace URLs.
+critical_issues: 0
+findings: []
+remediation:
+- finding: Direct /test/T02 navigation originally exposed the locked Scenario before
+    T01 resolution.
+  resolution: TestWorkspacePage now requires both catalog unlock and TESTING lifecycle
+    status before rendering Product content.
+  commit: 5e910c51
+acceptance:
+  ordered_unlock_and_full_loop:
+    status: pass
+    evidence:
+    - Dashboard and Ticket detail use the generic catalog unlock rule.
+    - Workspace route guards prevent locked and unstarted direct access.
+    - The Chromium flow resolves T01, unlocks T02, resolves T02, and verifies persisted
+      progression.
+  scenario_driven_subtotal:
+    status: pass
+    evidence:
+    - Normal Shoply calculation remains $60 for two $30 items.
+    - T02 resolves cart.subtotal to $50 only when its path and quantity conditions
+      match.
+    - Wrong-quantity, wrong-path, inactive, and zero-Mutation cases preserve the base
+      value.
+  deterministic_review:
+    status: pass
+    evidence:
+    - Quantity-two Cart Evidence targeting cart.subtotal receives VALID 100/100 at
+      MEDIUM severity.
+    - Wrong-quantity Evidence is rejected by the pure review function.
+  architecture:
+    status: pass
+    evidence:
+    - Shoply components contain no Ticket or Scenario identifier branches.
+    - The reusable Mutation runtime applies the numeric display override from Scenario
+      data.
+    - Browser storage remains behind persistence adapters.
+verification:
+  typecheck:
+    status: pass
+    command: npm run typecheck
+  unit_component:
+    status: pass
+    command: npm test -- --run
+    result: 20 test files and 78 tests passed.
+  build:
+    status: pass
+    command: npm run build
+    result: Vite production build completed with 162 modules transformed.
+  integration:
+    status: pass
+    command: npm run test:e2e
+    result: One Chromium flow passed through T01 and T02 with final reload persistence.
+  architecture:
+    status: pass
+    command: rg boundary searches and git diff --check
+    result: No forbidden Product coupling, persistence access, domain prefix, or whitespace
+      issue was found.
+  project_os:
+    status: pass
+    command: projectctl doctor
+    result: Project OS structure and backlog references are consistent.
+reviewed_commit: 5e910c51
+residual_risk: Low. The immutable initial implementation handoff references 8bbffa5;
+  the reviewed commit 5e910c5 is its descendant and contains only the lifecycle guard
+  remediation plus two focused regression tests.
+kind: review
+role: reviewer
+actor: codex-reviewer-recovery
