@@ -1,0 +1,88 @@
+status: pass
+verdict: pass
+summary: TASK-003 satisfies its Company Shell and mutation-free Shoply baseline contract.
+  The implementation provides the complete Start, Login, Dashboard, and T01 Ticket
+  Detail path; keeps Ticket content data-driven; implements the required normal Product,
+  Cart, and Checkout behavior; and preserves the approved boundary between Shoply
+  behavior and Ticket-specific Scenario data.
+critical_issues: 0
+findings: []
+acceptance:
+  company_shell:
+    status: pass
+    evidence:
+    - A fresh player can navigate from Start through Company Login to Dashboard.
+    - Dashboard renders Player, Career, XP, Reputation, the Ticket list, and status
+      from canonical Game State.
+    - T01 details render request, scope, requirements, and starting context from the
+      validated Ticket catalog.
+  shoply_purchase_flow:
+    status: pass
+    evidence:
+    - Product supports adding the catalog item to the bag and Cart supports quantity
+      changes and removal.
+    - Cart continues to Checkout, required delivery inputs are present, and order
+      confirmation completes locally.
+    - Empty Cart and Checkout routes render useful recovery states.
+  normal_business_rules:
+    status: pass
+    evidence:
+    - Subtotal is product price multiplied by quantity.
+    - SAVE10 applies a 10 percent discount and SAVE20 applies only to Gold customers.
+    - Shipping is free from a pre-discount subtotal of 50 dollars and otherwise costs
+      5 dollars.
+  primary_confirmation:
+    status: pass
+    evidence:
+    - Mutation-free Checkout exposes Confirm order as the dark primary CTA.
+    - Chromium verifies the CTA styling and completes confirmation.
+  architecture_and_scope:
+    status: pass
+    evidence:
+    - Shoply source contains no Ticket ID, T01, or ExpectedBug behavior switch.
+    - Shoply rules remain pure and normal Product data remains in the Shoply catalog.
+    - T01 content remains under scenarios/shoply and is parsed through TicketSchema.
+    - Fake Browser chrome, Evidence, Report, Review, progression rewards, and the
+      T01 Mutation remain deferred.
+  visual_rendering:
+    status: pass
+    evidence:
+    - Direct desktop rendering of Start and Shoply Product showed no clipping, overlay,
+      or layout error.
+    - Direct mobile rendering of Shoply Product preserved navigation, product identity,
+      details, and the Add to bag CTA.
+verification:
+  typecheck:
+    status: pass
+    command: npm run typecheck
+  unit_test:
+    status: pass
+    command: npm test
+    result: 10 files and 48 tests passed
+  build:
+    status: pass
+    command: npm run build
+    result: Vite production build completed with 140 modules transformed
+  integration_test:
+    status: pass
+    command: npm run test:e2e
+    result: 1 Chromium end-to-end flow passed
+  e2e_discovery:
+    status: pass
+    command: npm run test:e2e:list
+    result: 1 Chromium test discovered
+  source_inspection:
+    status: pass
+    command: rg -n -i "ticketId|T01|ExpectedBug" src/products/shoply
+    result: No forbidden Shoply behavior switches found
+  project_os:
+    status: pass
+    command: projectctl doctor
+reviewed_commit: 2389e2dbc51f7a7f4d568c8a9f13a4c849bbf87d
+residual_risk: Low. Shoply cart state is intentionally in-memory for this baseline
+  and the Fake Browser, Evidence, Mutation, Report, Review, and progression integration
+  are assigned to later M1 tasks.
+task: TASK-003
+kind: review
+role: reviewer
+actor: independent-reviewer-3
