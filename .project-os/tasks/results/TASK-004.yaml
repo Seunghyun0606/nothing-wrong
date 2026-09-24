@@ -1,0 +1,41 @@
+task: TASK-004
+status: pass
+summary: Implemented the T01 Test Workspace with an isolated in-memory Product Router,
+  browser chrome, responsive viewport container, QA Toolbar, Ticket/Notes/Evidence
+  inspector, semantic Evidence capture, and persisted Interaction History.
+files_changed:
+- src/components/fake-browser/
+- src/components/qa-tools/
+- src/game/domain/schemas.ts
+- src/game/evidence/
+- src/game/session/WorkspaceSessionProvider.tsx
+- src/pages/TestWorkspacePage/
+- src/persistence/workspaceStorage.ts
+- src/products/shoply/
+- src/styles.css
+- tests/e2e/foundation.spec.ts
+evidence:
+- Shoply renders inside Fake Browser as the dominant workspace surface and remains
+  visually distinct from the dark Game UI.
+- Fake Browser navigation changes only its Product Router state while the Main Game
+  URL remains /test/T01.
+- Desktop fills the available browser stage while Tablet and Mobile render at 768px
+  and 390px, with container-based Shoply reflow.
+- Ticket Notes auto-save under the versioned nothingwrong.workspace key and are absent
+  from reviewable Game State.
+- Evidence capture stores ticket, path, viewport, account, locale, timestamp, semantic
+  snapshot, and a visible preview.
+- Interaction History records product, cart, quantity, checkout, viewport, reload,
+  and capture actions for later Report suggestions.
+acceptance:
+  status: pass
+  notes:
+  - Report submission and T01 Mutation remain intentionally deferred to TASK-005.
+  - The Create report action validates Evidence readiness but does not submit a Report
+    in this task.
+followups:
+- TASK-005 can consume persisted Evidence and Interaction History through WorkspaceSessionProvider.
+commit: a5ac218a7e18dc1cead1c661c0da385066c67d14
+kind: implementation
+role: developer
+actor: codex-developer-4
