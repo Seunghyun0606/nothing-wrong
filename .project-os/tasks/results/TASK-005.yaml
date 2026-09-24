@@ -1,0 +1,47 @@
+task: TASK-005
+status: pass
+summary: Added the validated T01 Scenario and generic WRONG_STYLE runtime, then completed
+  Evidence-bound Bug Report creation, deterministic structural Review, atomic and
+  idempotent progression, Review presentation, and refresh-safe Dashboard return.
+files_changed:
+- src/scenarios/shoply/
+- src/game/mutations/
+- src/game/reporting/
+- src/game/progression/
+- src/game/session/GameSessionProvider.tsx
+- src/components/reporting/
+- src/pages/ReportBuilderPage/
+- src/pages/ReviewResultPage/
+- src/pages/TestWorkspacePage/
+- src/pages/DashboardPage/
+- src/products/shoply/pages/CheckoutPage.tsx
+- src/persistence/
+- src/styles.css
+- tests/e2e/foundation.spec.ts
+evidence:
+- T01 content is parsed through the Scenario Zod schema and contains Ticket, ExpectedBug,
+  scoring, reward, and WRONG_STYLE Mutation data.
+- Shoply resolves checkout.confirmButton through a generic Mutation Runtime and renders
+  Primary with no active Mutation.
+- Report construction rejects Evidence ids not captured for the current Ticket.
+- Review scoring is a React-free pure function with deterministic category scores,
+  rewards, and feedback.
+- Progression resolves a valid Ticket, updates XP, level, Reputation, histories, and
+  unlock state in one Game State transition.
+- Duplicate application of the same Report returns the existing state and cannot award
+  progression twice.
+- The completed Dashboard state survives a fresh provider render and browser reload.
+acceptance:
+  status: pass
+  notes:
+  - Invalid Reports return T01 to TESTING and preserve their Review history so the
+    player can retry.
+  - T02 through T08 content, Account Switcher, NLP evaluation, and narrative behavior
+    remain out of scope.
+followups:
+- TASK-006 should harden the complete first playable and expand critical-flow edge-case
+  coverage.
+commit: cfec655
+kind: implementation
+role: developer
+actor: codex-developer-5
