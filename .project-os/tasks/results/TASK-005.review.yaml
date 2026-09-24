@@ -1,0 +1,75 @@
+status: pass
+verdict: pass
+summary: TASK-005 satisfies the T01 report, review, and progression contract. The
+  implementation keeps the defect Scenario-driven, rejects Evidence claims outside
+  the current Ticket, evaluates Reports through deterministic React-free logic, and
+  applies refresh-safe progression exactly once.
+critical_issues: 0
+findings: []
+acceptance:
+  scenario_and_mutation:
+    status: pass
+    evidence:
+    - T01 is parsed through the runtime Scenario schema with Ticket, ExpectedBug,
+      scoring, progression, and WRONG_STYLE Mutation content.
+    - checkout.confirmButton resolves to secondary with T01 active and remains primary
+      with no active Mutation.
+    - A payload-only test changes the resolved output without editing Shoply.
+  report_and_evidence:
+    status: pass
+    evidence:
+    - The Report Builder captures title, ordered reproduction steps, expected, actual,
+      severity, and selected Evidence.
+    - createBugReport rejects every Evidence id not present among captures for the
+      Report Ticket and removes duplicate claims.
+  deterministic_review:
+    status: pass
+    evidence:
+    - reviewBugReport is a pure non-React function using structural expected/actual,
+      ordered-step, Evidence-target, context, and severity matching.
+    - T01 produces the configured 40/25/20/15 score, rewards, and stable feedback.
+  progression_and_persistence:
+    status: pass
+    evidence:
+    - A valid Review transitions TESTING through REPORTED and REVIEWED to RESOLVED,
+      updates XP, level, Reputation, histories, and unlocks in one parsed Game State.
+    - Reapplying the same Report id returns the existing state, preventing duplicate
+      rewards.
+    - Chromium verifies Dashboard resolution and XP survive a browser reload.
+  architecture_and_scope:
+    status: pass
+    evidence:
+    - Shoply contains no Ticket-id or ExpectedBug behavior branch.
+    - localStorage access remains inside persistence adapters.
+    - No T02+ content, account switching, NLP evaluation, or narrative behavior was
+      introduced.
+verification:
+  typecheck:
+    status: pass
+    command: npm run typecheck
+  unit_test:
+    status: pass
+    command: npm test -- --run
+    result: 18 test files and 68 tests passed.
+  build:
+    status: pass
+    command: npm run build
+    result: Vite production build completed with 161 modules transformed.
+  integration_test:
+    status: pass
+    command: npm run test:e2e
+    result: One Chromium flow passed from a fresh save through Review, Dashboard,
+      and reload.
+  source_inspection:
+    status: pass
+    command: rg architecture checks, git diff --check, and projectctl doctor
+    result: No forbidden coupling, naming, persistence access, or whitespace issue
+      found.
+reviewed_commit: cfec65563cf089f523a00497b3daf56710f6e649
+residual_risk: Low. T01 uses an intentionally guided candidate-based Report UI and
+  an unconditional visual defect; conditional and multi-bug matching remain later-ticket
+  concerns.
+task: TASK-005
+kind: review
+role: reviewer
+actor: codex-reviewer-5
