@@ -1,0 +1,87 @@
+status: pass
+verdict: pass
+summary: TASK-004 satisfies the Test Workspace and Evidence-flow contract. The implementation
+  keeps Product navigation local to Fake Browser, preserves Shoply's normal behavior,
+  persists Notes outside reviewable Game State, captures complete Evidence, and records
+  the T01 journey without introducing T01-specific Product branches.
+critical_issues: 0
+findings: []
+acceptance:
+  workspace_hierarchy:
+    status: pass
+    evidence:
+    - Shoply occupies the dominant workspace region inside light Fake Browser chrome.
+    - The dark QA Toolbar and inspector remain visually distinct from Product UI.
+  router_isolation:
+    status: pass
+    evidence:
+    - ProductNavigationProvider owns in-memory Product transitions inside Fake Browser.
+    - Chromium confirms Product, Cart, and Checkout navigation while the Main Game
+      URL stays /test/T01.
+    - No iframe, external site access, or popup API is present.
+  viewport_behavior:
+    status: pass
+    evidence:
+    - Desktop fills the browser stage and Tablet/Mobile set the Product container
+      to 768px/390px.
+    - Container queries reflow Shoply at narrow Product widths independently of the
+      host window width.
+  notes:
+    status: pass
+    evidence:
+    - Notes auto-save by Ticket in a versioned nothingwrong.workspace envelope.
+    - Notes are absent from nothingwrong.gameState and therefore cannot affect Review
+      input.
+  evidence_capture:
+    status: pass
+    evidence:
+    - Captures include ticketId, path, viewport, account, locale, timestamp, semantic
+      snapshot, and preview.
+    - The inspector renders a visible preview with page heading, viewport, capture
+      time, and path.
+  interaction_history:
+    status: pass
+    evidence:
+    - OPEN_PRODUCT, ADD_TO_CART, OPEN_CART, CHANGE_QUANTITY, OPEN_CHECKOUT, and CAPTURE_EVIDENCE
+      are persisted for T01.
+    - Account switching and Report submission remain outside TASK-004 scope.
+  architecture_and_scope:
+    status: pass
+    evidence:
+    - Product components contain no Ticket ID, T01, or ExpectedBug behavior switch.
+    - localStorage access remains behind persistence adapters.
+    - T01 Mutation, scoring, progression, and final Report submission remain deferred
+      to TASK-005.
+verification:
+  typecheck:
+    status: pass
+    command: npm run typecheck
+  unit_test:
+    status: pass
+    command: npm test
+    result: 13 files and 55 tests passed.
+  build:
+    status: pass
+    command: npm run build
+    result: Vite production build completed with 150 modules transformed.
+  integration_test:
+    status: pass
+    command: npm run test:e2e
+    result: 1 Chromium end-to-end flow passed.
+  source_inspection:
+    status: pass
+    command: rg inspections for Ticket coupling, direct localStorage, iframe, external
+      access, and whitespace errors
+    result: No forbidden Product coupling or browser access found; localStorage appears
+      only in tests outside persistence.
+  visual_rendering:
+    status: pass
+    result: Desktop and Mobile workspace screenshots showed a usable, distinct, responsive
+      layout.
+reviewed_commit: a5ac218a7e18dc1cead1c661c0da385066c67d14
+residual_risk: Low. The Create report action intentionally stops at Evidence readiness
+  because the Report Builder and T01 Mutation belong to TASK-005.
+task: TASK-004
+kind: review
+role: reviewer
+actor: codex-reviewer-4
