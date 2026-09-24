@@ -43,7 +43,7 @@ describe('Company Shell', () => {
     expect(
       await screen.findByRole('heading', { name: 'Everyday Carry Pack' }),
     ).toBeInTheDocument()
-    expect(window.location.pathname).toBe('/shoply/product/everyday-pack')
+    expect(window.location.pathname).toBe('/test/T01')
   })
 
   it('shows a useful not-found state for an unknown Ticket', () => {

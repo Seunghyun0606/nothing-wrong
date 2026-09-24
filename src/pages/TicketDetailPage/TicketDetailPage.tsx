@@ -28,7 +28,7 @@ export function TicketDetailPage() {
 
   function handleStartTest() {
     startTicket(activeTicket.id)
-    navigate(activeTicket.startingContext.currentPath)
+    navigate(`/test/${activeTicket.id}`)
   }
 
   return (

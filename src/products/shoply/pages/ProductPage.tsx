@@ -1,15 +1,20 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
 
 import { ShoplyHeader } from '../components/ShoplyHeader'
 import { getShoplyProduct } from '../domain/catalog'
 import { formatMoney } from '../components/OrderSummaryCard'
+import { ProductLink } from '../ProductNavigation'
 import { useShoply } from '../ShoplyProvider'
+import { useProductTelemetry } from '../ProductTelemetry'
 
-export function ProductPage() {
-  const { productId = '' } = useParams()
+interface ProductPageProps {
+  productId: string
+}
+
+export function ProductPage({ productId }: ProductPageProps) {
   const product = getShoplyProduct(productId)
   const { addToCart } = useShoply()
+  const recordInteraction = useProductTelemetry()
   const [added, setAdded] = useState(false)
 
   if (!product) {
@@ -20,6 +25,7 @@ export function ProductPage() {
 
   function handleAddToCart() {
     addToCart(activeProduct.id)
+    recordInteraction({ type: 'ADD_TO_CART', target: activeProduct.id })
     setAdded(true)
   }
 
@@ -45,7 +51,7 @@ export function ProductPage() {
           <button className="shoply-button" type="button" onClick={handleAddToCart}>
             Add to bag
           </button>
-          {added && <p className="added-message" role="status">Added to bag. <Link to="/shoply/cart">View bag</Link></p>}
+          {added && <p className="added-message" role="status">Added to bag. <ProductLink to="/shoply/cart">View bag</ProductLink></p>}
           <p className="stock-note">In stock · Ships in 1–2 business days</p>
         </div>
       </section>

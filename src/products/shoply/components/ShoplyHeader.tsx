@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom'
-
+import { ProductLink } from '../ProductNavigation'
 import { useShoply } from '../ShoplyProvider'
 
 export function ShoplyHeader() {
@@ -7,9 +6,9 @@ export function ShoplyHeader() {
 
   return (
     <header className="shoply-header">
-      <Link className="shoply-logo" to="/shoply/product/everyday-pack">
+      <ProductLink className="shoply-logo" to="/shoply/product/everyday-pack">
         shoply<span>.</span>
-      </Link>
+      </ProductLink>
       <nav aria-label="Shoply navigation">
         <a href="#new">New</a>
         <a href="#essentials">Essentials</a>
@@ -17,9 +16,9 @@ export function ShoplyHeader() {
       </nav>
       <div className="shoply-actions">
         <span className="shoply-account">{user.name}</span>
-        <Link className="cart-link" to="/shoply/cart" aria-label={`Cart, ${itemCount} items`}>
+        <ProductLink className="cart-link" to="/shoply/cart" aria-label={`Cart, ${itemCount} items`}>
           Bag <span>{itemCount}</span>
-        </Link>
+        </ProductLink>
       </div>
     </header>
   )

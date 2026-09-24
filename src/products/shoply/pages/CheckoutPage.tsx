@@ -1,16 +1,19 @@
 import { useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
 
 import { OrderSummaryCard } from '../components/OrderSummaryCard'
 import { ShoplyHeader } from '../components/ShoplyHeader'
+import { ProductLink } from '../ProductNavigation'
 import { useShoply } from '../ShoplyProvider'
+import { useProductTelemetry } from '../ProductTelemetry'
 
 export function CheckoutPage() {
   const { items, coupon, user } = useShoply()
+  const recordInteraction = useProductTelemetry()
   const [confirmed, setConfirmed] = useState(false)
 
   function submitOrder(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    recordInteraction({ type: 'CONFIRM_ORDER', target: 'checkout.confirmButton' })
     setConfirmed(true)
   }
 
@@ -23,14 +26,14 @@ export function CheckoutPage() {
       {items.length === 0 ? (
         <section className="shoply-empty">
           <h1>Your bag is ready for something useful.</h1>
-          <Link className="shoply-button inline-button" to="/shoply/product/everyday-pack">Return to product</Link>
+          <ProductLink className="shoply-button inline-button" to="/shoply/product/everyday-pack">Return to product</ProductLink>
         </section>
       ) : confirmed ? (
         <section className="confirmation-card" role="status">
           <p className="product-category">ORDER CONFIRMED</p>
           <h1>Thanks, {user.name}.</h1>
           <p>Your order is confirmed and will ship within two business days.</p>
-          <Link to="/shoply/product/everyday-pack">Continue shopping</Link>
+          <ProductLink to="/shoply/product/everyday-pack">Continue shopping</ProductLink>
         </section>
       ) : (
         <form className="checkout-layout" onSubmit={submitOrder}>
@@ -49,7 +52,13 @@ export function CheckoutPage() {
           </section>
           <aside>
             <OrderSummaryCard items={items} coupon={coupon} tier={user.tier} />
-            <button className="shoply-button shoply-confirm-button" type="submit">Confirm order</button>
+            <button
+              className="shoply-button shoply-confirm-button"
+              data-evidence-target="checkout.confirmButton"
+              type="submit"
+            >
+              Confirm order
+            </button>
             <p className="secure-note">Your payment details are encrypted.</p>
           </aside>
         </form>

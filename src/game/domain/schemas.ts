@@ -135,6 +135,20 @@ export const EvidenceSchema = z
     path: ['preview'],
   })
 
+export const TicketNoteSchema = z.object({
+  ticketId: IdSchema,
+  content: z.string(),
+})
+
+export const PlayerActionSchema = z.object({
+  id: IdSchema,
+  ticketId: IdSchema,
+  timestamp: TimestampSchema,
+  type: z.string().trim().min(1),
+  target: z.string().trim().min(1).optional(),
+  payload: UnknownRecordSchema.optional(),
+})
+
 export const ReportStepSchema = z.object({
   id: IdSchema,
   order: z.number().int().nonnegative(),
@@ -263,6 +277,8 @@ export type MutationType = z.infer<typeof MutationTypeSchema>
 export type Mutation = z.infer<typeof MutationSchema>
 export type ExpectedBug = z.infer<typeof ExpectedBugSchema>
 export type Evidence = z.infer<typeof EvidenceSchema>
+export type TicketNote = z.infer<typeof TicketNoteSchema>
+export type PlayerAction = z.infer<typeof PlayerActionSchema>
 export type ReportStep = z.infer<typeof ReportStepSchema>
 export type BugReport = z.infer<typeof BugReportSchema>
 export type ReviewResult = z.infer<typeof ReviewResultSchema>
