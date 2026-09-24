@@ -201,6 +201,7 @@ export const ScoringConfigSchema = z
 export const ProgressionRewardSchema = z.object({
   xp: z.number().int().nonnegative(),
   reputationDelta: z.number().int(),
+  unlockedTools: z.array(IdSchema).optional(),
 })
 
 export const NarrativeHookSchema = z.object({

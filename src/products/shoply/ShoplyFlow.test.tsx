@@ -40,6 +40,7 @@ describe('normal Shoply purchase flow', () => {
 
     const confirmButton = screen.getByRole('button', { name: 'Confirm order' })
     expect(confirmButton).toHaveClass('shoply-confirm-button')
+    expect(confirmButton).toHaveAttribute('data-variant', 'primary')
     fireEvent.click(confirmButton)
     expect(await screen.findByRole('heading', { name: 'Thanks, Jordan Park.' })).toBeInTheDocument()
   })

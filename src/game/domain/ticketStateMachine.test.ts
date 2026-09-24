@@ -12,6 +12,7 @@ describe('Ticket state machine', () => {
     ['TESTING', 'NO_ISSUE'],
     ['REPORTED', 'REVIEWED'],
     ['NO_ISSUE', 'REVIEWED'],
+    ['REVIEWED', 'TESTING'],
     ['REVIEWED', 'RESOLVED'],
   ] as const)('accepts %s -> %s', (from, to) => {
     expect(canTransitionTicket(from, to)).toBe(true)

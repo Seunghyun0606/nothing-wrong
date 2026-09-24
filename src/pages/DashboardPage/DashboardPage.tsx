@@ -17,6 +17,9 @@ const STATUS_LABELS = {
 export function DashboardPage() {
   const { state } = useGameSession()
   const { profile } = state
+  const openTicketCount = TICKET_CATALOG.filter(
+    (ticket) => state.tickets[ticket.id]?.status !== 'RESOLVED',
+  ).length
 
   return (
     <main className="company-page">
@@ -66,7 +69,7 @@ export function DashboardPage() {
             <p className="kicker">Assigned to you</p>
             <h2 id="ticket-list-heading">Ticket queue</h2>
           </div>
-          <span>{TICKET_CATALOG.length} open</span>
+          <span>{openTicketCount} open</span>
         </div>
         <div className="ticket-table">
           {TICKET_CATALOG.map((ticket) => {

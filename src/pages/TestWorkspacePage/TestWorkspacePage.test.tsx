@@ -1,9 +1,18 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { App } from '../../app/App'
+import { createInitialGameState } from '../../game/domain/gameState'
+import { saveGameState } from '../../persistence/gameStateStorage'
 import { loadWorkspaceState } from '../../persistence/workspaceStorage'
 
 function renderWorkspace() {
+  const gameState = createInitialGameState(['T01'])
+  gameState.tickets.T01 = {
+    ...gameState.tickets.T01!,
+    status: 'TESTING',
+    acceptedAt: 1,
+  }
+  saveGameState(gameState)
   window.history.pushState({}, '', '/test/T01')
   return render(<App />)
 }
@@ -70,6 +79,10 @@ describe('Test Workspace', () => {
     expect(screen.getByLabelText('Fake URL')).toHaveTextContent(
       'https://shoply.local/checkout',
     )
+    expect(screen.getByRole('button', { name: 'Confirm order' })).toHaveAttribute(
+      'data-variant',
+      'secondary',
+    )
     expect(window.location.pathname).toBe('/test/T01')
 
     fireEvent.click(screen.getByRole('button', { name: 'Capture evidence' }))
@@ -106,6 +119,8 @@ describe('Test Workspace', () => {
     )
 
     fireEvent.click(screen.getByRole('button', { name: 'Create report' }))
-    expect(screen.getByRole('status')).toHaveTextContent('Evidence is ready')
+    expect(
+      screen.getByRole('heading', { name: 'Document what you can prove.' }),
+    ).toBeInTheDocument()
   })
 })

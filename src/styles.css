@@ -1184,6 +1184,17 @@ select {
   background: #25221e;
 }
 
+.shoply-confirm-button[data-variant="secondary"] {
+  border-color: #8f877c;
+  color: #35312c;
+  background: transparent;
+}
+
+.shoply-confirm-button[data-variant="secondary"]:hover {
+  color: #fff;
+  background: #6d665d;
+}
+
 .confirmation-card a {
   display: inline-block;
   margin-top: 20px;
@@ -1631,6 +1642,284 @@ select {
 }
 
 .workspace-missing h1 { margin: 20px 0 30px; }
+
+/* Report and review */
+.report-page,
+.review-page {
+  min-height: 100vh;
+  padding: 42px clamp(24px, 6vw, 90px) 80px;
+  color: #e7ebe4;
+  background: #0c0f0d;
+}
+
+.report-page-empty,
+.review-page-empty {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+}
+
+.report-back-link {
+  display: inline-block;
+  margin-bottom: 32px;
+  color: #8e978b;
+  font-size: 0.75rem;
+}
+
+.report-builder {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+}
+
+.report-builder-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 32px 0 38px;
+  border-bottom: 1px solid #30362f;
+}
+
+.report-builder-header h1 {
+  max-width: 720px;
+  margin: 10px 0 0;
+  font-size: clamp(2.7rem, 6vw, 5.8rem);
+  letter-spacing: -0.065em;
+  line-height: 0.92;
+}
+
+.report-builder-header > p {
+  max-width: 300px;
+  margin: 0;
+  color: #7d867a;
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.report-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 32px 0;
+}
+
+.report-field,
+.report-section {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.report-field-wide {
+  grid-column: 1 / -1;
+}
+
+.report-field > span,
+.report-section legend {
+  color: #b8c0b4;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.report-field input,
+.report-field select {
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid #3a4237;
+  outline: none;
+  color: #e5e9e1;
+  background: #111511;
+}
+
+.report-field input:focus,
+.report-field select:focus {
+  border-color: #a9ed70;
+}
+
+.report-section {
+  padding: 20px;
+  border: 1px solid #30362f;
+  background: #111511;
+}
+
+.report-section > p {
+  margin: 0 0 8px;
+  color: #757e72;
+  font-size: 0.72rem;
+}
+
+.report-evidence {
+  align-content: start;
+}
+
+.report-choice-list {
+  display: grid;
+  gap: 8px;
+}
+
+.report-choice-list label {
+  display: grid;
+  min-height: 44px;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #292f28;
+  cursor: pointer;
+  color: #bdc4b8;
+  background: #0c0f0d;
+  font: 0.7rem ui-monospace, monospace;
+}
+
+.report-choice-list label:has(input:checked) {
+  border-color: #789b5b;
+  background: #192018;
+}
+
+.report-choice-list strong {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  color: #10150d;
+  background: #a9ed70;
+  font-size: 0.62rem;
+}
+
+.report-builder-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid #30362f;
+  color: #778074;
+  font: 0.72rem ui-monospace, monospace;
+}
+
+.report-builder-footer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.review-page {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+}
+
+.review-page-heading {
+  width: min(100%, 800px);
+  margin-bottom: 22px;
+}
+
+.review-page-heading h2 {
+  margin: 8px 0 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.review-result {
+  width: min(100%, 800px);
+  border: 1px solid #343b32;
+  background: #111511;
+  box-shadow: 0 28px 80px rgb(0 0 0 / 30%);
+}
+
+.review-result > header {
+  display: grid;
+  min-height: 260px;
+  align-content: center;
+  justify-items: center;
+}
+
+.review-result > header.review-valid {
+  color: #13200d;
+  background: #a9ed70;
+}
+
+.review-result > header.review-invalid {
+  color: #2a100b;
+  background: #ef8b71;
+}
+
+.review-result > header p {
+  margin: 0;
+  font: 700 0.68rem ui-monospace, monospace;
+  letter-spacing: 0.15em;
+}
+
+.review-result > header h1 {
+  margin: 8px 0;
+  font-size: clamp(4rem, 10vw, 7rem);
+  letter-spacing: -0.08em;
+  line-height: 0.9;
+}
+
+.review-result > header span {
+  font: 700 0.8rem ui-monospace, monospace;
+}
+
+.review-scores {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid #30362f;
+}
+
+.review-scores div,
+.review-reward div {
+  display: grid;
+  gap: 8px;
+  padding: 24px;
+  border-right: 1px solid #30362f;
+}
+
+.review-scores div:last-child,
+.review-reward div:last-child {
+  border-right: 0;
+}
+
+.review-scores span,
+.review-reward span {
+  color: #7f887c;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.review-scores strong,
+.review-reward strong {
+  font-size: 1.8rem;
+}
+
+.review-reward {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid #30362f;
+  color: #a9ed70;
+}
+
+.review-feedback {
+  padding: 30px;
+}
+
+.review-feedback ul {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0 0;
+  padding-left: 20px;
+  color: #aeb6aa;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.review-dashboard-link {
+  margin-top: 24px;
+}
 
 @container (max-width: 900px) {
   .fake-browser-viewport .product-layout,

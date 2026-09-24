@@ -6,7 +6,7 @@ const ALLOWED_TRANSITIONS: Readonly<Record<TicketStatus, readonly TicketStatus[]
   TESTING: ['REPORTED', 'NO_ISSUE'],
   REPORTED: ['REVIEWED'],
   NO_ISSUE: ['REVIEWED'],
-  REVIEWED: ['RESOLVED'],
+  REVIEWED: ['TESTING', 'RESOLVED'],
   RESOLVED: [],
 }
 

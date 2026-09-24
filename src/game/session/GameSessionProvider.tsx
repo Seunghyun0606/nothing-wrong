@@ -8,14 +8,25 @@ import {
 } from 'react'
 
 import { createInitialGameState } from '../domain/gameState'
+import { applyReview } from '../progression/applyReview'
 import { transitionTicketStatus } from '../domain/ticketStateMachine'
-import type { GameState } from '../domain/schemas'
+import type {
+  BugReport,
+  GameState,
+  ProgressionReward,
+  ReviewResult,
+} from '../domain/schemas'
 import { loadGameState, saveGameState } from '../../persistence/gameStateStorage'
 import { TICKET_CATALOG } from '../../scenarios/shoply/tickets'
 
 interface GameSessionValue {
   state: GameState
   startTicket: (ticketId: string) => void
+  completeReview: (
+    report: BugReport,
+    review: ReviewResult,
+    reward?: ProgressionReward,
+  ) => void
 }
 
 const GameSessionContext = createContext<GameSessionValue | null>(null)
@@ -63,6 +74,9 @@ export function GameSessionProvider({ children }: PropsWithChildren) {
             },
           }
         })
+      },
+      completeReview(report, review, reward) {
+        setState((current) => applyReview(current, report, review, reward))
       },
     }),
     [state],

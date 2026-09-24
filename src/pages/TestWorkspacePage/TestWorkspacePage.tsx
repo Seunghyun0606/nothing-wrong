@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { FakeBrowser } from '../../components/fake-browser/FakeBrowser'
 import { QAToolbar, type InspectorTab } from '../../components/qa-tools/QAToolbar'
 import { captureEvidence } from '../../game/evidence/captureEvidence'
+import { MutationRuntimeProvider } from '../../game/mutations/MutationRuntimeProvider'
 import { useWorkspaceSession } from '../../game/session/WorkspaceSessionProvider'
 import type { Evidence, Viewport } from '../../game/domain/schemas'
 import { ProductTelemetryProvider } from '../../products/shoply/ProductTelemetry'
-import { getTicket } from '../../scenarios/shoply/tickets'
+import { useShoply } from '../../products/shoply/ShoplyProvider'
+import { getScenario } from '../../scenarios/shoply/tickets'
 
 function actionForPath(path: string): string {
   if (path.includes('/checkout')) return 'OPEN_CHECKOUT'
@@ -52,7 +54,10 @@ function EvidencePreview({ evidence }: { evidence: Evidence }) {
 
 export function TestWorkspacePage() {
   const { ticketId = '' } = useParams()
-  const ticket = getTicket(ticketId)
+  const navigate = useNavigate()
+  const scenario = getScenario(ticketId)
+  const ticket = scenario?.ticket
+  const shoply = useShoply()
   const {
     state,
     setNote,
@@ -77,6 +82,20 @@ export function TestWorkspacePage() {
   const currentPath = history[historyIndex] ?? '/shoply/product/everyday-pack'
   const ticketEvidence = evidenceForTicket(ticketId)
   const interactions = interactionsForTicket(ticketId)
+  const mutationContext = {
+    test: {
+      account: ticket?.startingContext.account ?? 'GUEST',
+      viewport,
+      locale: ticket?.startingContext.locale ?? 'en-US',
+      currentPath,
+    },
+    productState: {
+      cart: {
+        quantity: shoply.items.reduce((total, item) => total + item.quantity, 0),
+      },
+      coupon: shoply.coupon,
+    },
+  } as const
 
   const recordPath = useCallback(
     (path: string) => {
@@ -152,6 +171,7 @@ export function TestWorkspacePage() {
         heading,
         visibleTargets: controls.map((control) => control.target),
         controls,
+        productState: mutationContext.productState,
       },
     })
 
@@ -167,11 +187,12 @@ export function TestWorkspacePage() {
   }
 
   function handleCreateReport() {
-    setReportMessage(
-      ticketEvidence.length === 0
-        ? 'Capture at least one piece of evidence before creating a report.'
-        : 'Evidence is ready. Continue to the Report Builder in the next workflow step.',
-    )
+    if (ticketEvidence.length === 0) {
+      setReportMessage('Capture at least one piece of evidence before creating a report.')
+      return
+    }
+
+    navigate(`/reports/${ticketId}`)
   }
 
   return (
@@ -191,20 +212,25 @@ export function TestWorkspacePage() {
           <ProductTelemetryProvider
             onInteraction={(action) => recordInteraction({ ticketId, ...action })}
           >
-            <FakeBrowser
-              path={currentPath}
-              viewport={viewport}
-              canGoBack={historyIndex > 0}
-              canGoForward={historyIndex < history.length - 1}
-              reloadKey={reloadKey}
-              onNavigate={navigateProduct}
-              onBack={() => moveHistory(historyIndex - 1)}
-              onForward={() => moveHistory(historyIndex + 1)}
-              onReload={() => {
-                setReloadKey((current) => current + 1)
-                recordInteraction({ ticketId, type: 'RELOAD_PAGE', target: currentPath })
-              }}
-            />
+            <MutationRuntimeProvider
+              mutations={scenario.mutations}
+              context={mutationContext}
+            >
+              <FakeBrowser
+                path={currentPath}
+                viewport={viewport}
+                canGoBack={historyIndex > 0}
+                canGoForward={historyIndex < history.length - 1}
+                reloadKey={reloadKey}
+                onNavigate={navigateProduct}
+                onBack={() => moveHistory(historyIndex - 1)}
+                onForward={() => moveHistory(historyIndex + 1)}
+                onReload={() => {
+                  setReloadKey((current) => current + 1)
+                  recordInteraction({ ticketId, type: 'RELOAD_PAGE', target: currentPath })
+                }}
+              />
+            </MutationRuntimeProvider>
           </ProductTelemetryProvider>
         </div>
         <aside className="workspace-inspector" aria-label="QA inspector">

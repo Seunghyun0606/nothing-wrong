@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 
+import { useMutationValue } from '../../../game/mutations/MutationRuntimeProvider'
 import { OrderSummaryCard } from '../components/OrderSummaryCard'
 import { ShoplyHeader } from '../components/ShoplyHeader'
 import { ProductLink } from '../ProductNavigation'
@@ -10,6 +11,10 @@ export function CheckoutPage() {
   const { items, coupon, user } = useShoply()
   const recordInteraction = useProductTelemetry()
   const [confirmed, setConfirmed] = useState(false)
+  const confirmButtonVariant = useMutationValue(
+    'checkout.confirmButton',
+    'primary',
+  )
 
   function submitOrder(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -55,6 +60,7 @@ export function CheckoutPage() {
             <button
               className="shoply-button shoply-confirm-button"
               data-evidence-target="checkout.confirmButton"
+              data-variant={confirmButtonVariant}
               type="submit"
             >
               Confirm order

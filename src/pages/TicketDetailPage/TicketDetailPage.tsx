@@ -27,6 +27,11 @@ export function TicketDetailPage() {
   const currentStatus = state.tickets[activeTicket.id]?.status ?? activeTicket.status
 
   function handleStartTest() {
+    if (currentStatus === 'RESOLVED') {
+      navigate(`/review/${activeTicket.id}`)
+      return
+    }
+
     startTicket(activeTicket.id)
     navigate(`/test/${activeTicket.id}`)
   }
@@ -51,7 +56,11 @@ export function TicketDetailPage() {
             <p>From {activeTicket.sender.name} · {activeTicket.sender.role}</p>
           </div>
           <button className="button button-primary" type="button" onClick={handleStartTest}>
-            {currentStatus === 'TESTING' ? 'Continue test' : 'Start test'}
+            {currentStatus === 'RESOLVED'
+              ? 'View review'
+              : currentStatus === 'TESTING'
+                ? 'Continue test'
+                : 'Start test'}
           </button>
         </header>
         <div className="ticket-detail-grid">

@@ -43,7 +43,7 @@ tasks:
   role: developer
   milestone: M1
   priority: P0
-  status: ready
+  status: active
   depends_on:
   - TASK-004
   contract: .project-os/tasks/ready/TASK-005.yaml

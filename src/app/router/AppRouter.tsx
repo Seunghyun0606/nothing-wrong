@@ -6,6 +6,8 @@ import { StartPage } from '../../pages/StartPage/StartPage'
 import { TicketDetailPage } from '../../pages/TicketDetailPage/TicketDetailPage'
 import { ProductRouter } from '../../components/fake-browser/ProductRouter'
 import { TestWorkspacePage } from '../../pages/TestWorkspacePage/TestWorkspacePage'
+import { ReportBuilderPage } from '../../pages/ReportBuilderPage/ReportBuilderPage'
+import { ReviewResultPage } from '../../pages/ReviewResultPage/ReviewResultPage'
 
 export function AppRouter() {
   return (
@@ -16,6 +18,8 @@ export function AppRouter() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/tickets/:ticketId" element={<TicketDetailPage />} />
         <Route path="/test/:ticketId" element={<TestWorkspacePage />} />
+        <Route path="/reports/:ticketId" element={<ReportBuilderPage />} />
+        <Route path="/review/:ticketId" element={<ReviewResultPage />} />
         <Route path="/shoply/product/everyday-pack" element={<ProductRouter path="/shoply/product/everyday-pack" />} />
         <Route path="/shoply/cart" element={<ProductRouter path="/shoply/cart" />} />
         <Route path="/shoply/checkout" element={<ProductRouter path="/shoply/checkout" />} />

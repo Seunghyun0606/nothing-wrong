@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-test('completes the Company Shell and normal Shoply purchase flow', async ({ page }) => {
+test('completes the refresh-safe T01 QA gameplay loop', async ({ page }) => {
   await page.goto('/')
 
   await expect(page).toHaveURL(/\/start$/)
@@ -41,9 +41,28 @@ test('completes the Company Shell and normal Shoply purchase flow', async ({ pag
 
   const confirmButton = page.getByRole('button', { name: 'Confirm order' })
   await expect(confirmButton).toBeVisible()
-  await expect(confirmButton).toHaveCSS('background-color', 'rgb(37, 34, 30)')
+  await expect(confirmButton).toHaveAttribute('data-variant', 'secondary')
   await page.getByRole('button', { name: 'Capture evidence' }).click()
   await expect(page.getByRole('img', { name: /Evidence preview/ })).toBeVisible()
-  await confirmButton.click()
-  await expect(page.getByRole('heading', { name: 'Thanks, Jordan Park.' })).toBeVisible()
+  await page.getByRole('button', { name: 'Create report' }).click()
+
+  await expect(page).toHaveURL(/\/reports\/T01$/)
+  await expect(
+    page.getByRole('heading', { name: 'Document what you can prove.' }),
+  ).toBeVisible()
+  await page.getByLabel('Expected behavior').selectOption('Primary action style')
+  await page.getByLabel('Actual behavior').selectOption('Secondary action style')
+  await page.getByRole('button', { name: 'Submit for QA Review' }).click()
+
+  await expect(page).toHaveURL(/\/review\/T01$/)
+  await expect(page.getByRole('heading', { name: 'VALID' })).toBeVisible()
+  await expect(page.getByText('100 / 100')).toBeVisible()
+  await page.getByRole('link', { name: 'Return to Dashboard' }).click()
+
+  await expect(page.getByText('Resolved')).toBeVisible()
+  await expect(page.getByText('100 XP', { exact: true })).toBeVisible()
+  await expect(page.getByText('102')).toBeVisible()
+  await page.reload()
+  await expect(page.getByText('Resolved')).toBeVisible()
+  await expect(page.getByText('100 XP', { exact: true })).toBeVisible()
 })
