@@ -7,7 +7,7 @@ import {
   type PropsWithChildren,
 } from 'react'
 
-import { createInitialGameState } from '../domain/gameState'
+import { createInitialGameState, reconcileGameStateTickets } from '../domain/gameState'
 import { applyReview } from '../progression/applyReview'
 import { transitionTicketStatus } from '../domain/ticketStateMachine'
 import type {
@@ -17,7 +17,7 @@ import type {
   ReviewResult,
 } from '../domain/schemas'
 import { loadGameState, saveGameState } from '../../persistence/gameStateStorage'
-import { TICKET_CATALOG } from '../../scenarios/shoply/tickets'
+import { isTicketUnlocked, TICKET_CATALOG } from '../../scenarios/shoply/tickets'
 
 interface GameSessionValue {
   state: GameState
@@ -32,9 +32,11 @@ interface GameSessionValue {
 const GameSessionContext = createContext<GameSessionValue | null>(null)
 
 function loadOrCreateGameState(): GameState {
-  return (
-    loadGameState() ?? createInitialGameState(TICKET_CATALOG.map((ticket) => ticket.id))
-  )
+  const ticketIds = TICKET_CATALOG.map((ticket) => ticket.id)
+  const savedState = loadGameState()
+  return savedState
+    ? reconcileGameStateTickets(savedState, ticketIds)
+    : createInitialGameState(ticketIds)
 }
 
 export function GameSessionProvider({ children }: PropsWithChildren) {
@@ -49,6 +51,10 @@ export function GameSessionProvider({ children }: PropsWithChildren) {
       state,
       startTicket(ticketId) {
         setState((current) => {
+          if (!isTicketUnlocked(ticketId, current)) {
+            throw new Error(`Ticket is locked: ${ticketId}`)
+          }
+
           const ticketState = current.tickets[ticketId]
           if (!ticketState) {
             throw new Error(`Unknown Ticket: ${ticketId}`)

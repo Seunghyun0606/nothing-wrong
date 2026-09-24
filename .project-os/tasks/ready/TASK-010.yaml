@@ -1,0 +1,54 @@
+id: TASK-010
+title: Verify the T01-T04 prototype and run the playtest gate
+role: developer
+milestone: M2
+priority: P0
+status: ready
+
+objective: >-
+  Harden the complete T01 through T04 prototype, gather reproducible automated evidence,
+  and conduct the documented human playtest before the M2 completion decision.
+why: >-
+  Broad content production is intentionally blocked until both functional coverage and
+  subjective validation of the QA gameplay loop are available.
+
+scope:
+  include:
+    - Verify fresh-save progression through T01, T02, T03, Account Switcher, and T04.
+    - Verify active, inactive, positive, and negative Mutation cases required by the catalog.
+    - Prepare and execute the six documented prototype playtest questions.
+    - Record defects, observations, and an explicit human recommendation on content scaling.
+  exclude:
+    - T05 through T08 content production.
+    - Implicit product-direction or architecture changes based on playtest findings.
+    - Production release or native packaging.
+
+depends_on:
+  - TASK-009
+specs:
+  - specs/feature/ticket-catalog.md
+  - specs/ux/first-playable-flow.md
+  - specs/architecture/system-design.md
+relevant_files:
+  - src
+  - tests
+  - docs
+active_decisions:
+  - .project-os/decisions/DEC-001-scenario-driven-architecture.yaml
+  - .project-os/decisions/DEC-002-react-fake-browser.yaml
+  - .project-os/decisions/DEC-003-versioned-local-persistence.yaml
+  - .project-os/decisions/DEC-004-deterministic-review.yaml
+
+acceptance:
+  - T01 through T04 pass the full QA loop in documented unlock order.
+  - All required automated quality and Mutation coverage passes.
+  - The six playtest questions have recorded human observations.
+  - A human explicitly decides whether to begin broad content production.
+
+verification:
+  - Run the full unit/component suite, typecheck, build, and prototype browser flows.
+  - Run Project OS validation and architecture boundary searches.
+  - Record the human playtest session and final decision without self-approval.
+
+human_gate: true
+risk: high

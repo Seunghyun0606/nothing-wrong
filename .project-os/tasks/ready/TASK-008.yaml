@@ -1,0 +1,55 @@
+id: TASK-008
+title: Add the T03 behavior-defect gameplay loop
+role: developer
+milestone: M2
+priority: P0
+status: ready
+
+objective: >-
+  Add T03 as a complete playable Ticket in which Cancel Order incorrectly opens the
+  payment flow through generic action Mutation data.
+why: >-
+  The prototype must test action/result reasoning as a distinct defect class while
+  preserving believable normal Shoply behavior.
+
+scope:
+  include:
+    - Add the minimum normal Shoply Orders and cancellation surfaces needed by T03.
+    - Define and validate T03 Scenario, ExpectedBug, action Mutation, and rewards.
+    - Cover normal cancel behavior plus active and inactive action Mutation cases.
+    - Integrate T03 with catalog, progression, Evidence, Report, and Review.
+  exclude:
+    - T04 conditional behavior and Account Switcher.
+    - T05 through T08 content.
+    - Ticket-specific Product branching.
+
+depends_on:
+  - TASK-007
+specs:
+  - specs/feature/ticket-catalog.md
+  - specs/feature/qa-core-loop.md
+  - specs/architecture/system-design.md
+relevant_files:
+  - src/game/mutations
+  - src/products/shoply
+  - src/scenarios/shoply
+  - src/pages
+  - tests
+active_decisions:
+  - .project-os/decisions/DEC-001-scenario-driven-architecture.yaml
+  - .project-os/decisions/DEC-002-react-fake-browser.yaml
+  - .project-os/decisions/DEC-004-deterministic-review.yaml
+
+acceptance:
+  - T03 is unlocked in order and completes through Review and Dashboard resolution.
+  - Cancel Order follows the normal cancellation flow with zero active mutations.
+  - T03 opens the payment flow only through generic action Mutation data.
+  - Positive, inactive, and zero-Mutation behavior have automated coverage.
+
+verification:
+  - Run focused Scenario, Mutation, Shoply, reporting, and catalog tests.
+  - Run the full unit/component suite, typecheck, and production build.
+  - Search Product code for Ticket-specific branching.
+
+human_gate: false
+risk: medium

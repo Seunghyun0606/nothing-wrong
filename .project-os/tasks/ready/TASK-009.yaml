@@ -1,0 +1,60 @@
+id: TASK-009
+title: Unlock Account Switcher and add the T04 conditional loop
+role: developer
+milestone: M2
+priority: P0
+status: ready
+
+objective: >-
+  Unlock the Account Switcher after T03 and add T04, whose discount is wrong only for
+  Gold + SAVE20 + quantity at least three.
+why: >-
+  T04 proves the core loop supports multi-condition reproduction and account context,
+  completing the functional breadth required before human playtesting.
+
+scope:
+  include:
+    - Implement Basic and Gold Account Switcher behavior under Scenario policy.
+    - Define and validate the T04 conditional Scenario, Mutation, ExpectedBug, and rewards.
+    - Preserve normal SAVE20 eligibility and 20 percent discount behavior outside the Mutation.
+    - Automate the canonical positive case and required negative cases.
+    - Integrate T04 with catalog, progression, Evidence, Report, and Review.
+  exclude:
+    - T05 through T08 content.
+    - Human approval of prototype quality.
+    - Backend accounts or online identity.
+
+depends_on:
+  - TASK-008
+specs:
+  - specs/feature/ticket-catalog.md
+  - specs/feature/qa-core-loop.md
+  - specs/product/mvp-scope.md
+  - specs/architecture/system-design.md
+relevant_files:
+  - src/game
+  - src/components/qa-tools
+  - src/products/shoply
+  - src/scenarios/shoply
+  - src/pages
+  - tests
+active_decisions:
+  - .project-os/decisions/DEC-001-scenario-driven-architecture.yaml
+  - .project-os/decisions/DEC-002-react-fake-browser.yaml
+  - .project-os/decisions/DEC-003-versioned-local-persistence.yaml
+  - .project-os/decisions/DEC-004-deterministic-review.yaml
+
+acceptance:
+  - Account Switcher unlocks only at the documented point and switches Basic and Gold context.
+  - Gold plus SAVE20 plus quantity three activates the T04 ten-percent defect.
+  - Basic or quantity one follows normal eligibility and discount rules.
+  - T04 completes through deterministic Review and persisted progression.
+
+verification:
+  - Run focused condition, account, coupon, Scenario, and reporting tests.
+  - Run the full unit/component suite, typecheck, and production build.
+  - Run a browser flow for the positive T04 case and at least one negative case.
+  - Search Product code for Ticket-specific branching.
+
+human_gate: false
+risk: high

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-test('completes the refresh-safe T01 QA gameplay loop', async ({ page }) => {
+test('completes the refresh-safe T01 and T02 QA gameplay loops', async ({ page }) => {
   await page.goto('/start')
   await page.evaluate(() => window.localStorage.clear())
   await page.reload()
@@ -74,4 +74,42 @@ test('completes the refresh-safe T01 QA gameplay loop', async ({ page }) => {
   await expect(page.getByText('Resolved')).toBeVisible()
   await expect(page.getByText('100 XP', { exact: true })).toBeVisible()
   await expect(page.getByText('102', { exact: true })).toBeVisible()
+
+  await page.getByRole('link', { name: /Cart subtotal verification/ }).click()
+  await expect(page.getByRole('heading', { name: 'Cart subtotal verification' })).toBeVisible()
+  await page.getByRole('button', { name: 'Start test' }).click()
+
+  await expect(page).toHaveURL(/\/test\/T02$/)
+  await page.getByRole('button', { name: 'Add to bag' }).click()
+  await page.getByRole('link', { name: 'View bag' }).click()
+  await page.getByLabel('Quantity for Everyday Carry Pack').selectOption('2')
+  await expect(page.locator('[data-evidence-target="cart.subtotal"]')).toHaveText('$50.00')
+  await expect(page.getByText('$60.00')).toHaveCount(2)
+
+  await page.getByRole('button', { name: 'Capture evidence' }).click()
+  await expect(page.getByRole('img', { name: /Evidence preview/ })).toBeVisible()
+  await page.getByRole('button', { name: 'Create report' }).click()
+
+  await expect(page).toHaveURL(/\/reports\/T02$/)
+  await page
+    .getByLabel('Expected behavior')
+    .selectOption('Subtotal should be $60.00 for two $30.00 items')
+  await page
+    .getByLabel('Actual behavior')
+    .selectOption('Subtotal is displayed as $50.00')
+  await page.getByLabel('Severity').selectOption('MEDIUM')
+  await page.getByRole('button', { name: 'Submit for QA Review' }).click()
+
+  await expect(page).toHaveURL(/\/review\/T02$/)
+  await expect(page.getByRole('heading', { name: 'VALID' })).toBeVisible()
+  await expect(page.getByText('100 / 100')).toBeVisible()
+  await page.getByRole('link', { name: 'Return to Dashboard' }).click()
+
+  await expect(page.getByText('200 XP', { exact: true })).toBeVisible()
+  await expect(page.getByText('104', { exact: true })).toBeVisible()
+  await expect(page.getByText('0 open')).toBeVisible()
+  await page.reload()
+  await expect(page.getByText('200 XP', { exact: true })).toBeVisible()
+  await expect(page.getByText('104', { exact: true })).toBeVisible()
+  await expect(page.getByText('0 open')).toBeVisible()
 })

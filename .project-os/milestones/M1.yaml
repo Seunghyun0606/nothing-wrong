@@ -1,6 +1,6 @@
 id: M1
 name: T01 First Playable Vertical Slice
-status: active
+status: done
 objective: >-
   Deliver one complete, refresh-safe QA gameplay loop from Start Work through T01
   Review and Dashboard return on an architecture that can extend to T08.

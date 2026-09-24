@@ -1,3 +1,4 @@
+import { useMutationValue } from '../../../game/mutations/MutationRuntimeProvider'
 import { calculateOrderSummary } from '../domain/rules'
 import type { PricedCartItem, ShoplyTier } from '../domain/types'
 
@@ -16,12 +17,16 @@ export function formatMoney(value: number): string {
 
 export function OrderSummaryCard({ items, coupon, tier }: OrderSummaryCardProps) {
   const summary = calculateOrderSummary(items, coupon, tier)
+  const displayedSubtotal = useMutationValue('cart.subtotal', summary.subtotal)
 
   return (
     <section className="order-summary" aria-labelledby="order-summary-heading">
       <h2 id="order-summary-heading">Order summary</h2>
       <dl>
-        <div><dt>Subtotal</dt><dd>{formatMoney(summary.subtotal)}</dd></div>
+        <div>
+          <dt>Subtotal</dt>
+          <dd data-evidence-target="cart.subtotal">{formatMoney(displayedSubtotal)}</dd>
+        </div>
         {summary.discount > 0 && (
           <div className="discount-row"><dt>Discount</dt><dd>−{formatMoney(summary.discount)}</dd></div>
         )}

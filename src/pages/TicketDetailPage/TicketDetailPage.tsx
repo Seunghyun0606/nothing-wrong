@@ -2,7 +2,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { CompanyHeader } from '../../components/company/CompanyHeader'
 import { useGameSession } from '../../game/session/GameSessionProvider'
-import { getTicket } from '../../scenarios/shoply/tickets'
+import { getTicket, isTicketUnlocked } from '../../scenarios/shoply/tickets'
 
 export function TicketDetailPage() {
   const { ticketId = '' } = useParams()
@@ -17,6 +17,19 @@ export function TicketDetailPage() {
         <section className="empty-state">
           <p className="kicker">Ticket not found</p>
           <h1>No request matches “{ticketId}”.</h1>
+          <Link className="text-link" to="/dashboard">Return to dashboard</Link>
+        </section>
+      </main>
+    )
+  }
+
+  if (!isTicketUnlocked(ticket.id, state)) {
+    return (
+      <main className="company-page">
+        <CompanyHeader />
+        <section className="empty-state">
+          <p className="kicker">Ticket locked</p>
+          <h1>Resolve the previous Ticket to unlock {ticket.id}.</h1>
           <Link className="text-link" to="/dashboard">Return to dashboard</Link>
         </section>
       </main>

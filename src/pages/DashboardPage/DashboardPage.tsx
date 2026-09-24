@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 import { CompanyHeader } from '../../components/company/CompanyHeader'
 import { useGameSession } from '../../game/session/GameSessionProvider'
-import { TICKET_CATALOG } from '../../scenarios/shoply/tickets'
+import { isTicketUnlocked, TICKET_CATALOG } from '../../scenarios/shoply/tickets'
 
 const STATUS_LABELS = {
   NEW: 'New',
@@ -18,7 +18,9 @@ export function DashboardPage() {
   const { state } = useGameSession()
   const { profile } = state
   const openTicketCount = TICKET_CATALOG.filter(
-    (ticket) => state.tickets[ticket.id]?.status !== 'RESOLVED',
+    (ticket) =>
+      isTicketUnlocked(ticket.id, state) &&
+      state.tickets[ticket.id]?.status !== 'RESOLVED',
   ).length
 
   return (
@@ -74,12 +76,9 @@ export function DashboardPage() {
         <div className="ticket-table">
           {TICKET_CATALOG.map((ticket) => {
             const status = state.tickets[ticket.id]?.status ?? ticket.status
-            return (
-              <Link
-                className="ticket-row"
-                key={ticket.id}
-                to={`/tickets/${ticket.id}`}
-              >
+            const unlocked = isTicketUnlocked(ticket.id, state)
+            const content = (
+              <>
                 <span className="ticket-id">{ticket.id}</span>
                 <span>
                   <strong>{ticket.title}</strong>
@@ -88,9 +87,25 @@ export function DashboardPage() {
                 <span className={`priority priority-${ticket.priority.toLowerCase()}`}>
                   {ticket.priority}
                 </span>
-                <span className="ticket-status">{STATUS_LABELS[status]}</span>
-                <span className="row-arrow" aria-hidden="true">↗</span>
+                <span className="ticket-status">
+                  {unlocked ? STATUS_LABELS[status] : 'Locked'}
+                </span>
+                <span className="row-arrow" aria-hidden="true">{unlocked ? '↗' : '—'}</span>
+              </>
+            )
+
+            return unlocked ? (
+              <Link
+                className="ticket-row"
+                key={ticket.id}
+                to={`/tickets/${ticket.id}`}
+              >
+                {content}
               </Link>
+            ) : (
+              <div className="ticket-row ticket-row-locked" key={ticket.id} aria-disabled="true">
+                {content}
+              </div>
             )
           })}
         </div>

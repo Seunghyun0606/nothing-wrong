@@ -1,0 +1,59 @@
+id: TASK-007
+title: Add the T02 data-defect gameplay loop
+role: developer
+milestone: M2
+priority: P0
+status: ready
+
+objective: >-
+  Add T02 as a complete playable Ticket whose $30 x 2 subtotal is mutated from the
+  normal $60 result to $50 through Scenario data and the generic Mutation runtime.
+why: >-
+  T02 is the prototype's first proof that the established loop supports numerical
+  validation without Ticket-specific Product behavior.
+
+scope:
+  include:
+    - Define and runtime-validate the T02 Ticket, ExpectedBug, Mutation, and rewards.
+    - Apply a generic numeric/calculation Mutation to the Shoply subtotal display.
+    - Make T02 available after T01 resolution through the existing catalog and progression flow.
+    - Add active, inactive, normal-baseline, review, and playable-flow automated coverage.
+  exclude:
+    - T03 or T04 content and behavior.
+    - Account Switcher implementation.
+    - Human playtesting or product-direction changes.
+    - Product branches keyed by Ticket or Scenario identifiers.
+
+depends_on:
+  - TASK-006
+specs:
+  - specs/feature/ticket-catalog.md
+  - specs/feature/qa-core-loop.md
+  - specs/architecture/system-design.md
+relevant_files:
+  - src/game/mutations
+  - src/products/shoply
+  - src/scenarios/shoply
+  - src/pages
+  - tests
+active_decisions:
+  - .project-os/decisions/DEC-001-scenario-driven-architecture.yaml
+  - .project-os/decisions/DEC-002-react-fake-browser.yaml
+  - .project-os/decisions/DEC-003-versioned-local-persistence.yaml
+  - .project-os/decisions/DEC-004-deterministic-review.yaml
+
+acceptance:
+  - T02 is selectable after T01 is resolved and can complete the full QA loop.
+  - Quantity two normally produces a $60 subtotal and T02 displays $50 only through Mutation data.
+  - Removing or deactivating the T02 Mutation restores normal Shoply calculation behavior.
+  - Valid T02 Evidence and Report receive the deterministic expected review and progression result.
+  - No Shoply component branches on T02, Ticket IDs, or Scenario IDs.
+
+verification:
+  - Run focused Scenario, Mutation, Shoply, catalog, and reporting tests.
+  - Run the full unit/component suite, typecheck, and production build.
+  - Run or extend the critical browser flow through T02 where practical.
+  - Search Product code for Ticket-specific branching.
+
+human_gate: false
+risk: medium

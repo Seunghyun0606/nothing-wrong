@@ -4,6 +4,7 @@ import { App } from '../../app/App'
 import { createInitialGameState } from '../../game/domain/gameState'
 import { saveGameState } from '../../persistence/gameStateStorage'
 import { loadWorkspaceState } from '../../persistence/workspaceStorage'
+import { TICKET_CATALOG } from '../../scenarios/shoply/tickets'
 
 function renderWorkspace() {
   const gameState = createInitialGameState(['T01'])
@@ -102,7 +103,7 @@ describe('Test Workspace', () => {
       },
       snapshot: {
         heading: 'Delivery details',
-        visibleTargets: ['checkout.confirmButton'],
+        visibleTargets: ['cart.subtotal', 'checkout.confirmButton'],
       },
     })
     expect(workspace?.evidence[0]?.capturedAt).toEqual(expect.any(Number))
@@ -122,5 +123,48 @@ describe('Test Workspace', () => {
     expect(
       screen.getByRole('heading', { name: 'Document what you can prove.' }),
     ).toBeInTheDocument()
+  })
+
+  it('renders and captures the T02 subtotal Mutation at quantity two', () => {
+    const gameState = createInitialGameState(
+      TICKET_CATALOG.map((ticket) => ticket.id),
+    )
+    gameState.tickets.T01 = {
+      status: 'RESOLVED',
+      reportIds: ['REPORT-T01'],
+      resolvedAt: 1,
+    }
+    gameState.tickets.T02 = {
+      status: 'TESTING',
+      reportIds: [],
+      acceptedAt: 2,
+    }
+    gameState.currentTicketId = 'T02'
+    saveGameState(gameState)
+    window.history.pushState({}, '', '/test/T02')
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add to bag' }))
+    fireEvent.click(screen.getByRole('link', { name: 'View bag' }))
+    fireEvent.change(screen.getByLabelText('Quantity for Everyday Carry Pack'), {
+      target: { value: '2' },
+    })
+
+    const subtotal = document.querySelector('[data-evidence-target="cart.subtotal"]')
+    expect(subtotal).toHaveTextContent('$50.00')
+    expect(screen.getAllByText('$60.00')).toHaveLength(2)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Capture evidence' }))
+    expect(loadWorkspaceState()?.evidence.at(-1)).toMatchObject({
+      ticketId: 'T02',
+      context: {
+        currentPath: '/shoply/cart',
+        account: 'BASIC',
+      },
+      snapshot: {
+        visibleTargets: ['cart.subtotal'],
+        productState: { cart: { quantity: 2 }, coupon: '' },
+      },
+    })
   })
 })

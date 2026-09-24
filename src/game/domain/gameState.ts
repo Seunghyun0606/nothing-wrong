@@ -37,3 +37,25 @@ export function createInitialGameState(ticketIds: readonly string[] = []): GameS
     reviewHistory: [],
   })
 }
+
+export function reconcileGameStateTickets(
+  state: GameState,
+  ticketIds: readonly string[],
+): GameState {
+  if (new Set(ticketIds).size !== ticketIds.length) {
+    throw new Error('Ticket ids must be unique')
+  }
+
+  const missingTickets = ticketIds.filter((ticketId) => !state.tickets[ticketId])
+  if (missingTickets.length === 0) return state
+
+  return GameStateSchema.parse({
+    ...state,
+    tickets: {
+      ...state.tickets,
+      ...Object.fromEntries(
+        missingTickets.map((ticketId) => [ticketId, createInitialTicketState()]),
+      ),
+    },
+  })
+}

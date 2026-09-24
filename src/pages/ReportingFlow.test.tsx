@@ -106,6 +106,6 @@ describe('T01 reporting flow', () => {
     expect(screen.getByText('100 XP')).toBeInTheDocument()
     expect(screen.getByText('102')).toBeInTheDocument()
     expect(screen.getByText('Resolved')).toBeInTheDocument()
-    expect(screen.getByText('0 open')).toBeInTheDocument()
+    expect(screen.getByText('1 open')).toBeInTheDocument()
   })
 })

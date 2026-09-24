@@ -1,4 +1,4 @@
-import { createInitialGameState } from './gameState'
+import { createInitialGameState, reconcileGameStateTickets } from './gameState'
 
 describe('createInitialGameState', () => {
   it('creates the canonical initial profile and NEW Ticket states', () => {
@@ -20,5 +20,19 @@ describe('createInitialGameState', () => {
     expect(() => createInitialGameState(['T01', 'T01'])).toThrow(
       'Ticket ids must be unique',
     )
+  })
+
+  it('adds newly shipped Tickets without replacing persisted progress', () => {
+    const state = createInitialGameState(['T01'])
+    state.tickets.T01 = {
+      status: 'RESOLVED',
+      reportIds: ['REPORT-T01'],
+      resolvedAt: 10,
+    }
+
+    const reconciled = reconcileGameStateTickets(state, ['T01', 'T02'])
+
+    expect(reconciled.tickets.T01).toEqual(state.tickets.T01)
+    expect(reconciled.tickets.T02).toEqual({ status: 'NEW', reportIds: [] })
   })
 })
