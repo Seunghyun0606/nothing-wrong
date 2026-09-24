@@ -1,0 +1,36 @@
+task: TASK-006
+status: pass
+summary: Hardened the T01 critical flow around an explicit fresh browser save, verified
+  the complete review reward and persisted Reputation outcome, and documented the
+  reproducible automated, architecture, and visual verification evidence for M1.
+files_changed:
+- README.md
+- docs/development/TESTING.md
+- tests/e2e/foundation.spec.ts
+evidence:
+- The Playwright flow starts at /start, clears localStorage, reloads, and completes
+  Start Work through the resolved Dashboard.
+- The Review page is checked for VALID, 100/100, the 40/25/20/15 category scores,
+  XP +100, and Reputation +2.
+- The Dashboard is checked for Resolved, 100 XP, and Reputation 102 before and after
+  browser reload.
+- Full-page Chromium captures were inspected for Start, Desktop, Tablet, Mobile, Checkout,
+  Review, and the post-reload Dashboard; responsive reflow and the T01 secondary confirmation
+  action were visible.
+- Every system-design architecture assertion is mapped to concrete T01 evidence in
+  docs/development/TESTING.md.
+- Static searches found no Ticket-specific Shoply branch, forbidden domain prefix,
+  or localStorage access outside the persistence boundary.
+acceptance:
+  status: pass
+  notes:
+  - No critical M1 defect was found, so no production behavior was changed.
+  - The connected computer-use environment exposed no browser surface; manual visual
+    inspection used captures from the installed Playwright Chromium runtime and this
+    limitation is recorded in the testing guide.
+followups:
+- Proceed to the M1 completion evaluation and then the M2 human playtest workflow.
+commit: bff3b12
+kind: implementation
+role: developer
+actor: codex-developer-6

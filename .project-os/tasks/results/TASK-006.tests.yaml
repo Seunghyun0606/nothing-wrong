@@ -1,0 +1,38 @@
+task: TASK-006
+status: pass
+summary: All configured M1 automated gates, the fresh-save Chromium critical flow,
+  static architecture searches, and Project OS consistency checks pass.
+verification:
+  typecheck:
+    status: pass
+    command: npm run typecheck
+    result: TypeScript project build completed without errors.
+  unit_test:
+    status: pass
+    command: npm test -- --run
+    result: 18 test files and 68 tests passed.
+  build:
+    status: pass
+    command: npm run build
+    result: Vite production build completed with 161 modules transformed.
+  integration_test:
+    status: pass
+    command: npm run test:e2e
+    result: One Chromium flow passed from an explicitly cleared save through VALID
+      Review, resolved Dashboard, and persisted XP and Reputation after reload.
+  test_discovery:
+    status: pass
+    command: npm run test:e2e:list
+    result: One Chromium critical-flow test was discovered.
+  architecture:
+    status: pass
+    command: rg static boundary searches and git diff --check
+    result: No Ticket-specific Shoply branch, direct UI storage access, forbidden
+      domain prefix, or whitespace issue was found.
+  project_os:
+    status: pass
+    command: projectctl doctor
+    result: Project OS structure and backlog references are consistent.
+kind: test
+role: qa
+actor: codex-ci-6
