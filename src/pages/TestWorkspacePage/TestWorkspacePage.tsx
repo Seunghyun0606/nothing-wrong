@@ -5,11 +5,12 @@ import { FakeBrowser } from '../../components/fake-browser/FakeBrowser'
 import { QAToolbar, type InspectorTab } from '../../components/qa-tools/QAToolbar'
 import { captureEvidence } from '../../game/evidence/captureEvidence'
 import { MutationRuntimeProvider } from '../../game/mutations/MutationRuntimeProvider'
+import { useGameSession } from '../../game/session/GameSessionProvider'
 import { useWorkspaceSession } from '../../game/session/WorkspaceSessionProvider'
 import type { Evidence, Viewport } from '../../game/domain/schemas'
 import { ProductTelemetryProvider } from '../../products/shoply/ProductTelemetry'
 import { useShoply } from '../../products/shoply/ShoplyProvider'
-import { getScenario } from '../../scenarios/shoply/tickets'
+import { getScenario, isTicketUnlocked } from '../../scenarios/shoply/tickets'
 
 function actionForPath(path: string): string {
   if (path.includes('/checkout')) return 'OPEN_CHECKOUT'
@@ -57,6 +58,9 @@ export function TestWorkspacePage() {
   const navigate = useNavigate()
   const scenario = getScenario(ticketId)
   const ticket = scenario?.ticket
+  const { state: gameState } = useGameSession()
+  const unlocked = ticket ? isTicketUnlocked(ticket.id, gameState) : false
+  const readyForTesting = gameState.tickets[ticketId]?.status === 'TESTING'
   const shoply = useShoply()
   const {
     state,
@@ -105,11 +109,11 @@ export function TestWorkspacePage() {
   )
 
   useEffect(() => {
-    if (ticket && !initialPathRecorded.current) {
+    if (ticket && unlocked && readyForTesting && !initialPathRecorded.current) {
       initialPathRecorded.current = true
       recordPath(ticket.startingContext.currentPath)
     }
-  }, [recordPath, ticket])
+  }, [readyForTesting, recordPath, ticket, unlocked])
 
   if (!ticket) {
     return (
@@ -117,6 +121,20 @@ export function TestWorkspacePage() {
         <p className="kicker">Test workspace</p>
         <h1>Ticket {ticketId} is not available.</h1>
         <Link className="text-link" to="/dashboard">Return to dashboard</Link>
+      </main>
+    )
+  }
+
+  if (!unlocked || !readyForTesting) {
+    return (
+      <main className="workspace-missing">
+        <p className="kicker">Test workspace unavailable</p>
+        <h1>
+          {unlocked
+            ? 'Start this Ticket before opening the Test Workspace.'
+            : `Resolve the previous Ticket to unlock ${ticket.id}.`}
+        </h1>
+        <Link className="text-link" to={`/tickets/${ticket.id}`}>Return to Ticket</Link>
       </main>
     )
   }

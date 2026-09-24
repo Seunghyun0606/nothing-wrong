@@ -43,6 +43,39 @@ describe('Test Workspace', () => {
     expect(productViewport).toHaveStyle({ width: '390px' })
   })
 
+  it('blocks direct workspace access until the Ticket is unlocked and started', () => {
+    const gameState = createInitialGameState(
+      TICKET_CATALOG.map((ticket) => ticket.id),
+    )
+    saveGameState(gameState)
+    window.history.pushState({}, '', '/test/T02')
+
+    render(<App />)
+
+    expect(
+      screen.getByRole('heading', { name: 'Resolve the previous Ticket to unlock T02.' }),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'Shoply test browser' })).not.toBeInTheDocument()
+    expect(loadWorkspaceState()?.interactions).toEqual([])
+  })
+
+  it('requires an unlocked Ticket to be started before direct workspace access', () => {
+    const gameState = createInitialGameState(
+      TICKET_CATALOG.map((ticket) => ticket.id),
+    )
+    saveGameState(gameState)
+    window.history.pushState({}, '', '/test/T01')
+
+    render(<App />)
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Start this Ticket before opening the Test Workspace.',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'Shoply test browser' })).not.toBeInTheDocument()
+  })
+
   it('auto-saves Ticket Notes outside reviewable Game State', () => {
     const firstRender = renderWorkspace()
 
