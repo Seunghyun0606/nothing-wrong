@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test'
 
 test('completes the refresh-safe T01 QA gameplay loop', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/start')
+  await page.evaluate(() => window.localStorage.clear())
+  await page.reload()
 
   await expect(page).toHaveURL(/\/start$/)
   await expect(page.getByRole('heading', { name: 'NOTHING WRONG' })).toBeVisible()
@@ -57,12 +59,19 @@ test('completes the refresh-safe T01 QA gameplay loop', async ({ page }) => {
   await expect(page).toHaveURL(/\/review\/T01$/)
   await expect(page.getByRole('heading', { name: 'VALID' })).toBeVisible()
   await expect(page.getByText('100 / 100')).toBeVisible()
+  await expect(page.getByText('40', { exact: true })).toBeVisible()
+  await expect(page.getByText('25', { exact: true })).toBeVisible()
+  await expect(page.getByText('20', { exact: true })).toBeVisible()
+  await expect(page.getByText('15', { exact: true })).toBeVisible()
+  await expect(page.getByText('+100', { exact: true })).toBeVisible()
+  await expect(page.getByText('+2', { exact: true })).toBeVisible()
   await page.getByRole('link', { name: 'Return to Dashboard' }).click()
 
   await expect(page.getByText('Resolved')).toBeVisible()
   await expect(page.getByText('100 XP', { exact: true })).toBeVisible()
-  await expect(page.getByText('102')).toBeVisible()
+  await expect(page.getByText('102', { exact: true })).toBeVisible()
   await page.reload()
   await expect(page.getByText('Resolved')).toBeVisible()
   await expect(page.getByText('100 XP', { exact: true })).toBeVisible()
+  await expect(page.getByText('102', { exact: true })).toBeVisible()
 })

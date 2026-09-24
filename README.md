@@ -1,6 +1,8 @@
 # Nothing Wrong
 
-QA investigation simulation game. This repository is currently building the T01 first playable through Project OS.
+QA investigation simulation game. The repository contains the complete T01 first
+playable: a refresh-safe journey from Company login through Shoply testing, Evidence,
+Bug Report, deterministic QA Review, progression, and resolved Dashboard return.
 
 ## Requirements
 
@@ -15,6 +17,19 @@ npm run dev
 ```
 
 The development server prints its local URL. The bootstrap route is `/start`.
+
+## First Playable
+
+The implemented journey is:
+
+```text
+Start Work → Login → Dashboard → T01 Ticket → Shoply Test
+→ Evidence Capture → Bug Report → QA Review → Resolved Dashboard
+```
+
+T01 introduces a Scenario-driven `WRONG_STYLE` Mutation on
+`checkout.confirmButton`. Shoply remains a normal purchase flow when no Mutation is
+active.
 
 ## Verification
 
@@ -32,6 +47,9 @@ Install the Playwright Chromium runtime once before the full end-to-end run if i
 npx playwright install chromium
 ```
 
+See [docs/development/TESTING.md](docs/development/TESTING.md) for the critical-flow
+checklist, architecture acceptance evidence, and manual verification procedure.
+
 ## Module Boundaries
 
 - `src/app`: application composition, providers, and the main router
@@ -42,4 +60,6 @@ npx playwright install chromium
 - `src/components`: shared game, Fake Browser, QA tool, and common UI
 - `src/persistence`: versioned storage adapters
 
-TASK-001 intentionally contains only the build, routing, testing, and module foundation. Gameplay domain, Shoply, and T01 behavior belong to later tasks.
+Ticket content and defects belong to `src/scenarios`; normal Product components must
+not branch on Ticket IDs. Review, progression, and Mutation logic remain testable
+outside React, while browser storage access stays behind `src/persistence` adapters.
