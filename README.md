@@ -1,7 +1,6 @@
 # Nothing Wrong
 
-QA investigation simulation game. The repository contains the complete T01 first
-playable plus the T02 data-defect loop: refresh-safe journeys from Company login
+QA investigation simulation game. The repository contains T01 through T03: refresh-safe journeys from Company login
 through Shoply testing, Evidence, Bug Report, deterministic QA Review, progression,
 and resolved Dashboard return.
 
@@ -27,13 +26,16 @@ The implemented journey is:
 Start Work → Login → Dashboard → T01 Ticket → Shoply Test
 → Evidence Capture → Bug Report → QA Review → Resolved Dashboard
 → T02 Ticket → Cart subtotal test → Evidence → Review → Resolved Dashboard
+→ T03 Ticket → Cancel Order test → Evidence → Review → Resolved Dashboard
 ```
 
 T01 introduces a Scenario-driven `WRONG_STYLE` Mutation on
 `checkout.confirmButton`. T02 unlocks after T01 and introduces a conditional
 `WRONG_CALCULATION` Mutation on `cart.subtotal` for two $30 items. Shoply remains a
-normal purchase flow when no Mutation is active, and older saves are reconciled with
-new catalog Tickets without losing progress.
+normal purchase flow when no Mutation is active. T03 unlocks after T02 and uses a
+`WRONG_ACTION` Mutation to send Cancel Order to payment instead of cancellation.
+Without that Mutation, cancellation updates the order status normally. Older saves
+are reconciled with new catalog Tickets without losing progress.
 
 ## Verification
 

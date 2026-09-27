@@ -1,0 +1,51 @@
+task: TASK-008
+status: pass
+summary: Added the T03 behavior-defect gameplay loop. Shoply now has an order history,
+  order detail, and working normal cancellation flow. Scenario data redirects Cancel
+  Order to the payment page only when the T03 action Mutation is active. T03 unlocks
+  after T02 and completes through Evidence, Report, Review, and Dashboard resolution.
+files_changed:
+- .project-os/state/backlog.yaml
+- .project-os/state/current.yaml
+- src/app/router/AppRouter.tsx
+- src/components/fake-browser/ProductRouter.tsx
+- src/pages/CompanyShell.test.tsx
+- src/pages/TestWorkspacePage/TestWorkspacePage.test.tsx
+- src/pages/TestWorkspacePage/TestWorkspacePage.tsx
+- src/products/shoply/ProductNavigation.tsx
+- src/products/shoply/ShoplyFlow.test.tsx
+- src/products/shoply/ShoplyProvider.tsx
+- src/products/shoply/components/ShoplyHeader.tsx
+- src/products/shoply/domain/orders.ts
+- src/products/shoply/domain/types.ts
+- src/products/shoply/pages/CancelOrderPage.tsx
+- src/products/shoply/pages/OrderDetailPage.tsx
+- src/products/shoply/pages/OrdersPage.tsx
+- src/products/shoply/pages/PaymentPage.tsx
+- src/scenarios/shoply/t03.test.ts
+- src/scenarios/shoply/t03.ts
+- src/scenarios/shoply/tickets.test.ts
+- src/scenarios/shoply/tickets.ts
+- src/styles.css
+- tests/e2e/foundation.spec.ts
+evidence:
+- T03 remains locked until T01 and T02 have both resolved.
+- With zero active mutations, Cancel Order opens the cancellation flow and confirmation
+  updates the order to cancelled.
+- The T03 Mutation changes only the Cancel Order destination to the payment flow;
+  inactive and empty Mutation cases preserve the normal destination.
+- Payment-page Evidence yields deterministic VALID 100/100 Review for T03 at HIGH
+  severity.
+- A Chromium journey resolves T01 through T03 and retains 300 XP and 106 Reputation
+  after reload.
+acceptance:
+  status: pass
+  notes:
+  - Product code contains no Ticket or Scenario identifier branch.
+  - T04, Account Switcher, and human playtesting remain in later M2 tasks.
+followups:
+- Obtain independent TASK-008 review before Project OS evaluation and completion transition.
+commit: d9f757717799b9018174b3919322d5daedfb2768
+kind: implementation
+role: developer
+actor: codex-developer-task8

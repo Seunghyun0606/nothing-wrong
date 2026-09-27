@@ -1,7 +1,7 @@
-# T01-T02 Verification
+# T01-T03 Verification
 
 This document records the reproducible verification procedure for the Nothing Wrong
-prototype through T02. Run commands from the repository root.
+prototype through T03. Run commands from the repository root.
 
 ## Automated gates
 
@@ -14,8 +14,8 @@ npm run test:e2e
 ```
 
 The Playwright test clears browser storage explicitly before starting and verifies the
-complete Chromium journey through both resolved Tickets. It reloads after T01 and T02,
-then checks that the final 200 XP and 104 Reputation remain visible.
+complete Chromium journey through three resolved Tickets. It reloads after each
+Ticket, then checks that the final 300 XP and 106 Reputation remain visible.
 
 ## Manual journey
 
@@ -39,9 +39,15 @@ then checks that the final 200 XP and 104 Reputation remain visible.
 14. Capture Cart Evidence and create a Report with the documented $60.00 expected and
     $50.00 actual behavior at MEDIUM severity.
 15. Confirm the T02 Review displays `VALID`, 100/100, XP +100, and Reputation +2.
-16. Return to Dashboard and confirm both Tickets are Resolved, XP is 200, Reputation
-    is 104, and no Ticket is open.
-17. Reload and confirm the same final state remains.
+16. Return to Dashboard and confirm T01 and T02 are Resolved, XP is 200, Reputation
+    is 104, and T03 is the one open Ticket.
+17. Reload and open the newly unlocked T03.
+18. Select **Cancel order** on Order details and confirm that Payment details opens
+    instead of the cancellation flow.
+19. Capture payment-page Evidence, report the expected cancellation flow and actual
+    payment flow at HIGH severity, then confirm Review displays `VALID` and 100/100.
+20. Return to Dashboard and confirm all three Tickets are Resolved, XP is 300,
+    Reputation is 106, and no Ticket is open. Reload to confirm persistence.
 
 Exploratory clicks have no penalty. Subjective playtest questions belong to M2 and are
 not part of this M1 verification.
@@ -50,9 +56,9 @@ not part of this M1 verification.
 
 | Assertion | Prototype evidence |
 | --- | --- |
-| A new Ticket does not require a React page change | T02 content is catalogued under `src/scenarios`; Dashboard, Ticket, Workspace, Report, and Review pages read the catalog generically. |
+| A new Ticket does not require a React page change | T02 and T03 content are catalogued under `src/scenarios`; Dashboard, Ticket, Workspace, Report, and Review pages read the catalog generically. |
 | A Scenario Mutation can change without editing Shoply | `src/scenarios/shoply/t01.test.ts` changes only the payload and observes a different resolved value. |
-| Shoply is normal with zero Mutations | `src/products/shoply/ShoplyFlow.test.tsx` expects the primary CTA and normal totals outside the Test Workspace; `src/scenarios/shoply/t02.test.ts` proves the normal $60 subtotal with no active Mutation. |
+| Shoply is normal with zero Mutations | `src/products/shoply/ShoplyFlow.test.tsx` covers the primary CTA, normal totals, and completed order cancellation outside the Test Workspace; T02 and T03 Scenario tests verify zero-Mutation values. |
 | The Mutation Engine is reusable by another Product | `src/game/mutations/resolveMutation.ts` depends only on generic domain types, target strings, TestContext, and Product state. |
 | Report evaluation is testable without React | `src/game/reporting/reviewBugReport.test.ts` imports the pure review function directly. |
 | T04-style conditions can be reproduced automatically | `src/game/mutations/resolveMutation.test.ts` covers Gold + SAVE20 + quantity 3 and negative account/quantity cases. |
@@ -61,14 +67,14 @@ not part of this M1 verification.
 ## Static architecture checks
 
 ```bash
-rg -n -i "ticketId|T01|ExpectedBug" src/products/shoply
+rg -n -i "ticketId|T0[1-8]|ExpectedBug" src/products/shoply
 rg -n "localStorage" src --glob "!src/persistence/**" --glob "!**/*.test.*"
 rg -n "NothingWrong(Ticket|BugReport|Scenario|Mutation|Evidence|ReviewResult|GameState)" src
 git diff --check
 projectctl doctor
 ```
 
-The first three searches should produce no matches. Product tests may mention T01 only
+The first three searches should produce no matches. Product tests may mention Ticket IDs only
 outside the `src/products/shoply` production tree; all browser storage access belongs in
 the persistence boundary.
 
@@ -104,4 +110,19 @@ Verified on 2026-09-24:
   and final reload persistence.
 - T02 active, wrong-quantity, wrong-path, and zero-Mutation cases passed.
 - T02 Evidence and deterministic Review were verified at quantity two.
+- `projectctl doctor` and `git diff --check` passed.
+
+## TASK-008 verification record
+
+Verified on 2026-09-27:
+
+- Typecheck and production build passed.
+- All 21 Vitest files and 83 unit/component tests passed.
+- The Chromium critical flow passed through T01, T02, and T03 Reviews, Dashboard
+  returns, and final reload persistence with 300 XP and 106 Reputation.
+- The T03 action Mutation changed the Cancel Order destination only in its active
+  context. Inactive and zero-Mutation cases retained the cancellation destination.
+- Without Mutations, confirming cancellation updated the order to `CANCELLED` and
+  removed the Cancel Order action.
+- Payment-page Evidence produced a deterministic valid T03 Review at HIGH severity.
 - `projectctl doctor` and `git diff --check` passed.
