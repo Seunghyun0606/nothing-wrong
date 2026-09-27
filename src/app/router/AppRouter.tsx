@@ -20,9 +20,7 @@ export function AppRouter() {
         <Route path="/test/:ticketId" element={<TestWorkspacePage />} />
         <Route path="/reports/:ticketId" element={<ReportBuilderPage />} />
         <Route path="/review/:ticketId" element={<ReviewResultPage />} />
-        <Route path="/shoply/product/everyday-pack" element={<ProductRouter path="/shoply/product/everyday-pack" />} />
-        <Route path="/shoply/cart" element={<ProductRouter path="/shoply/cart" />} />
-        <Route path="/shoply/checkout" element={<ProductRouter path="/shoply/checkout" />} />
+        <Route path="/shoply/*" element={<ProductRouter />} />
         <Route path="*" element={<Navigate to="/start" replace />} />
       </Routes>
     </BrowserRouter>

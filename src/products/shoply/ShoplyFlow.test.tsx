@@ -68,4 +68,22 @@ describe('normal Shoply purchase flow', () => {
     expect(screen.getByText('SAVE20 is available to Gold members only')).toBeInTheDocument()
     expect(screen.queryByText('−$6.00')).not.toBeInTheDocument()
   })
+
+  it('opens the normal cancellation flow from a processing order', async () => {
+    renderAt('/shoply/orders')
+
+    expect(screen.getByRole('heading', { name: 'Orders' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('link', { name: 'View order →' }))
+    expect(
+      await screen.findByRole('heading', { name: 'Order details' }),
+    ).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('link', { name: 'Cancel order' }))
+
+    expect(
+      await screen.findByRole('heading', { name: 'Cancel your order' }),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Payment details' })).not.toBeInTheDocument()
+    expect(window.location.pathname).toBe('/shoply/orders/order-1042/cancel')
+  })
 })

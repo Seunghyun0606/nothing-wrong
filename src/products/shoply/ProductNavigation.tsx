@@ -3,6 +3,7 @@ import {
   useContext,
   useMemo,
   type MouseEvent,
+  type MouseEventHandler,
   type PropsWithChildren,
 } from 'react'
 import { Link } from 'react-router-dom'
@@ -40,16 +41,21 @@ interface ProductLinkProps extends PropsWithChildren {
   className?: string
   to: string
   'aria-label'?: string
+  'data-evidence-target'?: string
+  onClick?: MouseEventHandler<HTMLAnchorElement>
 }
 
-export function ProductLink({ children, className, to, ...props }: ProductLinkProps) {
+export function ProductLink({ children, className, onClick, to, ...props }: ProductLinkProps) {
   const navigation = useContext(ProductNavigationContext)
 
   if (!navigation) {
-    return <Link className={className} to={to} {...props}>{children}</Link>
+    return <Link className={className} onClick={onClick} to={to} {...props}>{children}</Link>
   }
 
   function handleClick(event: MouseEvent<HTMLAnchorElement>) {
+    onClick?.(event)
+    if (event.defaultPrevented) return
+
     if (
       event.button !== 0 ||
       event.metaKey ||

@@ -13,6 +13,9 @@ import { useShoply } from '../../products/shoply/ShoplyProvider'
 import { getScenario, isTicketUnlocked } from '../../scenarios/shoply/tickets'
 
 function actionForPath(path: string): string {
+  if (path.includes('/payment')) return 'OPEN_PAYMENT'
+  if (path.includes('/orders/')) return 'OPEN_ORDER'
+  if (path.endsWith('/orders')) return 'OPEN_ORDERS'
   if (path.includes('/checkout')) return 'OPEN_CHECKOUT'
   if (path.includes('/cart')) return 'OPEN_CART'
   if (path.includes('/product/')) return 'OPEN_PRODUCT'

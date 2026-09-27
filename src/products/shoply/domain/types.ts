@@ -39,3 +39,14 @@ export interface OrderSummary extends CouponResult {
   shipping: number
   total: number
 }
+
+export type ShoplyOrderStatus = 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
+
+export interface ShoplyOrder {
+  id: string
+  placedAt: string
+  status: ShoplyOrderStatus
+  productId: string
+  quantity: number
+  total: number
+}

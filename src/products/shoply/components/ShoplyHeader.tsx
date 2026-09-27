@@ -16,6 +16,7 @@ export function ShoplyHeader() {
       </nav>
       <div className="shoply-actions">
         <span className="shoply-account">{user.name}</span>
+        <ProductLink className="orders-link" to="/shoply/orders">Orders</ProductLink>
         <ProductLink className="cart-link" to="/shoply/cart" aria-label={`Cart, ${itemCount} items`}>
           Bag <span>{itemCount}</span>
         </ProductLink>

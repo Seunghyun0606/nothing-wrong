@@ -200,4 +200,47 @@ describe('Test Workspace', () => {
       },
     })
   })
+
+  it('routes T03 Cancel Order to payment and captures the behavior defect', () => {
+    const gameState = createInitialGameState(
+      TICKET_CATALOG.map((ticket) => ticket.id),
+    )
+    gameState.tickets.T01 = {
+      status: 'RESOLVED',
+      reportIds: ['REPORT-T01'],
+      resolvedAt: 1,
+    }
+    gameState.tickets.T02 = {
+      status: 'RESOLVED',
+      reportIds: ['REPORT-T02'],
+      resolvedAt: 2,
+    }
+    gameState.tickets.T03 = {
+      status: 'TESTING',
+      reportIds: [],
+      acceptedAt: 3,
+    }
+    gameState.currentTicketId = 'T03'
+    saveGameState(gameState)
+    window.history.pushState({}, '', '/test/T03')
+    render(<App />)
+
+    expect(screen.getByRole('heading', { name: 'Order details' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('link', { name: 'Cancel order' }))
+
+    expect(screen.getByRole('heading', { name: 'Payment details' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Fake URL')).toHaveTextContent(
+      'https://shoply.local/payment',
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Capture evidence' }))
+
+    expect(loadWorkspaceState()?.evidence.at(-1)).toMatchObject({
+      ticketId: 'T03',
+      context: { currentPath: '/shoply/payment', account: 'BASIC' },
+      snapshot: { visibleTargets: ['payment.form'] },
+    })
+    expect(loadWorkspaceState()?.interactions.map((action) => action.type)).toEqual(
+      expect.arrayContaining(['OPEN_ORDER', 'CANCEL_ORDER', 'OPEN_PAYMENT']),
+    )
+  })
 })
