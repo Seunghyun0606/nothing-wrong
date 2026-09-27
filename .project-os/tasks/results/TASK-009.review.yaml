@@ -1,0 +1,64 @@
+task: TASK-009
+status: pass
+verdict: pass
+summary: Independent read-only review of HEAD 3d7f47c confirms the Account Switcher
+  unlock and T04 conditional discount gameplay contract. All acceptance criteria and
+  configured automated gates pass with no blocking findings.
+critical_issues: 0
+findings: []
+acceptance:
+  account_switcher:
+    status: pass
+    evidence:
+    - T03 grants ACCOUNT_SWITCHER only after a valid Review, and the Workspace gates
+      the control on the earned tool.
+    - Existing saves with resolved T03 reconcile the earned tool from the Scenario
+      catalog.
+    - Basic and Gold account changes apply the Scenario reset policy; T04 preserves
+      Product state.
+  conditional_discount:
+    status: pass
+    evidence:
+    - T04 requires Gold, SAVE20, cart quantity at least three, and the cart path before
+      applying the 0.1 discount Mutation.
+    - Normal SAVE20 eligibility and twenty-percent discount remain in Product rules;
+      Basic is ineligible and Gold quantity one is normal.
+    - Product code has no Ticket-specific branch.
+  evidence_review_progression:
+    status: pass
+    evidence:
+    - Evidence captures account, quantity, coupon, path, and cart discount target
+      for deterministic Review.
+    - Chromium flow covers T01 through T04, negative Basic and quantity-one cases,
+      Report, Review, Dashboard resolution, and reload persistence.
+verification:
+  unit_component:
+    status: pass
+    command: npm test
+    result: 23 files and 91 tests passed.
+  typecheck:
+    status: pass
+    command: npm run typecheck
+  build:
+    status: pass
+    command: npm run build
+    result: Production build passed with 170 modules transformed.
+  integration:
+    status: pass
+    command: npm run test:e2e
+    result: One T01-to-T04 Chromium journey passed.
+  architecture:
+    status: pass
+    command: Product boundary search and git diff --check
+    result: No Ticket-specific Product branch or whitespace issue found.
+  project_os:
+    status: pass
+    command: projectctl doctor
+reviewed_commit: 3d7f47c
+residual_risk: The browser flow verifies progression after reload, but restoring Shoply
+  cart and account context after a mid-T04 reload is outside TASK-009 scope. Future
+  Scenarios should state reset intent explicitly because an omitted accountSwitchPolicy
+  defaults to preserving Product state.
+kind: review
+role: reviewer
+actor: codex-reviewer-task9
