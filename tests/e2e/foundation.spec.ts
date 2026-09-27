@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-test('completes the refresh-safe T01 and T02 QA gameplay loops', async ({ page }) => {
+test('completes the refresh-safe T01 through T03 QA gameplay loops', async ({ page }) => {
   await page.goto('/start')
   await page.evaluate(() => window.localStorage.clear())
   await page.reload()
@@ -107,9 +107,44 @@ test('completes the refresh-safe T01 and T02 QA gameplay loops', async ({ page }
 
   await expect(page.getByText('200 XP', { exact: true })).toBeVisible()
   await expect(page.getByText('104', { exact: true })).toBeVisible()
-  await expect(page.getByText('0 open')).toBeVisible()
+  await expect(page.getByText('1 open')).toBeVisible()
   await page.reload()
   await expect(page.getByText('200 XP', { exact: true })).toBeVisible()
   await expect(page.getByText('104', { exact: true })).toBeVisible()
+  await expect(page.getByText('1 open')).toBeVisible()
+
+  await page.getByRole('link', { name: /Order cancellation routing/ }).click()
+  await expect(page.getByRole('heading', { name: 'Order cancellation routing' })).toBeVisible()
+  await page.getByRole('button', { name: 'Start test' }).click()
+
+  await expect(page).toHaveURL(/\/test\/T03$/)
+  await expect(page.getByRole('heading', { name: 'Order details' })).toBeVisible()
+  await page.getByRole('link', { name: 'Cancel order' }).click()
+  await expect(page.getByRole('heading', { name: 'Payment details' })).toBeVisible()
+  await expect(page.getByLabel('Fake URL')).toContainText('shoply.local/payment')
+  await page.getByRole('button', { name: 'Capture evidence' }).click()
+  await page.getByRole('button', { name: 'Create report' }).click()
+
+  await expect(page).toHaveURL(/\/reports\/T03$/)
+  await page
+    .getByLabel('Expected behavior')
+    .selectOption('Cancellation flow should open for a processing order')
+  await page
+    .getByLabel('Actual behavior')
+    .selectOption('Payment flow opens after selecting Cancel order')
+  await page.getByLabel('Severity').selectOption('HIGH')
+  await page.getByRole('button', { name: 'Submit for QA Review' }).click()
+
+  await expect(page).toHaveURL(/\/review\/T03$/)
+  await expect(page.getByRole('heading', { name: 'VALID' })).toBeVisible()
+  await expect(page.getByText('100 / 100')).toBeVisible()
+  await page.getByRole('link', { name: 'Return to Dashboard' }).click()
+
+  await expect(page.getByText('300 XP', { exact: true })).toBeVisible()
+  await expect(page.getByText('106', { exact: true })).toBeVisible()
+  await expect(page.getByText('0 open')).toBeVisible()
+  await page.reload()
+  await expect(page.getByText('300 XP', { exact: true })).toBeVisible()
+  await expect(page.getByText('106', { exact: true })).toBeVisible()
   await expect(page.getByText('0 open')).toBeVisible()
 })

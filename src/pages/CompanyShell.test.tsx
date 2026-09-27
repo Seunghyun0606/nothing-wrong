@@ -32,7 +32,7 @@ describe('Company Shell', () => {
     expect(screen.getByRole('link', { name: /Checkout confirmation design review/i })).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: /Cart subtotal verification/i })).not.toBeInTheDocument()
     expect(screen.getByText('Cart subtotal verification')).toBeInTheDocument()
-    expect(screen.getByText('Locked')).toBeInTheDocument()
+    expect(screen.getAllByText('Locked')).toHaveLength(2)
   })
 
   it('opens T01 details and starts the normal Shoply test path', async () => {

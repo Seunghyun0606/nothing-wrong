@@ -1,10 +1,11 @@
 import { ShoplyHeader } from '../components/ShoplyHeader'
 import { formatMoney } from '../components/OrderSummaryCard'
 import { getShoplyProduct } from '../domain/catalog'
-import { SHOPLY_ORDERS } from '../domain/orders'
 import { ProductLink } from '../ProductNavigation'
+import { useShoply } from '../ShoplyProvider'
 
 export function OrdersPage() {
+  const { orders } = useShoply()
   return (
     <main className="shoply-page">
       <ShoplyHeader />
@@ -13,7 +14,7 @@ export function OrdersPage() {
         <h1>Orders</h1>
       </section>
       <section className="orders-list" aria-label="Order history">
-        {SHOPLY_ORDERS.map((order) => {
+        {orders.map((order) => {
           const product = getShoplyProduct(order.productId)
           return (
             <article className="order-row" key={order.id}>

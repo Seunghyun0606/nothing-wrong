@@ -2,16 +2,17 @@ import { useMutationValue } from '../../../game/mutations/MutationRuntimeProvide
 import { ShoplyHeader } from '../components/ShoplyHeader'
 import { formatMoney } from '../components/OrderSummaryCard'
 import { getShoplyProduct } from '../domain/catalog'
-import { getShoplyOrder } from '../domain/orders'
 import { ProductLink } from '../ProductNavigation'
 import { useProductTelemetry } from '../ProductTelemetry'
+import { useShoply } from '../ShoplyProvider'
 
 interface OrderDetailPageProps {
   orderId: string
 }
 
 export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
-  const order = getShoplyOrder(orderId)
+  const { orders } = useShoply()
+  const order = orders.find((candidate) => candidate.id === orderId)
   const recordInteraction = useProductTelemetry()
   const normalDestination = `/shoply/orders/${orderId}/cancel`
   const cancelDestination = useMutationValue(
@@ -51,19 +52,25 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
         </section>
         <aside className="order-actions-card">
           <h2>Need to make a change?</h2>
-          <p>This order is still processing and can be cancelled before shipment.</p>
-          <ProductLink
-            className="shoply-button inline-button"
-            data-evidence-target="orders.cancelAction"
-            onClick={() => recordInteraction({
-              type: 'CANCEL_ORDER',
-              target: order.id,
-              payload: { destination: cancelDestination },
-            })}
-            to={cancelDestination}
-          >
-            Cancel order
-          </ProductLink>
+          {order.status === 'PROCESSING' ? (
+            <>
+              <p>This order is still processing and can be cancelled before shipment.</p>
+              <ProductLink
+                className="shoply-button inline-button"
+                data-evidence-target="orders.cancelAction"
+                onClick={() => recordInteraction({
+                  type: 'CANCEL_ORDER',
+                  target: order.id,
+                  payload: { destination: cancelDestination },
+                })}
+                to={cancelDestination}
+              >
+                Cancel order
+              </ProductLink>
+            </>
+          ) : (
+            <p>This order has been {order.status.toLowerCase()} and can no longer be cancelled.</p>
+          )}
         </aside>
       </div>
     </main>

@@ -1206,6 +1206,199 @@ select {
   text-decoration: underline;
 }
 
+/* Shoply order management */
+.orders-list,
+.order-detail-heading,
+.order-detail-layout,
+.order-flow-card,
+.payment-card {
+  width: min(calc(100% - 48px), 1180px);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.orders-list {
+  padding: 20px 0 90px;
+}
+
+.order-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) auto auto auto;
+  align-items: center;
+  gap: 32px;
+  padding: 28px 0;
+  border-bottom: 1px solid #d5cdbf;
+}
+
+.order-row > div {
+  display: grid;
+  gap: 6px;
+}
+
+.order-row span,
+.order-row small {
+  color: #81786d;
+  font-size: 0.75rem;
+}
+
+.order-row strong {
+  font-size: 0.95rem;
+}
+
+.order-row > a,
+.order-detail-heading > a,
+.order-flow-card > a,
+.payment-card a {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.order-row .order-status,
+.order-detail-heading .order-status {
+  padding: 7px 10px;
+  color: #496148;
+  background: #e4ecdf;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.order-detail-heading {
+  padding: 55px 0 30px;
+  border-bottom: 1px solid #d5cdbf;
+}
+
+.order-detail-heading p,
+.order-flow-kicker {
+  margin: 32px 0 8px;
+  color: #8e4f39;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.order-detail-heading h1,
+.order-flow-card h1,
+.payment-card h1 {
+  margin: 0 0 20px;
+  font: 500 clamp(2.8rem, 6vw, 5rem) Georgia, serif;
+  letter-spacing: -0.055em;
+}
+
+.order-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.7fr);
+  gap: 48px;
+  padding: 45px 0 100px;
+}
+
+.order-detail-card,
+.order-actions-card,
+.order-flow-card,
+.payment-card {
+  padding: clamp(24px, 4vw, 42px);
+  border: 1px solid #d2c9bc;
+  background: #faf7f1;
+}
+
+.order-detail-card h2,
+.order-actions-card h2 {
+  margin: 0 0 20px;
+  font: 500 1.5rem Georgia, serif;
+}
+
+.order-detail-card dl {
+  margin: 0;
+}
+
+.order-detail-card dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #e0d8cc;
+  font-size: 0.83rem;
+}
+
+.order-detail-card dt,
+.order-actions-card p,
+.order-flow-card > p:not(.order-flow-kicker),
+.payment-card > p:not(.order-flow-kicker) {
+  color: #746b60;
+  line-height: 1.6;
+}
+
+.order-detail-card dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.order-actions-card .shoply-button {
+  margin-top: 24px;
+}
+
+.order-flow-card,
+.payment-card {
+  max-width: 760px;
+  margin-top: 60px;
+  margin-bottom: 90px;
+}
+
+.order-flow-card .order-flow-kicker,
+.payment-card .order-flow-kicker {
+  margin-top: 0;
+}
+
+.order-flow-card fieldset {
+  display: grid;
+  gap: 14px;
+  margin: 28px 0;
+  padding: 22px;
+  border: 1px solid #d5cdbf;
+}
+
+.order-flow-card legend {
+  padding: 0 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.order-flow-card label,
+.payment-fields label {
+  font-size: 0.83rem;
+}
+
+.order-flow-card label input {
+  margin-right: 10px;
+}
+
+.order-flow-card > a,
+.payment-card a {
+  display: inline-block;
+  margin-top: 24px;
+}
+
+.payment-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.payment-fields label {
+  display: grid;
+  gap: 8px;
+}
+
+.payment-fields input {
+  width: 100%;
+  min-height: 45px;
+  padding: 0 12px;
+  border: 1px solid #c9c0b3;
+  background: #fff;
+}
+
 /* QA test workspace */
 .test-workspace {
   min-width: 1080px;
@@ -1929,8 +2122,13 @@ select {
 @container (max-width: 900px) {
   .fake-browser-viewport .product-layout,
   .fake-browser-viewport .cart-layout,
-  .fake-browser-viewport .checkout-layout {
+  .fake-browser-viewport .checkout-layout,
+  .fake-browser-viewport .order-detail-layout {
     grid-template-columns: 1fr;
+  }
+
+  .fake-browser-viewport .order-row {
+    grid-template-columns: 1fr auto;
   }
 
   .fake-browser-viewport .shoply-header {
@@ -1984,6 +2182,11 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .fake-browser-viewport .order-row,
+  .fake-browser-viewport .payment-fields {
+    grid-template-columns: 1fr;
+  }
+
   .fake-browser-viewport .form-grid .span-two {
     grid-column: auto;
   }
@@ -2022,8 +2225,13 @@ select {
 
   .ticket-detail-grid,
   .cart-layout,
-  .checkout-layout {
+  .checkout-layout,
+  .order-detail-layout {
     grid-template-columns: 1fr;
+  }
+
+  .order-row {
+    grid-template-columns: 1fr auto;
   }
 
   .ticket-detail-grid > aside {
@@ -2112,6 +2320,11 @@ select {
   }
 
   .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .order-row,
+  .payment-fields {
     grid-template-columns: 1fr;
   }
 

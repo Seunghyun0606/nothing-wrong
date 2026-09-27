@@ -85,5 +85,13 @@ describe('normal Shoply purchase flow', () => {
     ).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'Payment details' })).not.toBeInTheDocument()
     expect(window.location.pathname).toBe('/shoply/orders/order-1042/cancel')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm cancellation' }))
+    expect(screen.getByRole('heading', { name: 'Order cancelled' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('link', { name: 'Return to orders' }))
+    expect(screen.getByRole('heading', { name: 'Orders' })).toBeInTheDocument()
+    expect(screen.getByText('cancelled')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('link', { name: 'View order →' }))
+    expect(screen.queryByRole('link', { name: 'Cancel order' })).not.toBeInTheDocument()
   })
 })

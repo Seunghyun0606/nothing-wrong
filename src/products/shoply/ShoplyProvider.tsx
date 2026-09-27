@@ -7,17 +7,20 @@ import {
 } from 'react'
 
 import { getShoplyProduct } from './domain/catalog'
-import type { CartItem, PricedCartItem, ShoplyUser } from './domain/types'
+import { SHOPLY_ORDERS } from './domain/orders'
+import type { CartItem, PricedCartItem, ShoplyOrder, ShoplyUser } from './domain/types'
 
 interface ShoplyContextValue {
   user: ShoplyUser
   items: readonly PricedCartItem[]
   itemCount: number
   coupon: string
+  orders: readonly ShoplyOrder[]
   addToCart: (productId: string) => void
   setQuantity: (productId: string, quantity: number) => void
   removeFromCart: (productId: string) => void
   setCoupon: (code: string) => void
+  cancelOrder: (orderId: string) => void
 }
 
 const ShoplyContext = createContext<ShoplyContextValue | null>(null)
@@ -25,6 +28,9 @@ const ShoplyContext = createContext<ShoplyContextValue | null>(null)
 export function ShoplyProvider({ children }: PropsWithChildren) {
   const [cart, setCart] = useState<CartItem[]>([])
   const [coupon, setCoupon] = useState('')
+  const [orders, setOrders] = useState<ShoplyOrder[]>(() =>
+    SHOPLY_ORDERS.map((order) => ({ ...order })),
+  )
   const user = useMemo<ShoplyUser>(
     () => ({ id: 'shoply-basic-01', name: 'Jordan Park', tier: 'BASIC' }),
     [],
@@ -44,6 +50,7 @@ export function ShoplyProvider({ children }: PropsWithChildren) {
       items,
       itemCount: items.reduce((count, item) => count + item.quantity, 0),
       coupon,
+      orders,
       addToCart(productId) {
         const product = getShoplyProduct(productId)
         if (!product) {
@@ -73,8 +80,17 @@ export function ShoplyProvider({ children }: PropsWithChildren) {
         setCart((current) => current.filter((item) => item.productId !== productId))
       },
       setCoupon,
+      cancelOrder(orderId) {
+        setOrders((current) =>
+          current.map((order) =>
+            order.id === orderId && order.status === 'PROCESSING'
+              ? { ...order, status: 'CANCELLED' }
+              : order,
+          ),
+        )
+      },
     }),
-    [coupon, items, user],
+    [coupon, items, orders, user],
   )
 
   return <ShoplyContext.Provider value={value}>{children}</ShoplyContext.Provider>
