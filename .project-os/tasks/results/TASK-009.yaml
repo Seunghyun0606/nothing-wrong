@@ -1,0 +1,59 @@
+task: TASK-009
+status: pass
+summary: Added Account Switcher after T03 and the T04 conditional discount gameplay
+  loop. Scenario policy controls whether account changes reset Product state, while
+  T04 preserves the cart and coupon. Gold + SAVE20 + quantity at least three displays
+  a ten-percent discount through generic Mutation data; normal eligibility and twenty-percent
+  discount remain intact elsewhere. T04 completes through Evidence, deterministic
+  Review, and persisted Dashboard progression.
+files_changed:
+- .project-os/state/backlog.yaml
+- .project-os/state/current.yaml
+- README.md
+- docs/development/TESTING.md
+- src/app/providers/AppProviders.tsx
+- src/components/qa-tools/AccountSwitcher.tsx
+- src/components/qa-tools/QAToolbar.tsx
+- src/game/domain/gameState.test.ts
+- src/game/domain/gameState.ts
+- src/game/domain/schemas.test.ts
+- src/game/domain/schemas.ts
+- src/game/progression/applyReview.test.ts
+- src/game/progression/applyReview.ts
+- src/game/session/GameSessionProvider.tsx
+- src/pages/CompanyShell.test.tsx
+- src/pages/TestWorkspacePage/TestWorkspacePage.test.tsx
+- src/pages/TestWorkspacePage/TestWorkspacePage.tsx
+- src/products/shoply/ShoplyProvider.test.tsx
+- src/products/shoply/ShoplyProvider.tsx
+- src/products/shoply/components/OrderSummaryCard.tsx
+- src/scenarios/shoply/t03.ts
+- src/scenarios/shoply/t04.test.ts
+- src/scenarios/shoply/t04.ts
+- src/scenarios/shoply/tickets.test.ts
+- src/scenarios/shoply/tickets.ts
+- src/styles.css
+- tests/e2e/foundation.spec.ts
+evidence:
+- T03 valid Review unlocks Account Switcher; invalid Review does not.
+- Existing saves with resolved T03 recover the earned tool through generic catalog
+  reconciliation.
+- Account switching preserves or resets Product state according to validated Scenario
+  policy.
+- Basic + SAVE20 is ineligible, Gold quantity one receives twenty percent, and Gold
+  quantity three or four receives the ten-percent defect.
+- Gold quantity-three Cart Evidence yields deterministic VALID 100/100 T04 Review;
+  wrong account, quantity, coupon, or path Evidence is rejected.
+- The Chromium journey resolves T01 through T04 and persists 400 XP and 108 Reputation
+  after reload.
+acceptance:
+  status: pass
+  notes:
+  - No Shoply Product code branches on Ticket or Scenario identifiers.
+  - T05–T08 content and human prototype approval remain outside TASK-009.
+followups:
+- Obtain independent TASK-009 review before Project OS evaluation and completion transition.
+commit: d936f6b90e25c7edfd56cfc7115a67f1204bbf25
+kind: implementation
+role: developer
+actor: codex-developer-task9
