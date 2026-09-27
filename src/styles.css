@@ -1484,6 +1484,31 @@ select {
   background: #0c0f0d;
 }
 
+.qa-context-switchers {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 10px;
+}
+
+.account-switcher {
+  display: flex;
+  padding: 3px;
+  border: 1px solid #30362f;
+  background: #0c0f0d;
+}
+
+.account-switcher button {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+}
+
+.account-switcher button[aria-pressed="true"] {
+  color: #17200f;
+  background: #e5c579;
+}
+
 .viewport-switcher button[aria-pressed="true"] {
   color: #17200f;
   background: #aee777;

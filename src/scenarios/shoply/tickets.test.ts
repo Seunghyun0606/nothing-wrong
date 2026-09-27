@@ -9,9 +9,11 @@ describe('Shoply Ticket catalog', () => {
     expect(getScenario('T03')?.mutations[0]?.target).toBe(
       'orders.cancelAction.destination',
     )
+    expect(getScenario('T04')?.mutations[0]?.target).toBe('cart.discountRate')
     expect(isTicketUnlocked('T01', state)).toBe(true)
     expect(isTicketUnlocked('T02', state)).toBe(false)
     expect(isTicketUnlocked('T03', state)).toBe(false)
+    expect(isTicketUnlocked('T04', state)).toBe(false)
 
     state.tickets.T01 = { status: 'RESOLVED', reportIds: [], resolvedAt: 1 }
     expect(isTicketUnlocked('T02', state)).toBe(true)
@@ -19,5 +21,9 @@ describe('Shoply Ticket catalog', () => {
 
     state.tickets.T02 = { status: 'RESOLVED', reportIds: [], resolvedAt: 2 }
     expect(isTicketUnlocked('T03', state)).toBe(true)
+    expect(isTicketUnlocked('T04', state)).toBe(false)
+
+    state.tickets.T03 = { status: 'RESOLVED', reportIds: [], resolvedAt: 3 }
+    expect(isTicketUnlocked('T04', state)).toBe(true)
   })
 })

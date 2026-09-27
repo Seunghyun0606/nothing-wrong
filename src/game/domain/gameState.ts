@@ -3,6 +3,7 @@ import {
   PlayerTicketStateSchema,
   type GameState,
   type PlayerTicketState,
+  type Scenario,
 } from './schemas'
 
 export const INITIAL_PROFILE = {
@@ -41,13 +42,22 @@ export function createInitialGameState(ticketIds: readonly string[] = []): GameS
 export function reconcileGameStateTickets(
   state: GameState,
   ticketIds: readonly string[],
+  scenarios: readonly Scenario[] = [],
 ): GameState {
   if (new Set(ticketIds).size !== ticketIds.length) {
     throw new Error('Ticket ids must be unique')
   }
 
   const missingTickets = ticketIds.filter((ticketId) => !state.tickets[ticketId])
-  if (missingTickets.length === 0) return state
+  const earnedTools = scenarios.flatMap((scenario) =>
+    state.tickets[scenario.ticket.id]?.status === 'RESOLVED'
+      ? (scenario.progression?.unlockedTools ?? [])
+      : [],
+  )
+  const unlockedTools = [...new Set([...state.unlockedTools, ...earnedTools])]
+  if (missingTickets.length === 0 && unlockedTools.length === state.unlockedTools.length) {
+    return state
+  }
 
   return GameStateSchema.parse({
     ...state,
@@ -57,5 +67,6 @@ export function reconcileGameStateTickets(
         missingTickets.map((ticketId) => [ticketId, createInitialTicketState()]),
       ),
     },
+    unlockedTools,
   })
 }

@@ -226,6 +226,7 @@ describe('Test Workspace', () => {
     render(<App />)
 
     expect(screen.getByRole('heading', { name: 'Order details' })).toBeInTheDocument()
+    expect(screen.queryByRole('group', { name: 'Shoply account' })).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('link', { name: 'Cancel order' }))
 
     expect(screen.getByRole('heading', { name: 'Payment details' })).toBeInTheDocument()
@@ -241,6 +242,50 @@ describe('Test Workspace', () => {
     })
     expect(loadWorkspaceState()?.interactions.map((action) => action.type)).toEqual(
       expect.arrayContaining(['OPEN_ORDER', 'CANCEL_ORDER', 'OPEN_PAYMENT']),
+    )
+  })
+
+  it('unlocks account switching for T04 and captures the Gold quantity-three discount', () => {
+    const gameState = createInitialGameState(TICKET_CATALOG.map((ticket) => ticket.id))
+    for (const [index, id] of ['T01', 'T02', 'T03'].entries()) {
+      gameState.tickets[id] = {
+        status: 'RESOLVED',
+        reportIds: [`REPORT-${id}`],
+        resolvedAt: index + 1,
+      }
+    }
+    gameState.tickets.T04 = { status: 'TESTING', reportIds: [], acceptedAt: 4 }
+    gameState.currentTicketId = 'T04'
+    saveGameState(gameState)
+    window.history.pushState({}, '', '/test/T04')
+    render(<App />)
+
+    expect(screen.getByRole('group', { name: 'Shoply account' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Add to bag' }))
+    fireEvent.click(screen.getByRole('link', { name: 'View bag' }))
+    fireEvent.change(screen.getByLabelText('Coupon code'), { target: { value: 'SAVE20' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    expect(screen.getByText('SAVE20 is available to Gold members only')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Gold' }))
+    expect(screen.getByText('−$6.00')).toBeInTheDocument()
+    fireEvent.change(screen.getByLabelText('Quantity for Everyday Carry Pack'), {
+      target: { value: '3' },
+    })
+    expect(document.querySelector('[data-evidence-target="cart.discount"]')).toHaveTextContent('−$9.00')
+    expect(screen.getByText('$81.00')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Capture evidence' }))
+    expect(loadWorkspaceState()?.evidence.at(-1)).toMatchObject({
+      ticketId: 'T04',
+      context: { account: 'GOLD', currentPath: '/shoply/cart' },
+      snapshot: {
+        visibleTargets: ['cart.subtotal', 'cart.discount'],
+        productState: { cart: { quantity: 3 }, coupon: 'SAVE20' },
+      },
+    })
+    expect(loadWorkspaceState()?.interactions.map((action) => action.type)).toContain(
+      'CHANGE_ACCOUNT',
     )
   })
 })

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-test('completes the refresh-safe T01 through T03 QA gameplay loops', async ({ page }) => {
+test('completes the refresh-safe T01 through T04 QA gameplay loops', async ({ page }) => {
   await page.goto('/start')
   await page.evaluate(() => window.localStorage.clear())
   await page.reload()
@@ -119,6 +119,7 @@ test('completes the refresh-safe T01 through T03 QA gameplay loops', async ({ pa
 
   await expect(page).toHaveURL(/\/test\/T03$/)
   await expect(page.getByRole('heading', { name: 'Order details' })).toBeVisible()
+  await expect(page.getByRole('group', { name: 'Shoply account' })).toHaveCount(0)
   await page.getByRole('link', { name: 'Cancel order' }).click()
   await expect(page.getByRole('heading', { name: 'Payment details' })).toBeVisible()
   await expect(page.getByLabel('Fake URL')).toContainText('shoply.local/payment')
@@ -142,9 +143,56 @@ test('completes the refresh-safe T01 through T03 QA gameplay loops', async ({ pa
 
   await expect(page.getByText('300 XP', { exact: true })).toBeVisible()
   await expect(page.getByText('106', { exact: true })).toBeVisible()
-  await expect(page.getByText('0 open')).toBeVisible()
+  await expect(page.getByText('1 open')).toBeVisible()
   await page.reload()
   await expect(page.getByText('300 XP', { exact: true })).toBeVisible()
   await expect(page.getByText('106', { exact: true })).toBeVisible()
+  await expect(page.getByText('1 open')).toBeVisible()
+
+  await page.getByRole('link', { name: /Gold coupon discount verification/ }).click()
+  await expect(page.getByRole('heading', { name: 'Gold coupon discount verification' })).toBeVisible()
+  await page.getByRole('button', { name: 'Start test' }).click()
+
+  await expect(page).toHaveURL(/\/test\/T04$/)
+  await expect(page.getByRole('group', { name: 'Shoply account' })).toBeVisible()
+  await page.getByRole('button', { name: 'Add to bag' }).click()
+  await page.getByRole('link', { name: 'View bag' }).click()
+  await page.getByLabel('Coupon code').fill('SAVE20')
+  await page.getByRole('button', { name: 'Apply' }).click()
+  await expect(page.getByText('SAVE20 is available to Gold members only')).toBeVisible()
+
+  await page.getByRole('button', { name: 'Gold' }).click()
+  await expect(page.locator('[data-evidence-target="cart.discount"]')).toHaveText('−$6.00')
+  await page.getByLabel('Quantity for Everyday Carry Pack').selectOption('3')
+  await expect(page.locator('[data-evidence-target="cart.discount"]')).toHaveText('−$9.00')
+  await expect(page.getByText('$81.00')).toBeVisible()
+  await page.getByRole('button', { name: 'Basic' }).click()
+  await expect(page.getByText('SAVE20 is available to Gold members only')).toBeVisible()
+  await page.getByRole('button', { name: 'Gold' }).click()
+  await expect(page.locator('[data-evidence-target="cart.discount"]')).toHaveText('−$9.00')
+
+  await page.getByRole('button', { name: 'Capture evidence' }).click()
+  await page.getByRole('button', { name: 'Create report' }).click()
+  await expect(page).toHaveURL(/\/reports\/T04$/)
+  await page.getByLabel('Expected behavior').selectOption(
+    'SAVE20 should apply a 20% discount for Gold members',
+  )
+  await page.getByLabel('Actual behavior').selectOption(
+    'SAVE20 applies only a 10% discount with three or more items',
+  )
+  await page.getByLabel('Severity').selectOption('MEDIUM')
+  await page.getByRole('button', { name: 'Submit for QA Review' }).click()
+
+  await expect(page).toHaveURL(/\/review\/T04$/)
+  await expect(page.getByRole('heading', { name: 'VALID' })).toBeVisible()
+  await expect(page.getByText('100 / 100')).toBeVisible()
+  await page.getByRole('link', { name: 'Return to Dashboard' }).click()
+
+  await expect(page.getByText('400 XP', { exact: true })).toBeVisible()
+  await expect(page.getByText('108', { exact: true })).toBeVisible()
+  await expect(page.getByText('0 open')).toBeVisible()
+  await page.reload()
+  await expect(page.getByText('400 XP', { exact: true })).toBeVisible()
+  await expect(page.getByText('108', { exact: true })).toBeVisible()
   await expect(page.getByText('0 open')).toBeVisible()
 })

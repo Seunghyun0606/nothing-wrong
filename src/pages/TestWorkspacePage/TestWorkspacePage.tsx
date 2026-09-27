@@ -87,11 +87,12 @@ export function TestWorkspacePage() {
   const initialPathRecorded = useRef(false)
 
   const currentPath = history[historyIndex] ?? '/shoply/product/everyday-pack'
+  const account = shoply.user.tier
   const ticketEvidence = evidenceForTicket(ticketId)
   const interactions = interactionsForTicket(ticketId)
   const mutationContext = {
     test: {
-      account: ticket?.startingContext.account ?? 'GUEST',
+      account,
       viewport,
       locale: ticket?.startingContext.locale ?? 'en-US',
       currentPath,
@@ -167,6 +168,19 @@ export function TestWorkspacePage() {
     })
   }
 
+  function changeAccount(nextAccount: 'BASIC' | 'GOLD') {
+    if (!gameState.unlockedTools.includes('ACCOUNT_SWITCHER')) return
+    if (nextAccount === account) return
+    const resetProductState = scenario?.accountSwitchPolicy?.resetProductState ?? false
+    shoply.switchAccount(nextAccount, resetProductState)
+    if (resetProductState) setReloadKey((current) => current + 1)
+    recordInteraction({
+      ticketId,
+      type: 'CHANGE_ACCOUNT',
+      target: nextAccount,
+    })
+  }
+
   function handleCapture() {
     const productRoot = browserRef.current?.querySelector('.fake-browser-viewport')
     const heading = productRoot?.querySelector('h1')?.textContent?.trim() || 'Shoply page'
@@ -181,7 +195,7 @@ export function TestWorkspacePage() {
     const evidence = captureEvidence({
       ticketId,
       context: {
-        account: activeTicket.startingContext.account,
+        account,
         viewport,
         locale: activeTicket.startingContext.locale,
         currentPath,
@@ -222,9 +236,12 @@ export function TestWorkspacePage() {
         ticketId={activeTicket.id}
         activeTab={activeTab}
         viewport={viewport}
+        account={account}
+        accountSwitcherUnlocked={gameState.unlockedTools.includes('ACCOUNT_SWITCHER')}
         evidenceCount={ticketEvidence.length}
         onSelectTab={setActiveTab}
         onViewportChange={changeViewport}
+        onAccountChange={changeAccount}
         onCapture={handleCapture}
         onCreateReport={handleCreateReport}
       />
@@ -271,7 +288,7 @@ export function TestWorkspacePage() {
                 ))}
               </ol>
               <dl>
-                <div><dt>Account</dt><dd>{activeTicket.startingContext.account}</dd></div>
+                <div><dt>Account</dt><dd>{account}</dd></div>
                 <div><dt>Locale</dt><dd>{activeTicket.startingContext.locale}</dd></div>
               </dl>
             </section>

@@ -2,6 +2,7 @@ import { createInitialGameState } from '../domain/gameState'
 import type { BugReport, ReviewResult } from '../domain/schemas'
 import { deserializeGameState, serializeGameState } from '../../persistence/gameStateStorage'
 import { T01_SCENARIO } from '../../scenarios/shoply/t01'
+import { T03_SCENARIO } from '../../scenarios/shoply/t03'
 import { applyReview } from './applyReview'
 
 const report: BugReport = {
@@ -81,5 +82,24 @@ describe('applyReview', () => {
     expect(reviewed.tickets.T01?.resolvedAt).toBeUndefined()
     expect(reviewed.profile).toMatchObject({ xp: 0, reputation: 98 })
     expect(reviewed.currentTicketId).toBe('T01')
+    expect(reviewed.unlockedTools).toEqual([])
+  })
+
+  it('unlocks the Account Switcher only after a valid T03 Review', () => {
+    const initial = createInitialGameState(['T03'])
+    initial.tickets.T03 = { status: 'TESTING', reportIds: [], acceptedAt: 1 }
+    const t03Report = { ...report, id: 'REPORT-T03', ticketId: 'T03' }
+
+    const invalid = applyReview(
+      initial,
+      t03Report,
+      { ...review, valid: false, xp: 0, reputationDelta: -2 },
+      T03_SCENARIO.progression,
+      3,
+    )
+    expect(invalid.unlockedTools).toEqual([])
+
+    const valid = applyReview(initial, t03Report, review, T03_SCENARIO.progression, 3)
+    expect(valid.unlockedTools).toEqual(['ACCOUNT_SWITCHER'])
   })
 })

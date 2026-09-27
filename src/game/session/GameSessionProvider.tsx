@@ -17,7 +17,7 @@ import type {
   ReviewResult,
 } from '../domain/schemas'
 import { loadGameState, saveGameState } from '../../persistence/gameStateStorage'
-import { isTicketUnlocked, TICKET_CATALOG } from '../../scenarios/shoply/tickets'
+import { isTicketUnlocked, SCENARIO_CATALOG, TICKET_CATALOG } from '../../scenarios/shoply/tickets'
 
 interface GameSessionValue {
   state: GameState
@@ -35,7 +35,7 @@ function loadOrCreateGameState(): GameState {
   const ticketIds = TICKET_CATALOG.map((ticket) => ticket.id)
   const savedState = loadGameState()
   return savedState
-    ? reconcileGameStateTickets(savedState, ticketIds)
+    ? reconcileGameStateTickets(savedState, ticketIds, SCENARIO_CATALOG)
     : createInitialGameState(ticketIds)
 }
 

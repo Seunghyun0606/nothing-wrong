@@ -217,10 +217,15 @@ export const ScenarioSeedSchema = z.object({
   context: TestContextSchema.partial().optional(),
 })
 
+export const AccountSwitchPolicySchema = z.object({
+  resetProductState: z.boolean(),
+})
+
 export const ScenarioSchema = z.object({
   id: IdSchema,
   ticket: TicketSchema,
   seed: ScenarioSeedSchema,
+  accountSwitchPolicy: AccountSwitchPolicySchema.optional(),
   expectedBugs: z.array(ExpectedBugSchema),
   mutations: z.array(MutationSchema),
   scoring: ScoringConfigSchema,
@@ -287,6 +292,7 @@ export type ScoringConfig = z.infer<typeof ScoringConfigSchema>
 export type ProgressionReward = z.infer<typeof ProgressionRewardSchema>
 export type NarrativeHook = z.infer<typeof NarrativeHookSchema>
 export type ScenarioSeed = z.infer<typeof ScenarioSeedSchema>
+export type AccountSwitchPolicy = z.infer<typeof AccountSwitchPolicySchema>
 export type Scenario = z.infer<typeof ScenarioSchema>
 export type PlayerProfile = z.infer<typeof PlayerProfileSchema>
 export type PlayerTicketState = z.infer<typeof PlayerTicketStateSchema>

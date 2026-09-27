@@ -28,7 +28,10 @@ export function applyReview(
     : transitionTicketStatus(reviewedStatus, 'TESTING')
   const nextXp = state.profile.xp + review.xp
   const unlockedTools = [
-    ...new Set([...state.unlockedTools, ...(reward?.unlockedTools ?? [])]),
+    ...new Set([
+      ...state.unlockedTools,
+      ...(review.valid ? (reward?.unlockedTools ?? []) : []),
+    ]),
   ]
 
   return GameStateSchema.parse({

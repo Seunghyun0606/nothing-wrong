@@ -8,7 +8,13 @@ import {
 
 import { getShoplyProduct } from './domain/catalog'
 import { SHOPLY_ORDERS } from './domain/orders'
-import type { CartItem, PricedCartItem, ShoplyOrder, ShoplyUser } from './domain/types'
+import type {
+  CartItem,
+  PricedCartItem,
+  ShoplyOrder,
+  ShoplyTier,
+  ShoplyUser,
+} from './domain/types'
 
 interface ShoplyContextValue {
   user: ShoplyUser
@@ -21,19 +27,27 @@ interface ShoplyContextValue {
   removeFromCart: (productId: string) => void
   setCoupon: (code: string) => void
   cancelOrder: (orderId: string) => void
+  switchAccount: (tier: ShoplyTier, resetProductState: boolean) => void
 }
 
 const ShoplyContext = createContext<ShoplyContextValue | null>(null)
 
-export function ShoplyProvider({ children }: PropsWithChildren) {
+interface ShoplyProviderProps extends PropsWithChildren {
+  initialAccount?: ShoplyTier
+}
+
+export function ShoplyProvider({ children, initialAccount = 'BASIC' }: ShoplyProviderProps) {
   const [cart, setCart] = useState<CartItem[]>([])
   const [coupon, setCoupon] = useState('')
+  const [account, setAccount] = useState<ShoplyTier>(initialAccount)
   const [orders, setOrders] = useState<ShoplyOrder[]>(() =>
     SHOPLY_ORDERS.map((order) => ({ ...order })),
   )
   const user = useMemo<ShoplyUser>(
-    () => ({ id: 'shoply-basic-01', name: 'Jordan Park', tier: 'BASIC' }),
-    [],
+    () => account === 'GOLD'
+      ? { id: 'shoply-gold-01', name: 'Avery Chen', tier: account }
+      : { id: 'shoply-basic-01', name: 'Jordan Park', tier: account },
+    [account],
   )
   const items = useMemo(
     () =>
@@ -89,8 +103,17 @@ export function ShoplyProvider({ children }: PropsWithChildren) {
           ),
         )
       },
+      switchAccount(tier, resetProductState) {
+        if (tier === account) return
+        setAccount(tier)
+        if (resetProductState) {
+          setCart([])
+          setCoupon('')
+          setOrders(SHOPLY_ORDERS.map((order) => ({ ...order })))
+        }
+      },
     }),
-    [coupon, items, orders, user],
+    [account, coupon, items, orders, user],
   )
 
   return <ShoplyContext.Provider value={value}>{children}</ShoplyContext.Provider>

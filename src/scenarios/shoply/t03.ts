@@ -93,6 +93,6 @@ export const T03_SCENARIO = parseScenario({
   progression: {
     xp: 100,
     reputationDelta: 2,
-    unlockedTools: [],
+    unlockedTools: ['ACCOUNT_SWITCHER'],
   },
 })

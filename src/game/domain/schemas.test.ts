@@ -81,4 +81,20 @@ describe('domain schemas', () => {
 
     expect(result.success).toBe(false)
   })
+
+  it('validates an explicit account switch reset policy', () => {
+    const input = createScenarioInput()
+    expect(
+      ScenarioSchema.parse({
+        ...input,
+        accountSwitchPolicy: { resetProductState: false },
+      }).accountSwitchPolicy,
+    ).toEqual({ resetProductState: false })
+    expect(
+      ScenarioSchema.safeParse({
+        ...input,
+        accountSwitchPolicy: { resetProductState: 'sometimes' },
+      }).success,
+    ).toBe(false)
+  })
 })
