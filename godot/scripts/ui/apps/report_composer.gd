@@ -18,6 +18,13 @@ var expanded := false
 var _confirm_no_issue := false
 var _note: Dictionary = {}
 var _requirement: Dictionary = {}
+var _outcome := ""
+
+const OUTCOME_LABELS := {
+	"BUG": "A feature is broken (BUG)",
+	"DATA_INTEGRITY": "Records disagree with each other (DATA INTEGRITY)",
+	"DOC_GAP": "The requirement leaves something out (DOC GAP)",
+}
 var _send: Button
 
 
@@ -127,6 +134,20 @@ func refresh() -> void:
 			_refresh_send())
 		add_child(choice)
 
+	if _outcomes().size() > 1:
+		add_child(Kit.label("What kind of problem is it?", 14, P.MUTED))
+		var kind_group := ButtonGroup.new()
+		for outcome in _outcomes():
+			var kind := _choice(OUTCOME_LABELS.get(outcome, outcome), kind_group)
+			kind.name = "Outcome%s" % outcome
+			if _outcome == outcome:
+				kind.set_pressed_no_signal(true)
+			var picked_outcome: String = outcome
+			kind.pressed.connect(func():
+				_outcome = picked_outcome
+				_refresh_send())
+			add_child(kind)
+
 	var footer := Kit.hbox(10)
 	_send = Kit.primary("Send report", _send_report)
 	_send.name = "SendReport"
@@ -150,15 +171,19 @@ func _choice(text: String, group: ButtonGroup) -> Button:
 	return choice
 
 
+func _outcomes() -> Array:
+	return scenario["ticket"].get("outcomes", ["BUG"])
+
+
 func _refresh_send() -> void:
-	_send.disabled = _note.is_empty() or _requirement.is_empty()
+	_send.disabled = _note.is_empty() or _requirement.is_empty() or (_outcomes().size() > 1 and _outcome == "")
 
 
 func _send_report() -> void:
 	var focus: Dictionary = _note["focus"]
 	var observation := { "evidenceId": _note["id"], "target": focus["target"], "label": focus["label"], "value": focus["value"] }
 	var report := Draft.bug_report(scenario, WorkspaceSession.interactions_for(ticket_id), _requirement, observation,
-		"", str(_note["snapshot"].get("heading", "")))
+		"", str(_note["snapshot"].get("heading", "")), _outcome if _outcome != "" else "BUG")
 	_reset()
 	Sfx.play("click")
 	GameSession.submit_report(report)
@@ -176,3 +201,4 @@ func _reset() -> void:
 	_confirm_no_issue = false
 	_note = {}
 	_requirement = {}
+	_outcome = ""

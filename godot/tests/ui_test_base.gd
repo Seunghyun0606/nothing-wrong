@@ -68,7 +68,7 @@ func _note(desktop: Control, target: String) -> void:
 
 
 ## Reports a note and the requirement it breaks to the Ticket's sender in Messenger.
-func _report(desktop: Control, note: String, requirement: String) -> void:
+func _report(desktop: Control, note: String, requirement: String, outcome: String = "") -> void:
 	DesktopSession.open_report()
 	var form: Node = find_named(desktop, "ReportComposer")
 	check(form != null, "report form open")
@@ -76,6 +76,11 @@ func _report(desktop: Control, note: String, requirement: String) -> void:
 		return
 	check(press(form, note, false), "note %s" % note)
 	check(press(form, requirement, false), "requirement %s" % requirement)
+	if outcome != "":
+		var kind := form.find_child("Outcome%s" % outcome, true, false) as Button
+		check(kind != null, "outcome %s offered" % outcome)
+		if kind:
+			kind.pressed.emit()
 	check(press(form, "Send report"), "send report")
 
 
@@ -118,7 +123,7 @@ func toggle_on(root: Node, text: String) -> bool:
 
 ## Searches the intranet and opens the record, as the player would.
 func _find_record(desktop: Control, query: String, document_id: String) -> void:
-	DesktopSession.open_url("https://search.nothingwrong.local/?q=%s" % query.uri_encode())
+	DesktopSession.open_url("https://search.northstar.local/?q=%s" % query.uri_encode())
 	var result: Node = find_named(desktop, "Result%s" % document_id)
 	check(result != null, "search for %s finds %s" % [query, document_id])
 	if result:

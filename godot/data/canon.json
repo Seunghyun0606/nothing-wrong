@@ -1,0 +1,85 @@
+{
+  "source": "docs/NOTHING_WRONG_ALL_IN_ONE.md (handoff-1.0)",
+  "chapters": {
+    "CH1": "Prologue",
+    "CH2": "Prologue",
+    "CH3": "Prologue",
+    "CH4": "Prologue",
+    "CH5": "ACT 2",
+    "CH6": "ACT 3",
+    "CH7": "ACT 4",
+    "CH8": "ACT 5",
+    "CH9": "ACT 6",
+    "FINAL": "NW-FINAL"
+  },
+  "order": [
+    "CH1",
+    "CH2",
+    "CH3",
+    "CH4",
+    "CH5",
+    "CH6",
+    "CH7",
+    "CH8",
+    "CH9",
+    "FINAL"
+  ],
+  "reveals": [
+    {
+      "id": "OCTOBER-17",
+      "from": "CH5",
+      "terms": [
+        "October 17",
+        "17 October",
+        "10월 17일"
+      ]
+    },
+    {
+      "id": "HORIZON-RIDGE",
+      "from": "CH6",
+      "terms": [
+        "Horizon Ridge",
+        "Wellness Center"
+      ]
+    },
+    {
+      "id": "DANIEL-DEATH",
+      "from": "CH7",
+      "terms": [
+        "Death Benefit",
+        "fatality",
+        "died",
+        "deceased",
+        "사망",
+        "숨졌"
+      ]
+    },
+    {
+      "id": "FOUNDATION",
+      "from": "CH8",
+      "terms": [
+        "Foundation",
+        "Community Alignment",
+        "COMMUNITY_PARTNER_OVERRIDE",
+        "재단"
+      ]
+    },
+    {
+      "id": "CONTROL",
+      "from": "CH9",
+      "terms": [
+        "Community Trust",
+        "Services Holdings",
+        "controlled by Horizon"
+      ]
+    }
+  ],
+  "never": [
+    "murder",
+    "murdered",
+    "살인",
+    "살해",
+    "CRITICAL CLUE",
+    "killed"
+  ]
+}

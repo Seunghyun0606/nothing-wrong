@@ -1,11 +1,14 @@
 ## In-game browser addresses. Port of browserAddress.ts.
-## Locations: { kind: newtab } | { kind: shoply, path } | { kind: docs, slug }
-## | { kind: search, query } | { kind: record, id } | { kind: unreachable, address }
+## Locations: { kind: newtab } | { kind: shoply, path } | { kind: horizon, path }
+## | { kind: docs, slug } | { kind: search, query } | { kind: record, id }
+## | { kind: unreachable, address }. Shoply and the ONE HORIZON QA portal are the sites
+## under test ("workspace" sites): they can be noted, logged, and reported.
 extends RefCounted
 
 const SHOPLY_HOST := "shoply.local"
-const DOCS_HOST := "docs.nothingwrong.local"
-const SEARCH_HOST := "search.nothingwrong.local"
+const HORIZON_HOST := "qa.onehorizon.local"
+const DOCS_HOST := "docs.northstar.local"
+const SEARCH_HOST := "search.northstar.local"
 
 
 static func new_tab() -> Dictionary:
@@ -14,6 +17,19 @@ static func new_tab() -> Dictionary:
 
 static func shoply(path: String) -> Dictionary:
 	return { "kind": "shoply", "path": path }
+
+
+static func horizon(path: String) -> Dictionary:
+	return { "kind": "horizon", "path": path }
+
+
+static func is_workspace(location: Dictionary) -> bool:
+	return location.get("kind", "") in ["shoply", "horizon"]
+
+
+## The address of a site-under-test path ("/shoply/cart", "/horizon/shoply-orders").
+static func path_url(path: String) -> String:
+	return format(horizon(path)) if path.begins_with("/horizon") else shoply_url(path)
 
 
 static func parse(input: String) -> Dictionary:
@@ -42,6 +58,8 @@ static func parse(input: String) -> Dictionary:
 
 	if host == SHOPLY_HOST:
 		return shoply("/shoply/%s" % rest if rest != "" else "/shoply")
+	if host == HORIZON_HOST:
+		return horizon("/horizon/%s" % rest if rest != "" else "/horizon")
 	if host == DOCS_HOST:
 		return { "kind": "docs", "slug": rest.split("/")[0].to_lower() if rest != "" else "" }
 	return { "kind": "unreachable", "address": trimmed }
@@ -52,6 +70,9 @@ static func format(location: Dictionary) -> String:
 		"shoply":
 			var path: String = str(location["path"]).trim_prefix("/shoply")
 			return "https://%s%s" % [SHOPLY_HOST, path if path != "" else "/"]
+		"horizon":
+			var path: String = str(location["path"]).trim_prefix("/horizon")
+			return "https://%s%s" % [HORIZON_HOST, path if path != "" else "/"]
 		"docs":
 			return "https://%s/%s" % [DOCS_HOST, location["slug"]]
 		"search":

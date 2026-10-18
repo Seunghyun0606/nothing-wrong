@@ -25,7 +25,7 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
   that half, or to the top to maximize; resize from any edge or corner.
 - **Spec documents:** links to intranet documents pin the document into the Ticket's
   QA Notes and place QA Notes beside the Browser, so the spec stays readable while
-  testing. Typing a `docs.nothingwrong.local` address still opens it in the Browser.
+  testing. Typing a `docs.northstar.local` address still opens it in the Browser.
 - **Three apps (DEC-010):** Messenger (the team and your reports), Browser, and QA Notes.
   QA Notes is the workbook: a page per Ticket (Start test, request, requirements, pinned
   spec, what you noted, your own notes) and the Case File. There is no
@@ -44,7 +44,7 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
   debrief when it is right, or a hint about where to look (wrong screen, state, value, or
   rule). After a few misses the team gives a nudge and then the answer (`story.assist` in
   `data/scenarios.json`; T01 helps after one miss).
-- **Intranet search (DEC-011):** `search.nothingwrong.local` (also on the Browser's new
+- **Intranet search (DEC-011):** `search.northstar.local` (also on the Browser's new
   tab). The player types what they read; searches accept English or Korean keywords and
   one typo. Some records are a hop away: a record names the next term to search
   (`unlockedByDocuments`), and decoy records answer broad searches. After two searches
@@ -71,8 +71,17 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
   Gold-only coupon holdout; Chapter 4 (T10–T12, the Monday after) checks the rollback with
   the plan's remaining Ticket types: a cross-screen comparison (T10), a Ticket with two
   defects that both have to be reported (T11), and a regression pass over last week's
-  fixes (T12). The story ends there.
-- **No tutorial overlay:** the team's messages are the guide. Maya's T01 briefing
+  fixes (T12). Chapters 1–4 are a prologue: the master synopsis
+  (`docs/NOTHING_WRONG_ALL_IN_ONE.md`) continues from Chapter 5 (ONE HORIZON, ACT 2,
+  T13–T16 = NW-006–009). See `docs/story/CANON-MAP.md` and DEC-013.
+- **ONE HORIZON QA portal:** `qa.onehorizon.local` shows read-only UAT snapshots of Horizon
+  systems as record tables or Source/Target compares (`data/horizon.json`, one generic
+  screen in `scripts/ui/horizon/record_view.gd`). Cells can be noted and reported like
+  Shoply values. Tickets may offer several outcomes (`ticket.outcomes`: BUG,
+  DATA_INTEGRITY, DOC_GAP).
+- **Canon gate:** `tests/test_canon.gd` fails if a chapter mentions something the story has
+  not reached yet, or states what the canon leaves open (`data/canon.json`).
+- **No tutorial overlay:** the team's messages are the guide. Mina's T01 briefing
   explains noting and reporting; each Ticket keeps an optional "Need a hint?" in QA Notes.
 - **Notifications** rise from behind the taskbar in the bottom-right corner.
 - **Browser tabs:** links and lead searches from other apps open in a new tab (up to six),

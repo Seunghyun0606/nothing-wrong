@@ -267,7 +267,7 @@ func go_forward() -> void:
 func reload() -> void:
 	reload_key += 1
 	var active := GameSession.active_ticket_id()
-	if active != "" and location()["kind"] == "shoply":
+	if active != "" and Addresses.is_workspace(location()):
 		WorkspaceSession.record_interaction(active, "RELOAD_PAGE", location()["path"])
 	changed.emit()
 
@@ -298,7 +298,7 @@ static func action_for_path(path: String) -> String:
 
 func _record_visit(next: Dictionary) -> void:
 	var active := GameSession.active_ticket_id()
-	if active != "" and next["kind"] == "shoply":
+	if active != "" and Addresses.is_workspace(next):
 		WorkspaceSession.record_interaction(active, action_for_path(next["path"]), next["path"])
 
 
@@ -306,7 +306,7 @@ func _record_visit(next: Dictionary) -> void:
 func qa_context() -> Dictionary:
 	var active := GameSession.active_ticket_id()
 	var current := location()
-	var on_shoply: bool = current["kind"] == "shoply"
+	var on_shoply: bool = Addresses.is_workspace(current)
 	var evidence: Array = WorkspaceSession.evidence_for(active) if active != "" else []
 	var locale := "en-US"
 	if active != "":

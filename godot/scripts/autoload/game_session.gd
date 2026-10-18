@@ -8,12 +8,15 @@ const Catalog := preload("res://scripts/domain/catalog.gd")
 const GameState := preload("res://scripts/domain/game_state.gd")
 const Intranet := preload("res://scripts/domain/intranet.gd")
 const Review := preload("res://scripts/domain/review.gd")
+const HorizonData := preload("res://scripts/domain/horizon_data.gd")
 
 const SAVE_PATH := "user://save.json"
 const BACKUP_PATH := "user://save.unreadable.json"
 
 var catalog: RefCounted
 var intranet: RefCounted
+## Record views of the ONE HORIZON QA portal (data/horizon.json).
+var horizon: RefCounted
 var state: Dictionary = {}
 ## True when an unreadable save was set aside and a fresh game started.
 var recovered_from_unreadable_save := false
@@ -24,6 +27,7 @@ var persist := true
 func _ready() -> void:
 	catalog = Catalog.load_from()
 	intranet = Intranet.load_from()
+	horizon = HorizonData.load_from()
 	load_state()
 
 

@@ -144,7 +144,7 @@ func _build_taskbar() -> void:
 	var row := Kit.hbox(6)
 	bar.add_child(row)
 
-	var start := Kit.primary("NW", _open_start_menu)
+	var start := Kit.primary("NS", _open_start_menu)
 	start.custom_minimum_size = Vector2(46, 38)
 	row.add_child(start)
 	_start_menu = PopupMenu.new()

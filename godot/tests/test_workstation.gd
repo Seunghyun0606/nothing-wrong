@@ -51,6 +51,7 @@ func _content_strings() -> Array:
 			add.call(line)
 	for chapter in GameSession.catalog.chapters:
 		add.call(chapter["title"])
+		add.call(chapter["synopsis"])
 		add.call(chapter.get("deadline", {}).get("label"))
 		add.call(chapter["synopsis"])
 		for message in chapter["epilogue"]:
@@ -79,7 +80,7 @@ func test_spec_links_pin_into_qa_notes_beside_the_browser() -> void:
 	var placed := {}
 	DesktopSession.layout_requested.connect(func(app, fraction): placed[app] = fraction)
 	DesktopSession.open_url("https://shoply.local/product/everyday-pack")
-	DesktopSession.open_url("https://docs.nothingwrong.local/checkout-interaction-specification")
+	DesktopSession.open_url("https://docs.northstar.local/checkout-interaction-specification")
 	check(WorkspaceSession.references_for("T01").has("ATT-T01-01"), "spec pinned to T01")
 	check_eq(DesktopSession.location()["kind"], "shoply", "browser keeps the shop open")
 	check(DesktopSession.is_visible_app("notes"), "notes opened")

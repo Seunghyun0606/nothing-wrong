@@ -89,7 +89,7 @@
         "exp/retention-push. Goal: reduce order cancellations.",
         "Variant A: route Cancel order to the payment page.",
         "Variant B (\"margin guard\"): cap discounts at 10% on carts of three or more items.",
-        "Owner: Growth team (s.ortiz).",
+        "Owner: Growth team (l.ortiz).",
         "Status: archived in March. Not approved for release."
       ],
       "keywordsKo": [
@@ -122,9 +122,9 @@
       "lines": [
         "Monday 18:40: include pattern changed from release/* to release/*, exp/*, promo/*",
         "Reason: \"ship new promo branches automatically\"",
-        "Edited by: d.reyes",
+        "Edited by: m.reyes",
         "Next run (02:14): matched 1 release branch and 6 archived branches.",
-        "Thursday 19:05: exp/* and promo/* removed again (d.reyes). release/* still included."
+        "Thursday 19:05: exp/* and promo/* removed again (m.reyes). release/* still included."
       ],
       "keywordsKo": [
         "병합 규칙",
@@ -170,7 +170,7 @@
     {
       "id": "DOC-QA-HANDBOOK",
       "title": "QA handbook · severity and reporting",
-      "source": "Nothing Wrong / QA practice",
+      "source": "Northstar / QA practice",
       "keywords": [
         "handbook",
         "severity",
@@ -208,7 +208,7 @@
       "lines": [
         "Autumn Release: Friday 10:00.",
         "RC3: built overnight by release-bot.",
-        "Code freeze: Thursday 18:00. Release manager: Daniel Reyes."
+        "Code freeze: Thursday 18:00. Release manager: Marcus Reyes."
       ],
       "keywordsKo": [
         "릴리스",
@@ -425,7 +425,7 @@
       ],
       "lines": [
         "WS-14: floor 3, desk 12.",
-        "Assigned to: Sam Ortiz (Shoply engineering)."
+        "Assigned to: Leo Ortiz (Shoply engineering)."
       ],
       "availableAfter": "T07",
       "unlockedByDocuments": [
@@ -494,8 +494,8 @@
       ],
       "lines": [
         "Asks for: temporary account ops-temp, job growth-metrics-sync, holdout q4-lift.",
-        "Requested by: s.ortiz, Monday 22:38.",
-        "Approved by: e.park (VP Growth), Monday 22:41.",
+        "Requested by: l.ortiz, Monday 22:38.",
+        "Approved by: e.brooks (VP Growth), Monday 22:41.",
         "Note: \"Measure retention lift for the Q4 review. Do not route through QA.\""
       ],
       "availableAfter": "T09",
@@ -514,7 +514,7 @@
         "team",
         "vp",
         "growth team",
-        "e.park",
+        "e.brooks",
         "elena",
         "manager"
       ],
@@ -524,8 +524,8 @@
         "팀"
       ],
       "lines": [
-        "Elena Park: VP Growth. The Growth team, including s.ortiz, reports to her.",
-        "Daniel Reyes: Release Manager.",
+        "Elena Brooks: VP Growth. The Growth team, including l.ortiz, reports to her.",
+        "Marcus Reyes: Release Manager.",
         "Priya Nair: Support Lead."
       ]
     },
@@ -547,7 +547,7 @@
         "리텐션"
       ],
       "lines": [
-        "Monday 09:00. Presenter: E. Park (VP Growth).",
+        "Monday 09:00. Presenter: E. Brooks (VP Growth).",
         "Topics: retention, Gold member growth, weekend revenue."
       ]
     },

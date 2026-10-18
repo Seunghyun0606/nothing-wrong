@@ -1,0 +1,28 @@
+id: DEC-013
+title: Chapters 1–4 become a prologue; the build follows the master synopsis from Chapter 5
+status: active
+decided_at: "2026-10-18"
+context: >-
+  The original plan (docs/NOTHING_WRONG_ALL_IN_ONE.md) is a six-act corporate mystery on
+  Horizon Group's ONE HORIZON integration. The Godot build had grown a separate four-chapter
+  Shoply story. The project owner chose to keep it as a prologue and continue with the
+  master synopsis, to rename the player's company to Northstar, to rename people so roles
+  are distinct, to check the story stays on the synopsis, and to build shared modules.
+decision: >-
+  Chapters 1–4 are a prologue that ends with Shoply joining ONE HORIZON. From Chapter 5 the
+  chapters follow the canon's acts and Tickets (Chapter 5 = ACT 2, NW-006–009). The player
+  works for Northstar Quality Services; the prologue's people are renamed so they cannot be
+  confused with canon characters (Mina Seo is the canon QA lead). Horizon systems are shown
+  by one generic record and Source/Target compare screen fed by data/horizon.json. A canon
+  gate test enforces the reveal order and the facts the canon leaves open.
+consequences:
+  - Reports can claim BUG, DATA_INTEGRITY, or DOC_GAP when a Ticket offers more than one.
+  - Chapters can be quiet (no clue cards in the chat or the Case File) until the canon opens the Case Notes.
+  - Story times can run into later weeks ("W3 Mon 09:30"); each chapter has its own channel.
+  - docs/story/CANON-MAP.md tracks which canon Tickets are built.
+applies_to:
+  - global
+references:
+  - docs/NOTHING_WRONG_ALL_IN_ONE.md
+  - docs/story/CANON-MAP.md
+  - .project-os/decisions/DEC-012-deadlines-and-final-chapter.yaml

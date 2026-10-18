@@ -76,12 +76,16 @@ static func _build(catalog: RefCounted, state: Dictionary) -> Dictionary:
 
 		for index in story["debrief"].size():
 			entries.append(_message("%s:debrief:%d" % [scenario_id, index], story["debrief"][index]))
+		var chapter_of_story: Variant = catalog.get_chapter(story["chapterId"])
+		var quiet: bool = chapter_of_story != null and chapter_of_story.get("quiet", false)
 		var discovery: Variant = story.get("discovery", null)
 		if discovery != null:
 			if not state["story"].get("foundDocuments", []).has(discovery["documentId"]):
 				return { "entries": entries, "pendingDeduction": null, "pendingDiscovery": discovery }
-			entries.append({ "id": "%s:found" % scenario_id, "kind": "found", "documentId": discovery["documentId"] })
-		entries.append({ "id": "%s:clue" % scenario_id, "kind": "clue", "title": story["clue"]["title"], "text": story["clue"]["text"] })
+			if not quiet:
+				entries.append({ "id": "%s:found" % scenario_id, "kind": "found", "documentId": discovery["documentId"] })
+		if not quiet:
+			entries.append({ "id": "%s:clue" % scenario_id, "kind": "clue", "title": story["clue"]["title"], "text": story["clue"]["text"] })
 
 		var deduction: Variant = story.get("deduction", null)
 		if deduction == null:
@@ -166,6 +170,7 @@ static func report_entry(report: Dictionary) -> Dictionary:
 		"value": observation.get("value", ""),
 		"requirementId": report.get("requirementId", ""),
 		"requirement": report.get("expected", ""),
+		"outcome": report.get("outcome", "BUG"),
 	}
 
 

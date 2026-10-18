@@ -120,7 +120,7 @@ func _ticket_page(scenario: Dictionary) -> void:
 	sheet_body.add_child(meta)
 	sheet_body.add_child(Kit.heading(ticket["title"], 20))
 	sheet_body.add_child(Kit.label(Kit.tf("From %s · %s", [ticket["sender"]["name"], Kit.t(ticket["sender"]["role"])]), 14, P.MUTED))
-	var start_url := Addresses.shoply_url(ticket["startingContext"]["currentPath"])
+	var start_url := Addresses.path_url(ticket["startingContext"]["currentPath"])
 	if status == "NEW" or status == "ACCEPTED":
 		var start := Kit.primary("Start test", GameSession.start_ticket.bind(ticket_id))
 		start.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
@@ -234,7 +234,7 @@ static func note_card(item: Dictionary) -> Control:
 	row.add_child(value)
 	body.add_child(row)
 	var context: Dictionary = item["context"]
-	var where := Kit.label("%s · %s · %s · %s" % [item["snapshot"].get("heading", ""), Addresses.display(Addresses.shoply_url(context["currentPath"])),
+	var where := Kit.label("%s · %s · %s · %s" % [item["snapshot"].get("heading", ""), Addresses.display(Addresses.path_url(context["currentPath"])),
 		context["account"], Kit.time_text(float(item["capturedAt"]))], 13, P.MUTED)
 	where.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	body.add_child(where)
@@ -256,6 +256,8 @@ func _case_file() -> Control:
 	if pending != null and pending.get("mode", "") == "board" and log["delivered"] >= log["entries"].size():
 		column.add_child(_clue_board(pending))
 	for chapter in GameSession.catalog.chapters:
+		if chapter.get("quiet", false):
+			continue
 		var beats: Array = GameSession.catalog.scenarios.filter(func(scenario):
 			return scenario.get("story", null) != null and scenario["story"]["chapterId"] == chapter["id"])
 		if beats.is_empty():

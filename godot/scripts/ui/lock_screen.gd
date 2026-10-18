@@ -42,7 +42,7 @@ func _ready() -> void:
 	var name := Kit.heading(GameSession.state["profile"]["name"], 24)
 	name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	body.add_child(name)
-	var station := Kit.label("Nothing Wrong · QA workstation 0142", 14, P.MUTED)
+	var station := Kit.label("Northstar · QA workstation 0142", 14, P.MUTED)
 	station.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	body.add_child(station)
 	body.add_child(Kit.label("Access code", 13, P.MUTED))

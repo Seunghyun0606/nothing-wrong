@@ -10,6 +10,7 @@ const Rules := preload("res://scripts/domain/shoply_rules.gd")
 const Intranet := preload("res://scripts/domain/intranet.gd")
 const Draft := preload("res://scripts/domain/report_draft.gd")
 const StoryClock := preload("res://scripts/domain/story_clock.gd")
+const HorizonData := preload("res://scripts/domain/horizon_data.gd")
 
 
 func _catalog() -> RefCounted:
@@ -24,9 +25,21 @@ func _context(path: String, quantity: int, account := "BASIC", coupon := "", cap
 	}
 
 
-func test_catalog_loads_four_chapters_of_tickets_in_order() -> void:
-	check_eq(_catalog().ticket_ids(), ["T01", "T02", "T03", "T04", "T05", "T06", "T07", "T08", "T09", "T10", "T11", "T12"], "ticket ids")
-	check_eq(_catalog().chapters.map(func(chapter): return chapter["id"]), ["CH1", "CH2", "CH3", "CH4"], "chapters")
+func test_catalog_loads_the_chapters_in_order() -> void:
+	check_eq(_catalog().ticket_ids().slice(0, 13), ["T01", "T02", "T03", "T04", "T05", "T06", "T07", "T08", "T09", "T10", "T11", "T12", "T13"], "ticket ids")
+	check_eq(_catalog().chapters.map(func(chapter): return chapter["id"]).slice(0, 5), ["CH1", "CH2", "CH3", "CH4", "CH5"], "chapters")
+
+
+func test_horizon_views_are_generic_records() -> void:
+	var data: RefCounted = HorizonData.load_from()
+	var orders: Dictionary = data.get_view("shoply-orders")
+	check_eq(HorizonData.filtered_rows(orders, "2021-10-17").size(), 4, "filter by date")
+	check_eq(HorizonData.cell_target(orders, "SO-1017-01", "target", "status"), "shoply-orders.SO-1017-01.target.status", "compare cells")
+	var payments: Dictionary = data.get_view("payflow-after-exit")
+	check_eq(HorizonData.cell_target(payments, "PF-2111-25", "", "type"), "payflow-after-exit.PF-2111-25.type", "table cells")
+	var state := GameState.create_initial(_catalog().ticket_ids())
+	check(not data.is_open(orders, _catalog(), state), "views open with their Ticket")
+	check_eq(StoryClock.parse("W3 Mon 09:30"), 2 * StoryClock.WEEK + 570, "weeks after release week")
 
 
 ## Chapter 1 played to its finale, with `misses` wrong reports on T04.
@@ -55,7 +68,7 @@ func test_a_late_finale_changes_how_the_chapter_ends() -> void:
 	var late_log := MessengerLog.build(_catalog(), _chapter_one_done(8))
 	lines = late_log["entries"].filter(func(entry): return entry.get("epilogueOf", "") == "CH1")
 	check(lines[1].get("late", false), "eight misses push the finale past 18:00")
-	check(str(lines[1]["text"]).contains("missed code freeze"), "Maya says what it cost")
+	check(str(lines[1]["text"]).contains("missed code freeze"), "Mina says what it cost")
 
 
 func test_a_ticket_with_two_defects_needs_both_reported() -> void:
@@ -203,7 +216,7 @@ func test_missed_flags_bring_a_nudge_then_the_answer() -> void:
 	var reported := MessengerLog.build(catalog, GameState.apply_review(state, { "id": "R0", "ticketId": "T01", "kind": "BUG" }, { "valid": false, "hint": "Look again." }, {}, 2))
 	var tail: Array = reported["entries"].slice(-3)
 	check_eq(tail[0]["kind"], "report", "the report is the player's message")
-	check_eq([tail[1]["from"], tail[1]["text"]], ["Maya Kim", "Look again."], "the sender replies with the hint")
+	check_eq([tail[1]["from"], tail[1]["text"]], ["Mina Seo", "Look again."], "the sender replies with the hint")
 	var miss := { "valid": false, "hint": "Look again." }
 	state = GameState.apply_review(state, { "id": "R1", "ticketId": "T01", "kind": "BUG" }, miss, {}, 2)
 	check_eq(GameState.misses(state, "T01"), 1, "one miss")
@@ -276,7 +289,7 @@ func test_report_steps_are_drafted_from_the_capture() -> void:
 func test_addresses_parse_and_format() -> void:
 	check_eq(Addresses.parse("shoply.local"), { "kind": "shoply", "path": "/shoply" }, "host only")
 	check_eq(Addresses.parse(" HTTPS://www.Shoply.local/cart/ "), { "kind": "shoply", "path": "/shoply/cart" }, "protocol")
-	check_eq(Addresses.parse("docs.nothingwrong.local/Shoply-Pricing-Rules")["slug"], "shoply-pricing-rules", "docs")
+	check_eq(Addresses.parse("docs.northstar.local/Shoply-Pricing-Rules")["slug"], "shoply-pricing-rules", "docs")
 	check_eq(Addresses.parse("shoply.com")["kind"], "unreachable", "unknown host")
 	check_eq(Addresses.format({ "kind": "shoply", "path": "/shoply/checkout" }), "https://shoply.local/checkout", "format")
 	check_eq(Addresses.slug("Checkout interaction specification"), "checkout-interaction-specification", "slug")

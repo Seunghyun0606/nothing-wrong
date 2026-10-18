@@ -5,6 +5,9 @@ const Conditions := preload("res://scripts/domain/conditions.gd")
 const Observations := preload("res://scripts/domain/observations.gd")
 
 const NOISE_PENALTY := 5
+## The kinds of problem a report can claim (03_PLAYABLE_TICKETS: Ticket Outcome).
+## A defect's `outcome` defaults to BUG.
+const OUTCOMES := ["BUG", "DATA_INTEGRITY", "DOC_GAP"]
 
 
 static func normalize(value: String) -> String:
@@ -98,7 +101,8 @@ static func evaluate_bug(
 		observation_matches = observation_target_valid and observation_in_failing_state
 	else:
 		observation_matches = normalize(str(report.get("actual", ""))) == normalize(bug["actual"])
-	var detection_matches := requirement_matches and observation_matches
+	var outcome_matches: bool = str(report.get("outcome", "BUG")) == str(bug.get("outcome", "BUG"))
+	var detection_matches := requirement_matches and observation_matches and outcome_matches
 
 	var steps: Array = report.get("reproductionSteps", [])
 	var required_actions: Array = bug.get("reproductionActions", [])
@@ -195,6 +199,9 @@ static func reply_hint(report: Dictionary, scenario: Dictionary, evidence: Dicti
 		elif not valid_targets.has(picked):
 			rank = 2
 			line = "You're on the right screen, but that value is fine. Look at the others again."
+		elif report.get("requirementId", "") == bug.get("requirementId", "") and str(report.get("outcome", "BUG")) != str(bug.get("outcome", "BUG")):
+			rank = 4
+			line = "That's the record, and that's the rule. But is it a broken feature, or records that disagree with each other? Pick the kind of problem again."
 		else:
 			rank = 3
 			line = "That value is wrong, but it breaks a different requirement. Which one does it contradict?"

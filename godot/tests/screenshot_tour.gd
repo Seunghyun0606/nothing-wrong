@@ -87,12 +87,12 @@ func _tour() -> void:
 	DesktopSession.open_url("https://shoply.local")
 	await _shot("g4a-storefront")
 	await _press("shoply.local/product/everyday-pack")
-	DesktopSession.open_url("https://docs.nothingwrong.local/checkout-interaction-specification")
+	DesktopSession.open_url("https://docs.northstar.local/checkout-interaction-specification")
 	await _shot("g4c-spec-side-by-side")
 	await _press("Add to bag")
 	await _press("View bag")
 	await _shot("g5-cart")
-	# A miss in the bag: noted, reported, and Maya replies.
+	# A miss in the bag: noted, reported, and Mina replies.
 	await _press("📌 Note")
 	await _shot("g5a-noting")
 	await _mark("cart_subtotal")
@@ -132,6 +132,6 @@ func _tour() -> void:
 		form.fill("when", "18:40")
 		form.fill("who", "release-bot")
 		await _shot("g13b-deduction-filled")
-		await _press("Maya Kim")
+		await _press("Mina Seo")
 		await _shot("g13c-deduction-reply")
 	quit()

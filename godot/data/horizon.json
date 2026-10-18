@@ -1,0 +1,633 @@
+{
+  "portal": {
+    "title": "ONE HORIZON · QA portal",
+    "note": "Read-only UAT snapshots assigned to your Tickets. Sensitive fields are masked."
+  },
+  "views": [
+    {
+      "id": "shoply-orders",
+      "ticket": "T13",
+      "system": "Shoply Legacy → Shoply Next",
+      "title": "Historical orders · migration compare",
+      "mode": "compare",
+      "keyLabel": "Order",
+      "filter": "date",
+      "columns": [
+        {
+          "id": "date",
+          "label": "Date"
+        },
+        {
+          "id": "status",
+          "label": "Status"
+        },
+        {
+          "id": "total",
+          "label": "Total"
+        }
+      ],
+      "note": "Sample of 15 legacy orders compared with their migrated records.",
+      "console": [
+        "info: compare job orders-legacy-next loaded 15 source rows",
+        "info: 14 target rows matched by order id"
+      ],
+      "rows": [
+        {
+          "key": "SO-1015-01",
+          "source": {
+            "date": "2021-10-15",
+            "status": "COMPLETED",
+            "total": "$42.00"
+          },
+          "target": {
+            "date": "2021-10-15",
+            "status": "COMPLETED",
+            "total": "$42.00"
+          }
+        },
+        {
+          "key": "SO-1015-02",
+          "source": {
+            "date": "2021-10-15",
+            "status": "COMPLETED",
+            "total": "$18.00"
+          },
+          "target": {
+            "date": "2021-10-15",
+            "status": "COMPLETED",
+            "total": "$18.00"
+          }
+        },
+        {
+          "key": "SO-1016-01",
+          "source": {
+            "date": "2021-10-16",
+            "status": "COMPLETED",
+            "total": "$30.00"
+          },
+          "target": {
+            "date": "2021-10-16",
+            "status": "COMPLETED",
+            "total": "$30.00"
+          }
+        },
+        {
+          "key": "SO-1016-02",
+          "source": {
+            "date": "2021-10-16",
+            "status": "REFUNDED",
+            "total": "$24.00"
+          },
+          "target": {
+            "date": "2021-10-16",
+            "status": "REFUNDED",
+            "total": "$24.00"
+          }
+        },
+        {
+          "key": "SO-1016-03",
+          "source": {
+            "date": "2021-10-16",
+            "status": "COMPLETED",
+            "total": "$60.00"
+          },
+          "target": {
+            "date": "2021-10-16",
+            "status": "COMPLETED",
+            "total": "$60.00"
+          }
+        },
+        {
+          "key": "SO-1017-01",
+          "source": {
+            "date": "2021-10-17",
+            "status": "COMPLETED",
+            "total": "$36.00"
+          },
+          "target": {
+            "date": "2021-10-17",
+            "status": "CANCELLED",
+            "total": "$36.00"
+          }
+        },
+        {
+          "key": "SO-1017-02",
+          "source": {
+            "date": "2021-10-17",
+            "status": "COMPLETED",
+            "total": "$54.00"
+          },
+          "target": null
+        },
+        {
+          "key": "SO-1017-03",
+          "source": {
+            "date": "2021-10-17",
+            "status": "COMPLETED",
+            "total": "$30.00"
+          },
+          "target": {
+            "date": "2021-10-17",
+            "status": "CANCELLED",
+            "total": "$30.00"
+          }
+        },
+        {
+          "key": "SO-1017-04",
+          "source": {
+            "date": "2021-10-17",
+            "status": "CANCELLED",
+            "total": "$24.00"
+          },
+          "target": {
+            "date": "2021-10-17",
+            "status": "CANCELLED",
+            "total": "$24.00"
+          }
+        },
+        {
+          "key": "SO-1018-01",
+          "source": {
+            "date": "2021-10-18",
+            "status": "COMPLETED",
+            "total": "$48.00"
+          },
+          "target": {
+            "date": "2021-10-18",
+            "status": "COMPLETED",
+            "total": "$48.00"
+          }
+        },
+        {
+          "key": "SO-1018-02",
+          "source": {
+            "date": "2021-10-18",
+            "status": "COMPLETED",
+            "total": "$30.00"
+          },
+          "target": {
+            "date": "2021-10-18",
+            "status": "COMPLETED",
+            "total": "$30.00"
+          }
+        },
+        {
+          "key": "SO-1018-03",
+          "source": {
+            "date": "2021-10-18",
+            "status": "REFUNDED",
+            "total": "$18.00"
+          },
+          "target": {
+            "date": "2021-10-18",
+            "status": "REFUNDED",
+            "total": "$18.00"
+          }
+        },
+        {
+          "key": "SO-1019-01",
+          "source": {
+            "date": "2021-10-19",
+            "status": "COMPLETED",
+            "total": "$72.00"
+          },
+          "target": {
+            "date": "2021-10-19",
+            "status": "COMPLETED",
+            "total": "$72.00"
+          }
+        },
+        {
+          "key": "SO-1019-02",
+          "source": {
+            "date": "2021-10-19",
+            "status": "COMPLETED",
+            "total": "$30.00"
+          },
+          "target": {
+            "date": "2021-10-19",
+            "status": "COMPLETED",
+            "total": "$30.00"
+          }
+        },
+        {
+          "key": "SO-1019-03",
+          "source": {
+            "date": "2021-10-19",
+            "status": "COMPLETED",
+            "total": "$24.00"
+          },
+          "target": {
+            "date": "2021-10-19",
+            "status": "COMPLETED",
+            "total": "$24.00"
+          }
+        }
+      ]
+    },
+    {
+      "id": "triply-trips",
+      "ticket": "T14",
+      "system": "Triply Legacy → Triply Next",
+      "title": "Trip segments · outbound and return mapping",
+      "mode": "compare",
+      "keyLabel": "Booking",
+      "filter": "outbound",
+      "columns": [
+        {
+          "id": "traveler",
+          "label": "Traveler"
+        },
+        {
+          "id": "destination",
+          "label": "Destination"
+        },
+        {
+          "id": "outbound",
+          "label": "Outbound"
+        },
+        {
+          "id": "return",
+          "label": "Return"
+        }
+      ],
+      "note": "Traveler IDs are Triply legacy IDs. A blank Return means no linked return segment.",
+      "console": [
+        "info: segment-pairing job loaded 8 bookings",
+        "warn: 2 source returns had no target segment to link"
+      ],
+      "rows": [
+        {
+          "key": "TRV-0921",
+          "source": {
+            "traveler": "T-41102",
+            "destination": "SEA-02",
+            "outbound": "2021-09-21",
+            "return": "2021-09-23"
+          },
+          "target": {
+            "traveler": "T-41102",
+            "destination": "SEA-02",
+            "outbound": "2021-09-21",
+            "return": "2021-09-23"
+          }
+        },
+        {
+          "key": "TRV-1012",
+          "source": {
+            "traveler": "T-38820",
+            "destination": "NYC-01",
+            "outbound": "2021-10-12",
+            "return": "2021-10-14"
+          },
+          "target": {
+            "traveler": "T-38820",
+            "destination": "NYC-01",
+            "outbound": "2021-10-12",
+            "return": "2021-10-14"
+          }
+        },
+        {
+          "key": "TRV-1017-01",
+          "source": {
+            "traveler": "T-55291",
+            "destination": "HRDG-01",
+            "outbound": "2021-10-17",
+            "return": "2021-10-19"
+          },
+          "target": {
+            "traveler": "T-55291",
+            "destination": "HRDG-01",
+            "outbound": "2021-10-17",
+            "return": ""
+          }
+        },
+        {
+          "key": "TRV-1017-02",
+          "source": {
+            "traveler": "T-55304",
+            "destination": "HRDG-01",
+            "outbound": "2021-10-17",
+            "return": "2021-10-19"
+          },
+          "target": {
+            "traveler": "T-55304",
+            "destination": "HRDG-01",
+            "outbound": "2021-10-17",
+            "return": ""
+          }
+        },
+        {
+          "key": "TRV-1017-03",
+          "source": {
+            "traveler": "T-55317",
+            "destination": "HRDG-01",
+            "outbound": "2021-10-17",
+            "return": ""
+          },
+          "target": {
+            "traveler": "T-55317",
+            "destination": "HRDG-01",
+            "outbound": "2021-10-17",
+            "return": ""
+          }
+        },
+        {
+          "key": "TRV-1017-04",
+          "source": {
+            "traveler": "T-55322",
+            "destination": "HRDG-01",
+            "outbound": "2021-10-17",
+            "return": ""
+          },
+          "target": {
+            "traveler": "T-55322",
+            "destination": "HRDG-01",
+            "outbound": "2021-10-17",
+            "return": ""
+          }
+        },
+        {
+          "key": "HRDG-01 total",
+          "source": {
+            "traveler": "38 travelers",
+            "destination": "HRDG-01",
+            "outbound": "38",
+            "return": "9"
+          },
+          "target": {
+            "traveler": "38 travelers",
+            "destination": "HRDG-01",
+            "outbound": "38",
+            "return": "0"
+          }
+        },
+        {
+          "key": "TRV-1024",
+          "source": {
+            "traveler": "T-41102",
+            "destination": "LAX-03",
+            "outbound": "2021-10-24",
+            "return": "2021-10-26"
+          },
+          "target": {
+            "traveler": "T-41102",
+            "destination": "LAX-03",
+            "outbound": "2021-10-24",
+            "return": "2021-10-26"
+          }
+        }
+      ]
+    },
+    {
+      "id": "peoplecore-leave",
+      "ticket": "T15",
+      "system": "PeopleCore Legacy → PeopleCore Next",
+      "title": "Leave and exit history · migration compare",
+      "mode": "compare",
+      "keyLabel": "Record",
+      "filter": "date",
+      "columns": [
+        {
+          "id": "employee",
+          "label": "Employee"
+        },
+        {
+          "id": "name",
+          "label": "Name"
+        },
+        {
+          "id": "type",
+          "label": "Type"
+        },
+        {
+          "id": "date",
+          "label": "Date"
+        }
+      ],
+      "note": "Sample of 8 records. Full counts: training leave on 2021-10-17, 38 in Legacy and 36 in Next; exits on 2021-10-18, 12.",
+      "console": [
+        "info: history compare loaded 8 sample records"
+      ],
+      "rows": [
+        {
+          "key": "LV-0930-01",
+          "source": {
+            "employee": "E-17702",
+            "name": "J. Moreno",
+            "type": "ANNUAL_LEAVE",
+            "date": "2021-09-30"
+          },
+          "target": {
+            "employee": "E-17702",
+            "name": "J. Moreno",
+            "type": "ANNUAL_LEAVE",
+            "date": "2021-09-30"
+          }
+        },
+        {
+          "key": "EX-1016-01",
+          "source": {
+            "employee": "E-18419",
+            "name": "Daniel Park",
+            "type": "RESIGNATION",
+            "date": "2021-10-16"
+          },
+          "target": {
+            "employee": "E-18419",
+            "name": "Daniel Park",
+            "type": "RESIGNATION",
+            "date": "2021-10-16"
+          }
+        },
+        {
+          "key": "LV-1017-01",
+          "source": {
+            "employee": "E-18419",
+            "name": "Daniel Park",
+            "type": "TRAINING_LEAVE",
+            "date": "2021-10-17"
+          },
+          "target": null
+        },
+        {
+          "key": "LV-1017-02",
+          "source": {
+            "employee": "E-18422",
+            "name": "S. Lim",
+            "type": "TRAINING_LEAVE",
+            "date": "2021-10-17"
+          },
+          "target": {
+            "employee": "E-18422",
+            "name": "S. Lim",
+            "type": "TRAINING_LEAVE",
+            "date": "2021-10-17"
+          }
+        },
+        {
+          "key": "LV-1017-03",
+          "source": {
+            "employee": "E-18436",
+            "name": "A. Novak",
+            "type": "TRAINING_LEAVE",
+            "date": "2021-10-17"
+          },
+          "target": null
+        },
+        {
+          "key": "EX-1018-01",
+          "source": {
+            "employee": "E-18440",
+            "name": "R. Holt",
+            "type": "RESIGNATION",
+            "date": "2021-10-18"
+          },
+          "target": {
+            "employee": "E-18440",
+            "name": "R. Holt",
+            "type": "RESIGNATION",
+            "date": "2021-10-18"
+          }
+        },
+        {
+          "key": "EX-1018-02",
+          "source": {
+            "employee": "E-18451",
+            "name": "M. Varga",
+            "type": "RESIGNATION",
+            "date": "2021-10-18"
+          },
+          "target": {
+            "employee": "E-18451",
+            "name": "M. Varga",
+            "type": "RESIGNATION",
+            "date": "2021-10-18"
+          }
+        },
+        {
+          "key": "LV-1102-01",
+          "source": {
+            "employee": "E-17702",
+            "name": "J. Moreno",
+            "type": "ANNUAL_LEAVE",
+            "date": "2021-11-02"
+          },
+          "target": {
+            "employee": "E-17702",
+            "name": "J. Moreno",
+            "type": "ANNUAL_LEAVE",
+            "date": "2021-11-02"
+          }
+        }
+      ]
+    },
+    {
+      "id": "payflow-after-exit",
+      "ticket": "T16",
+      "system": "PeopleCore → PayFlow (restricted QA view)",
+      "title": "Payments after exit",
+      "mode": "table",
+      "keyLabel": "Payment",
+      "filter": "employee",
+      "columns": [
+        {
+          "id": "employee",
+          "label": "Employee"
+        },
+        {
+          "id": "exit",
+          "label": "Exit date"
+        },
+        {
+          "id": "paid",
+          "label": "Paid on"
+        },
+        {
+          "id": "type",
+          "label": "Type"
+        },
+        {
+          "id": "amount",
+          "label": "Amount"
+        }
+      ],
+      "note": "Exit dates come from PeopleCore. PayFlow codebook: FINAL_SETTLEMENT and ACCRUED_LEAVE_PAYOUT may follow an exit.",
+      "console": [
+        "info: restricted view, amounts shown, bank details masked"
+      ],
+      "rows": [
+        {
+          "values": {
+            "employee": "E-18419",
+            "exit": "2021-10-16",
+            "paid": "2021-10-25",
+            "type": "FINAL_SETTLEMENT",
+            "amount": "$3,180.00"
+          },
+          "key": "PF-2110-25"
+        },
+        {
+          "values": {
+            "employee": "E-18440",
+            "exit": "2021-10-18",
+            "paid": "2021-10-29",
+            "type": "FINAL_SETTLEMENT",
+            "amount": "$2,410.00"
+          },
+          "key": "PF-2110-29"
+        },
+        {
+          "values": {
+            "employee": "E-18419",
+            "exit": "2021-10-16",
+            "paid": "2021-11-25",
+            "type": "REGULAR_SALARY",
+            "amount": "$4,340.00"
+          },
+          "key": "PF-2111-25"
+        },
+        {
+          "values": {
+            "employee": "E-18451",
+            "exit": "2021-10-18",
+            "paid": "2021-11-30",
+            "type": "ACCRUED_LEAVE_PAYOUT",
+            "amount": "$860.00"
+          },
+          "key": "PF-2111-30"
+        },
+        {
+          "values": {
+            "employee": "E-18419",
+            "exit": "2021-10-16",
+            "paid": "2021-12-27",
+            "type": "REGULAR_SALARY",
+            "amount": "$4,340.00"
+          },
+          "key": "PF-2112-27"
+        },
+        {
+          "values": {
+            "employee": "E-18419",
+            "exit": "2021-10-16",
+            "paid": "2022-01-25",
+            "type": "REGULAR_SALARY",
+            "amount": "$4,340.00"
+          },
+          "key": "PF-2201-25"
+        },
+        {
+          "values": {
+            "employee": "E-18419",
+            "exit": "2021-10-16",
+            "paid": "2022-02-25",
+            "type": "ACCRUED_LEAVE_PAYOUT",
+            "amount": "$1,120.00"
+          },
+          "key": "PF-2202-25"
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 ## In-game browser: tabs, address bar, QA bar (viewport, account, Console, Note), and pages for
-## shoply.local, docs.nothingwrong.local, intranet search, new tab, and unreachable hosts.
+## shoply.local, docs.northstar.local, intranet search, new tab, and unreachable hosts.
 ## The Console logs what Shoply's code did on screen; a defect leaves a trace there whose
 ## terms become leads for the story. Note highlights what can be recorded on the page;
 ## clicking one saves it to QA Notes, ready to report in Messenger.
@@ -12,6 +12,7 @@ const Mutations := preload("res://scripts/domain/mutations.gd")
 const Intranet := preload("res://scripts/domain/intranet.gd")
 const GameState := preload("res://scripts/domain/game_state.gd")
 const ShoplyView := preload("res://scripts/ui/shoply/shoply_view.gd")
+const RecordView := preload("res://scripts/ui/horizon/record_view.gd")
 const Observations := preload("res://scripts/domain/observations.gd")
 
 const VIEWPORT_WIDTHS := { "DESKTOP": 0.0, "TABLET": 768.0, "MOBILE": 390.0 }
@@ -26,6 +27,7 @@ const CONSOLE_NOISE := {
 }
 
 var view: RefCounted = ShoplyView.new()
+var records: RefCounted = RecordView.new()
 var _tab_row: HBoxContainer
 var _tab_signature := ""
 var _address: LineEdit
@@ -58,6 +60,9 @@ func _ready() -> void:
 	view.record = _record
 	view.mutate = _mutate
 	view.rerender = _render
+	records.rerender = func():
+		_signature = ""
+		_render()
 
 	var tab_panel := PanelContainer.new()
 	tab_panel.add_theme_stylebox_override("panel", Kit.style(Color("#e4e8ee"), Color.TRANSPARENT, 0, 6, 4))
@@ -208,7 +213,7 @@ func _render() -> void:
 	for button in _account_box.get_children():
 		var pressed: bool = button.text.to_upper() == ShoplyStore.account
 		button.add_theme_stylebox_override("normal", Kit.style(Color("#f2c94c") if pressed else P.SURFACE, P.BORDER, 6, 12, 7))
-	_note.disabled = active == "" or location["kind"] != "shoply" or GameSession.ticket_status(active) != "TESTING"
+	_note.disabled = active == "" or not Addresses.is_workspace(location) or GameSession.ticket_status(active) != "TESTING"
 	_note.tooltip_text = "Something on this page looks wrong? Note it." if not _note.disabled else "Start a Ticket in QA Notes and open Shoply to take notes"
 	if _note.disabled and _noting:
 		stop_noting()
@@ -255,6 +260,8 @@ func _fill_page(location: Dictionary) -> void:
 			view.narrow = width > 0.0 and width < 760.0
 			view.build(content, location["path"])
 			_page.add_child(row)
+		"horizon":
+			records.build(_page, location["path"])
 		"docs":
 			_page.add_child(_docs(location["slug"]))
 		"search":
@@ -274,7 +281,7 @@ func _fill_page(location: Dictionary) -> void:
 
 func _docs(slug: String) -> Control:
 	var column := Kit.vbox(12)
-	column.add_child(Kit.kicker("Nothing Wrong · Intranet", P.MUTED))
+	column.add_child(Kit.kicker("Northstar · Intranet", P.MUTED))
 	var docs: Array = []
 	for id in GameSession.catalog.ticket_ids():
 		if GameSession.catalog.is_ticket_unlocked(GameSession.state, id):
@@ -308,7 +315,7 @@ func _search_box(initial: String) -> Control:
 
 func _search_page(query: String) -> Control:
 	var column := Kit.vbox(14)
-	column.add_child(Kit.kicker("NW Search · Intranet"))
+	column.add_child(Kit.kicker("NS Search · Intranet"))
 	column.add_child(Kit.heading("Search the intranet", 28))
 	column.add_child(_search_box(query))
 	var help := Kit.label("Search for names, times, file names, or codes you have seen in Messenger, QA Notes, or the shop.", 15, P.MUTED)
@@ -335,7 +342,7 @@ func _search_page(query: String) -> Control:
 
 func _record_page(id: String) -> Control:
 	var column := Kit.vbox(12)
-	column.add_child(Kit.kicker("NW Search · Intranet", P.MUTED))
+	column.add_child(Kit.kicker("NS Search · Intranet", P.MUTED))
 	var document: Variant = GameSession.intranet.get_document(id)
 	if document == null or not Intranet.is_available(document, GameSession.state):
 		column.add_child(Kit.heading("Document not found", 28))
@@ -369,10 +376,10 @@ func _on_record_opened(id: String) -> void:
 func _new_tab() -> Control:
 	var column := Kit.vbox(10)
 	column.alignment = BoxContainer.ALIGNMENT_CENTER
-	column.add_child(Kit.kicker("NW Browser"))
+	column.add_child(Kit.kicker("NS Browser"))
 	column.add_child(Kit.heading("Where to?", 34))
 	column.add_child(Kit.label("Type an address in the bar above. Work sites end in .local.", 16, P.MUTED))
-	column.add_child(Kit.kicker("NW Search · Intranet"))
+	column.add_child(Kit.kicker("NS Search · Intranet"))
 	column.add_child(_search_box(""))
 	var seen := {}
 	var recent: Array = []
@@ -441,14 +448,17 @@ static func tab_title(location: Dictionary) -> String:
 		"shoply":
 			var path := str(location["path"]).trim_prefix("/shoply")
 			title = "Shoply %s" % (path if path != "" else "/")
+		"horizon":
+			var view_path := str(location["path"]).trim_prefix("/horizon")
+			title = "ONE HORIZON %s" % (view_path if view_path != "" else "/")
 		"docs":
 			title = Kit.t("Intranet docs")
 		"search":
 			var query: String = location.get("query", "")
-			title = Kit.tf("Search: %s", query) if query != "" else Kit.t("NW Search")
+			title = Kit.tf("Search: %s", query) if query != "" else Kit.t("NS Search")
 		"record":
 			var document: Variant = GameSession.intranet.get_document(location["id"])
-			title = Kit.t(document["title"]) if document != null else Kit.t("NW Search")
+			title = Kit.t(document["title"]) if document != null else Kit.t("NS Search")
 		"unreachable":
 			title = Addresses.display(location["address"]).split("/")[0]
 		_:
@@ -464,6 +474,11 @@ func toggle_console() -> void:
 
 
 func _console_lines(location: Dictionary) -> Array:
+	if location["kind"] == "horizon":
+		var horizon_lines: Array = [{ "level": "info", "text": "GET %s 200" % location["path"] }]
+		for text in records.console_lines(location["path"]):
+			horizon_lines.append(_log_line(text))
+		return horizon_lines
 	if location["kind"] != "shoply":
 		return []
 	var lines: Array = [
@@ -641,12 +656,14 @@ func note_target(target: String) -> Dictionary:
 func capture(focus: Dictionary = {}) -> Dictionary:
 	var active := _active()
 	var location := DesktopSession.location()
-	if active == "" or location["kind"] != "shoply":
+	if active == "" or not Addresses.is_workspace(location):
 		return {}
 	var controls: Array = []
 	_collect(_page, controls)
 	var context := DesktopSession.qa_context()
-	var heading: String = view.heading if view.heading != "" else "Shoply page"
+	var heading: String = records.heading if location["kind"] == "horizon" else view.heading
+	if heading == "":
+		heading = "Shoply page"
 	var item := {
 		"id": WorkspaceSession.new_id("EVIDENCE"),
 		"ticketId": active,
@@ -655,7 +672,7 @@ func capture(focus: Dictionary = {}) -> Dictionary:
 		"capturedAt": int(Time.get_unix_time_from_system() * 1000),
 		"context": context["test"],
 		"snapshot": {
-			"product": "shoply",
+			"product": location["kind"],
 			"heading": heading,
 			"visibleTargets": controls.map(func(control): return control["target"]),
 			"controls": controls,

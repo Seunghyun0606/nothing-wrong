@@ -14,6 +14,8 @@ const StoryClock := preload("res://scripts/domain/story_clock.gd")
 var _scroll: ScrollContainer
 var _log_box: VBoxContainer
 var _composer: VBoxContainer
+var _channel_name: Label
+var _channel_members: Label
 ## Kept across renders so a half-written report survives new messages.
 var _report_form: VBoxContainer
 var _signature := ""
@@ -28,8 +30,13 @@ func _ready() -> void:
 
 	var channel := Kit.panel(P.SUBTLE, Color.TRANSPARENT, 0, 12)
 	var channel_text := Kit.vbox(2)
-	channel_text.add_child(Kit.heading("# shoply-autumn-release", 16))
-	channel_text.add_child(Kit.label("Maya Kim, Daniel Reyes, Priya Nair, Sam Ortiz, you", 13, P.MUTED))
+	_channel_name = Kit.heading("", 16)
+	_channel_name.name = "ChannelName"
+	_channel_name.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	channel_text.add_child(_channel_name)
+	_channel_members = Kit.label("", 13, P.MUTED)
+	_channel_members.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	channel_text.add_child(_channel_members)
 	channel.add_child(channel_text)
 	add_child(channel)
 
@@ -69,6 +76,7 @@ func _render() -> void:
 		return
 	_signature = signature
 	_follow = true
+	_render_channel()
 	Kit.clear(_log_box)
 	var entries: Array = log["entries"]
 	var delivered: int = log["delivered"]
@@ -97,7 +105,7 @@ func _render() -> void:
 	var discovery: Variant = log["pendingDiscovery"]
 	if discovery != null and delivered >= entries.size():
 		_composer.add_child(Kit.label("The team is waiting for what you find on the intranet.", 13, P.WARNING))
-		var search := Kit.button(Kit.t("Open intranet search"), DesktopSession.open_url.bind("https://search.nothingwrong.local"))
+		var search := Kit.button(Kit.t("Open intranet search"), DesktopSession.open_url.bind("https://search.northstar.local"))
 		search.name = "OpenSearch"
 		search.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		_composer.add_child(search)
@@ -139,6 +147,24 @@ func _render() -> void:
 	if _report_form != null and _report_form.get_parent() != _composer:
 		_drop_report_form()
 	_scroll_to_end.call_deferred()
+
+
+## Each chapter has its own channel; its members are whoever speaks in it.
+func _render_channel() -> void:
+	var focus := GameSession.focus_ticket_id()
+	var scenario: Variant = GameSession.scenario(focus) if focus != "" else GameSession.catalog.scenarios[-1]
+	var chapter_id: String = scenario.get("story", {}).get("chapterId", "")
+	var chapter: Variant = GameSession.catalog.get_chapter(chapter_id)
+	_channel_name.text = str(chapter.get("channel", "# northstar-qa")) if chapter != null else "# northstar-qa"
+	var members: Array = []
+	for each in GameSession.catalog.scenarios:
+		if each.get("story", {}).get("chapterId", "") != chapter_id:
+			continue
+		for message in each["story"]["briefing"] + each["story"]["debrief"]:
+			if not members.has(message["from"]):
+				members.append(message["from"])
+	members.append(Kit.t("you"))
+	_channel_members.text = ", ".join(members)
 
 
 func _drop_report_form() -> void:
@@ -232,6 +258,8 @@ func _entry(entry: Dictionary) -> Control:
 				var noted := Observations.describe({ "label": entry["label"], "value": entry["value"] })
 				body.add_child(Kit.label(Kit.tf("On %s, I noticed %s.", [entry["screen"], noted]), 15, Color.WHITE))
 				body.add_child(Kit.label(Kit.tf("That breaks %s: %s", [entry["requirementId"], Kit.t(entry["requirement"])]), 14, Color(1, 1, 1, 0.85)))
+				if str(entry.get("outcome", "BUG")) != "BUG":
+					body.add_child(Kit.label(Kit.t(ReportComposer.OUTCOME_LABELS.get(entry["outcome"], entry["outcome"])), 13, Color(1, 1, 1, 0.85)))
 			card.add_child(body)
 			return Kit.margin(card, 80, 0, 0, 0)
 		"player":

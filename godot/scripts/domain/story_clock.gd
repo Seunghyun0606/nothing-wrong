@@ -1,5 +1,6 @@
-## The story's clock. Times are written "Tue 09:10" (or "next Mon 07:40" for the week
-## after release week) and counted in minutes from Monday 00:00 of release week.
+## The story's clock. Times are written "Tue 09:10", "next Mon 07:40" for the week after
+## release week, or "W3 Mon 09:30" for a later week, and counted in minutes from Monday
+## 00:00 of release week (week 1).
 extends RefCounted
 
 const DAYS := ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -13,6 +14,9 @@ static func parse(text: String) -> int:
 	var week := 0
 	if parts.size() == 3 and parts[0] == "next":
 		week = WEEK
+		parts = parts.slice(1)
+	elif parts.size() == 3 and parts[0].begins_with("W") and parts[0].substr(1).is_valid_int():
+		week = (int(parts[0].substr(1)) - 1) * WEEK
 		parts = parts.slice(1)
 	if parts.size() != 2 or not DAYS.has(parts[0]):
 		return -1

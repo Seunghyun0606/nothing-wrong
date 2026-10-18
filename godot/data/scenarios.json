@@ -7,8 +7,8 @@
         "projectId": "shoply",
         "title": "Checkout confirmation design review",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -117,22 +117,22 @@
         "chapterId": "CH1",
         "briefing": [
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Welcome aboard. Shoply is our client, and their Autumn Release ships Friday. Build RC3 landed overnight."
           },
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "Honestly, this is a formality. Nothing changed in checkout. Nothing wrong with this build."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Then it should be a quick review. Follow the purchase path and check it against the spec. Trust what you can prove, not what you're told."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Accept T01 in QA Notes first. Then open the staging site and start from the product page. The spec is on the intranet.",
             "links": [
@@ -142,24 +142,24 @@
               },
               {
                 "label": "Checkout interaction specification",
-                "url": "https://docs.nothingwrong.local/checkout-interaction-specification"
+                "url": "https://docs.northstar.local/checkout-interaction-specification"
               }
             ]
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "When something doesn't match the spec, press 📌 Note in the Browser and click it. Then come back here and send me the note with the requirement it breaks. If nothing breaks a rule, tell me that too."
           }
         ],
         "debrief": [
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Good catch. Design confirms Confirm order should be primary, and they say they never touched it."
           },
           {
-            "from": "Sam Ortiz",
+            "from": "Leo Ortiz",
             "role": "Shoply Engineer",
             "text": "Then somebody else did. Did the browser console say anything on that checkout screen? Look the name up on the intranet."
           }
@@ -172,10 +172,10 @@
         "deduction": {
           "id": "DED-T01",
           "askedBy": {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead"
           },
-          "prompt": "Daniel said nothing changed in checkout. What does the evidence say?",
+          "prompt": "Marcus said nothing changed in checkout. What does the evidence say?",
           "sentence": "Checkout {changed} at {when}, and the change came from {who}.",
           "blanks": {
             "changed": {
@@ -197,7 +197,7 @@
               "options": [
                 "release-bot",
                 "the design team",
-                "Daniel Reyes"
+                "Marcus Reyes"
               ],
               "answer": "release-bot"
             }
@@ -214,13 +214,13 @@
         "assist": [
           {
             "after": 1,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Tip: the bag is fine. The trouble is on the checkout screen. Open the spec from my first message and compare it with the Confirm order button."
           },
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Here's how, so you can move on: on the checkout screen press 📌 Note and click the Confirm order button. Then report it to me here with REQ-T01-02. The spec says it should be primary."
           }
@@ -235,8 +235,8 @@
         "projectId": "shoply",
         "title": "Cart subtotal verification",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -369,7 +369,7 @@
         "chapterId": "CH1",
         "briefing": [
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Second job. Shoply Support got a strange email: a customer bought two packs and was charged less than expected."
           },
@@ -379,12 +379,12 @@
             "text": "He was happy. Our finance team was not. Can you check whether the cart math is right?"
           },
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "Probably a coupon. The pricing code hasn't changed since spring."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Pricing rules are on the intranet. Start from the product page again.",
             "links": [
@@ -394,24 +394,24 @@
               },
               {
                 "label": "Shoply pricing rules",
-                "url": "https://docs.nothingwrong.local/shoply-pricing-rules"
+                "url": "https://docs.northstar.local/shoply-pricing-rules"
               }
             ]
           }
         ],
         "debrief": [
           {
-            "from": "Sam Ortiz",
+            "from": "Leo Ortiz",
             "role": "Shoply Engineer",
             "text": "The subtotal code doesn't look like ours. If the console logged a rule name on the bag screen, that's our thread."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Pull that thread. Search the intranet for it."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "A rule name alone won't tell us much. The pricing rule registry should say which campaign it belonged to."
           }
@@ -424,7 +424,7 @@
         "deduction": {
           "id": "DED-T02",
           "askedBy": {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead"
           },
           "prompt": "Two unrelated screens broke on the same night. What links them?",
@@ -468,13 +468,13 @@
         "assist": [
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Stay on the bag and set the quantity to 2. Then compare Line total with Subtotal."
           },
           {
             "after": 3,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Here's the answer: in the bag at quantity 2, note the Subtotal ($50.00) and report it with REQ-T02-01. Two packs at $30.00 should come to $60.00."
           }
@@ -489,8 +489,8 @@
         "projectId": "shoply",
         "title": "Order cancellation routing",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -620,24 +620,24 @@
             "text": "This one is urgent. Customers trying to cancel processing orders say they end up on a payment page."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Order #1042 is still processing, so it should be cancellable. It lives at shoply.local/orders/order-1042. Find out where Cancel order really takes people."
           },
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "We'd have noticed that. Cancellations actually dropped this week. That's good news, isn't it?"
           }
         ],
         "debrief": [
           {
-            "from": "Sam Ortiz",
+            "from": "Leo Ortiz",
             "role": "Shoply Engineer",
             "text": "A cancel button that sends people to payment... the router doesn't do that by accident. Something told it to."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "So the drop in cancellations wasn't good news. Find out what told it to."
           }
@@ -650,7 +650,7 @@
         "deduction": {
           "id": "DED-T03",
           "askedBy": {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead"
           },
           "prompt": "Old promotion code, an archived experiment, the same 02:14 merge. What is the most likely explanation so far?",
@@ -693,13 +693,13 @@
         "assist": [
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Open order #1042 and press Cancel order. Where does it take you?"
           },
           {
             "after": 3,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Here's the answer: press Cancel order on #1042. It opens the payment form, so note that screen and report it with REQ-T03-01."
           }
@@ -714,8 +714,8 @@
         "projectId": "shoply",
         "title": "Gold coupon discount verification",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -885,34 +885,34 @@
         "chapterId": "CH1",
         "briefing": [
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Last one before Friday. The Browser QA bar now has an Account Switcher, so you can test as Basic or Gold. Same staging site: shoply.local."
           },
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "Gold members are our best customers and SAVE20 is the headline promo. Please tell me it works."
           },
           {
-            "from": "Sam Ortiz",
+            "from": "Leo Ortiz",
             "role": "Shoply Engineer",
             "text": "If it is broken too, check bigger carts. exp/retention-push also had a \"margin guard\" for large orders."
           },
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "Code freeze is tonight at 18:00. I need a yes, not a lecture."
           }
         ],
         "debrief": [
           {
-            "from": "Sam Ortiz",
+            "from": "Leo Ortiz",
             "role": "Shoply Engineer",
             "text": "Confirmed: the 10% cap is the margin guard. But release-bot only merges what its rule allows."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Then the rule is the question. Find release-bot's merge rule."
           }
@@ -925,7 +925,7 @@
         "deduction": {
           "id": "DED-T04",
           "askedBy": {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead"
           },
           "prompt": "Case file: what really happened to RC3? Open the Case File, read your clues, and fill in the conclusion.",
@@ -942,11 +942,11 @@
             },
             "who": {
               "options": [
-                "d.reyes",
+                "m.reyes",
                 "ops-temp",
                 "the design team"
               ],
-              "answer": "d.reyes"
+              "answer": "m.reyes"
             },
             "pattern": {
               "options": [
@@ -978,13 +978,13 @@
         "assist": [
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "The discount only breaks in one combination: the Gold account, coupon SAVE20, and three or more packs."
           },
           {
             "after": 3,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Here's the answer: switch to the Gold account, apply SAVE20, and set the quantity to 3. Then note the Discount (−$9.00) and report it with REQ-T04-02. 20% of $90.00 is $18.00."
           }
@@ -999,8 +999,8 @@
         "projectId": "shoply",
         "title": "RC4 release verification",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -1078,7 +1078,7 @@
         "chapterId": "CH2",
         "briefing": [
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "RC4 is ready. I fixed the merge rule myself. This time there really is nothing wrong."
           },
@@ -1088,12 +1088,12 @@
             "text": "One customer says we charged shipping on her $45 order. She is sure it is a bug."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Verify the fixes and the complaint. If everything holds, say so. Calling a clean build clean is part of the job too."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "It's late, I know. Twelve hours to release. Let's make them count."
           }
@@ -1105,7 +1105,7 @@
             "text": "Thanks. I'll explain to the customer that free shipping starts at $50."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Good. Now, that archive was supposed to be read-only. Search for its access log."
           }
@@ -1120,7 +1120,7 @@
         "assist": [
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Before you report again, check every number against the rules. If they all hold, this build may be clean. Report it as NO ISSUE FOUND."
           }
@@ -1140,8 +1140,8 @@
         "projectId": "shoply",
         "title": "Mobile cart fees",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -1276,7 +1276,7 @@
         "time": "Fri 07:40",
         "briefing": [
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Friday, 07:40. Release at 10:00. One last sweep: the Autumn Release has to work on phones too."
           },
@@ -1286,24 +1286,24 @@
             "text": "Support says mobile customers are paying shipping on big orders."
           },
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "Mobile is the same code. We don't have time for this."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Then it'll be quick. The QA bar in the Browser can switch to Mobile."
           }
         ],
         "debrief": [
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "That isn't mine. My fix removed exp/* and promo/*. Release branches were always allowed."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Then someone named a branch release/* on purpose. The Console named it. Look it up."
           }
@@ -1323,13 +1323,13 @@
         "assist": [
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Switch the Browser to Mobile, put two packs in the bag, and compare Shipping with the rule."
           },
           {
             "after": 3,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Here's the answer: on Mobile with two packs ($60.00), note Shipping ($5.00) and report it with REQ-T06-01. Over $50.00 it should be free."
           }
@@ -1337,7 +1337,7 @@
         "deduction": {
           "id": "DED-T06",
           "askedBy": {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead"
           },
           "prompt": "What does the mobile fee tell us about ops-temp?",
@@ -1379,8 +1379,8 @@
         "projectId": "shoply",
         "title": "Cancellation on every device",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -1507,29 +1507,29 @@
             "text": "One more from support: a customer on a tablet says there's no way to cancel order #1042."
           },
           {
-            "from": "Sam Ortiz",
+            "from": "Leo Ortiz",
             "role": "Shoply Engineer",
             "text": "Tablet layouts are fragile. Could be anything. I'd ship and patch it on Monday."
           },
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "Seventy minutes to release."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Same order as before: shoply.local/orders/order-1042. Check every device."
           }
         ],
         "debrief": [
           {
-            "from": "Sam Ortiz",
+            "from": "Leo Ortiz",
             "role": "Shoply Engineer",
             "text": "...Fine, it's the same branch. Probably a leftover from the archive."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Leftovers don't come with an API key. The branch record named one. Find out where it came from."
           }
@@ -1537,7 +1537,7 @@
         "clue": {
           "id": "CLUE-WS-14",
           "title": "ak-7731 · WS-14",
-          "text": "API key ak-7731 was issued to ops-temp at 23:05 on Monday, requested from workstation WS-14. WS-14 is assigned to Sam Ortiz."
+          "text": "API key ak-7731 was issued to ops-temp at 23:05 on Monday, requested from workstation WS-14. WS-14 is assigned to Leo Ortiz."
         },
         "discovery": {
           "documentId": "DOC-ASSET-REGISTER",
@@ -1550,13 +1550,13 @@
         "assist": [
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Open order #1042 and try Desktop, Tablet, and Mobile. Where does Cancel order go missing?"
           },
           {
             "after": 3,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Here's the answer: on Tablet, order #1042 has no Cancel order. Note the cancel action there and report it with REQ-T07-01."
           }
@@ -1564,7 +1564,7 @@
         "deduction": {
           "id": "DED-T07",
           "askedBy": {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead"
           },
           "mode": "board",
@@ -1573,11 +1573,11 @@
           "blanks": {
             "who": {
               "options": [
-                "Sam Ortiz",
-                "Daniel Reyes",
+                "Leo Ortiz",
+                "Marcus Reyes",
                 "Priya Nair"
               ],
-              "answer": "Sam Ortiz"
+              "answer": "Leo Ortiz"
             },
             "where": {
               "options": [
@@ -1607,8 +1607,8 @@
         "projectId": "shoply",
         "title": "Weekend order totals",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -1742,12 +1742,12 @@
             "text": "Weekend support queue: Gold members say their order page shows more than they paid at checkout."
           },
           {
-            "from": "Elena Park",
+            "from": "Elena Brooks",
             "role": "VP Growth",
-            "text": "Elena Park, Growth. The weekend numbers look fantastic. Let's not go looking for problems."
+            "text": "Elena Brooks, Growth. The weekend numbers look fantastic. Let's not go looking for problems."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "We look anyway. Place a real order as a Gold member with SAVE20, then open it from Orders."
           }
@@ -1759,7 +1759,7 @@
             "text": "So the order list says one thing and the order page another. Customers are billed from the order page."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "The Console named the job that rewrote it. Find out who scheduled it."
           }
@@ -1779,13 +1779,13 @@
         "assist": [
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Switch to Gold, apply SAVE20 in the bag, confirm the order, then compare the order list with the order page."
           },
           {
             "after": 3,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Here's the answer: open your new order as Gold, note the Order total, and report it with REQ-T08-01. It leaves out the SAVE20 discount."
           }
@@ -1793,7 +1793,7 @@
         "deduction": {
           "id": "DED-T08",
           "askedBy": {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead"
           },
           "prompt": "What is growth-metrics-sync, and where did it come from?",
@@ -1824,7 +1824,7 @@
               "answer": "twenty minutes"
             }
           },
-          "success": "So Sam didn't act alone. Someone filed a request for all of it."
+          "success": "So Leo didn't act alone. Someone filed a request for all of it."
         }
       }
     },
@@ -1835,8 +1835,8 @@
         "projectId": "shoply",
         "title": "Gold member coupons",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -1985,32 +1985,32 @@
             "text": "And the billing run is at 18:00. Whatever the order pages say then is what customers get charged."
           },
           {
-            "from": "Elena Park",
+            "from": "Elena Brooks",
             "role": "VP Growth",
             "text": "I present the Q4 review tomorrow at 09:00. I need clean numbers, not another investigation."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Check SAVE10 as Basic and as Gold. Same bag, same quantity."
           }
         ],
         "debrief": [
           {
-            "from": "Sam Ortiz",
+            "from": "Leo Ortiz",
             "role": "Shoply Engineer",
             "text": "...q4-lift is a holdout group. Gold members are kept from discounts so we can measure how many stay anyway."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "A holdout needs an approval. Find the request it ran under."
           }
         ],
         "clue": {
           "id": "CLUE-AR-4471",
-          "title": "AR-4471 · approved by e.park",
-          "text": "Access request AR-4471 asked for the ops-temp account, the growth-metrics-sync job, and the q4-lift holdout. Requested by s.ortiz; approved by e.park at 22:41 on Monday: \"Measure retention lift for the Q4 review. Do not route through QA.\""
+          "title": "AR-4471 · approved by e.brooks",
+          "text": "Access request AR-4471 asked for the ops-temp account, the growth-metrics-sync job, and the q4-lift holdout. Requested by l.ortiz; approved by e.brooks at 22:41 on Monday: \"Measure retention lift for the Q4 review. Do not route through QA.\""
         },
         "discovery": {
           "documentId": "DOC-ACCESS-REQUEST",
@@ -2023,13 +2023,13 @@
         "assist": [
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Put one pack in the bag and apply SAVE10, first as Basic, then as Gold. Compare the totals."
           },
           {
             "after": 3,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Here's the answer: as Gold with SAVE10, the bag shows no discount. Note the Total and report it with REQ-T09-01."
           }
@@ -2037,7 +2037,7 @@
         "deduction": {
           "id": "DED-T09",
           "askedBy": {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead"
           },
           "mode": "board",
@@ -2046,11 +2046,11 @@
           "blanks": {
             "who": {
               "options": [
-                "Elena Park",
-                "Daniel Reyes",
-                "Maya Kim"
+                "Elena Brooks",
+                "Marcus Reyes",
+                "Mina Seo"
               ],
-              "answer": "Elena Park"
+              "answer": "Elena Brooks"
             },
             "what": {
               "options": [
@@ -2088,8 +2088,8 @@
         "projectId": "shoply",
         "title": "Stock across screens",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -2198,12 +2198,12 @@
         "time": "next Mon 07:40",
         "briefing": [
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "Platform built RC5 overnight: a full rollback to before the merge. Clean slate."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Leadership wants our findings at 09:00, and proof that RC5 is clean. One pass per area, starting with stock."
           },
@@ -2215,12 +2215,12 @@
         ],
         "debrief": [
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "A rollback restores from a snapshot. If the Console named one, that is what RC5 used."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Then let's see what is in that snapshot, and who took it."
           }
@@ -2240,13 +2240,13 @@
         "assist": [
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Open the product page, then the bag. Compare how many are in stock with how many the bag will sell you."
           },
           {
             "after": 3,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Here's the answer: the bag says 2 available while the product page says 12 in stock. Note the bag's stock and report it with REQ-T10-01."
           }
@@ -2254,7 +2254,7 @@
         "deduction": {
           "id": "DED-T10",
           "askedBy": {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead"
           },
           "prompt": "Why would a rollback bring back the wrong stock?",
@@ -2296,8 +2296,8 @@
         "projectId": "shoply",
         "title": "Rollback spot check",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -2453,19 +2453,19 @@
         "time": "next Mon 08:05",
         "briefing": [
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Same snapshot, other areas. Prices and the bag, on every device. There may be more than one problem this time; report each one."
           },
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "Fifty-five minutes until leadership."
           }
         ],
         "debrief": [
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Two defects, one snapshot. The Console named the rollback job. Find out how it picked SNAP-0905."
           }
@@ -2485,13 +2485,13 @@
         "assist": [
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Check the Travel Sling's product page, then the bag on Mobile."
           },
           {
             "after": 3,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Here's the answer: the Travel Sling shows $24 instead of $24.00 (REQ-T11-01), and on Mobile the bag has no Remove (REQ-T11-02). Report each one."
           }
@@ -2499,7 +2499,7 @@
         "deduction": {
           "id": "DED-T11",
           "askedBy": {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead"
           },
           "prompt": "How did the rollback end up on that snapshot?",
@@ -2541,8 +2541,8 @@
         "projectId": "shoply",
         "title": "RC5 regression pass",
         "sender": {
-          "id": "maya-kim",
-          "name": "Maya Kim",
+          "id": "mina-seo",
+          "name": "Mina Seo",
           "role": "QA Lead"
         },
         "priority": "HIGH",
@@ -2678,12 +2678,12 @@
         "time": "next Mon 08:20",
         "briefing": [
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Last pass before 09:00: every fix from last week, on RC5. If something came back, report it. If not, say so."
           },
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "If RC5 fails, there is no RC6 before the review."
           },
@@ -2695,12 +2695,12 @@
         ],
         "debrief": [
           {
-            "from": "Daniel Reyes",
+            "from": "Marcus Reyes",
             "role": "Shoply Release Manager",
             "text": "...Cancel on mobile, again. Same snapshot."
           },
           {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Then RC5 needs a rollback point no one touched. Find the snapshot index."
           }
@@ -2721,13 +2721,13 @@
         "assist": [
           {
             "after": 2,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Order #1042 has been a problem before. Try cancelling it on each device."
           },
           {
             "after": 3,
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead",
             "text": "Here's the answer: on Mobile, Cancel order on #1042 opens the payment page again. Note that screen and report it with REQ-T12-03."
           }
@@ -2735,7 +2735,7 @@
         "deduction": {
           "id": "DED-T12",
           "askedBy": {
-            "from": "Maya Kim",
+            "from": "Mina Seo",
             "role": "QA Lead"
           },
           "mode": "board",
@@ -2770,27 +2770,633 @@
           "success": "That's the fix. RC6 builds from SNAP-0901 now, and I'll take the whole chain to leadership."
         }
       }
+    },
+    {
+      "id": "SCENARIO-T13",
+      "ticket": {
+        "id": "T13",
+        "projectId": "one-horizon",
+        "canonId": "NW-006",
+        "title": "Shoply order history migration",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Compare 15 historical Shoply orders in Legacy with their migrated records in Next.",
+        "scope": [
+          "Order history",
+          "Data migration"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T13-01",
+            "description": "Every legacy order migrates with its original status."
+          },
+          {
+            "id": "REQ-T13-02",
+            "description": "Order totals are the same in Legacy and Next."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/shoply-orders"
+        },
+        "hints": [
+          {
+            "id": "HINT-T13-01",
+            "text": "Use the date filter to compare one day at a time."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T13-001",
+          "type": "DATA",
+          "title": "Completed orders from one day lost their status",
+          "target": "shoply-orders.status",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T13-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/shoply-orders"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "COMPLETED",
+          "actual": "CANCELLED or missing",
+          "validEvidenceTargets": [
+            "shoply-orders.SO-1017-01.target.status",
+            "shoply-orders.SO-1017-03.target.status",
+            "shoply-orders.SO-1017-02.target.date",
+            "shoply-orders.SO-1017-02.target.status",
+            "shoply-orders.SO-1017-02.target.total"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH5",
+        "time": "W3 Mon 09:30",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Week one on ONE HORIZON. Horizon is merging every company it owns into one identity and one record. We check that history survives the move."
+          },
+          {
+            "from": "Grace Yoon",
+            "role": "Horizon Program Manager",
+            "text": "You'll work on read-only UAT snapshots in the QA portal. Shoply's order history is first."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare each legacy order with its migrated record. Note what changed, and report it to me.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/shoply-orders",
+                "url": "https://qa.onehorizon.local/shoply-orders"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Good. Three completed orders from one day lost their status in the move. The days around it moved cleanly."
+          },
+          {
+            "from": "Grace Yoon",
+            "role": "Horizon Program Manager",
+            "text": "Logged for the migration team. Thank you."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-OCT17",
+          "title": "17 October 2021",
+          "text": "Three Shoply orders from 17 October 2021 lost their completed status, or vanished, in migration. Orders from the days around it moved cleanly."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Filter by date and look for the one day where Legacy and Next disagree."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: on 2021-10-17, SO-1017-01 is COMPLETED in Legacy but CANCELLED in Next. Note that Target status and report it with REQ-T13-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T14",
+      "ticket": {
+        "id": "T14",
+        "projectId": "one-horizon",
+        "canonId": "NW-007",
+        "title": "Triply trip segment mapping",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that migrated trips keep their outbound and return segments.",
+        "scope": [
+          "Trip segments",
+          "Data migration"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T14-01",
+            "description": "Each migrated trip keeps the return segment it had in Legacy."
+          },
+          {
+            "id": "REQ-T14-02",
+            "description": "Destination codes migrate unchanged."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/triply-trips"
+        },
+        "hints": [
+          {
+            "id": "HINT-T14-01",
+            "text": "Only flag a missing return if Legacy actually had one."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T14-001",
+          "type": "DATA",
+          "title": "Return segments dropped in migration",
+          "target": "triply-trips.return",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T14-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/triply-trips"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Return kept",
+          "actual": "Return blank",
+          "validEvidenceTargets": [
+            "triply-trips.TRV-1017-01.target.return",
+            "triply-trips.TRV-1017-02.target.return",
+            "triply-trips.HRDG-01 total.target.return"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH5",
+        "time": "W3 Tue 10:10",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Travel next. Triply moves trips with an outbound and a return segment. Check that the pairs survive."
+          },
+          {
+            "from": "Grace Yoon",
+            "role": "Horizon Program Manager",
+            "text": "Some legacy trips never had a return recorded. Please flag only what the source actually had.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/triply-trips",
+                "url": "https://qa.onehorizon.local/triply-trips"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The return segments vanished for the same day as the orders. 17 October, again."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-HRDG-01",
+          "title": "HRDG-01 · 38 outbound",
+          "text": "On 17 October 2021, 38 people travelled to HRDG-01. In the migrated data none of them has a linked return; some never had one even in the source."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare the Return columns side by side, and check the total row too."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: TRV-1017-01 had a return in Legacy, but its Target return is blank. Note it and report it with REQ-T14-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T15",
+      "ticket": {
+        "id": "T15",
+        "projectId": "one-horizon",
+        "canonId": "NW-008",
+        "title": "PeopleCore leave history migration",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that leave and exit history migrates without losing valid past records.",
+        "scope": [
+          "Leave history",
+          "Exit history",
+          "Data migration"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T15-01",
+            "description": "Leave history keeps every valid past record."
+          },
+          {
+            "id": "REQ-T15-02",
+            "description": "Employee IDs are unchanged by migration."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/peoplecore-leave"
+        },
+        "hints": [
+          {
+            "id": "HINT-T15-01",
+            "text": "A record missing from Target is still a record."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T15-001",
+          "type": "DATA",
+          "title": "Training leave records missing after migration",
+          "target": "peoplecore-leave.record",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T15-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/peoplecore-leave"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Record kept",
+          "actual": "Record missing",
+          "validEvidenceTargets": [
+            "peoplecore-leave.LV-1017-01.target.employee",
+            "peoplecore-leave.LV-1017-01.target.name",
+            "peoplecore-leave.LV-1017-01.target.type",
+            "peoplecore-leave.LV-1017-01.target.date",
+            "peoplecore-leave.LV-1017-03.target.employee",
+            "peoplecore-leave.LV-1017-03.target.name",
+            "peoplecore-leave.LV-1017-03.target.type",
+            "peoplecore-leave.LV-1017-03.target.date"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH5",
+        "time": "W3 Wed 09:40",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "PeopleCore's leave and exit history. Same check: does every valid past record survive?",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/peoplecore-leave",
+                "url": "https://qa.onehorizon.local/peoplecore-leave"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Same date, a third system. And one employee keeps coming up: E-18419."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-E-18419",
+          "title": "E-18419 · Daniel Park",
+          "text": "PeopleCore lost training-leave records from 17 October, including employee E-18419, Daniel Park, whose own exit is dated 16 October. Twelve exits followed on 18 October."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Look for rows where Source has a record and Target has nothing."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: LV-1017-01 is in Legacy but missing from Next. Note its Target cell and report it with REQ-T15-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T16",
+      "ticket": {
+        "id": "T16",
+        "projectId": "one-horizon",
+        "canonId": "NW-009",
+        "title": "PayFlow payments after exit",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that payments after an exit date match what payroll allows.",
+        "scope": [
+          "Payroll view",
+          "Payments after exit"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T16-01",
+            "description": "After an exit date, only settlement payments are made (FINAL_SETTLEMENT, ACCRUED_LEAVE_PAYOUT)."
+          },
+          {
+            "id": "REQ-T16-02",
+            "description": "Every payment references an existing employee record."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/payflow-after-exit"
+        },
+        "hints": [
+          {
+            "id": "HINT-T16-01",
+            "text": "A payment after leaving is not wrong by itself. Look at its type."
+          }
+        ],
+        "status": "NEW",
+        "outcomes": [
+          "BUG",
+          "DATA_INTEGRITY"
+        ]
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T16-001",
+          "type": "DATA",
+          "title": "Regular salary paid after exit",
+          "target": "payflow-after-exit.type",
+          "severity": "HIGH",
+          "requirementId": "REQ-T16-01",
+          "outcome": "DATA_INTEGRITY",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/payflow-after-exit"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Settlement types only",
+          "actual": "REGULAR_SALARY",
+          "validEvidenceTargets": [
+            "payflow-after-exit.PF-2111-25.type",
+            "payflow-after-exit.PF-2112-27.type",
+            "payflow-after-exit.PF-2201-25.type"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH5",
+        "time": "W3 Thu 14:00",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Payroll view. When someone leaves, PayFlow should only settle what is owed. Check what happened after each exit date."
+          },
+          {
+            "from": "Grace Yoon",
+            "role": "Horizon Program Manager",
+            "text": "This one is sensitive. Report what the data says, and nothing more.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/payflow-after-exit",
+                "url": "https://qa.onehorizon.local/payflow-after-exit"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Grace Yoon",
+            "role": "Horizon Program Manager",
+            "text": "Thank you. We're closing this as KNOWN ISSUE / LEGACY EXCEPTION. No action is required."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Then it's on record, and it's their call. Before we move on, let's write down what we think connects the four."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-AFTER-EXIT",
+          "title": "Paid after leaving",
+          "text": "E-18419, Daniel Park, left on 16 October 2021, yet PayFlow paid him a regular salary for three more months. Horizon closed it as KNOWN ISSUE / LEGACY EXCEPTION."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Settlement after leaving is normal. Look for a payment type that is not a settlement."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: PF-2111-25 is a REGULAR_SALARY after E-18419's exit. Note its type, report it with REQ-T16-01, and call it a data integrity problem."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T16",
+          "askedBy": {
+            "from": "Mina Seo",
+            "role": "QA Lead"
+          },
+          "prompt": "Four systems, one date, one employee. What's the most reasonable explanation so far?",
+          "sentence": "Orders, trips, and leave records all break around {date}, and employee {id} keeps appearing. The likeliest cause is {cause}.",
+          "blanks": {
+            "date": {
+              "options": [
+                "17 October",
+                "16 October",
+                "24 October"
+              ],
+              "answer": "17 October"
+            },
+            "id": {
+              "options": [
+                "E-18419",
+                "E-18440",
+                "E-17702"
+              ],
+              "answer": "E-18419"
+            },
+            "cause": {
+              "options": [
+                "one shared migration batch",
+                "a timezone conversion",
+                "someone deleting records by hand"
+              ],
+              "answer": "one shared migration batch"
+            }
+          },
+          "success": "That's the sensible reading for now. One batch, one bad night of data. Let's see if Integration agrees."
+        }
+      }
     }
   ],
   "chapters": [
     {
       "id": "CH1",
       "title": "Chapter 1 · Release Candidate 3",
-      "synopsis": "Shoply ships its Autumn Release on Friday. Release Manager Daniel Reyes insists Release Candidate 3 is clean: \"Nothing wrong with this build.\" Test it, and work out why RC3 behaves like a different product.",
+      "synopsis": "Shoply ships its Autumn Release on Friday. Release Manager Marcus Reyes insists Release Candidate 3 is clean: \"Nothing wrong with this build.\" Test it, and work out why RC3 behaves like a different product.",
       "finaleDeductionId": "DED-T04",
       "epilogue": [
         {
-          "from": "Daniel Reyes",
+          "from": "Marcus Reyes",
           "role": "Shoply Release Manager",
           "text": "...That was me. I widened the merge rule so new promo branches would ship on their own. I didn't know the archived branches still matched."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "That's a root cause, not four separate bugs. RC3 is pulled, the rule is fixed, and Friday's release is safe. Good work."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "Before Friday, I want one more pass on RC4. Then we talk about how a bot got write access to a read-only archive."
         }
@@ -2801,21 +3407,22 @@
       },
       "lateEpilogue": [
         {
-          "from": "Daniel Reyes",
+          "from": "Marcus Reyes",
           "role": "Shoply Release Manager",
           "text": "...That was me. I widened the merge rule so new promo branches would ship on their own. I didn't know the archived branches still matched."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "That's a root cause, not four separate bugs. But we missed code freeze, so RC3 went out to the partner preview before we pulled it. Friday is still safe, barely."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "Before Friday, I want one more pass on RC4. Then we talk about how a bot got write access to a read-only archive."
         }
-      ]
+      ],
+      "channel": "# shoply-autumn-release"
     },
     {
       "id": "CH2",
@@ -2824,22 +3431,22 @@
       "finaleDeductionId": "DED-T07",
       "epilogue": [
         {
-          "from": "Sam Ortiz",
+          "from": "Leo Ortiz",
           "role": "Shoply Engineer",
-          "text": "Growth shelved my experiment in March, and it cut cancellations by forty percent. When Daniel widened the rule, I just made sure the archive was open."
+          "text": "Growth shelved my experiment in March, and it cut cancellations by forty percent. When Marcus widened the rule, I just made sure the archive was open."
         },
         {
-          "from": "Daniel Reyes",
+          "from": "Marcus Reyes",
           "role": "Shoply Release Manager",
           "text": "You let me take the blame for RC3."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "RC4 ships without retention-push, and the keys are revoked. Friday 10:00, and this time we can prove there's nothing wrong."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "One thing still bothers me. Temporary accounts need an approver. Who signed for ops-temp?"
         }
@@ -2850,26 +3457,27 @@
       },
       "lateEpilogue": [
         {
-          "from": "Sam Ortiz",
+          "from": "Leo Ortiz",
           "role": "Shoply Engineer",
-          "text": "Growth shelved my experiment in March, and it cut cancellations by forty percent. When Daniel widened the rule, I just made sure the archive was open."
+          "text": "Growth shelved my experiment in March, and it cut cancellations by forty percent. When Marcus widened the rule, I just made sure the archive was open."
         },
         {
-          "from": "Daniel Reyes",
+          "from": "Marcus Reyes",
           "role": "Shoply Release Manager",
           "text": "You let me take the blame for RC3."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "The release went out at 10:00 with release/mobile-fees still in it. We are rolling it back now, and the keys are revoked. It should never have shipped."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "One thing still bothers me. Temporary accounts need an approver. Who signed for ops-temp?"
         }
-      ]
+      ],
+      "channel": "# shoply-autumn-release"
     },
     {
       "id": "CH3",
@@ -2882,12 +3490,12 @@
       },
       "epilogue": [
         {
-          "from": "Elena Park",
+          "from": "Elena Brooks",
           "role": "VP Growth",
           "text": "The numbers were real. Cancellations fell and revenue rose. I needed them on Monday."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "They were real because customers couldn't cancel and Gold members paid full price. AR-4471 is revoked, the job is off, and refunds go out tomorrow."
         },
@@ -2897,24 +3505,24 @@
           "text": "I'll write to every customer we overcharged tonight."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "\"Nothing wrong\" was never the goal. Being able to prove it is."
         },
         {
-          "from": "Daniel Reyes",
+          "from": "Marcus Reyes",
           "role": "Shoply Release Manager",
           "text": "Platform is rolling everything back tonight. RC5 lands Monday morning, before leadership meets at 09:00."
         }
       ],
       "lateEpilogue": [
         {
-          "from": "Elena Park",
+          "from": "Elena Brooks",
           "role": "VP Growth",
           "text": "The numbers were real. Cancellations fell and revenue rose. I needed them on Monday."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "They were real because customers couldn't cancel and Gold members paid full price. The 18:00 billing run already charged them. AR-4471 is revoked, and the refunds will take a week."
         },
@@ -2924,16 +3532,17 @@
           "text": "I'll write to every customer we overcharged tonight."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "\"Nothing wrong\" was never the goal. Being able to prove it is."
         },
         {
-          "from": "Daniel Reyes",
+          "from": "Marcus Reyes",
           "role": "Shoply Release Manager",
           "text": "Platform is rolling everything back tonight. RC5 lands Monday morning, before leadership meets at 09:00."
         }
-      ]
+      ],
+      "channel": "# shoply-autumn-release"
     },
     {
       "id": "CH4",
@@ -2946,12 +3555,12 @@
       },
       "epilogue": [
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "RC6 is built from SNAP-0901 and passes every check from last week. I showed leadership the whole chain, one log line at a time."
         },
         {
-          "from": "Daniel Reyes",
+          "from": "Marcus Reyes",
           "role": "Shoply Release Manager",
           "text": "The merge rule now needs two approvals. Mine isn't enough on its own anymore."
         },
@@ -2961,19 +3570,34 @@
           "text": "Refunds are out, and the support queue is quiet for the first time in a week."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "Nothing wrong. And this time, we can prove it."
+        },
+        {
+          "from": "Marcus Reyes",
+          "role": "Shoply Release Manager",
+          "text": "One more thing from leadership: Shoply is a Horizon Group company. Next quarter it joins ONE HORIZON, the group-wide integration."
+        },
+        {
+          "from": "Grace Yoon",
+          "role": "Horizon Program Manager",
+          "text": "Grace Yoon, ONE HORIZON program office. Northstar's QA caught what three teams missed. We'd like you on the legacy migration checks."
+        },
+        {
+          "from": "Mina Seo",
+          "role": "QA Lead",
+          "text": "Different client, bigger systems. Same job: trust what you can prove."
         }
       ],
       "lateEpilogue": [
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "We missed 09:00. Leadership heard about RC5 from customers before they heard it from us. RC6 is built from SNAP-0901 now, and it passes every check."
         },
         {
-          "from": "Daniel Reyes",
+          "from": "Marcus Reyes",
           "role": "Shoply Release Manager",
           "text": "The merge rule now needs two approvals. Mine isn't enough on its own anymore."
         },
@@ -2983,9 +3607,50 @@
           "text": "Refunds are out, and the support queue is quiet for the first time in a week."
         },
         {
-          "from": "Maya Kim",
+          "from": "Mina Seo",
           "role": "QA Lead",
           "text": "Nothing wrong. And this time, we can prove it."
+        },
+        {
+          "from": "Marcus Reyes",
+          "role": "Shoply Release Manager",
+          "text": "One more thing from leadership: Shoply is a Horizon Group company. Next quarter it joins ONE HORIZON, the group-wide integration."
+        },
+        {
+          "from": "Grace Yoon",
+          "role": "Horizon Program Manager",
+          "text": "Grace Yoon, ONE HORIZON program office. Northstar's QA caught what three teams missed. We'd like you on the legacy migration checks."
+        },
+        {
+          "from": "Mina Seo",
+          "role": "QA Lead",
+          "text": "Different client, bigger systems. Same job: trust what you can prove."
+        }
+      ],
+      "channel": "# shoply-autumn-release"
+    },
+    {
+      "id": "CH5",
+      "canonAct": "ACT 2",
+      "title": "Chapter 5 · October 17",
+      "synopsis": "Shoply joins ONE HORIZON. Northstar checks that every company's history survives the move to one system. One date keeps breaking.",
+      "quiet": true,
+      "channel": "# one-horizon-migration",
+      "finaleDeductionId": "DED-T16",
+      "deadline": {
+        "label": "Migration sign-off",
+        "at": "W3 Fri 17:00"
+      },
+      "epilogue": [
+        {
+          "from": "Alex Han",
+          "role": "Integration Developer",
+          "text": "Alex Han, integration. Before you sign off on one bad batch: those systems weren't migrated together. I'll show you on Monday."
+        },
+        {
+          "from": "Mina Seo",
+          "role": "QA Lead",
+          "text": "Noted. We test the hypothesis, not the conclusion."
         }
       ]
     }

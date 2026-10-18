@@ -47,9 +47,10 @@ static func severity_for(scenario: Dictionary, requirement: Dictionary) -> Strin
 
 
 static func bug_report(scenario: Dictionary, interactions: Array, requirement: Dictionary,
-		observation: Dictionary, severity: String = "", screen: String = "") -> Dictionary:
+		observation: Dictionary, severity: String = "", screen: String = "", outcome: String = "BUG") -> Dictionary:
 	return {
 		"screen": screen,
+		"outcome": outcome,
 		"ticketId": scenario["ticket"]["id"],
 		"kind": "BUG",
 		"title": "%s: %s" % [scenario["ticket"]["title"], Observations.describe(observation)],
