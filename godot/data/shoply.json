@@ -1,0 +1,59 @@
+{
+  "products": [
+    {
+      "id": "everyday-pack",
+      "name": "Everyday Carry Pack",
+      "category": "Bags / Everyday",
+      "description": "A structured 18L pack with a padded laptop sleeve, quick-access top pocket, and weather-resistant recycled shell.",
+      "price": 30,
+      "stock": 12,
+      "accent": "coral",
+      "features": [
+        "Fits up to 15-inch laptops",
+        "Water-resistant finish",
+        "Lifetime repair guarantee"
+      ],
+      "tagline": "18L / Recycled shell"
+    },
+    {
+      "id": "travel-sling",
+      "name": "Travel Sling",
+      "category": "Bags / Travel",
+      "description": "A compact crossbody sling with an RFID pocket and a hidden passport sleeve.",
+      "price": 24,
+      "stock": 8,
+      "accent": "sand",
+      "features": [
+        "Fits a passport and a phone",
+        "Adjustable strap",
+        "RFID-shielded pocket"
+      ],
+      "tagline": "3L / Crossbody"
+    },
+    {
+      "id": "laptop-sleeve",
+      "name": "Laptop Sleeve",
+      "category": "Accessories / Tech",
+      "description": "A padded felt sleeve with a magnetic flap for laptops up to 14 inches.",
+      "price": 18,
+      "stock": 20,
+      "accent": "slate",
+      "features": [
+        "Fits up to 14-inch laptops",
+        "Magnetic closure",
+        "Recycled felt"
+      ],
+      "tagline": "14\" / Felt"
+    }
+  ],
+  "orders": [
+    {
+      "id": "order-1042",
+      "placedAt": "September 22, 2026",
+      "status": "PROCESSING",
+      "productId": "everyday-pack",
+      "quantity": 1,
+      "total": 35
+    }
+  ]
+}

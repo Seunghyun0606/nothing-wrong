@@ -31,12 +31,15 @@ hint given, unexpected behavior, and reproducible defect, if any.
 
 | Step | Completed without hint? | Observation / hint / defect |
 | --- | --- | --- |
-| Start, login, Dashboard, T01 |  |  |
+| Start, lock screen, desktop, first briefing |  |  |
+| Found the T01 link or typed shoply.local |  |  |
 | T01 Evidence → Report → Review |  |  |
+| T01 debrief read, deduction answered |  |  |
 | T02 Evidence → Report → Review |  |  |
 | T03 Evidence → Report → Review |  |  |
 | Account Switcher and T04 Evidence → Report → Review |  |  |
-| Final Dashboard and reload |  |  |
+| T03 address typed without a link |  |  |
+| Chapter finale read, Case File checked, reload |  |  |
 
 For a defect, include Ticket, starting state, actions, expected result, actual result,
 and whether it reproduced on a second attempt. Do not label a participant's

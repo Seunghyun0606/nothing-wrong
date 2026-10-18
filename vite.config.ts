@@ -3,6 +3,10 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    // The Godot editor writes locked temp files there, which crashes the watcher.
+    watch: { ignored: ['**/godot/**'] },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

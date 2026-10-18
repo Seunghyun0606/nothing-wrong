@@ -1,0 +1,24 @@
+id: DEC-008
+title: Develop and ship only the Godot build
+status: active
+decided_at: "2026-10-18"
+context: >-
+  The project owner decided the web build will no longer be used and the game will be
+  distributed from the Godot client. Deleting the web code is not required now.
+decision: >-
+  All further development happens in godot/. godot/data/*.json (scenarios, story,
+  intranet records, Shoply catalog) and godot/i18n/ko.json are the canonical content.
+  The React/Vite build in the repository root is frozen as a historical reference: it is
+  not updated, tested in CI, or shipped. The web-to-Godot content export was removed so
+  it cannot overwrite the canonical Godot data.
+consequences:
+  - Supersedes the "web build remains the reference" part of DEC-007.
+  - New content, story, and translations are edited in godot/data and godot/i18n only.
+  - Verification for releases is the Godot headless suite plus the screenshot tour.
+  - Packaging and distribution (Godot export presets, store builds) are now planned work.
+  - The web code may be deleted later without affecting the Godot build.
+applies_to:
+  - global
+references:
+  - godot/README.md
+  - .project-os/decisions/DEC-007-godot-client.yaml

@@ -42,6 +42,8 @@ interface ProductLinkProps extends PropsWithChildren {
   to: string
   'aria-label'?: string
   'data-evidence-target'?: string
+  'data-evidence-label'?: string
+  'data-evidence-value'?: string
   onClick?: MouseEventHandler<HTMLAnchorElement>
 }
 

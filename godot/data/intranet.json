@@ -1,0 +1,247 @@
+{
+  "documents": [
+    {
+      "id": "DOC-CHECKOUT-HISTORY",
+      "title": "RC3 change history · checkout",
+      "source": "Shoply engineering / version history",
+      "keywords": [
+        "checkout",
+        "confirm order",
+        "confirm button",
+        "checkout.css",
+        "button",
+        "version history",
+        "history",
+        "release-bot",
+        "02:14",
+        "sync"
+      ],
+      "availableAfter": "T01",
+      "lines": [
+        "RC3 · 02:14 · release-bot · checkout.css — confirm button variant: primary → secondary",
+        "Commit message: \"sync branches\"",
+        "Reviewed by: nobody (automated merge)",
+        "Previous change to this file: four months ago, by the design team"
+      ],
+      "keywordsKo": [
+        "결제",
+        "결제 버튼",
+        "체크아웃",
+        "버전 기록",
+        "변경 기록",
+        "주문 확인"
+      ],
+      "unlockedByLeads": [
+        "release-bot",
+        "02:14"
+      ]
+    },
+    {
+      "id": "DOC-PROMO-ARCHIVE",
+      "title": "Promotion archive · TWO FOR $50",
+      "source": "Marketing / retired promotions",
+      "keywords": [
+        "two for",
+        "two for 50",
+        "two for $50",
+        "promotion",
+        "promo",
+        "$50",
+        "fifty",
+        "spring",
+        "subtotal",
+        "two_for_50",
+        "promo/two-for-50",
+        "legacy rule"
+      ],
+      "availableAfter": "T02",
+      "lines": [
+        "TWO FOR $50: spring promotion, any two packs for $50.00.",
+        "Status: retired in June. Code archived in promo/two-for-50.",
+        "Still referenced by: RC3 cart/subtotal, merged at 02:14 by release-bot."
+      ],
+      "keywordsKo": [
+        "프로모션",
+        "2개 50달러",
+        "두 개 50달러",
+        "50달러",
+        "봄 프로모션",
+        "소계"
+      ],
+      "unlockedByLeads": [
+        "TWO_FOR_50",
+        "promo/two-for-50"
+      ]
+    },
+    {
+      "id": "DOC-EXPERIMENT",
+      "title": "Experiment registry · exp/retention-push",
+      "source": "Growth team / experiments",
+      "keywords": [
+        "experiment",
+        "retention",
+        "cancel",
+        "cancellation",
+        "cancellations",
+        "exp/",
+        "retention-push",
+        "growth",
+        "margin_guard",
+        "margin guard",
+        "flag"
+      ],
+      "availableAfter": "T03",
+      "lines": [
+        "exp/retention-push. Goal: reduce order cancellations.",
+        "Variant A: route Cancel order to the payment page.",
+        "Variant B (\"margin guard\"): cap discounts at 10% on carts of three or more items.",
+        "Status: archived in March. Not approved for release."
+      ],
+      "keywordsKo": [
+        "실험",
+        "취소",
+        "주문 취소",
+        "리텐션",
+        "그로스"
+      ],
+      "unlockedByLeads": [
+        "exp/retention-push",
+        "margin_guard"
+      ]
+    },
+    {
+      "id": "DOC-BOT-CONFIG",
+      "title": "release-bot configuration history",
+      "source": "Platform team / automation",
+      "keywords": [
+        "release-bot",
+        "bot",
+        "merge rule",
+        "merge",
+        "rule",
+        "config",
+        "configuration",
+        "automation"
+      ],
+      "availableAfter": "T04",
+      "lines": [
+        "Tuesday 18:40: include pattern changed from release/* to release/*, exp/*, promo/*",
+        "Reason: \"ship new promo branches automatically\"",
+        "Edited by: d.reyes",
+        "Next run (02:14): matched 1 release branch and 6 archived branches."
+      ],
+      "keywordsKo": [
+        "병합 규칙",
+        "병합",
+        "머지",
+        "봇",
+        "규칙",
+        "설정",
+        "자동화"
+      ]
+    },
+    {
+      "id": "DOC-ARCHIVE-ACCESS",
+      "title": "Archive access log",
+      "source": "Platform team / audit",
+      "keywords": [
+        "access",
+        "access log",
+        "archive",
+        "permission",
+        "read-only",
+        "readonly",
+        "audit",
+        "write"
+      ],
+      "availableAfter": "T05",
+      "lines": [
+        "Monday 23:10: write access to /archive granted to release-bot",
+        "Granted by: ops-temp (temporary account)",
+        "Account owner: not recorded",
+        "ops-temp was deleted on Wednesday."
+      ],
+      "keywordsKo": [
+        "접근",
+        "접근 기록",
+        "권한",
+        "보관소",
+        "아카이브",
+        "읽기 전용",
+        "감사"
+      ]
+    },
+    {
+      "id": "DOC-QA-HANDBOOK",
+      "title": "QA handbook · severity and reporting",
+      "source": "Nothing Wrong / QA practice",
+      "keywords": [
+        "handbook",
+        "severity",
+        "report",
+        "reporting",
+        "qa",
+        "evidence",
+        "no issue"
+      ],
+      "lines": [
+        "Report only what you can prove, with steps another tester can repeat.",
+        "Severity follows impact on the customer, not how surprising the bug is.",
+        "NO ISSUE FOUND is a valid result. Attach Evidence of what you checked."
+      ],
+      "keywordsKo": [
+        "핸드북",
+        "심각도",
+        "리포트",
+        "증거"
+      ]
+    },
+    {
+      "id": "DOC-RELEASE-CALENDAR",
+      "title": "Shoply release calendar",
+      "source": "Release management",
+      "keywords": [
+        "release",
+        "calendar",
+        "friday",
+        "autumn",
+        "rc3",
+        "rc4",
+        "schedule"
+      ],
+      "lines": [
+        "Autumn Release: Friday 10:00.",
+        "RC3: built overnight by release-bot.",
+        "Code freeze: Thursday 18:00. Release manager: Daniel Reyes."
+      ],
+      "keywordsKo": [
+        "릴리스",
+        "일정",
+        "금요일",
+        "가을"
+      ]
+    },
+    {
+      "id": "DOC-LUNCH",
+      "title": "Cafeteria menu",
+      "source": "Office / facilities",
+      "keywords": [
+        "lunch",
+        "menu",
+        "cafeteria",
+        "food",
+        "coffee"
+      ],
+      "lines": [
+        "Monday: bibimbap. Tuesday: pasta. Wednesday: curry.",
+        "The coffee machine on floor 3 is out of order. Again."
+      ],
+      "keywordsKo": [
+        "점심",
+        "메뉴",
+        "식당",
+        "커피"
+      ]
+    }
+  ]
+}

@@ -10,9 +10,7 @@ export function ShoplyHeader() {
         shoply<span>.</span>
       </ProductLink>
       <nav aria-label="Shoply navigation">
-        <a href="#new">New</a>
-        <a href="#essentials">Essentials</a>
-        <a href="#stories">Stories</a>
+        <ProductLink to="/shoply/product/everyday-pack">Shop</ProductLink>
       </nav>
       <div className="shoply-actions">
         <span className="shoply-account">{user.name}</span>

@@ -41,7 +41,7 @@ export function ProductPage({ productId }: ProductPageProps) {
         <div className="product-copy">
           <p className="product-category">{activeProduct.category}</p>
           <h1>{activeProduct.name}</h1>
-          <p className="product-price">{formatMoney(activeProduct.price)}</p>
+          <p className="product-price" data-evidence-target="product.price" data-evidence-label="Product price">{formatMoney(activeProduct.price)}</p>
           <p className="product-description">{activeProduct.description}</p>
           <ul className="product-features">
             <li>Fits up to 15-inch laptops</li>

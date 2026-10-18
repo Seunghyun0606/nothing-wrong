@@ -1,0 +1,1397 @@
+{
+  "scenarios": [
+    {
+      "id": "SCENARIO-T01",
+      "ticket": {
+        "id": "T01",
+        "projectId": "shoply",
+        "title": "Checkout confirmation design review",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Review the purchase path before release. Confirm the product, cart, and checkout experience matches the approved requirements.",
+        "scope": [
+          "Product detail",
+          "Cart",
+          "Checkout"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T01-01",
+            "description": "Customers can add a product to the cart and continue to checkout."
+          },
+          {
+            "id": "REQ-T01-02",
+            "description": "The final confirmation control is presented as the primary action.",
+            "reference": "Checkout interaction specification"
+          }
+        ],
+        "attachments": [
+          {
+            "id": "ATT-T01-01",
+            "name": "Checkout interaction specification",
+            "reference": "Design system / checkout actions",
+            "content": [
+              "Primary action: solid dark fill with a white label. Use it for the one action that completes the step.",
+              "Secondary action: outlined, transparent fill, dark label. Use it for optional or alternative actions.",
+              "Every checkout step has exactly one primary action. On the Delivery details step it is \"Confirm order\"."
+            ]
+          }
+        ],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply/product/everyday-pack"
+        },
+        "hints": [
+          {
+            "id": "HINT-T01-01",
+            "text": "Follow the complete customer journey before recording a conclusion."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T01-001",
+          "type": "VISUAL",
+          "title": "Checkout confirmation action uses the wrong style",
+          "target": "checkout.confirmButton",
+          "severity": "LOW",
+          "requirementId": "REQ-T01-02",
+          "reproductionConditions": [],
+          "reproductionActions": [
+            {
+              "type": "ADD_TO_CART",
+              "label": "add the product to the bag"
+            },
+            {
+              "type": "OPEN_CHECKOUT",
+              "label": "open checkout"
+            }
+          ],
+          "expected": "Primary action style",
+          "actual": "Secondary action style",
+          "validEvidenceTargets": [
+            "checkout.confirmButton"
+          ]
+        }
+      ],
+      "mutations": [
+        {
+          "id": "MUTATION-T01-001",
+          "type": "WRONG_STYLE",
+          "target": "checkout.confirmButton",
+          "payload": {
+            "value": "secondary"
+          },
+          "trace": {
+            "text": "style override: checkout.confirmButton variant=secondary (sync 02:14 by release-bot)",
+            "terms": [
+              "release-bot",
+              "02:14"
+            ]
+          }
+        }
+      ],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "xp": 100,
+        "reputationDelta": 2,
+        "unlockedTools": []
+      },
+      "guide": {
+        "label": "First Ticket tutorial",
+        "ticketIntro": {
+          "label": "How to play your first Ticket",
+          "heading": "What am I supposed to do?",
+          "body": "Explore Shoply like a customer and compare it with the requirements. When something is off, flag it. Then follow the leads: that is where the real story is.",
+          "steps": [
+            "Read the briefing in Messenger and the requirements below.",
+            "Select Start test, then open Shoply in the Browser and follow product → bag → checkout.",
+            "When something looks wrong, press Flag in the Browser and pick it.",
+            "Read what the team says, and follow the leads."
+          ]
+        },
+        "workspace": [
+          {
+            "id": "T01-GUIDE-CAPTURED",
+            "label": "Try again",
+            "title": "Not quite yet.",
+            "instruction": "Read the feedback in QA Tracker, then flag the value that breaks a requirement.",
+            "conditions": [
+              {
+                "field": "workspace.flagCount",
+                "operator": "GTE",
+                "value": 1
+              },
+              {
+                "field": "test.currentPath",
+                "operator": "EQ",
+                "value": "/shoply/checkout"
+              }
+            ]
+          },
+          {
+            "id": "T01-GUIDE-CHECKOUT",
+            "label": "Compare",
+            "title": "Check this screen against the Ticket.",
+            "instruction": "Compare this screen with the requirements and the spec. If something is off, press Flag in the Browser and pick it.",
+            "conditions": [
+              {
+                "field": "test.currentPath",
+                "operator": "EQ",
+                "value": "/shoply/checkout"
+              }
+            ]
+          },
+          {
+            "id": "T01-GUIDE-CART",
+            "label": "Continue the journey",
+            "title": "Inspect the bag, then continue to checkout.",
+            "instruction": "Compare each screen with the requirements in QA Tracker as you go.",
+            "conditions": [
+              {
+                "field": "test.currentPath",
+                "operator": "EQ",
+                "value": "/shoply/cart"
+              }
+            ]
+          },
+          {
+            "id": "T01-GUIDE-PRODUCT",
+            "label": "Explore",
+            "title": "Try Shoply as a customer.",
+            "instruction": "Use Add to bag on the product page, then open Bag. The requirements are in QA Tracker.",
+            "conditions": [
+              {
+                "field": "test.currentPath",
+                "operator": "STARTS_WITH",
+                "value": "/shoply/product/"
+              }
+            ]
+          },
+          {
+            "id": "T01-GUIDE-OPEN-SHOPLY",
+            "label": "Open the site",
+            "title": "Open Shoply in the Browser.",
+            "instruction": "Select the shoply.local link in Maya's message, or open Browser and type shoply.local into the address bar.",
+            "conditions": [
+              {
+                "field": "workspace.onShoply",
+                "operator": "EQ",
+                "value": false
+              }
+            ]
+          },
+          {
+            "id": "T01-GUIDE-DETOUR",
+            "label": "Explore freely",
+            "title": "Return to the purchase journey when you are ready.",
+            "instruction": "Select the Shoply logo, open the Everyday Carry Pack, then explore the product, bag, and checkout against the Ticket requirements.",
+            "conditions": []
+          }
+        ],
+        "review": {
+          "valid": "First case complete. The team has questions. Read Messenger.",
+          "invalid": "Read the feedback, then flag again. Look for the value that breaks a requirement."
+        },
+        "hintMode": "always"
+      },
+      "story": {
+        "chapterId": "CH1",
+        "briefing": [
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Welcome aboard. Shoply is our client, and their Autumn Release ships Friday. Build RC3 landed overnight."
+          },
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "Honestly, this is a formality. Nothing changed in checkout. Nothing wrong with this build."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Then it should be a quick review. Follow the purchase path and check it against the spec. Trust what you can prove, not what you're told."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Accept T01 in QA Tracker first. Then open the staging site and start from the product page. The spec is on the intranet.",
+            "links": [
+              {
+                "label": "shoply.local/product/everyday-pack",
+                "url": "https://shoply.local/product/everyday-pack"
+              },
+              {
+                "label": "Checkout interaction specification",
+                "url": "https://docs.nothingwrong.local/checkout-interaction-specification"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Good catch. Design confirms Confirm order should be primary, and they say they never touched it."
+          },
+          {
+            "from": "Sam Ortiz",
+            "role": "Shoply Engineer",
+            "text": "Then somebody else did. Did the browser console say anything on that checkout screen? Look the name up on the intranet."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-0214",
+          "title": "02:14 · release-bot",
+          "text": "Checkout styles changed at 02:14 in RC3, committed by release-bot. The design team made no change."
+        },
+        "deduction": {
+          "id": "DED-T01",
+          "askedBy": {
+            "from": "Maya Kim",
+            "role": "QA Lead"
+          },
+          "prompt": "Daniel said nothing changed in checkout. What does the evidence say?",
+          "options": [
+            {
+              "id": "DED-T01-A",
+              "text": "Checkout did change: an automated merge modified it overnight.",
+              "correct": true,
+              "response": "Exactly. Something changed, even if no person meant to change it."
+            },
+            {
+              "id": "DED-T01-B",
+              "text": "A designer changed the button and forgot to mention it.",
+              "correct": false,
+              "response": "Design says they made no change, and the commit came from release-bot, not a person. Look at the author again."
+            },
+            {
+              "id": "DED-T01-C",
+              "text": "Nothing changed. The button was always secondary.",
+              "correct": false,
+              "response": "The specification says primary, and the history shows an edit at 02:14. Something did change."
+            }
+          ]
+        },
+        "discovery": {
+          "documentId": "DOC-CHECKOUT-HISTORY",
+          "hint": "Open the Console in the Browser on the checkout screen. Select the name you see there to search the intranet."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T02",
+      "ticket": {
+        "id": "T02",
+        "projectId": "shoply",
+        "title": "Cart subtotal verification",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Verify that cart totals remain accurate when customers change item quantities before checkout.",
+        "scope": [
+          "Product detail",
+          "Cart totals"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T02-01",
+            "description": "The cart subtotal equals product price multiplied by quantity.",
+            "reference": "Shoply pricing rules"
+          },
+          {
+            "id": "REQ-T02-02",
+            "description": "Everyday Carry Pack costs $30.00 per item.",
+            "reference": "Product catalog"
+          }
+        ],
+        "attachments": [
+          {
+            "id": "ATT-T02-01",
+            "name": "Shoply pricing rules",
+            "reference": "Commerce / cart calculations",
+            "content": [
+              "Subtotal = unit price × quantity, summed over every item in the bag.",
+              "Shipping is free when the subtotal is $50.00 or more; otherwise it is $5.00.",
+              "Total = subtotal − discount + shipping."
+            ]
+          }
+        ],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply/product/everyday-pack"
+        },
+        "hints": [
+          {
+            "id": "HINT-T02-01",
+            "text": "Check displayed totals after changing the quantity in the cart."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T02-001",
+          "type": "DATA",
+          "title": "Cart subtotal is incorrect for two items",
+          "target": "cart.subtotal",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T02-01",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            },
+            {
+              "field": "product.cart.quantity",
+              "operator": "EQ",
+              "value": 2
+            }
+          ],
+          "reproductionActions": [
+            {
+              "type": "ADD_TO_CART",
+              "label": "add the product to the bag"
+            },
+            {
+              "type": "OPEN_CART",
+              "label": "open the bag"
+            }
+          ],
+          "expected": "Subtotal should be $60.00 for two $30.00 items",
+          "actual": "Subtotal is displayed as $50.00",
+          "validEvidenceTargets": [
+            "cart.subtotal",
+            "cart.total"
+          ]
+        }
+      ],
+      "mutations": [
+        {
+          "id": "MUTATION-T02-001",
+          "type": "WRONG_CALCULATION",
+          "target": "cart.subtotal",
+          "conditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            },
+            {
+              "field": "product.cart.quantity",
+              "operator": "EQ",
+              "value": 2
+            }
+          ],
+          "payload": {
+            "value": 50
+          },
+          "trace": {
+            "text": "pricing: legacy rule TWO_FOR_50 applied to cart subtotal (promo/two-for-50)",
+            "terms": [
+              "TWO_FOR_50",
+              "promo/two-for-50"
+            ]
+          }
+        }
+      ],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "xp": 100,
+        "reputationDelta": 2,
+        "unlockedTools": []
+      },
+      "guide": {
+        "label": "Guided Ticket",
+        "ticketIntro": {
+          "label": "New skill: verify the numbers",
+          "heading": "New skill: verify the numbers",
+          "body": "A screen can look perfect and still show the wrong figures. This time, work out what each figure should be and compare it with what Shoply shows.",
+          "steps": [
+            "Read the briefing in Messenger and open the pricing rules on the intranet.",
+            "Put the pack in your bag and change the quantity.",
+            "Do the math for every figure in the Order summary.",
+            "Flag the figure that is wrong."
+          ]
+        },
+        "workspace": [
+          {
+            "id": "T02-GUIDE-CAPTURED",
+            "label": "Try again",
+            "title": "Not quite yet.",
+            "instruction": "Was the wrong figure on screen when you flagged? Try another quantity and flag the figure that breaks the rule.",
+            "conditions": [
+              {
+                "field": "workspace.flagCount",
+                "operator": "GTE",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "T02-GUIDE-MATH",
+            "label": "Do the math",
+            "title": "Price × quantity: does every figure agree?",
+            "instruction": "Compare the line total, Subtotal, and Total with REQ-T02-01. If one is wrong, press Flag and pick it.",
+            "conditions": [
+              {
+                "field": "test.currentPath",
+                "operator": "EQ",
+                "value": "/shoply/cart"
+              },
+              {
+                "field": "product.cart.quantity",
+                "operator": "GTE",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "id": "T02-GUIDE-QUANTITY",
+            "label": "Change the quantity",
+            "title": "One item is easy. Try more than one.",
+            "instruction": "Use the Qty selector and watch the Order summary as it updates.",
+            "conditions": [
+              {
+                "field": "test.currentPath",
+                "operator": "EQ",
+                "value": "/shoply/cart"
+              }
+            ]
+          },
+          {
+            "id": "T02-GUIDE-PRODUCT",
+            "label": "Start",
+            "title": "Put the pack in your bag.",
+            "instruction": "Select Add to bag, then open Bag.",
+            "conditions": [
+              {
+                "field": "test.currentPath",
+                "operator": "STARTS_WITH",
+                "value": "/shoply/product/"
+              }
+            ]
+          },
+          {
+            "id": "T02-GUIDE-OPEN-SHOPLY",
+            "label": "Open the site",
+            "title": "Head back to Shoply.",
+            "instruction": "Use the link in the briefing or QA Notes, or type shoply.local in the Browser.",
+            "conditions": [
+              {
+                "field": "workspace.onShoply",
+                "operator": "EQ",
+                "value": false
+              }
+            ]
+          },
+          {
+            "id": "T02-GUIDE-DETOUR",
+            "label": "Head to the bag",
+            "title": "The figures to check are in the bag.",
+            "instruction": "Select Bag in the Shoply header, or the Shoply logo to browse the shop.",
+            "conditions": []
+          }
+        ],
+        "review": {
+          "valid": "Numbers verified. The pattern is starting to show. Read Messenger.",
+          "invalid": "Check the feedback. Flag the figure that breaks the rule while it is on screen."
+        },
+        "hintMode": "always"
+      },
+      "story": {
+        "chapterId": "CH1",
+        "briefing": [
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Second job. Shoply Support got a strange email: a customer bought two packs and was charged less than expected."
+          },
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "He was happy. Our finance team was not. Can you check whether the cart math is right?"
+          },
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "Probably a coupon. The pricing code hasn't changed since spring."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Pricing rules are on the intranet. Start from the product page again.",
+            "links": [
+              {
+                "label": "shoply.local/product/everyday-pack",
+                "url": "https://shoply.local/product/everyday-pack"
+              },
+              {
+                "label": "Shoply pricing rules",
+                "url": "https://docs.nothingwrong.local/shoply-pricing-rules"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Sam Ortiz",
+            "role": "Shoply Engineer",
+            "text": "The subtotal code doesn't look like ours. If the console logged a rule name on the bag screen, that's our thread."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Pull that thread. Search the intranet for it."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-TWO-FOR-50",
+          "title": "A retired promotion came back",
+          "text": "RC3 calculates two-item subtotals with the \"TWO FOR $50\" code from a spring promotion retired in June. Merged by release-bot at 02:14."
+        },
+        "deduction": {
+          "id": "DED-T02",
+          "askedBy": {
+            "from": "Maya Kim",
+            "role": "QA Lead"
+          },
+          "prompt": "Two unrelated screens broke on the same night. What links them?",
+          "options": [
+            {
+              "id": "DED-T02-A",
+              "text": "The customer's coupon caused both problems.",
+              "correct": false,
+              "response": "No coupon was applied in your test, and coupons do not change button styles. Look at who changed both files."
+            },
+            {
+              "id": "DED-T02-B",
+              "text": "Both changes came from the same overnight merge by release-bot.",
+              "correct": true,
+              "response": "Right. One merge, two broken screens. That's a pattern, not a coincidence."
+            },
+            {
+              "id": "DED-T02-C",
+              "text": "Shoply's servers were overloaded that night.",
+              "correct": false,
+              "response": "An overload would not rewrite a button style or bring back old promotion code. Check the timestamps."
+            }
+          ]
+        },
+        "discovery": {
+          "documentId": "DOC-PROMO-ARCHIVE",
+          "hint": "Check the Console on the bag screen at quantity two, then search for the rule it names."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T03",
+      "ticket": {
+        "id": "T03",
+        "projectId": "shoply",
+        "title": "Order cancellation routing",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Verify that customers can enter the cancellation flow for an order that is still processing.",
+        "scope": [
+          "Order details",
+          "Order cancellation"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T03-01",
+            "description": "Cancel Order opens the return or cancellation flow for a processing order.",
+            "reference": "Shoply order management rules"
+          },
+          {
+            "id": "REQ-T03-02",
+            "description": "Order #1042 is eligible for cancellation before shipment.",
+            "reference": "Order #1042"
+          }
+        ],
+        "attachments": [
+          {
+            "id": "ATT-T03-01",
+            "name": "Order management rules",
+            "reference": "Commerce / order lifecycle",
+            "content": [
+              "Orders in the processing state can be cancelled until they ship.",
+              "Cancel order opens the cancellation flow: choose a reason, confirm, and receive a refund to the original payment method.",
+              "A customer is never asked to pay during cancellation."
+            ]
+          }
+        ],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply/orders/order-1042"
+        },
+        "hints": [
+          {
+            "id": "HINT-T03-01",
+            "text": "Compare the action label with the screen that opens after selecting it."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "orderStatuses": {
+            "order-1042": "PROCESSING"
+          }
+        }
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T03-001",
+          "type": "BEHAVIOR",
+          "title": "Cancel Order opens the payment flow",
+          "target": "orders.cancelAction",
+          "severity": "HIGH",
+          "requirementId": "REQ-T03-01",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/payment"
+            }
+          ],
+          "reproductionActions": [
+            {
+              "type": "CANCEL_ORDER",
+              "label": "select Cancel order"
+            },
+            {
+              "type": "OPEN_PAYMENT",
+              "label": "land on the screen it opens"
+            }
+          ],
+          "expected": "Cancellation flow should open for a processing order",
+          "actual": "Payment flow opens after selecting Cancel order",
+          "validEvidenceTargets": [
+            "payment.form"
+          ]
+        }
+      ],
+      "mutations": [
+        {
+          "id": "MUTATION-T03-001",
+          "type": "WRONG_ACTION",
+          "target": "orders.cancelAction.destination",
+          "conditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/orders/order-1042"
+            }
+          ],
+          "payload": {
+            "value": "/shoply/payment"
+          },
+          "trace": {
+            "text": "router: cancel link rewritten to /payment by flag exp/retention-push",
+            "terms": [
+              "exp/retention-push"
+            ]
+          }
+        }
+      ],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "xp": 100,
+        "reputationDelta": 2,
+        "unlockedTools": [
+          "ACCOUNT_SWITCHER"
+        ]
+      },
+      "guide": {
+        "label": "Field guide",
+        "ticketIntro": {
+          "label": "New skill: action and result",
+          "heading": "New skill: action and result",
+          "body": "Every label makes a promise. Check that each action takes the customer where its label says it will.",
+          "steps": [
+            "Read the briefing and the order management rules on the intranet.",
+            "Act like the customer: try to cancel order #1042.",
+            "Flag the screen if the result breaks the rule."
+          ]
+        },
+        "workspace": [
+          {
+            "id": "T03-GUIDE-CAPTURED",
+            "label": "Try again",
+            "title": "Not quite yet.",
+            "instruction": "Flag the screen the action opened, and match it to the rule it breaks.",
+            "conditions": [
+              {
+                "field": "workspace.flagCount",
+                "operator": "GTE",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "T03-GUIDE-RESULT",
+            "label": "Look closely",
+            "title": "Is this where the action should lead?",
+            "instruction": "Compare this screen with REQ-T03-01. If it is wrong, press Flag and pick it.",
+            "conditions": [
+              {
+                "field": "test.currentPath",
+                "operator": "EQ",
+                "value": "/shoply/payment"
+              }
+            ]
+          },
+          {
+            "id": "T03-GUIDE-OPEN-SHOPLY",
+            "label": "Find the order",
+            "title": "Go to order #1042.",
+            "instruction": "Type the order address from the briefing into the Browser. QA Notes has it too.",
+            "conditions": [
+              {
+                "field": "workspace.onShoply",
+                "operator": "EQ",
+                "value": false
+              }
+            ]
+          },
+          {
+            "id": "T03-GUIDE-INVESTIGATE",
+            "label": "Investigate",
+            "title": "Do what the customer would do.",
+            "instruction": "Order #1042 is in Orders. Use its actions and watch where they lead.",
+            "conditions": []
+          }
+        ],
+        "review": {
+          "valid": "Behavior verified. A new tool is now unlocked. Read the debrief first.",
+          "invalid": "Check the feedback. Flag the screen the action opened."
+        },
+        "hintMode": "on_request"
+      },
+      "story": {
+        "chapterId": "CH1",
+        "briefing": [
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "This one is urgent. Customers trying to cancel processing orders say they end up on a payment page."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Order #1042 is still processing, so it should be cancellable. It lives at shoply.local/orders/order-1042. Find out where Cancel order really takes people."
+          },
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "We'd have noticed that. Cancellations actually dropped this week. That's good news, isn't it?"
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Sam Ortiz",
+            "role": "Shoply Engineer",
+            "text": "A cancel button that sends people to payment... the router doesn't do that by accident. Something told it to."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "So the drop in cancellations wasn't good news. Find out what told it to."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-RETENTION-PUSH",
+          "title": "exp/retention-push",
+          "text": "The Cancel → payment routing comes from exp/retention-push, an experiment branch archived in March. Cancellations \"dropped\" because customers could not cancel."
+        },
+        "deduction": {
+          "id": "DED-T03",
+          "askedBy": {
+            "from": "Maya Kim",
+            "role": "QA Lead"
+          },
+          "prompt": "Old promotion code, an archived experiment, the same 02:14 merge. What is the most likely explanation so far?",
+          "options": [
+            {
+              "id": "DED-T03-A",
+              "text": "A developer is secretly sabotaging Shoply.",
+              "correct": false,
+              "response": "Every change came through release-bot, not a person's account. Don't accuse anyone without evidence."
+            },
+            {
+              "id": "DED-T03-B",
+              "text": "The new Autumn features simply were not tested.",
+              "correct": false,
+              "response": "None of these are new features. They are old code that was retired or archived."
+            },
+            {
+              "id": "DED-T03-C",
+              "text": "release-bot merged old, archived branches into RC3.",
+              "correct": true,
+              "response": "That fits every clue so far. One more Ticket: let's see if it holds."
+            }
+          ]
+        },
+        "discovery": {
+          "documentId": "DOC-EXPERIMENT",
+          "hint": "The Console on order #1042 names the flag behind it. Search the intranet for it."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T04",
+      "ticket": {
+        "id": "T04",
+        "projectId": "shoply",
+        "title": "Gold coupon discount verification",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Verify SAVE20 eligibility and discount amounts as account tier and cart quantity change.",
+        "scope": [
+          "Account context",
+          "Cart quantity",
+          "Coupon discount"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T04-01",
+            "description": "SAVE20 is available only to Gold members.",
+            "reference": "Shoply promotion rules"
+          },
+          {
+            "id": "REQ-T04-02",
+            "description": "Eligible SAVE20 orders receive a 20% discount at every quantity.",
+            "reference": "Shoply promotion rules"
+          },
+          {
+            "id": "REQ-T04-03",
+            "description": "Everyday Carry Pack costs $30.00 per item.",
+            "reference": "Product catalog"
+          }
+        ],
+        "attachments": [
+          {
+            "id": "ATT-T04-01",
+            "name": "Shoply promotion rules",
+            "reference": "Commerce / coupons",
+            "content": [
+              "SAVE10: 10% off the subtotal for every account.",
+              "SAVE20: 20% off the subtotal for Gold members only. Basic members see an eligibility message.",
+              "Discounts apply to the full subtotal with no quantity limit or cap."
+            ]
+          }
+        ],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply/product/everyday-pack"
+        },
+        "hints": [
+          {
+            "id": "HINT-T04-01",
+            "text": "Compare SAVE20 at different account tiers and quantities."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T04-001",
+          "type": "CONDITIONAL",
+          "title": "SAVE20 applies only ten percent to larger Gold carts",
+          "target": "cart.discount",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T04-02",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            },
+            {
+              "field": "test.account",
+              "operator": "EQ",
+              "value": "GOLD"
+            },
+            {
+              "field": "product.coupon",
+              "operator": "EQ",
+              "value": "SAVE20"
+            },
+            {
+              "field": "product.cart.quantity",
+              "operator": "GTE",
+              "value": 3
+            }
+          ],
+          "reproductionActions": [
+            {
+              "type": "CHANGE_ACCOUNT",
+              "target": "GOLD",
+              "label": "switch to the Gold account"
+            },
+            {
+              "type": "APPLY_COUPON",
+              "payload": {
+                "code": "SAVE20"
+              },
+              "label": "apply SAVE20"
+            },
+            {
+              "type": "OPEN_CART",
+              "label": "open the bag"
+            }
+          ],
+          "expected": "SAVE20 should apply a 20% discount for Gold members",
+          "actual": "SAVE20 applies only a 10% discount with three or more items",
+          "validEvidenceTargets": [
+            "cart.discount",
+            "cart.total"
+          ]
+        }
+      ],
+      "mutations": [
+        {
+          "id": "MUTATION-T04-001",
+          "type": "WRONG_CALCULATION",
+          "target": "cart.discountRate",
+          "conditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            },
+            {
+              "field": "test.account",
+              "operator": "EQ",
+              "value": "GOLD"
+            },
+            {
+              "field": "product.coupon",
+              "operator": "EQ",
+              "value": "SAVE20"
+            },
+            {
+              "field": "product.cart.quantity",
+              "operator": "GTE",
+              "value": 3
+            }
+          ],
+          "payload": {
+            "value": 0.1
+          },
+          "trace": {
+            "text": "promo: margin_guard capped SAVE20 at 10% (exp/retention-push)",
+            "terms": [
+              "margin_guard",
+              "exp/retention-push"
+            ]
+          }
+        }
+      ],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "xp": 100,
+        "reputationDelta": 2,
+        "unlockedTools": []
+      },
+      "guide": {
+        "label": "Field note",
+        "ticketIntro": {
+          "label": "New tool: Account Switcher",
+          "heading": "New tool: Account Switcher",
+          "body": "Some rules only apply to certain customers. The Account Switcher in the Browser's QA bar lets you test as a Basic or Gold member without leaving the session. This time, you choose what to try.",
+          "steps": [
+            "Read the briefing and the promotion rules.",
+            "Combine account, coupon, and quantity until something breaks a rule.",
+            "Flag the value that breaks it."
+          ]
+        },
+        "workspace": [
+          {
+            "id": "T04-GUIDE-VARY",
+            "label": "Vary it",
+            "title": "Gold and SAVE20 are active.",
+            "instruction": "Now change the quantity and check the discount at each step against the promotion rules. If one is wrong, press Flag and pick it.",
+            "conditions": [
+              {
+                "field": "test.account",
+                "operator": "EQ",
+                "value": "GOLD"
+              },
+              {
+                "field": "product.coupon",
+                "operator": "EQ",
+                "value": "SAVE20"
+              },
+              {
+                "field": "test.currentPath",
+                "operator": "EQ",
+                "value": "/shoply/cart"
+              }
+            ]
+          },
+          {
+            "id": "T04-GUIDE-TOOL",
+            "label": "New tool",
+            "title": "Requirements depend on the account tier.",
+            "instruction": "Use the Account Switcher in the Browser's QA bar to test as Basic and as Gold.",
+            "conditions": []
+          }
+        ],
+        "review": {
+          "valid": "Conditional defect proven. This is the last piece: read the debrief and close the case.",
+          "invalid": "Check the feedback. Was the failing combination of account, coupon, and quantity on screen when you flagged?"
+        },
+        "hintMode": "on_request"
+      },
+      "story": {
+        "chapterId": "CH1",
+        "briefing": [
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Last one before Friday. The Browser QA bar now has an Account Switcher, so you can test as Basic or Gold. Same staging site: shoply.local."
+          },
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "Gold members are our best customers and SAVE20 is the headline promo. Please tell me it works."
+          },
+          {
+            "from": "Sam Ortiz",
+            "role": "Shoply Engineer",
+            "text": "If it is broken too, check bigger carts. exp/retention-push also had a \"margin guard\" for large orders."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Sam Ortiz",
+            "role": "Shoply Engineer",
+            "text": "Confirmed: the 10% cap is the margin guard. But release-bot only merges what its rule allows."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Then the rule is the question. Find release-bot's merge rule."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-MERGE-RULE",
+          "title": "The widened merge rule",
+          "text": "On Tuesday the release-bot merge rule was widened to include exp/* and promo/*. Every archived experiment and retired promotion matched it."
+        },
+        "deduction": {
+          "id": "DED-T04",
+          "askedBy": {
+            "from": "Maya Kim",
+            "role": "QA Lead"
+          },
+          "prompt": "Case file: what really happened to RC3? Open the Case File, pick the clues that prove it, and choose a conclusion.",
+          "options": [
+            {
+              "id": "DED-T04-A",
+              "text": "Four developers made four unrelated mistakes on the same night.",
+              "correct": false,
+              "response": "Every defect traces back to one 02:14 merge by release-bot. Look at what the clues share."
+            },
+            {
+              "id": "DED-T04-B",
+              "text": "A widened merge rule made release-bot pull archived experiments and retired promotions into RC3.",
+              "correct": true,
+              "response": "That explains every clue: the 02:14 merge, the old promotion, and both pieces of exp/retention-push."
+            },
+            {
+              "id": "DED-T04-C",
+              "text": "Someone shipped the retention experiment on purpose to cut cancellations.",
+              "correct": false,
+              "response": "Every change came in through the merge rule. There's no evidence of intent, only of a rule that matched too much."
+            }
+          ],
+          "mode": "board",
+          "requiredClues": [
+            "CLUE-0214",
+            "CLUE-MERGE-RULE"
+          ],
+          "boardHint": "The conclusion is right, but your clues don't prove it yet. Which clue shows how the archive got in, and which ties it to the night of the merge?"
+        },
+        "discovery": {
+          "documentId": "DOC-BOT-CONFIG",
+          "hint": "Search the intranet for release-bot's merge rule."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T05",
+      "ticket": {
+        "id": "T05",
+        "projectId": "shoply",
+        "title": "RC4 release verification",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "RC4 replaces RC3. Verify the pricing and coupon rules, and check a customer complaint about shipping, before Friday's release.",
+        "scope": [
+          "Cart totals",
+          "Shipping",
+          "Coupon discount"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T05-01",
+            "description": "The cart subtotal equals product price multiplied by quantity.",
+            "reference": "Shoply pricing rules"
+          },
+          {
+            "id": "REQ-T05-02",
+            "description": "Shipping is free when the subtotal is $50.00 or more; otherwise it is $5.00.",
+            "reference": "Shoply pricing rules"
+          },
+          {
+            "id": "REQ-T05-03",
+            "description": "Eligible SAVE20 orders receive a 20% discount at every quantity.",
+            "reference": "Shoply promotion rules"
+          }
+        ],
+        "attachments": [
+          {
+            "id": "ATT-T05-01",
+            "name": "RC4 release checklist",
+            "reference": "Release management / RC4",
+            "content": [
+              "Fixed: two-item subtotal (TWO FOR $50 code removed).",
+              "Fixed: SAVE20 discount on carts of three or more items.",
+              "Fixed: Cancel order routing.",
+              "Unchanged: shipping is free from a $50.00 subtotal; below that it costs $5.00."
+            ]
+          }
+        ],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply/product/everyday-pack"
+        },
+        "hints": [
+          {
+            "id": "HINT-T05-01",
+            "text": "A complaint is not a defect until it breaks a requirement."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "xp": 100,
+        "reputationDelta": 2,
+        "unlockedTools": []
+      },
+      "guide": {
+        "label": "Field note",
+        "hintMode": "on_request",
+        "ticketIntro": {
+          "label": "New skill: when nothing is wrong",
+          "heading": "New skill: when nothing is wrong",
+          "body": "Not every Ticket hides a bug, and not every complaint is a defect. Check each requirement. If everything holds, close the Ticket as NO ISSUE FOUND.",
+          "steps": [
+            "Read the briefing and the RC4 checklist.",
+            "Check each requirement in Shoply, including the customer's case.",
+            "If something breaks a rule, flag it. If nothing does, close the Ticket as NO ISSUE FOUND in QA Tracker."
+          ]
+        },
+        "workspace": [
+          {
+            "id": "T05-GUIDE-CAPTURED",
+            "label": "Decide",
+            "title": "Does anything break a rule?",
+            "instruction": "If every requirement holds, open QA Tracker and select Close as NO ISSUE FOUND.",
+            "conditions": [
+              {
+                "field": "workspace.visitedPaths",
+                "operator": "INCLUDES",
+                "value": "/shoply/cart"
+              }
+            ]
+          },
+          {
+            "id": "T05-GUIDE-CHECK",
+            "label": "Check each rule",
+            "title": "Test every requirement, including the customer's case.",
+            "instruction": "Try one item and two items, then Gold with SAVE20. Compare each figure with the rules.",
+            "conditions": []
+          }
+        ],
+        "review": {
+          "valid": "Right call. A clean build is a result too. Read the debrief.",
+          "invalid": "Check the feedback. Did a requirement really break, or did the product follow the rules?"
+        }
+      },
+      "story": {
+        "chapterId": "CH2",
+        "briefing": [
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "RC4 is ready. I fixed the merge rule myself. This time there really is nothing wrong."
+          },
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "One customer says we charged shipping on her $45 order. She is sure it is a bug."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Verify the fixes and the complaint. If everything holds, say so. Calling a clean build clean is part of the job too."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "Thanks. I'll explain to the customer that free shipping starts at $50."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Good. Now, that archive was supposed to be read-only. Search for its access log."
+          }
+        ],
+        "discovery": {
+          "documentId": "DOC-ARCHIVE-ACCESS",
+          "hint": "Search the intranet for the archive's access log."
+        },
+        "clue": {
+          "id": "CLUE-OPS-TEMP",
+          "title": "ops-temp",
+          "text": "A temporary account, ops-temp, gave release-bot write access to the archive on Monday night. The account was deleted two days later."
+        }
+      }
+    }
+  ],
+  "chapters": [
+    {
+      "id": "CH1",
+      "title": "Chapter 1 · Release Candidate 3",
+      "synopsis": "Shoply ships its Autumn Release on Friday. Release Manager Daniel Reyes insists Release Candidate 3 is clean: \"Nothing wrong with this build.\" Test it, and work out why RC3 behaves like a different product.",
+      "finaleDeductionId": "DED-T04",
+      "epilogue": [
+        {
+          "from": "Daniel Reyes",
+          "role": "Shoply Release Manager",
+          "text": "...That was me. I widened the merge rule so new promo branches would ship on their own. I didn't know the archived branches still matched."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "That's a root cause, not four separate bugs. RC3 is pulled, the rule is fixed, and Friday's release is safe. Good work."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "Before Friday, I want one more pass on RC4. Then we talk about how a bot got write access to a read-only archive."
+        }
+      ]
+    },
+    {
+      "id": "CH2",
+      "title": "Chapter 2 · Write Access",
+      "synopsis": "RC3's root cause is fixed, but a read-only archive does not open itself. Someone gave release-bot the keys, then deleted the account. To be continued.",
+      "finaleDeductionId": "DED-CH2-FINALE",
+      "epilogue": [
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "To be continued."
+        }
+      ]
+    }
+  ]
+}

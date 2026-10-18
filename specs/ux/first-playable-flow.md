@@ -1,32 +1,36 @@
 # First Playable UX
 
-## Player Journey
+## Player Journey (DEC-006)
 
 ```text
 NOTHING WRONG
-→ Start Work
-→ Company Login
-→ Dashboard
-→ T01 Ticket
-→ Start Test
-→ Shoply Product/Cart/Checkout
-→ Detect visual defect
-→ Capture Evidence
-→ Build Bug Report
-→ Receive QA Review
-→ Return to updated Dashboard
+→ Start work
+→ Workstation lock screen · Sign in
+→ Desktop · Messenger notification
+→ Messenger briefing (links to shoply.local and the intranet spec)
+→ QA Tracker · T01 · Start test
+→ Browser · shoply.local Product/Cart/Checkout
+→ Detect visual defect · Capture (saved to QA Notes)
+→ QA Tracker · Create report
+→ QA Review
+→ Messenger debrief · reply to the deduction
+→ Next briefing arrives
 ```
 
 ## Information Hierarchy
 
-Test Workspace에서 Shoply가 가장 넓은 영역을 차지한다. Game UI와 Shoply UI는 시각적으로 구분하되, 플레이 중인 Fake Product가 중심이어야 한다.
+The desktop is the game UI; Shoply only exists inside the Browser window and keeps its
+own visual identity. Four apps carry the work:
 
 ```text
-QA Toolbar
-Fake Browser / Shoply
-Ticket · Notes · Evidence
-Capture · Create Report
+Messenger   story chat, links, ticket cards, deductions as replies
+QA Tracker  Ticket queue, Start test, Report, Review, Case File, profile
+Browser     address bar, QA bar (viewport · account · Capture), Shoply, intranet docs
+QA Notes    Ticket sheet with links, personal notes, Evidence, activity log
 ```
+
+A sticky-note guide on the desktop points at the next action. Early briefings carry
+clickable links; later ones give an address to type. QA Notes always lists it.
 
 ## First Ticket Guidance
 

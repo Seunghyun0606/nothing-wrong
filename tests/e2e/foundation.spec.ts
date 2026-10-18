@@ -1,198 +1,177 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
-test('completes the refresh-safe T01 through T04 QA gameplay loops', async ({ page }) => {
+const CHAT_TIMEOUT = { timeout: 20_000 }
+
+function win(page: Page, name: string) {
+  return page.getByRole('region', { name, exact: true })
+}
+
+async function openApp(page: Page, name: string) {
+  await page.getByRole('navigation', { name: 'Desktop' }).getByRole('button', { name, exact: true }).click()
+}
+
+async function goTo(page: Page, address: string) {
+  await openApp(page, 'Browser')
+  const input = win(page, 'Browser').getByRole('textbox', { name: 'Address' })
+  await input.fill(address)
+  await input.press('Enter')
+}
+
+async function startTicketFromChat(page: Page, ticketId: string) {
+  await openApp(page, 'Messenger')
+  await win(page, 'Messenger').getByRole('button', { name: `Open ${ticketId} in QA Tracker` }).click(CHAT_TIMEOUT)
+  await win(page, 'QA Tracker').getByRole('button', { name: 'Start test' }).click()
+}
+
+async function submitReport(
+  page: Page,
+  requirement: RegExp,
+  observation: RegExp,
+  severity: 'LOW' | 'MEDIUM' | 'HIGH',
+) {
+  await openApp(page, 'QA Tracker')
+  const tracker = win(page, 'QA Tracker')
+  await tracker.getByRole('button', { name: 'Create report' }).click()
+  await tracker.getByRole('radio', { name: requirement }).check()
+  await tracker.getByRole('radio', { name: observation }).check()
+  await tracker.getByRole('radio', { name: new RegExp(`^${severity}`) }).check()
+  await tracker.getByRole('button', { name: 'Submit for QA Review' }).click()
+  await expect(tracker.getByRole('heading', { name: 'VALID' })).toBeVisible()
+  await expect(tracker.getByText('100 / 100')).toBeVisible()
+}
+
+async function replyInChat(page: Page, answer: RegExp, nextExpected: string | RegExp) {
+  await win(page, 'QA Tracker').getByRole('button', { name: 'The team replied · Open Messenger' }).click()
+  const reply = page.getByRole('group', { name: 'Reply' })
+  await reply.getByRole('button', { name: answer }).click(CHAT_TIMEOUT)
+  await expect(page.getByRole('list', { name: 'Team chat' })).toContainText(nextExpected, CHAT_TIMEOUT)
+}
+
+test('plays T01 through T04 on the QA workstation, from briefing to chapter finale', async ({ page }) => {
+  test.setTimeout(180_000)
+  await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/start')
   await page.evaluate(() => window.localStorage.clear())
   await page.reload()
 
-  await expect(page).toHaveURL(/\/start$/)
-  await expect(page.getByRole('heading', { name: 'NOTHING WRONG' })).toBeVisible()
   await expect(page).toHaveTitle('Nothing Wrong')
-
+  await expect(page.getByRole('heading', { name: 'NOTHING WRONG' })).toBeVisible()
   await page.getByRole('link', { name: /Start work/i }).click()
-  await expect(page.getByRole('heading', { name: 'Company login' })).toBeVisible()
-  await page.getByRole('button', { name: 'Enter workspace' }).click()
+  await expect(page.getByRole('heading', { name: 'J. PARK' })).toBeVisible()
+  await page.getByRole('button', { name: 'Sign in' }).click()
+  await expect(page).toHaveURL(/\/desktop$/)
 
-  await expect(page.getByRole('heading', { name: /Good morning/ })).toBeVisible()
-  await page.getByRole('link', { name: /Checkout confirmation design review/ }).click()
-  await expect(
-    page.getByRole('heading', { name: 'Checkout confirmation design review' }),
-  ).toBeVisible()
-  await page.getByRole('button', { name: 'Start test' }).click()
+  // The briefing arrives as a chat notification.
+  await expect(page.locator('.os-toast').filter({ hasText: 'Maya Kim' }).first()).toBeVisible(CHAT_TIMEOUT)
+  await openApp(page, 'Messenger')
+  const chat = page.getByRole('list', { name: 'Team chat' })
+  await expect(chat).toContainText('Nothing wrong with this build.', CHAT_TIMEOUT)
 
-  await expect(page).toHaveURL(/\/test\/T01$/)
-  await expect(page.getByRole('heading', { name: 'Everyday Carry Pack' })).toBeVisible()
-  const productViewport = page.getByTestId('product-viewport')
-  const desktopWidth = await productViewport.evaluate(
-    (element) => element.getBoundingClientRect().width,
-  )
-  expect(desktopWidth).toBeGreaterThan(768)
-  await page.getByRole('button', { name: 'Tablet' }).click()
+  // T01: tutorial. Accept in QA Tracker, open the link, compare with the spec.
+  await startTicketFromChat(page, 'T01')
+  const guide = page.getByRole('complementary', { name: 'First Ticket tutorial' })
+  await expect(guide).toContainText('Open Shoply in the Browser.')
+  await goTo(page, 'docs.nothingwrong.local/checkout-interaction-specification')
+  await expect(win(page, 'Browser').getByText(/Primary action: solid dark fill/)).toBeVisible()
+  await openApp(page, 'QA Tracker')
+  await win(page, 'QA Tracker').getByRole('button', { name: 'shoply.local/product/everyday-pack' }).click()
+
+  const browser = win(page, 'Browser')
+  await expect(browser.getByRole('heading', { name: 'Everyday Carry Pack' })).toBeVisible()
+  await expect(guide).toContainText('Try Shoply as a customer.')
+  const productViewport = browser.getByTestId('product-viewport')
+  await browser.getByRole('button', { name: 'Tablet' }).click()
   await expect(productViewport).toHaveCSS('width', '768px')
-  await page.getByRole('button', { name: 'Mobile' }).click()
+  await browser.getByRole('button', { name: 'Mobile' }).click()
   await expect(productViewport).toHaveCSS('width', '390px')
-  await page.getByRole('button', { name: 'Desktop' }).click()
+  await browser.getByRole('button', { name: 'Desktop' }).click()
 
-  await page.getByRole('button', { name: 'Add to bag' }).click()
-  await page.getByRole('link', { name: 'View bag' }).click()
-  await expect(page.getByRole('heading', { name: 'Shopping bag' })).toBeVisible()
+  await browser.getByRole('button', { name: 'Add to bag' }).click()
+  await browser.getByRole('link', { name: 'View bag' }).click()
+  await browser.getByRole('link', { name: 'Continue to checkout' }).click()
+  await expect(guide).toContainText('Check this screen against the Ticket.')
+  await expect(browser.getByRole('button', { name: 'Confirm order' })).toHaveAttribute('data-variant', 'secondary')
+  await browser.getByRole('button', { name: 'Capture' }).click()
+  await expect(guide).toContainText('Turn your observation into a Report.')
 
-  await page.getByLabel('Quantity for Everyday Carry Pack').selectOption('2')
-  await expect(page.getByText('Free')).toBeVisible()
-  await page.getByRole('link', { name: 'Continue to checkout' }).click()
-
-  const confirmButton = page.getByRole('button', { name: 'Confirm order' })
-  await expect(confirmButton).toBeVisible()
-  await expect(confirmButton).toHaveAttribute('data-variant', 'secondary')
-  await page.getByRole('button', { name: 'Capture evidence' }).click()
-  await expect(page.getByRole('img', { name: /Evidence preview/ })).toBeVisible()
-  await page.getByRole('button', { name: 'Create report' }).click()
-
-  await expect(page).toHaveURL(/\/reports\/T01$/)
-  await expect(
-    page.getByRole('heading', { name: 'Document what you can prove.' }),
-  ).toBeVisible()
-  await page.getByLabel('Expected behavior').selectOption('Primary action style')
-  await page.getByLabel('Actual behavior').selectOption('Secondary action style')
-  await page.getByRole('button', { name: 'Submit for QA Review' }).click()
-
-  await expect(page).toHaveURL(/\/review\/T01$/)
-  await expect(page.getByRole('heading', { name: 'VALID' })).toBeVisible()
-  await expect(page.getByText('100 / 100')).toBeVisible()
-  await expect(page.getByText('40', { exact: true })).toBeVisible()
-  await expect(page.getByText('25', { exact: true })).toBeVisible()
-  await expect(page.getByText('20', { exact: true })).toBeVisible()
-  await expect(page.getByText('15', { exact: true })).toBeVisible()
-  await expect(page.getByText('+100', { exact: true })).toBeVisible()
-  await expect(page.getByText('+2', { exact: true })).toBeVisible()
-  await page.getByRole('link', { name: 'Return to Dashboard' }).click()
-
-  await expect(page.getByText('Resolved')).toBeVisible()
-  await expect(page.getByText('100 XP', { exact: true })).toBeVisible()
-  await expect(page.getByText('102', { exact: true })).toBeVisible()
-  await page.reload()
-  await expect(page.getByText('Resolved')).toBeVisible()
-  await expect(page.getByText('100 XP', { exact: true })).toBeVisible()
-  await expect(page.getByText('102', { exact: true })).toBeVisible()
-
-  await page.getByRole('link', { name: /Cart subtotal verification/ }).click()
-  await expect(page.getByRole('heading', { name: 'Cart subtotal verification' })).toBeVisible()
-  await page.getByRole('button', { name: 'Start test' }).click()
-
-  await expect(page).toHaveURL(/\/test\/T02$/)
-  await page.getByRole('button', { name: 'Add to bag' }).click()
-  await page.getByRole('link', { name: 'View bag' }).click()
-  await page.getByLabel('Quantity for Everyday Carry Pack').selectOption('2')
-  await expect(page.locator('[data-evidence-target="cart.subtotal"]')).toHaveText('$50.00')
-  await expect(page.getByText('$60.00')).toHaveCount(2)
-
-  await page.getByRole('button', { name: 'Capture evidence' }).click()
-  await expect(page.getByRole('img', { name: /Evidence preview/ })).toBeVisible()
-  await page.getByRole('button', { name: 'Create report' }).click()
-
-  await expect(page).toHaveURL(/\/reports\/T02$/)
-  await page
-    .getByLabel('Expected behavior')
-    .selectOption('Subtotal should be $60.00 for two $30.00 items')
-  await page
-    .getByLabel('Actual behavior')
-    .selectOption('Subtotal is displayed as $50.00')
-  await page.getByLabel('Severity').selectOption('MEDIUM')
-  await page.getByRole('button', { name: 'Submit for QA Review' }).click()
-
-  await expect(page).toHaveURL(/\/review\/T02$/)
-  await expect(page.getByRole('heading', { name: 'VALID' })).toBeVisible()
-  await expect(page.getByText('100 / 100')).toBeVisible()
-  await page.getByRole('link', { name: 'Return to Dashboard' }).click()
-
-  await expect(page.getByText('200 XP', { exact: true })).toBeVisible()
-  await expect(page.getByText('104', { exact: true })).toBeVisible()
-  await expect(page.getByText('1 open')).toBeVisible()
-  await page.reload()
-  await expect(page.getByText('200 XP', { exact: true })).toBeVisible()
-  await expect(page.getByText('104', { exact: true })).toBeVisible()
-  await expect(page.getByText('1 open')).toBeVisible()
-
-  await page.getByRole('link', { name: /Order cancellation routing/ }).click()
-  await expect(page.getByRole('heading', { name: 'Order cancellation routing' })).toBeVisible()
-  await page.getByRole('button', { name: 'Start test' }).click()
-
-  await expect(page).toHaveURL(/\/test\/T03$/)
-  await expect(page.getByRole('heading', { name: 'Order details' })).toBeVisible()
-  await expect(page.getByRole('group', { name: 'Shoply account' })).toHaveCount(0)
-  await page.getByRole('link', { name: 'Cancel order' }).click()
-  await expect(page.getByRole('heading', { name: 'Payment details' })).toBeVisible()
-  await expect(page.getByLabel('Fake URL')).toContainText('shoply.local/payment')
-  await page.getByRole('button', { name: 'Capture evidence' }).click()
-  await page.getByRole('button', { name: 'Create report' }).click()
-
-  await expect(page).toHaveURL(/\/reports\/T03$/)
-  await page
-    .getByLabel('Expected behavior')
-    .selectOption('Cancellation flow should open for a processing order')
-  await page
-    .getByLabel('Actual behavior')
-    .selectOption('Payment flow opens after selecting Cancel order')
-  await page.getByLabel('Severity').selectOption('HIGH')
-  await page.getByRole('button', { name: 'Submit for QA Review' }).click()
-
-  await expect(page).toHaveURL(/\/review\/T03$/)
-  await expect(page.getByRole('heading', { name: 'VALID' })).toBeVisible()
-  await expect(page.getByText('100 / 100')).toBeVisible()
-  await page.getByRole('link', { name: 'Return to Dashboard' }).click()
-
-  await expect(page.getByText('300 XP', { exact: true })).toBeVisible()
-  await expect(page.getByText('106', { exact: true })).toBeVisible()
-  await expect(page.getByText('1 open')).toBeVisible()
-  await page.reload()
-  await expect(page.getByText('300 XP', { exact: true })).toBeVisible()
-  await expect(page.getByText('106', { exact: true })).toBeVisible()
-  await expect(page.getByText('1 open')).toBeVisible()
-
-  await page.getByRole('link', { name: /Gold coupon discount verification/ }).click()
-  await expect(page.getByRole('heading', { name: 'Gold coupon discount verification' })).toBeVisible()
-  await page.getByRole('button', { name: 'Start test' }).click()
-
-  await expect(page).toHaveURL(/\/test\/T04$/)
-  await expect(page.getByRole('group', { name: 'Shoply account' })).toBeVisible()
-  await page.getByRole('button', { name: 'Add to bag' }).click()
-  await page.getByRole('link', { name: 'View bag' }).click()
-  await page.getByLabel('Coupon code').fill('SAVE20')
-  await page.getByRole('button', { name: 'Apply' }).click()
-  await expect(page.getByText('SAVE20 is available to Gold members only')).toBeVisible()
-
-  await page.getByRole('button', { name: 'Gold' }).click()
-  await expect(page.locator('[data-evidence-target="cart.discount"]')).toHaveText('−$6.00')
-  await page.getByLabel('Quantity for Everyday Carry Pack').selectOption('3')
-  await expect(page.locator('[data-evidence-target="cart.discount"]')).toHaveText('−$9.00')
-  await expect(page.getByText('$81.00')).toBeVisible()
-  await page.getByRole('button', { name: 'Basic' }).click()
-  await expect(page.getByText('SAVE20 is available to Gold members only')).toBeVisible()
-  await page.getByRole('button', { name: 'Gold' }).click()
-  await expect(page.locator('[data-evidence-target="cart.discount"]')).toHaveText('−$9.00')
-
-  await page.getByRole('button', { name: 'Capture evidence' }).click()
-  await page.getByRole('button', { name: 'Create report' }).click()
-  await expect(page).toHaveURL(/\/reports\/T04$/)
-  await page.getByLabel('Expected behavior').selectOption(
-    'SAVE20 should apply a 20% discount for Gold members',
+  await openApp(page, 'QA Notes')
+  await expect(win(page, 'QA Notes').getByRole('list', { name: 'Captured values' })).toContainText(
+    'Confirm order button: Secondary action style',
   )
-  await page.getByLabel('Actual behavior').selectOption(
-    'SAVE20 applies only a 10% discount with three or more items',
+
+  await submitReport(
+    page,
+    /final confirmation control is presented as the primary action/,
+    /Confirm order button: Secondary action style/,
+    'LOW',
   )
-  await page.getByLabel('Severity').selectOption('MEDIUM')
-  await page.getByRole('button', { name: 'Submit for QA Review' }).click()
+  await expect(win(page, 'QA Tracker').getByText('Level up! You are now Level 2.')).toBeVisible()
+  await win(page, 'QA Tracker').getByRole('button', { name: 'The team replied · Open Messenger' }).click()
+  await expect(chat).toContainText('02:14 · release-bot', CHAT_TIMEOUT)
+  const reply = page.getByRole('group', { name: 'Reply' })
+  await reply.getByRole('button', { name: /designer changed the button/ }).click(CHAT_TIMEOUT)
+  await expect(chat).toContainText('Look at the author again.', CHAT_TIMEOUT)
+  await reply.getByRole('button', { name: /automated merge modified it overnight/ }).click(CHAT_TIMEOUT)
+  await expect(chat).toContainText('charged less than expected', CHAT_TIMEOUT)
 
-  await expect(page).toHaveURL(/\/review\/T04$/)
-  await expect(page.getByRole('heading', { name: 'VALID' })).toBeVisible()
-  await expect(page.getByText('100 / 100')).toBeVisible()
-  await page.getByRole('link', { name: 'Return to Dashboard' }).click()
-
-  await expect(page.getByText('400 XP', { exact: true })).toBeVisible()
-  await expect(page.getByText('108', { exact: true })).toBeVisible()
-  await expect(page.getByText('0 open')).toBeVisible()
+  // Progress survives a reload without replaying the chat.
   await page.reload()
-  await expect(page.getByText('400 XP', { exact: true })).toBeVisible()
-  await expect(page.getByText('108', { exact: true })).toBeVisible()
-  await expect(page.getByText('0 open')).toBeVisible()
+  await openApp(page, 'QA Tracker')
+  await expect(win(page, 'QA Tracker').getByText('100 XP', { exact: true })).toBeVisible()
+  await expect(win(page, 'QA Tracker').getByText('102', { exact: true })).toBeVisible()
+
+  // T02: guided data check.
+  await startTicketFromChat(page, 'T02')
+  await openApp(page, 'QA Tracker')
+  await win(page, 'QA Tracker').getByRole('button', { name: 'shoply.local/product/everyday-pack' }).click()
+  await browser.getByRole('button', { name: 'Add to bag' }).click()
+  await browser.getByRole('link', { name: 'View bag' }).click()
+  await browser.getByLabel('Quantity for Everyday Carry Pack').selectOption('2')
+  await expect(page.getByRole('complementary', { name: 'Guided Ticket' })).toContainText('does every figure agree?')
+  await expect(browser.locator('[data-evidence-target="cart.subtotal"]')).toHaveText('$50.00')
+  await expect(browser.locator('[data-evidence-target="cart.lineTotal"]')).toHaveText('$60.00')
+  await browser.getByRole('button', { name: 'Capture' }).click()
+  await submitReport(page, /subtotal equals product price multiplied by quantity/, /^Subtotal: \$50\.00/, 'MEDIUM')
+  await replyInChat(page, /same overnight merge by release-bot/, 'Cancellations actually dropped')
+
+  // T03: the player types the order address from the briefing.
+  await startTicketFromChat(page, 'T03')
+  await goTo(page, 'shoply.local/orders/order-1042')
+  await expect(browser.getByRole('heading', { name: 'Order details' })).toBeVisible()
+  await expect(browser.getByRole('group', { name: 'Shoply account' })).toHaveCount(0)
+  await browser.getByRole('link', { name: 'Cancel order' }).click()
+  await expect(browser.getByRole('heading', { name: 'Payment details' })).toBeVisible()
+  await expect(browser.getByRole('textbox', { name: 'Address' })).toHaveValue('https://shoply.local/payment')
+  await browser.getByRole('button', { name: 'Capture' }).click()
+  await submitReport(page, /Cancel Order opens the return or cancellation flow/, /Screen shown: Payment details/, 'HIGH')
+  await replyInChat(page, /release-bot merged old, archived branches/, 'Account Switcher')
+
+  // T04: open-ended conditional check with the Account Switcher.
+  await startTicketFromChat(page, 'T04')
+  await goTo(page, 'shoply.local')
+  await expect(browser.getByRole('group', { name: 'Shoply account' })).toBeVisible()
+  await browser.getByRole('button', { name: 'Add to bag' }).click()
+  await browser.getByRole('link', { name: 'View bag' }).click()
+  await browser.getByLabel('Coupon code').fill('SAVE20')
+  await browser.getByRole('button', { name: 'Apply' }).click()
+  await expect(browser.getByText('SAVE20 is available to Gold members only')).toBeVisible()
+  await browser.getByRole('button', { name: 'Gold' }).click()
+  await expect(browser.locator('[data-evidence-target="cart.discount"]')).toHaveText('−$6.00')
+  await browser.getByLabel('Quantity for Everyday Carry Pack').selectOption('3')
+  await expect(browser.locator('[data-evidence-target="cart.discount"]')).toHaveText('−$9.00')
+  await browser.getByRole('button', { name: 'Capture' }).click()
+  await submitReport(page, /20% discount at every quantity/, /Discount: −\$9\.00/, 'MEDIUM')
+  await replyInChat(page, /widened merge rule/, 'Chapter 1 · Release Candidate 3 complete.')
+  await expect(chat).toContainText('That was me.')
+
+  await openApp(page, 'QA Tracker')
+  const tracker = win(page, 'QA Tracker')
+  await expect(tracker.getByText('400 XP', { exact: true })).toBeVisible()
+  await expect(tracker.getByText('111', { exact: true })).toBeVisible()
+  await tracker.getByRole('button', { name: 'Case File', exact: true }).click()
+  await expect(tracker.getByText('Case closed')).toBeVisible()
+  await page.reload()
+  await openApp(page, 'QA Tracker')
+  await expect(win(page, 'QA Tracker').getByText('400 XP', { exact: true })).toBeVisible()
+  await expect(win(page, 'QA Tracker').getByText('111', { exact: true })).toBeVisible()
 })

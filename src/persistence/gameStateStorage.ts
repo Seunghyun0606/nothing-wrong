@@ -63,6 +63,28 @@ export function loadGameState(storage: StorageLike = browserStorage()): GameStat
   return serialized === null ? null : deserializeGameState(serialized)
 }
 
+export const GAME_STATE_BACKUP_KEY = 'nothingwrong.gameState.unreadable'
+
+export interface RecoverableLoad<T> {
+  state: T | null
+  recovered: boolean
+}
+
+/** Loads the save; an unreadable save is moved to a backup key so the game can start fresh. */
+export function loadGameStateWithRecovery(
+  storage: StorageLike = browserStorage(),
+): RecoverableLoad<GameState> {
+  try {
+    return { state: loadGameState(storage), recovered: false }
+  } catch (error) {
+    if (!(error instanceof GameStateStorageError)) throw error
+    const serialized = storage.getItem(GAME_STATE_STORAGE_KEY)
+    if (serialized !== null) storage.setItem(GAME_STATE_BACKUP_KEY, serialized)
+    storage.removeItem(GAME_STATE_STORAGE_KEY)
+    return { state: null, recovered: true }
+  }
+}
+
 export function saveGameState(
   state: GameState,
   storage: StorageLike = browserStorage(),

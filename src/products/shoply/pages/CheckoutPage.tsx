@@ -3,14 +3,19 @@ import { useState, type FormEvent } from 'react'
 import { useMutationValue } from '../../../game/mutations/MutationRuntimeProvider'
 import { OrderSummaryCard } from '../components/OrderSummaryCard'
 import { ShoplyHeader } from '../components/ShoplyHeader'
+import type { ShoplyOrder } from '../domain/types'
 import { ProductLink } from '../ProductNavigation'
 import { useShoply } from '../ShoplyProvider'
 import { useProductTelemetry } from '../ProductTelemetry'
 
+function describeVariant(variant: string): string {
+  return `${variant.charAt(0).toUpperCase()}${variant.slice(1)} action style`
+}
+
 export function CheckoutPage() {
-  const { items, coupon, user } = useShoply()
+  const { items, coupon, user, placeOrder } = useShoply()
   const recordInteraction = useProductTelemetry()
-  const [confirmed, setConfirmed] = useState(false)
+  const [confirmedOrder, setConfirmedOrder] = useState<ShoplyOrder>()
   const confirmButtonVariant = useMutationValue(
     'checkout.confirmButton',
     'primary',
@@ -19,26 +24,28 @@ export function CheckoutPage() {
   function submitOrder(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     recordInteraction({ type: 'CONFIRM_ORDER', target: 'checkout.confirmButton' })
-    setConfirmed(true)
+    setConfirmedOrder(placeOrder())
   }
 
   return (
     <main className="shoply-page">
       <ShoplyHeader />
       <div className="checkout-progress" aria-label="Checkout progress">
-        <span className="complete">Bag</span><i /><span className="active">Details</span><i /><span>Confirmation</span>
+        <span className="complete">Bag</span><i /><span className={confirmedOrder ? 'complete' : 'active'}>Details</span><i /><span className={confirmedOrder ? 'active' : undefined}>Confirmation</span>
       </div>
-      {items.length === 0 ? (
+      {confirmedOrder ? (
+        <section className="confirmation-card" role="status">
+          <p className="product-category">ORDER CONFIRMED · {confirmedOrder.id.replace('order-', '#')}</p>
+          <h1>Thanks, {user.name}.</h1>
+          <p>Your order is confirmed and will ship within two business days.</p>
+          <ProductLink to={`/shoply/orders/${confirmedOrder.id}`}>View order</ProductLink>
+          {' · '}
+          <ProductLink to="/shoply/product/everyday-pack">Continue shopping</ProductLink>
+        </section>
+      ) : items.length === 0 ? (
         <section className="shoply-empty">
           <h1>Your bag is ready for something useful.</h1>
           <ProductLink className="shoply-button inline-button" to="/shoply/product/everyday-pack">Return to product</ProductLink>
-        </section>
-      ) : confirmed ? (
-        <section className="confirmation-card" role="status">
-          <p className="product-category">ORDER CONFIRMED</p>
-          <h1>Thanks, {user.name}.</h1>
-          <p>Your order is confirmed and will ship within two business days.</p>
-          <ProductLink to="/shoply/product/everyday-pack">Continue shopping</ProductLink>
         </section>
       ) : (
         <form className="checkout-layout" onSubmit={submitOrder}>
@@ -60,6 +67,8 @@ export function CheckoutPage() {
             <button
               className="shoply-button shoply-confirm-button"
               data-evidence-target="checkout.confirmButton"
+              data-evidence-label="Confirm order button"
+              data-evidence-value={describeVariant(confirmButtonVariant)}
               data-variant={confirmButtonVariant}
               type="submit"
             >

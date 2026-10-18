@@ -5,7 +5,12 @@ export function PaymentPage() {
   return (
     <main className="shoply-page">
       <ShoplyHeader />
-      <section className="payment-card" data-evidence-target="payment.form">
+      <section
+        className="payment-card"
+        data-evidence-target="payment.form"
+        data-evidence-label="Screen shown"
+        data-evidence-value="Payment details (enter a card to continue with this purchase)"
+      >
         <p className="order-flow-kicker">SECURE CHECKOUT</p>
         <h1>Payment details</h1>
         <p>Enter a card to continue with this purchase.</p>

@@ -9,38 +9,54 @@ import {
 
 import { createInitialGameState, reconcileGameStateTickets } from '../domain/gameState'
 import { applyReview } from '../progression/applyReview'
+import { answerDeduction } from '../story/answerDeduction'
 import { transitionTicketStatus } from '../domain/ticketStateMachine'
 import type {
   BugReport,
+  Deduction,
   GameState,
   ProgressionReward,
   ReviewResult,
 } from '../domain/schemas'
-import { loadGameState, saveGameState } from '../../persistence/gameStateStorage'
+import { loadGameStateWithRecovery, saveGameState } from '../../persistence/gameStateStorage'
 import { isTicketUnlocked, SCENARIO_CATALOG, TICKET_CATALOG } from '../../scenarios/shoply/tickets'
 
 interface GameSessionValue {
   state: GameState
+  /** True when an unreadable save was set aside and a fresh game started. */
+  recoveredFromUnreadableSave: boolean
   startTicket: (ticketId: string) => void
   completeReview: (
     report: BugReport,
     review: ReviewResult,
     reward?: ProgressionReward,
   ) => void
+  answerDeduction: (deduction: Deduction, optionId: string) => void
+  markMessagesDelivered: (count: number) => void
+  markMessagesRead: (count: number) => void
+  resetProgress: () => void
 }
 
 const GameSessionContext = createContext<GameSessionValue | null>(null)
 
-function loadOrCreateGameState(): GameState {
+function createFreshGameState(): GameState {
+  return createInitialGameState(TICKET_CATALOG.map((ticket) => ticket.id))
+}
+
+function loadOrCreateGameState(): { state: GameState; recovered: boolean } {
   const ticketIds = TICKET_CATALOG.map((ticket) => ticket.id)
-  const savedState = loadGameState()
-  return savedState
-    ? reconcileGameStateTickets(savedState, ticketIds, SCENARIO_CATALOG)
-    : createInitialGameState(ticketIds)
+  const { state, recovered } = loadGameStateWithRecovery()
+  return {
+    state: state
+      ? reconcileGameStateTickets(state, ticketIds, SCENARIO_CATALOG)
+      : createFreshGameState(),
+    recovered,
+  }
 }
 
 export function GameSessionProvider({ children }: PropsWithChildren) {
-  const [state, setState] = useState(loadOrCreateGameState)
+  const [initial] = useState(loadOrCreateGameState)
+  const [state, setState] = useState(initial.state)
 
   useEffect(() => {
     saveGameState(state)
@@ -49,16 +65,18 @@ export function GameSessionProvider({ children }: PropsWithChildren) {
   const value = useMemo<GameSessionValue>(
     () => ({
       state,
+      recoveredFromUnreadableSave: initial.recovered,
       startTicket(ticketId) {
-        setState((current) => {
-          if (!isTicketUnlocked(ticketId, current)) {
-            throw new Error(`Ticket is locked: ${ticketId}`)
-          }
+        if (!isTicketUnlocked(ticketId, state)) {
+          throw new Error(`Ticket is locked: ${ticketId}`)
+        }
+        if (!state.tickets[ticketId]) {
+          throw new Error(`Unknown Ticket: ${ticketId}`)
+        }
 
+        setState((current) => {
           const ticketState = current.tickets[ticketId]
-          if (!ticketState) {
-            throw new Error(`Unknown Ticket: ${ticketId}`)
-          }
+          if (!ticketState) return current
 
           if (ticketState.status === 'TESTING') {
             return { ...current, currentTicketId: ticketId }
@@ -84,8 +102,28 @@ export function GameSessionProvider({ children }: PropsWithChildren) {
       completeReview(report, review, reward) {
         setState((current) => applyReview(current, report, review, reward))
       },
+      answerDeduction(deduction, optionId) {
+        setState((current) => answerDeduction(current, deduction, optionId))
+      },
+      markMessagesDelivered(count) {
+        setState((current) =>
+          count <= current.story.deliveredCount
+            ? current
+            : { ...current, story: { ...current.story, deliveredCount: count } },
+        )
+      },
+      markMessagesRead(count) {
+        setState((current) =>
+          count <= current.story.readCount
+            ? current
+            : { ...current, story: { ...current.story, readCount: count } },
+        )
+      },
+      resetProgress() {
+        setState(createFreshGameState())
+      },
     }),
-    [state],
+    [initial.recovered, state],
   )
 
   return <GameSessionContext.Provider value={value}>{children}</GameSessionContext.Provider>

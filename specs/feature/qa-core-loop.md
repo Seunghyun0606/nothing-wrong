@@ -26,7 +26,12 @@ URL 이동만으로 상태를 전이하지 않는다. 저장된 Game State가 �
 
 ## Report Contract
 
-Bug Report에는 title, ordered reproduction steps, expected, actual, severity, evidence가 필요하다. 초기 Ticket은 candidate 선택으로 typing 부담을 줄이고, 후반 Ticket은 partial free text를 허용한다.
+Bug Report에는 title, ordered reproduction steps, expected, actual, severity, evidence가 필요하다.
+
+- Expected는 Ticket requirement 중 위반된 항목을 선택한다.
+- Actual은 플레이어가 Capture한 Evidence의 observation(화면 요소 label과 값) 중 하나를 선택한다. 선택지는 플레이어가 실제로 관찰한 값에서만 만들어지며 ExpectedBug 문장을 노출하지 않는다.
+- Severity는 화면에 표시되는 severity guide를 기준으로 직접 선택한다(기본값 없음).
+- 플레이어는 Bug Report 대신 `NO ISSUE FOUND`를 제출할 수 있다. Evidence 첨부가 필요하다.
 
 ## Review Contract
 
@@ -42,6 +47,11 @@ Review는 Report와 숨겨진 ExpectedBug를 조건, Evidence, severity 기준�
 | Severity | 15 |
 
 평가 결과는 valid 여부, matched bug, 영역별 점수, total, XP, reputation delta, feedback을 포함한다.
+
+- Detection: 선택한 requirement가 ExpectedBug.requirementId와 같고, 선택한 observation이 validEvidenceTargets에 속하며 재현 조건을 만족한 Evidence에서 나왔을 때.
+- Reproduction: 선택한 step에 ExpectedBug.reproductionActions가 모두 포함되고, 첨부 Evidence 중 하나가 재현 조건을 만족할 때. 필요 이상으로 많은 step은 -5점(유효성에는 영향 없음).
+- Evidence: 첨부 Evidence 중 결함 target을 실패 상태에서 보여주는 것이 있을 때. 무관한 Evidence가 더 많으면 -5점.
+- Feedback은 정답 문장을 알려주지 않고 무엇을 다시 확인할지 안내한다.
 
 Reputation 기본 규칙:
 

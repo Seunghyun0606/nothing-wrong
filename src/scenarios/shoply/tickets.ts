@@ -1,4 +1,5 @@
-import type { GameState, Scenario, Ticket } from '../../game/domain/schemas'
+import type { GameState, Scenario, StoryChapter, Ticket } from '../../game/domain/schemas'
+import { STORY_CHAPTERS } from './chapter1'
 import { T01_SCENARIO } from './t01'
 import { T02_SCENARIO } from './t02'
 import { T03_SCENARIO } from './t03'
@@ -20,6 +21,18 @@ export function getScenario(ticketId: string): Scenario | undefined {
 
 export function getTicket(ticketId: string): Ticket | undefined {
   return getScenario(ticketId)?.ticket
+}
+
+export function getStoryChapter(chapterId: string): StoryChapter | undefined {
+  return STORY_CHAPTERS.find((chapter) => chapter.id === chapterId)
+}
+
+/** The first unlocked Ticket that is not yet resolved, in catalog order. */
+export function findNextOpenTicket(state: GameState): Ticket | undefined {
+  return TICKET_CATALOG.find(
+    (ticket) =>
+      isTicketUnlocked(ticket.id, state) && state.tickets[ticket.id]?.status !== 'RESOLVED',
+  )
 }
 
 export function isTicketUnlocked(ticketId: string, state: GameState): boolean {

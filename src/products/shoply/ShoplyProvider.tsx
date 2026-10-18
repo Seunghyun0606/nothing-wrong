@@ -7,7 +7,8 @@ import {
 } from 'react'
 
 import { getShoplyProduct } from './domain/catalog'
-import { SHOPLY_ORDERS } from './domain/orders'
+import { calculateOrderSummary } from './domain/rules'
+import { createShoplyInitialState } from './domain/seed'
 import type {
   CartItem,
   PricedCartItem,
@@ -26,6 +27,7 @@ interface ShoplyContextValue {
   setQuantity: (productId: string, quantity: number) => void
   removeFromCart: (productId: string) => void
   setCoupon: (code: string) => void
+  placeOrder: () => ShoplyOrder | undefined
   cancelOrder: (orderId: string) => void
   switchAccount: (tier: ShoplyTier, resetProductState: boolean) => void
 }
@@ -34,15 +36,41 @@ const ShoplyContext = createContext<ShoplyContextValue | null>(null)
 
 interface ShoplyProviderProps extends PropsWithChildren {
   initialAccount?: ShoplyTier
+  seed?: Readonly<Record<string, unknown>>
+  /** Changing this restarts Shoply from the seed without remounting its children. */
+  sessionKey?: string
 }
 
-export function ShoplyProvider({ children, initialAccount = 'BASIC' }: ShoplyProviderProps) {
-  const [cart, setCart] = useState<CartItem[]>([])
-  const [coupon, setCoupon] = useState('')
+function nextOrderId(orders: readonly ShoplyOrder[]): string {
+  const highest = orders.reduce((max, order) => {
+    const number = Number(order.id.replace('order-', ''))
+    return Number.isFinite(number) ? Math.max(max, number) : max
+  }, 1000)
+  return `order-${highest + 1}`
+}
+
+export function ShoplyProvider({
+  children,
+  initialAccount = 'BASIC',
+  seed,
+  sessionKey,
+}: ShoplyProviderProps) {
+  const [initialState, setInitialState] = useState(() => createShoplyInitialState(seed))
+  const [cart, setCart] = useState<CartItem[]>(initialState.cart)
+  const [coupon, setCoupon] = useState(initialState.coupon)
   const [account, setAccount] = useState<ShoplyTier>(initialAccount)
-  const [orders, setOrders] = useState<ShoplyOrder[]>(() =>
-    SHOPLY_ORDERS.map((order) => ({ ...order })),
-  )
+  const [orders, setOrders] = useState<ShoplyOrder[]>(initialState.orders)
+  const [activeSessionKey, setActiveSessionKey] = useState(sessionKey)
+
+  if (sessionKey !== activeSessionKey) {
+    const restarted = createShoplyInitialState(seed)
+    setActiveSessionKey(sessionKey)
+    setInitialState(restarted)
+    setCart(restarted.cart)
+    setCoupon(restarted.coupon)
+    setAccount(initialAccount)
+    setOrders(restarted.orders)
+  }
   const user = useMemo<ShoplyUser>(
     () => account === 'GOLD'
       ? { id: 'shoply-gold-01', name: 'Avery Chen', tier: account }
@@ -94,6 +122,24 @@ export function ShoplyProvider({ children, initialAccount = 'BASIC' }: ShoplyPro
         setCart((current) => current.filter((item) => item.productId !== productId))
       },
       setCoupon,
+      placeOrder() {
+        const [firstItem] = items
+        if (!firstItem) return undefined
+
+        const summary = calculateOrderSummary(items, coupon, user.tier)
+        const order: ShoplyOrder = {
+          id: nextOrderId(orders),
+          placedAt: 'Today',
+          status: 'PROCESSING',
+          productId: firstItem.productId,
+          quantity: items.reduce((count, item) => count + item.quantity, 0),
+          total: summary.total,
+        }
+        setOrders((current) => [order, ...current])
+        setCart([])
+        setCoupon('')
+        return order
+      },
       cancelOrder(orderId) {
         setOrders((current) =>
           current.map((order) =>
@@ -107,13 +153,13 @@ export function ShoplyProvider({ children, initialAccount = 'BASIC' }: ShoplyPro
         if (tier === account) return
         setAccount(tier)
         if (resetProductState) {
-          setCart([])
-          setCoupon('')
-          setOrders(SHOPLY_ORDERS.map((order) => ({ ...order })))
+          setCart(initialState.cart)
+          setCoupon(initialState.coupon)
+          setOrders(initialState.orders)
         }
       },
     }),
-    [account, coupon, items, orders, user],
+    [account, coupon, initialState, items, orders, user],
   )
 
   return <ShoplyContext.Provider value={value}>{children}</ShoplyContext.Provider>

@@ -10,10 +10,13 @@ import {
 import type { Evidence, PlayerAction } from '../domain/schemas'
 import {
   createInitialWorkspaceState,
-  loadWorkspaceState,
+  loadWorkspaceStateWithRecovery,
   saveWorkspaceState,
   type WorkspaceState,
 } from '../../persistence/workspaceStorage'
+
+/** Oldest actions beyond this per-Ticket limit are dropped to keep the save small. */
+export const MAX_INTERACTIONS_PER_TICKET = 200
 
 interface RecordInteractionInput {
   ticketId: string
@@ -31,6 +34,7 @@ interface WorkspaceSessionValue {
   recordInteraction: (input: RecordInteractionInput) => void
   evidenceForTicket: (ticketId: string) => Evidence[]
   interactionsForTicket: (ticketId: string) => PlayerAction[]
+  reset: () => void
 }
 
 const WorkspaceSessionContext = createContext<WorkspaceSessionValue | null>(null)
@@ -44,7 +48,21 @@ function createActionId(timestamp: number): string {
 }
 
 function loadOrCreateWorkspaceState(): WorkspaceState {
-  return loadWorkspaceState() ?? createInitialWorkspaceState()
+  return loadWorkspaceStateWithRecovery().state ?? createInitialWorkspaceState()
+}
+
+function appendInteraction(
+  interactions: readonly PlayerAction[],
+  action: PlayerAction,
+): PlayerAction[] {
+  const next = [...interactions, action]
+  const forTicket = next.filter((item) => item.ticketId === action.ticketId)
+  if (forTicket.length <= MAX_INTERACTIONS_PER_TICKET) return next
+
+  const dropped = new Set(
+    forTicket.slice(0, forTicket.length - MAX_INTERACTIONS_PER_TICKET).map((item) => item.id),
+  )
+  return next.filter((item) => !dropped.has(item.id))
 }
 
 function actionsMatch(left: PlayerAction | undefined, right: PlayerAction): boolean {
@@ -94,7 +112,7 @@ export function WorkspaceSessionProvider({ children }: PropsWithChildren) {
         setState((current) =>
           actionsMatch(current.interactions.at(-1), action)
             ? current
-            : { ...current, interactions: [...current.interactions, action] },
+            : { ...current, interactions: appendInteraction(current.interactions, action) },
         )
       },
       evidenceForTicket(ticketId) {
@@ -102,6 +120,9 @@ export function WorkspaceSessionProvider({ children }: PropsWithChildren) {
       },
       interactionsForTicket(ticketId) {
         return state.interactions.filter((action) => action.ticketId === ticketId)
+      },
+      reset() {
+        setState(createInitialWorkspaceState())
       },
     }),
     [state],

@@ -24,7 +24,12 @@ export function CancelOrderPage({ orderId }: CancelOrderPageProps) {
   return (
     <main className="shoply-page">
       <ShoplyHeader />
-      <section className="order-flow-card" data-evidence-target="orders.cancelFlow">
+      <section
+        className="order-flow-card"
+        data-evidence-target="orders.cancelFlow"
+        data-evidence-label="Screen shown"
+        data-evidence-value={order.status === 'PROCESSING' ? 'Cancel your order' : 'Order cancelled'}
+      >
         <p className="order-flow-kicker">ORDER {order.id.replace('order-', '#')}</p>
         {order.status === 'PROCESSING' ? (
           <>

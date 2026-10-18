@@ -8,6 +8,7 @@ import { applyReview } from './applyReview'
 const report: BugReport = {
   id: 'REPORT-T01',
   ticketId: 'T01',
+  kind: 'BUG',
   title: 'Wrong CTA style',
   reproductionSteps: [{ id: 'STEP-1', order: 0, action: 'OPEN_CHECKOUT' }],
   expected: 'Primary action style',

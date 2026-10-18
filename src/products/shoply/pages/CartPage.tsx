@@ -44,7 +44,11 @@ export function CartPage() {
                     recordInteraction({ type: 'REMOVE_FROM_CART', target: item.productId })
                   }}>Remove</button>
                 </div>
-                <label>
+                <label
+                  data-evidence-target="cart.quantity"
+                  data-evidence-label="Quantity"
+                  data-evidence-value={String(item.quantity)}
+                >
                   Qty
                   <select
                     aria-label={`Quantity for ${item.product.name}`}
@@ -62,7 +66,7 @@ export function CartPage() {
                     {[1, 2, 3, 4].map((quantity) => <option key={quantity}>{quantity}</option>)}
                   </select>
                 </label>
-                <strong>{formatMoney(item.product.price * item.quantity)}</strong>
+                <strong data-evidence-target="cart.lineTotal" data-evidence-label="Line total">{formatMoney(item.product.price * item.quantity)}</strong>
               </article>
             ))}
             <form
@@ -76,7 +80,7 @@ export function CartPage() {
             >
               <label htmlFor="coupon">Coupon code</label>
               <div><input id="coupon" value={couponInput} onChange={(event) => setCouponInput(event.target.value)} placeholder="SAVE10" /><button type="submit">Apply</button></div>
-              {coupon && <p className={couponResult.valid ? 'coupon-valid' : 'coupon-error'} role="status">{couponResult.message}</p>}
+              {coupon && <p className={couponResult.valid ? 'coupon-valid' : 'coupon-error'} data-evidence-target="cart.couponMessage" data-evidence-label="Coupon message" role="status">{couponResult.message}</p>}
             </form>
           </section>
           <aside>

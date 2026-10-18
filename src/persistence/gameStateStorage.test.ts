@@ -1,10 +1,12 @@
 import { createInitialGameState } from '../game/domain/gameState'
 import {
+  GAME_STATE_BACKUP_KEY,
   GAME_STATE_STORAGE_KEY,
   GameStateStorageError,
   createSaveFile,
   deserializeGameState,
   loadGameState,
+  loadGameStateWithRecovery,
   resetGameState,
   saveGameState,
   serializeGameState,
@@ -56,5 +58,24 @@ describe('Game State persistence', () => {
     expect(() =>
       deserializeGameState(JSON.stringify({ version: 2, state })),
     ).toThrow('Saved Game State is invalid')
+  })
+})
+
+describe('Game State recovery', () => {
+  it('sets an unreadable save aside instead of crashing', () => {
+    const storage = createMemoryStorage()
+    storage.setItem(GAME_STATE_STORAGE_KEY, '{not json')
+
+    expect(loadGameStateWithRecovery(storage)).toEqual({ state: null, recovered: true })
+    expect(storage.getItem(GAME_STATE_STORAGE_KEY)).toBeNull()
+    expect(storage.getItem(GAME_STATE_BACKUP_KEY)).toBe('{not json')
+  })
+
+  it('loads a readable save normally', () => {
+    const storage = createMemoryStorage()
+    const state = createInitialGameState(['T01'])
+    saveGameState(state, storage)
+
+    expect(loadGameStateWithRecovery(storage)).toEqual({ state, recovered: false })
   })
 })

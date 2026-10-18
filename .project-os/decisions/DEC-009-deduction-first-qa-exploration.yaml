@@ -1,0 +1,25 @@
+id: DEC-009
+title: Deduction is the core loop; QA work is how the player explores
+status: active
+decided_at: "2026-10-18"
+context: >-
+  The project owner said QA work should only be the exploration that serves deduction,
+  that the game felt too hard, and that, as in No Results Found, the originality should be
+  the deduction, with clues found naturally while doing QA work.
+decision: >-
+  Each defect leaves an in-world trace in the Browser Console whose terms become leads.
+  Leads unlock their intranet records and feed the Case File and the clue board. Reporting
+  is reduced to a Flag with two choices (the wrong value and the broken rule); reproduction
+  steps, Evidence, and severity are filled in. A wrong flag costs 1 Reputation instead of 2,
+  and NO ISSUE FOUND no longer needs a capture, only a visit to Shoply.
+consequences:
+  - QA Tracker no longer has a Report Builder; defects are flagged from the Browser.
+  - Debriefs point the player to what they saw in the Console instead of naming a search term.
+  - Story records can be found before their Ticket is resolved; their clue connects on resolve.
+  - Severity is no longer a player decision; Review still scores it from the Ticket.
+applies_to:
+  - global
+references:
+  - .project-os/decisions/DEC-005-story-driven-progression.yaml
+  - .project-os/decisions/DEC-006-qa-workstation-desktop.yaml
+  - godot/README.md

@@ -3,17 +3,22 @@ import {
   type BugReport,
   type BugSeverity,
   type Evidence,
+  type ReportKind,
+  type ReportObservation,
   type ReportStep,
 } from '../domain/schemas'
 
 export interface CreateBugReportInput {
   id?: string
   ticketId: string
+  kind?: ReportKind
   title: string
   reproductionSteps: ReportStep[]
+  requirementId?: string
+  observation?: ReportObservation
   expected: string
   actual: string
-  severity: BugSeverity
+  severity?: BugSeverity
   evidenceIds: string[]
   submittedAt?: number
 }
@@ -43,7 +48,10 @@ export function createBugReport(
       .map((evidence) => [evidence.id, evidence]),
   )
 
-  for (const evidenceId of input.evidenceIds) {
+  for (const evidenceId of [
+    ...input.evidenceIds,
+    ...(input.observation ? [input.observation.evidenceId] : []),
+  ]) {
     if (!evidenceById.has(evidenceId)) {
       throw new InvalidEvidenceClaimError(evidenceId)
     }

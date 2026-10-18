@@ -6,7 +6,7 @@ import {
   type Evidence,
   type PlayerAction,
 } from '../game/domain/schemas'
-import type { StorageLike } from './gameStateStorage'
+import type { RecoverableLoad, StorageLike } from './gameStateStorage'
 
 export const WORKSPACE_STORAGE_KEY = 'nothingwrong.workspace'
 export const WORKSPACE_SAVE_VERSION = 1 as const
@@ -77,6 +77,22 @@ export function loadWorkspaceState(
 ): WorkspaceState | null {
   const serialized = storage.getItem(WORKSPACE_STORAGE_KEY)
   return serialized === null ? null : deserializeWorkspaceState(serialized)
+}
+
+export const WORKSPACE_BACKUP_KEY = 'nothingwrong.workspace.unreadable'
+
+export function loadWorkspaceStateWithRecovery(
+  storage: StorageLike = browserStorage(),
+): RecoverableLoad<WorkspaceState> {
+  try {
+    return { state: loadWorkspaceState(storage), recovered: false }
+  } catch (error) {
+    if (!(error instanceof WorkspaceStorageError)) throw error
+    const serialized = storage.getItem(WORKSPACE_STORAGE_KEY)
+    if (serialized !== null) storage.setItem(WORKSPACE_BACKUP_KEY, serialized)
+    storage.removeItem(WORKSPACE_STORAGE_KEY)
+    return { state: null, recovered: true }
+  }
 }
 
 export function saveWorkspaceState(

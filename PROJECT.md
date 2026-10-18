@@ -28,13 +28,19 @@ Understand → Explore → Hypothesize → Reproduce → Prove → Report
 - Game Logic과 Review는 UI 프레임워크 밖에서도 검증 가능해야 한다.
 - Career Progression은 숫자 난이도 증가보다 QA 업무의 성격과 판단 범위를 확장한다.
 - Core Gameplay는 최종 Mystery Narrative와 독립적으로 완결되어야 한다.
+- 플레이어는 각 Ticket에서 찾아낸 사실을 Story 단서로 이어가며 추리한다. 초반 Ticket은 바로 찾고 다음 단계로 자연스럽게 넘어가는 튜토리얼이어야 하며, 추리 실패에는 벌점을 주지 않는다.
 - 실제 QA 용어를 사용하고 `Nothing Wrong`은 브랜드명에만 사용한다.
+
+## Platform
+
+게임 클라이언트는 `godot/`의 Godot 4 빌드 하나만 개발·배포한다(DEC-007, DEC-008). 저장소 루트의 React/Vite 웹 빌드는 동결된 참조본이며 더 이상 수정하지 않는다. 콘텐츠의 정본은 `godot/data`와 `godot/i18n`이다.
 
 ## Non-Goals
 
 현재 MVP에서는 다음을 만들지 않는다.
 
-- 최종 Mystery Narrative, Investigation Board, 임의의 Story Content
+- 최종 Mystery Narrative, Investigation Board, Scenario data 밖의 임의 Story Content
+  (Ticket별 briefing·debrief·clue·deduction으로 이루어진 Story Chapter는 DEC-005에 따라 범위에 포함한다)
 - Backend, Online Account, Multiplayer, Global Leaderboard
 - LLM Runtime, Procedural Ticket Generation, 실제 웹사이트 Crawling
 - 실제 Browser iframe 또는 외부 사이트 연동

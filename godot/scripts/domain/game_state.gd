@@ -1,0 +1,214 @@
+## Pure Game State transitions. Port of gameState.ts, ticketStateMachine.ts,
+## applyReview.ts, and answerDeduction.ts. Every function returns a new state.
+extends RefCounted
+
+const SAVE_VERSION := 1
+const FIRST_TRY_DEDUCTION_BONUS := 1
+
+const ALLOWED_TRANSITIONS := {
+	"NEW": ["ACCEPTED"],
+	"ACCEPTED": ["TESTING"],
+	"TESTING": ["REPORTED", "NO_ISSUE"],
+	"REPORTED": ["REVIEWED"],
+	"NO_ISSUE": ["REVIEWED"],
+	"REVIEWED": ["TESTING", "RESOLVED"],
+	"RESOLVED": [],
+}
+
+
+static func create_initial(ticket_ids: Array) -> Dictionary:
+	var tickets := {}
+	for id in ticket_ids:
+		tickets[id] = new_ticket_state()
+	return {
+		"profile": { "name": "J. PARK", "level": 1, "career": "JUNIOR_QA", "xp": 0, "reputation": 100 },
+		"tickets": tickets,
+		"currentTicketId": null,
+		"unlockedTools": [],
+		"reportHistory": [],
+		"reviewHistory": [],
+		"story": { "deductions": {}, "deliveredCount": 0, "readCount": 0, "foundDocuments": [], "leads": [] },
+	}
+
+
+static func new_ticket_state() -> Dictionary:
+	return { "status": "NEW", "reportIds": [] }
+
+
+static func can_transition(from: String, to: String) -> bool:
+	return ALLOWED_TRANSITIONS.get(from, []).has(to)
+
+
+static func transition(from: String, to: String) -> String:
+	assert(can_transition(from, to), "Invalid Ticket status transition: %s -> %s" % [from, to])
+	return to
+
+
+## Adds Tickets that appeared in the catalog and restores tools earned by resolved Tickets.
+static func reconcile(state: Dictionary, catalog: RefCounted) -> Dictionary:
+	var next := state.duplicate(true)
+	for id in catalog.ticket_ids():
+		if not next["tickets"].has(id):
+			next["tickets"][id] = new_ticket_state()
+	for scenario in catalog.scenarios:
+		var id: String = scenario["ticket"]["id"]
+		if next["tickets"][id]["status"] == "RESOLVED":
+			for tool in scenario.get("progression", {}).get("unlockedTools", []):
+				if not next["unlockedTools"].has(tool):
+					next["unlockedTools"].append(tool)
+	if not next.has("story"):
+		next["story"] = { "deductions": {}, "deliveredCount": 0, "readCount": 0 }
+	if not next["story"].has("foundDocuments"):
+		next["story"]["foundDocuments"] = []
+	for key in ["deliveredCount", "readCount"]:
+		next["story"][key] = int(next["story"].get(key, 0))
+	return next
+
+
+static func start_ticket(state: Dictionary, ticket_id: String, now_ms: int) -> Dictionary:
+	var next := state.duplicate(true)
+	var ticket: Dictionary = next["tickets"][ticket_id]
+	next["currentTicketId"] = ticket_id
+	if ticket["status"] == "TESTING":
+		return next
+	var accepted := transition(ticket["status"], "ACCEPTED")
+	ticket["status"] = transition(accepted, "TESTING")
+	if not ticket.has("acceptedAt"):
+		ticket["acceptedAt"] = now_ms
+	return next
+
+
+static func apply_review(
+	state: Dictionary,
+	report: Dictionary,
+	review: Dictionary,
+	reward: Dictionary,
+	reviewed_at: int,
+) -> Dictionary:
+	var ticket_id: String = report["ticketId"]
+	var ticket: Dictionary = state["tickets"][ticket_id]
+	if ticket["reportIds"].has(report["id"]):
+		return state
+	assert(ticket["status"] == "TESTING", "Ticket %s is not ready for Report submission" % ticket_id)
+
+	var next := state.duplicate(true)
+	var next_ticket: Dictionary = next["tickets"][ticket_id]
+	var reported := transition("TESTING", "NO_ISSUE" if report.get("kind", "BUG") == "NO_ISSUE" else "REPORTED")
+	var reviewed := transition(reported, "REVIEWED")
+	var valid: bool = review["valid"]
+	next_ticket["status"] = transition(reviewed, "RESOLVED" if valid else "TESTING")
+	next_ticket["reportIds"].append(report["id"])
+	next_ticket["reviewedAt"] = reviewed_at
+	if valid:
+		next_ticket["resolvedAt"] = reviewed_at
+		for tool in reward.get("unlockedTools", []):
+			if not next["unlockedTools"].has(tool):
+				next["unlockedTools"].append(tool)
+
+	var xp: int = int(next["profile"]["xp"]) + int(review["xp"])
+	next["profile"]["xp"] = xp
+	next["profile"]["level"] = int(floor(xp / 100.0)) + 1
+	next["profile"]["reputation"] = int(next["profile"]["reputation"]) + int(review["reputationDelta"])
+	next["currentTicketId"] = null if valid else ticket_id
+	next["reportHistory"].append(report)
+	next["reviewHistory"].append(review)
+	return next
+
+
+static func answer_deduction(state: Dictionary, deduction: Dictionary, option_id: String) -> Dictionary:
+	var option: Variant = null
+	for candidate in deduction["options"]:
+		if candidate["id"] == option_id:
+			option = candidate
+	assert(option != null, "Unknown option %s" % option_id)
+
+	var progress: Dictionary = state["story"]["deductions"].get(deduction["id"], { "attempts": [], "solved": false })
+	if progress["solved"]:
+		return state
+
+	var next := state.duplicate(true)
+	var attempts: Array = progress["attempts"].duplicate()
+	attempts.append(option_id)
+	var first_try: bool = option["correct"] and attempts.size() == 1
+	next["story"]["deductions"][deduction["id"]] = { "attempts": attempts, "solved": option["correct"] }
+	if first_try:
+		next["profile"]["reputation"] = int(next["profile"]["reputation"]) + FIRST_TRY_DEDUCTION_BONUS
+	return next
+
+
+static func find_document(state: Dictionary, document_id: String) -> Dictionary:
+	if state["story"].get("foundDocuments", []).has(document_id):
+		return state
+	var next := state.duplicate(true)
+	if not next["story"].has("foundDocuments"):
+		next["story"]["foundDocuments"] = []
+	next["story"]["foundDocuments"].append(document_id)
+	return next
+
+
+## Story terms the player has seen in the Browser console, in the order they were seen.
+static func note_leads(state: Dictionary, terms: Array, ticket_id: String) -> Dictionary:
+	var known := lead_terms(state)
+	var fresh: Array = terms.filter(func(term): return not known.has(term))
+	if fresh.is_empty():
+		return state
+	var next := state.duplicate(true)
+	if not next["story"].has("leads"):
+		next["story"]["leads"] = []
+	for term in fresh:
+		next["story"]["leads"].append({ "term": term, "ticketId": ticket_id })
+	return next
+
+
+static func lead_terms(state: Dictionary) -> Array:
+	return state.get("story", {}).get("leads", []).map(func(lead): return lead["term"])
+
+
+static func leads_for(state: Dictionary, ticket_id: String) -> Array:
+	return state.get("story", {}).get("leads", []).filter(func(lead): return lead["ticketId"] == ticket_id) \
+		.map(func(lead): return lead["term"])
+
+
+static func has_found(state: Dictionary, document_id: String) -> bool:
+	return state["story"].get("foundDocuments", []).has(document_id)
+
+
+## A clue-board answer is right when the conclusion is right and every required clue is picked.
+static func board_answer_correct(deduction: Dictionary, option_id: String, clue_ids: Array) -> bool:
+	for option in deduction["options"]:
+		if option["id"] == option_id:
+			if not option["correct"]:
+				return false
+			for required in deduction.get("requiredClues", []):
+				if not clue_ids.has(required):
+					return false
+			return true
+	return false
+
+
+static func answer_board(state: Dictionary, deduction: Dictionary, option_id: String, clue_ids: Array) -> Dictionary:
+	var progress: Dictionary = state["story"]["deductions"].get(deduction["id"], { "attempts": [], "solved": false })
+	if progress["solved"]:
+		return state
+	var correct := board_answer_correct(deduction, option_id, clue_ids)
+	var next := state.duplicate(true)
+	var attempts: Array = progress["attempts"].duplicate()
+	attempts.append(option_id)
+	var board: Array = progress.get("boardAttempts", []).duplicate(true)
+	board.append({ "option": option_id, "clues": clue_ids.duplicate(), "correct": correct })
+	next["story"]["deductions"][deduction["id"]] = { "attempts": attempts, "boardAttempts": board, "solved": correct }
+	if correct and attempts.size() == 1:
+		next["profile"]["reputation"] = int(next["profile"]["reputation"]) + FIRST_TRY_DEDUCTION_BONUS
+	return next
+
+
+## The review for the most recent report on a Ticket, or null.
+static func latest_review(state: Dictionary, ticket_id: String) -> Variant:
+	var report_ids: Array = state["tickets"].get(ticket_id, {}).get("reportIds", [])
+	if report_ids.is_empty():
+		return null
+	var last_id: String = report_ids[-1]
+	for index in state["reportHistory"].size():
+		if state["reportHistory"][index]["id"] == last_id:
+			return { "result": state["reviewHistory"][index], "index": index }
+	return null

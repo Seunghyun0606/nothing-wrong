@@ -1,0 +1,26 @@
+id: DEC-005
+title: Story-driven progression through scenario data
+status: active
+decided_at: "2026-10-18"
+context: >-
+  The project owner directed that the core of the game is following a story and
+  deducing from what each Ticket uncovers, with the first Tickets playing as a quick,
+  guided tutorial. The MVP previously deferred all runtime narrative.
+decision: >-
+  Add a lightweight story layer as Scenario data: each Ticket carries a briefing,
+  a debrief, one clue, and an optional multiple-choice deduction, grouped into a story
+  chapter with an epilogue. Tutorial guidance is also Scenario data. Story never
+  gates Ticket unlocks and wrong deductions carry no penalty; a first-try deduction
+  grants +1 Reputation.
+consequences:
+  - Chapter 1 (Release Candidate 3) spans T01 through T04 and resolves at T04.
+  - Engine and Product code must not branch on Ticket IDs for story or tutorial content.
+  - Story content is a draft for owner review and can change without engine changes.
+  - The long-term Mystery Narrative and Investigation Board remain out of scope.
+  - Save files gain a defaulted story progress field; existing saves still load.
+applies_to:
+  - global
+references:
+  - src/scenarios/shoply/chapter1.ts
+  - src/game/domain/schemas.ts
+  - specs/feature/qa-core-loop.md

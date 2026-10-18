@@ -21,7 +21,10 @@ export function applyReview(
     throw new Error(`Ticket ${report.ticketId} is not ready for Report submission`)
   }
 
-  const reportedStatus = transitionTicketStatus(ticketState.status, 'REPORTED')
+  const reportedStatus = transitionTicketStatus(
+    ticketState.status,
+    report.kind === 'NO_ISSUE' ? 'NO_ISSUE' : 'REPORTED',
+  )
   const reviewedStatus = transitionTicketStatus(reportedStatus, 'REVIEWED')
   const finalStatus = review.valid
     ? transitionTicketStatus(reviewedStatus, 'RESOLVED')

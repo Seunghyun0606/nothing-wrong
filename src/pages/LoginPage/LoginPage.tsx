@@ -1,43 +1,38 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+
+import { useGameSession } from '../../game/session/GameSessionProvider'
 
 export function LoginPage() {
   const navigate = useNavigate()
-  const [employeeId, setEmployeeId] = useState('qa-0142')
+  const { state } = useGameSession()
   const [accessCode, setAccessCode] = useState('first-shift')
+  const [now, setNow] = useState(() => new Date())
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 30_000)
+    return () => window.clearInterval(timer)
+  }, [])
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    navigate('/dashboard')
+    navigate('/desktop')
   }
 
   return (
-    <main className="auth-page">
-      <section className="auth-brand" aria-labelledby="login-heading">
-        <p className="kicker">Nothing Wrong / Employee Access</p>
-        <h1 id="login-heading">Your shift starts here.</h1>
-        <p>
-          Investigate product behavior, preserve evidence, and make the call only when
-          the facts support it.
+    <main className="lock-screen">
+      <section className="lock-clock" aria-label="Clock">
+        <p className="lock-time">
+          {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit' }).format(now)}
+        </p>
+        <p className="lock-date">
+          {new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).format(now)}
         </p>
       </section>
-      <form className="login-card" onSubmit={handleSubmit}>
-        <div className="login-card-heading">
-          <span className="status-dot" aria-hidden="true" />
-          <div>
-            <p>Secure workstation</p>
-            <h2>Company login</h2>
-          </div>
-        </div>
-        <label>
-          Employee ID
-          <input
-            autoComplete="username"
-            value={employeeId}
-            onChange={(event) => setEmployeeId(event.target.value)}
-            required
-          />
-        </label>
+      <form className="lock-card" onSubmit={handleSubmit}>
+        <span className="lock-avatar" aria-hidden="true">JP</span>
+        <h1>{state.profile.name}</h1>
+        <p>Nothing Wrong · QA workstation 0142</p>
         <label>
           Access code
           <input
@@ -48,9 +43,7 @@ export function LoginPage() {
             required
           />
         </label>
-        <button className="button button-primary" type="submit">
-          Enter workspace
-        </button>
+        <button className="button button-primary" type="submit">Sign in</button>
         <p className="form-note">Training environment · Local session</p>
       </form>
     </main>

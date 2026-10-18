@@ -1,0 +1,34 @@
+id: DEC-006
+title: The game is played on an in-game QA workstation desktop
+status: active
+decided_at: "2026-10-18"
+context: >-
+  The project owner wants play to feel like doing QA work rather than jumping straight
+  into a website: briefings arrive through a messenger, the player opens links or types
+  addresses into an in-game browser, and work records and Evidence collect in a
+  separate notes application. The owner named the game "No Results Found" as an
+  inspiration for this framing.
+decision: >-
+  After the title and an OS-style lock screen, the game runs on a single fictional
+  desktop (current dark/green brand tone, no real OS branding). Four windowed apps
+  replace the former Dashboard, Ticket, Test Workspace, Report, and Review pages:
+  Messenger (story chat, links, deductions as replies), QA Tracker (Ticket queue,
+  Start test, Report, Review, Case File, profile), Browser (address bar, Shoply at
+  shoply.local, intranet docs at docs.nothingwrong.local, QA bar with viewport,
+  account switching, and Capture), and QA Notes (Ticket sheet with links, personal
+  notes, Evidence, activity log). A sticky-note guide points at the next action.
+consequences:
+  - The messenger log is derived from Game State; delivered/read counters are persisted
+    so a reload does not replay messages.
+  - Early briefings include clickable links; later briefings give addresses to type.
+    QA Notes always lists the start address.
+  - Old routes (/dashboard, /tickets, /test, /reports, /review) redirect to /desktop.
+  - Shoply restarts from its Scenario seed on Ticket change without remounting the desktop.
+  - Window layout and browser history are session-only and are not saved.
+applies_to:
+  - global
+references:
+  - src/pages/DesktopPage/DesktopPage.tsx
+  - src/components/desktop
+  - src/game/story/messengerLog.ts
+  - .project-os/decisions/DEC-005-story-driven-progression.yaml

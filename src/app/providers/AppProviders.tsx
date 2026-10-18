@@ -10,14 +10,14 @@ import { getScenario } from '../../scenarios/shoply/tickets'
 
 function ShoplySessionProvider({ children }: PropsWithChildren) {
   const { state } = useGameSession()
-  const startingAccount = state.currentTicketId
-    ? getScenario(state.currentTicketId)?.ticket.startingContext.account
-    : undefined
+  const scenario = state.currentTicketId ? getScenario(state.currentTicketId) : undefined
+  const startingAccount = scenario?.ticket.startingContext.account
 
   return (
     <ShoplyProvider
-      key={state.currentTicketId ?? 'standalone'}
+      sessionKey={state.currentTicketId ?? 'standalone'}
       initialAccount={startingAccount === 'GOLD' ? 'GOLD' : 'BASIC'}
+      seed={scenario?.seed.productState}
     >
       {children}
     </ShoplyProvider>

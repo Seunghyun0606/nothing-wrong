@@ -19,6 +19,10 @@ export function ProductRouter({ path: explicitPath }: ProductRouterProps) {
   const cancelOrderMatch = normalizedPath.match(/^\/shoply\/orders\/([^/]+)\/cancel$/)
   const orderMatch = normalizedPath.match(/^\/shoply\/orders\/([^/]+)$/)
 
+  if (normalizedPath === '/shoply') {
+    return <ProductPage productId="everyday-pack" />
+  }
+
   if (productMatch?.[1]) {
     return <ProductPage productId={decodeURIComponent(productMatch[1])} />
   }

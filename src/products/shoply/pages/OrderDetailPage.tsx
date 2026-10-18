@@ -38,7 +38,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
         <ProductLink to="/shoply/orders">← All orders</ProductLink>
         <p>ORDER {order.id.replace('order-', '#')}</p>
         <h1>Order details</h1>
-        <span className="order-status">{order.status.toLowerCase()}</span>
+        <span className="order-status" data-evidence-target="orders.status" data-evidence-label="Order status">{order.status.toLowerCase()}</span>
       </section>
       <div className="order-detail-layout">
         <section className="order-detail-card">
@@ -47,7 +47,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
             <div><dt>Placed</dt><dd>{order.placedAt}</dd></div>
             <div><dt>Quantity</dt><dd>{order.quantity}</dd></div>
             <div><dt>Delivery</dt><dd>Standard shipping</dd></div>
-            <div><dt>Total</dt><dd>{formatMoney(order.total)}</dd></div>
+            <div><dt>Total</dt><dd data-evidence-target="orders.total" data-evidence-label="Order total">{formatMoney(order.total)}</dd></div>
           </dl>
         </section>
         <aside className="order-actions-card">
@@ -58,6 +58,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
               <ProductLink
                 className="shoply-button inline-button"
                 data-evidence-target="orders.cancelAction"
+                data-evidence-label="Cancel action"
                 onClick={() => recordInteraction({
                   type: 'CANCEL_ORDER',
                   target: order.id,

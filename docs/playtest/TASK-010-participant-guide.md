@@ -8,13 +8,14 @@ expect, notice, or find confusing while playing.
 ## Start
 
 The facilitator will provide the app URL and a fresh browser save. Begin at `/start`,
-select **Start Work**, and continue from the Company Dashboard through the available
-Tickets. Please do not read the repository's development test checklist before the
+select **Start work**, and sign in to the QA workstation. Your work arrives in the
+Messenger; the QA Tracker, Browser, and QA Notes apps are on the desktop. Please do not read the repository's development test checklist before the
 session; it contains the expected defect locations.
 
-Work through the available Tickets in order. For each one, explore the fake Shoply
-site, capture Evidence if useful, submit a Report, read the Review, and return to the
-Dashboard. Try the tools that become available as you progress. If you get stuck,
+Work through the Tickets as they arrive. For each one, read the briefing, accept the
+Ticket in QA Tracker, explore the fake Shoply site in the Browser, capture Evidence if
+useful, submit a Report, read the Review, and answer the team in Messenger. Try the
+tools that become available as you progress. If you get stuck,
 tell the facilitator what you were trying to do before asking for a hint.
 
 ## After playing

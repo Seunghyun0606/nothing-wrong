@@ -58,20 +58,33 @@ describe('T02 Scenario', () => {
       capturedAt: 2,
       context: cartRuntime.test,
       snapshot: {
-        visibleTargets: ['cart.subtotal'],
+        controls: [
+          { target: 'cart.lineTotal', label: 'Line total', value: '$60.00' },
+          { target: 'cart.subtotal', label: 'Subtotal', value: '$50.00' },
+          { target: 'cart.total', label: 'Total', value: '$50.00' },
+        ],
         productState: cartRuntime.productState,
       },
     }
     const report: BugReport = {
       id: 'REPORT-T02',
       ticketId: 'T02',
+      kind: 'BUG',
       title: 'Subtotal is incorrect',
       reproductionSteps: [
         { id: 'STEP-1', order: 0, action: 'ADD_TO_CART' },
-        { id: 'STEP-2', order: 1, action: 'CHANGE_QUANTITY' },
+        { id: 'STEP-2', order: 1, action: 'OPEN_CART' },
+        { id: 'STEP-3', order: 2, action: 'CHANGE_QUANTITY', payload: { quantity: 2 } },
       ],
-      expected: 'Subtotal should be $60.00 for two $30.00 items',
-      actual: 'Subtotal is displayed as $50.00',
+      requirementId: 'REQ-T02-01',
+      observation: {
+        evidenceId: evidence.id,
+        target: 'cart.subtotal',
+        label: 'Subtotal',
+        value: '$50.00',
+      },
+      expected: 'The cart subtotal equals product price multiplied by quantity.',
+      actual: 'Subtotal: $50.00',
       severity: 'MEDIUM',
       evidenceIds: [evidence.id],
       submittedAt: 3,
@@ -95,5 +108,97 @@ describe('T02 Scenario', () => {
     expect(
       reviewBugReport(report, T02_SCENARIO, [wrongQuantityEvidence]),
     ).toMatchObject({ valid: false })
+  })
+
+  it('does not reward picking a correct figure or the wrong requirement', () => {
+    const evidence: Evidence = {
+      id: 'EVIDENCE-T02',
+      ticketId: 'T02',
+      type: 'SCREENSHOT',
+      preview: 'Shoply cart',
+      capturedAt: 2,
+      context: cartRuntime.test,
+      snapshot: {
+        controls: [
+          { target: 'cart.lineTotal', label: 'Line total', value: '$60.00' },
+          { target: 'cart.subtotal', label: 'Subtotal', value: '$50.00' },
+        ],
+        productState: cartRuntime.productState,
+      },
+    }
+    const base: BugReport = {
+      id: 'REPORT-T02',
+      ticketId: 'T02',
+      kind: 'BUG',
+      title: 'Subtotal is incorrect',
+      reproductionSteps: [
+        { id: 'STEP-1', order: 0, action: 'ADD_TO_CART' },
+        { id: 'STEP-2', order: 1, action: 'OPEN_CART' },
+      ],
+      requirementId: 'REQ-T02-01',
+      observation: { evidenceId: evidence.id, target: 'cart.lineTotal', label: 'Line total', value: '$60.00' },
+      expected: 'The cart subtotal equals product price multiplied by quantity.',
+      actual: 'Line total: $60.00',
+      severity: 'MEDIUM',
+      evidenceIds: [evidence.id],
+      submittedAt: 3,
+    }
+
+    const correctFigure = reviewBugReport(base, T02_SCENARIO, [evidence])
+    expect(correctFigure).toMatchObject({ valid: false, scores: { detection: 0 } })
+    expect(correctFigure.feedback[0]).toMatch(/does not show the problem/)
+
+    const wrongRequirement = reviewBugReport(
+      {
+        ...base,
+        requirementId: 'REQ-T02-02',
+        observation: { evidenceId: evidence.id, target: 'cart.subtotal', label: 'Subtotal', value: '$50.00' },
+      },
+      T02_SCENARIO,
+      [evidence],
+    )
+    expect(wrongRequirement).toMatchObject({ valid: false, scores: { detection: 0 } })
+    expect(wrongRequirement.feedback[0]).toMatch(/not the one it breaks/)
+  })
+
+  it('names missing reproduction actions and rejects NO ISSUE FOUND', () => {
+    const evidence: Evidence = {
+      id: 'EVIDENCE-T02',
+      ticketId: 'T02',
+      type: 'SCREENSHOT',
+      preview: 'Shoply cart',
+      capturedAt: 2,
+      context: cartRuntime.test,
+      snapshot: {
+        controls: [{ target: 'cart.subtotal', label: 'Subtotal', value: '$50.00' }],
+        productState: cartRuntime.productState,
+      },
+    }
+    const report: BugReport = {
+      id: 'REPORT-T02',
+      ticketId: 'T02',
+      kind: 'BUG',
+      title: 'Subtotal is incorrect',
+      reproductionSteps: [{ id: 'STEP-1', order: 0, action: 'ADD_TO_CART' }],
+      requirementId: 'REQ-T02-01',
+      observation: { evidenceId: evidence.id, target: 'cart.subtotal', label: 'Subtotal', value: '$50.00' },
+      expected: 'The cart subtotal equals product price multiplied by quantity.',
+      actual: 'Subtotal: $50.00',
+      severity: 'MEDIUM',
+      evidenceIds: [evidence.id],
+      submittedAt: 3,
+    }
+
+    const missingStep = reviewBugReport(report, T02_SCENARIO, [evidence])
+    expect(missingStep).toMatchObject({ valid: false, scores: { reproduction: 0 } })
+    expect(missingStep.feedback[1]).toBe('Your steps skip: open the bag.')
+
+    expect(
+      reviewBugReport(
+        { ...report, kind: 'NO_ISSUE', requirementId: undefined, observation: undefined },
+        T02_SCENARIO,
+        [evidence],
+      ),
+    ).toMatchObject({ valid: false, totalScore: 0, reputationDelta: -2 })
   })
 })

@@ -22,9 +22,9 @@ export function OrderSummaryCard({ items, coupon, tier }: OrderSummaryCardProps)
     ? 0
     : summary.discount / summary.subtotal
   const displayedDiscountRate = useMutationValue('cart.discountRate', normalDiscountRate)
-  const displayedDiscount = Math.round(summary.subtotal * displayedDiscountRate * 100) / 100
+  const displayedDiscount = Math.round(displayedSubtotal * displayedDiscountRate * 100) / 100
   const displayedTotal = Math.round(
-    (summary.subtotal - displayedDiscount + summary.shipping) * 100,
+    (displayedSubtotal - displayedDiscount + summary.shipping) * 100,
   ) / 100
 
   return (
@@ -33,13 +33,13 @@ export function OrderSummaryCard({ items, coupon, tier }: OrderSummaryCardProps)
       <dl>
         <div>
           <dt>Subtotal</dt>
-          <dd data-evidence-target="cart.subtotal">{formatMoney(displayedSubtotal)}</dd>
+          <dd data-evidence-target="cart.subtotal" data-evidence-label="Subtotal">{formatMoney(displayedSubtotal)}</dd>
         </div>
         {summary.discount > 0 && (
-          <div className="discount-row"><dt>Discount</dt><dd data-evidence-target="cart.discount">−{formatMoney(displayedDiscount)}</dd></div>
+          <div className="discount-row"><dt>Discount</dt><dd data-evidence-target="cart.discount" data-evidence-label="Discount">−{formatMoney(displayedDiscount)}</dd></div>
         )}
-        <div><dt>Shipping</dt><dd>{summary.shipping === 0 ? 'Free' : formatMoney(summary.shipping)}</dd></div>
-        <div className="summary-total"><dt>Total</dt><dd>{formatMoney(displayedTotal)}</dd></div>
+        <div><dt>Shipping</dt><dd data-evidence-target="cart.shipping" data-evidence-label="Shipping">{summary.shipping === 0 ? 'Free' : formatMoney(summary.shipping)}</dd></div>
+        <div className="summary-total"><dt>Total</dt><dd data-evidence-target="cart.total" data-evidence-label="Total">{formatMoney(displayedTotal)}</dd></div>
       </dl>
     </section>
   )

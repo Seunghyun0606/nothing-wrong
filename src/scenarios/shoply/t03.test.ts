@@ -70,21 +70,29 @@ describe('T03 Scenario', () => {
         currentPath: '/shoply/payment',
       },
       snapshot: {
-        visibleTargets: ['payment.form'],
+        controls: [{ target: 'payment.form', label: 'Screen shown', value: 'Payment details' }],
         productState: orderRuntime.productState,
       },
     }
     const report: BugReport = {
       id: 'REPORT-T03',
       ticketId: 'T03',
+      kind: 'BUG',
       title: 'Cancel Order opens payment',
       reproductionSteps: [
         { id: 'STEP-1', order: 0, action: 'OPEN_ORDERS' },
         { id: 'STEP-2', order: 1, action: 'CANCEL_ORDER' },
         { id: 'STEP-3', order: 2, action: 'OPEN_PAYMENT' },
       ],
-      expected: 'Cancellation flow should open for a processing order',
-      actual: 'Payment flow opens after selecting Cancel order',
+      requirementId: 'REQ-T03-01',
+      observation: {
+        evidenceId: evidence.id,
+        target: 'payment.form',
+        label: 'Screen shown',
+        value: 'Payment details',
+      },
+      expected: 'Cancel Order opens the return or cancellation flow for a processing order.',
+      actual: 'Screen shown: Payment details',
       severity: 'HIGH',
       evidenceIds: [evidence.id],
       submittedAt: 3,
@@ -104,7 +112,10 @@ describe('T03 Scenario', () => {
         ...evidence.context,
         currentPath: '/shoply/orders/order-1042/cancel',
       },
-      snapshot: { ...evidence.snapshot, visibleTargets: ['orders.cancelFlow'] },
+      snapshot: {
+        ...evidence.snapshot,
+        controls: [{ target: 'orders.cancelFlow', label: 'Screen shown', value: 'Cancel your order' }],
+      },
     }
     expect(
       reviewBugReport(report, T03_SCENARIO, [cancellationEvidence]),

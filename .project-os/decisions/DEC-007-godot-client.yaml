@@ -1,0 +1,27 @@
+id: DEC-007
+title: Godot 4 (GDScript) becomes the game client; the web build is the reference
+status: active
+decided_at: "2026-10-18"
+context: >-
+  The project owner asked to move the web-based program to Godot and to switch the
+  overall design to a more readable palette. The owner chose a full rewrite in
+  GDScript, keeping the React/Vite build as a reference until parity, and a bright
+  office palette.
+decision: >-
+  Build the game in godot/ with Godot 4.7 and GDScript. Pure game logic is ported
+  1:1 from src/game into scripts/domain and covered by headless tests; UI is built in
+  code with a shared office theme. Scenario, story, and Shoply catalog data are
+  exported from the TypeScript sources (npm run export:godot) so content has one source
+  while both builds exist. The web build adopts the same palette tokens.
+consequences:
+  - Supersedes the React rendering choice in DEC-002 for the shipped client; the web
+    build remains for comparison and verification until the owner retires it.
+  - Engine-agnostic rules from DEC-001, DEC-003, DEC-004, DEC-005, and DEC-006 carry over.
+  - Native packaging, Steam, and exports are still out of scope until decided.
+  - Godot tests run headless; UI flow tests press real buttons in the desktop scene.
+applies_to:
+  - global
+references:
+  - godot/README.md
+  - scripts/export-godot-data.mjs
+  - .project-os/decisions/DEC-002-react-fake-browser.yaml

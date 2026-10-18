@@ -13,51 +13,72 @@ npm run test:e2e:list
 npm run test:e2e
 ```
 
-The Playwright test clears browser storage explicitly before starting and verifies the
-complete Chromium journey through four resolved Tickets. It reloads after each
-Ticket, then checks that the final 400 XP and 108 Reputation remain visible.
+Playwright uses local port 4173 by default. If another application occupies that
+port, choose a free port for the test server. For example, in PowerShell:
+
+```powershell
+$env:NOTHING_WRONG_E2E_PORT = '4174'
+npm run test:e2e
+Remove-Item Env:NOTHING_WRONG_E2E_PORT
+```
+
+The server uses `--strictPort` so Vite reports an occupied port immediately instead
+of silently starting on a different port from the one Playwright expects.
+
+The Playwright test clears browser storage explicitly before starting and plays the
+whole workstation journey in Chromium: lock screen, Messenger briefings with real
+message pacing, QA Tracker, Browser (links and typed addresses), QA Notes, four
+resolved Tickets, deductions, and the Chapter 1 finale. It reloads mid-way and at the
+end, then checks that 400 XP, 111 Reputation, and the closed Case File remain.
+(T01's deduction is answered wrong once on purpose, so it earns no first-try bonus;
+T02–T04 each earn +1.) Expect about a minute because messages arrive in real time.
+
+## Godot build (DEC-007, DEC-008)
+
+The Godot 4.7 client in `godot/` is the only maintained and shipped build. Its content
+lives in `godot/data` and `godot/i18n`. Run its headless suite (25 tests, including UI
+flows that play Chapter 1 and T05 by pressing real buttons, and a check that every
+ticket, story, and record string has a Korean translation):
+
+```powershell
+& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --script res://tests/run_tests.gd
+```
+
+See `godot/README.md` for running the game and rendering screenshots. Everything below
+this section describes the frozen web build and is kept only for reference.
 
 ## Manual journey
 
 1. Open `/start` with browser storage cleared and confirm the `NOTHING WRONG` title.
-2. Select **Start Work**, enter the Company workspace, and open T01 from Dashboard.
-3. Start the test and confirm Shoply renders inside the Fake Browser while the main URL
-   remains `/test/T01`.
-4. Switch Desktop, Tablet, and Mobile and confirm the Product width and layout change.
-5. Add the Everyday Carry Pack, open Cart, change quantity, and continue to Checkout.
-6. Confirm the checkout action is visibly secondary for T01 and capture Evidence on
-   the Checkout page.
-7. Create a Report, select the primary expected behavior and secondary actual behavior,
-   attach the captured Evidence, and submit it.
-8. Confirm Review displays `VALID`, the 40/25/20/15 category scores, total 100, XP +100,
-   Reputation +2, and feedback.
-9. Return to Dashboard and confirm T01 is Resolved, XP is 100, and Reputation is 102.
-10. Reload the browser and confirm the same Dashboard state remains.
-11. Open the newly unlocked T02 and start its Shoply test session.
-12. Add the Everyday Carry Pack, open Cart, and change its quantity to two.
-13. Confirm the line item remains $60.00 while the mutated Subtotal displays $50.00.
-14. Capture Cart Evidence and create a Report with the documented $60.00 expected and
-    $50.00 actual behavior at MEDIUM severity.
-15. Confirm the T02 Review displays `VALID`, 100/100, XP +100, and Reputation +2.
-16. Return to Dashboard and confirm T01 and T02 are Resolved, XP is 200, Reputation
-    is 104, and T03 is the one open Ticket.
-17. Reload and open the newly unlocked T03.
-18. Select **Cancel order** on Order details and confirm that Payment details opens
-    instead of the cancellation flow.
-19. Capture payment-page Evidence, report the expected cancellation flow and actual
-    payment flow at HIGH severity, then confirm Review displays `VALID` and 100/100.
-20. Return to Dashboard and confirm T01–T03 are Resolved, XP is 300, Reputation
-    is 106, and T04 is the one open Ticket. Reload to confirm persistence.
-21. Open T04, add one Everyday Carry Pack, and apply SAVE20 while Basic. Confirm
-    the coupon is unavailable.
-22. Switch to Gold and confirm one item receives the normal $6.00 discount.
-23. Change quantity to three and confirm the discount is $9.00 rather than the
-    required $18.00. Switch to Basic and back to Gold to verify the T04 policy
-    preserves the cart and coupon.
-24. Capture Cart Evidence with Gold + SAVE20 + quantity three, report expected
-    20% and actual 10% at MEDIUM severity, and confirm Review is `VALID` 100/100.
-25. Return to Dashboard and confirm all four Tickets are Resolved, XP is 400,
-    Reputation is 108, and no Ticket is open. Reload to confirm persistence.
+2. Select **Start work**, then **Sign in** on the lock screen. The desktop opens and a
+   Messenger notification arrives after a short pause.
+3. Open Messenger: the T01 briefing arrives message by message, ending with links to
+   `shoply.local` and the intranet spec, and a ticket card.
+4. Open T01 in QA Tracker and select **Start test**. The sticky note now says to open
+   Shoply. Open the spec link and confirm the intranet page renders.
+5. Open the product link. Switch Desktop/Tablet/Mobile in the Browser QA bar and confirm
+   the Product width changes. Add the pack, open the bag, continue to Checkout.
+6. Confirm the confirmation button is secondary and select **Capture**. Open QA Notes and
+   confirm the Evidence card lists `Confirm order button: Secondary action style`.
+7. In QA Tracker select **Create report**. Pick REQ-T01-02, that observation, and LOW.
+   Confirm `VALID`, 100/100, XP +100, Reputation +2, and `Level up!`.
+8. Select **The team replied · Open Messenger**. Read the debrief and clue, answer the
+   deduction once wrong (no penalty, hint shown) and once right. The T02 briefing follows.
+9. Reload: QA Tracker shows 100 XP and 102 Reputation, and the chat does not replay.
+10. T02: at quantity two the line total is $60.00 while Subtotal and Total show $50.00.
+    Report REQ-T02-01 with `Subtotal: $50.00` at MEDIUM. Reply to the deduction.
+11. T03: type `shoply.local/orders/order-1042` into the Browser. **Cancel order** opens
+    Payment details. Capture and report REQ-T03-01 at HIGH. The Account Switcher unlocks.
+12. T04: type `shoply.local`. Apply SAVE20 as Basic (unavailable), switch to Gold
+    ($6.00 off one item), then quantity three ($9.00 instead of $18.00). Capture and
+    report REQ-T04-02 with `Discount: −$9.00` at MEDIUM.
+13. Answer the final deduction: the epilogue and `Chapter 1 · Release Candidate 3
+    complete.` appear. QA Tracker shows 400 XP and 111 Reputation; Case File shows
+    `Case closed`. Reload to confirm persistence.
+14. Type an unknown host such as `shoply.com` and confirm the "site can't be reached" page.
+15. Optional: on a defective Ticket submit **NO ISSUE FOUND** and confirm it is INVALID
+    with Reputation −2 while the Ticket stays in testing.
+16. On `/start`, **New game** resets progress, Evidence, notes, and the chat.
 
 Exploratory clicks have no penalty. Subjective playtest questions belong to M2 and are
 not part of this M1 verification.
@@ -72,7 +93,7 @@ not part of this M1 verification.
 | The Mutation Engine is reusable by another Product | `src/game/mutations/resolveMutation.ts` depends only on generic domain types, target strings, TestContext, and Product state. |
 | Report evaluation is testable without React | `src/game/reporting/reviewBugReport.test.ts` imports the pure review function directly. |
 | T04-style conditions can be reproduced automatically | `src/game/mutations/resolveMutation.test.ts` covers Gold + SAVE20 + quantity 3 and negative account/quantity cases. |
-| Narrative can be layered without rewriting the core loop | `ScenarioSchema` preserves optional narrative metadata; the T01 runtime does not require or interpret it. |
+| Story and tutorial are Scenario data | `ScenarioSchema.story` and `ScenarioSchema.guide` drive the Briefing, Debrief, Case File, deductions, and guide banners; pages read them generically (see DEC-005). `src/game/guide/resolveGuideStep.test.ts` and `src/game/story/answerDeduction.test.ts` cover the logic without React. |
 
 ## Static architecture checks
 

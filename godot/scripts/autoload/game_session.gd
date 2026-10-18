@@ -1,0 +1,166 @@
+## Saved Game State and the actions that change it. Port of GameSessionProvider.tsx
+## plus versioned persistence (gameStateStorage.ts).
+extends Node
+
+signal changed
+
+const Catalog := preload("res://scripts/domain/catalog.gd")
+const GameState := preload("res://scripts/domain/game_state.gd")
+const Intranet := preload("res://scripts/domain/intranet.gd")
+const Review := preload("res://scripts/domain/review.gd")
+
+const SAVE_PATH := "user://save.json"
+const BACKUP_PATH := "user://save.unreadable.json"
+
+var catalog: RefCounted
+var intranet: RefCounted
+var state: Dictionary = {}
+## True when an unreadable save was set aside and a fresh game started.
+var recovered_from_unreadable_save := false
+## Tests turn this off to keep the player's save untouched.
+var persist := true
+
+
+func _ready() -> void:
+	catalog = Catalog.load_from()
+	intranet = Intranet.load_from()
+	load_state()
+
+
+func load_state() -> void:
+	recovered_from_unreadable_save = false
+	if not FileAccess.file_exists(SAVE_PATH):
+		state = GameState.create_initial(catalog.ticket_ids())
+		return
+	var text := FileAccess.get_file_as_string(SAVE_PATH)
+	var parsed: Variant = JSON.parse_string(text)
+	if typeof(parsed) == TYPE_DICTIONARY and int(parsed.get("version", 0)) == GameState.SAVE_VERSION \
+		and typeof(parsed.get("state")) == TYPE_DICTIONARY and parsed["state"].has("tickets"):
+		state = GameState.reconcile(parsed["state"], catalog)
+		return
+	var backup := FileAccess.open(BACKUP_PATH, FileAccess.WRITE)
+	if backup:
+		backup.store_string(text)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+	recovered_from_unreadable_save = true
+	state = GameState.create_initial(catalog.ticket_ids())
+
+
+func save() -> void:
+	if not persist:
+		return
+	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify({ "version": GameState.SAVE_VERSION, "state": state }))
+
+
+func commit(next: Dictionary) -> void:
+	if next == state:
+		return
+	state = next
+	save()
+	changed.emit()
+
+
+func reset_progress() -> void:
+	state = GameState.create_initial(catalog.ticket_ids())
+	save()
+	changed.emit()
+
+
+## Opening an available record marks it found; story records reveal their clue.
+func open_document(document_id: String) -> bool:
+	var document: Variant = intranet.get_document(document_id)
+	if document == null or not Intranet.is_available(document, state):
+		return false
+	var first_time := not GameState.has_found(state, document_id)
+	commit(GameState.find_document(state, document_id))
+	return first_time
+
+
+## Records lead terms; returns the ones the player had not seen before.
+func note_leads(terms: Array, ticket_id: String) -> Array:
+	var known := GameState.lead_terms(state)
+	var fresh: Array = terms.filter(func(term): return not known.has(term))
+	if not fresh.is_empty():
+		commit(GameState.note_leads(state, fresh, ticket_id))
+	return fresh
+
+
+## Reviews a flag or a NO ISSUE FOUND report and applies the result.
+func submit_report(input: Dictionary) -> Dictionary:
+	var target: Variant = scenario(input["ticketId"])
+	var report := input.duplicate(true)
+	report["id"] = WorkspaceSession.new_id("REPORT")
+	report["submittedAt"] = int(Time.get_unix_time_from_system() * 1000)
+	var review := Review.review_report(report, target, WorkspaceSession.evidence_for(input["ticketId"]))
+	complete_review(report, review, target.get("progression", {}))
+	return review
+
+
+func answer_board(deduction: Dictionary, option_id: String, clue_ids: Array) -> void:
+	commit(GameState.answer_board(state, deduction, option_id, clue_ids))
+
+
+func has_progress() -> bool:
+	if not state["reportHistory"].is_empty():
+		return true
+	for id in state["tickets"]:
+		if state["tickets"][id]["status"] != "NEW":
+			return true
+	return false
+
+
+func start_ticket(ticket_id: String) -> void:
+	if not catalog.is_ticket_unlocked(state, ticket_id):
+		push_warning("Ticket is locked: %s" % ticket_id)
+		return
+	commit(GameState.start_ticket(state, ticket_id, Time.get_ticks_msec()))
+
+
+func complete_review(report: Dictionary, review: Dictionary, reward: Dictionary) -> void:
+	commit(GameState.apply_review(state, report, review, reward, int(Time.get_unix_time_from_system() * 1000)))
+
+
+func answer_deduction(deduction: Dictionary, option_id: String) -> void:
+	commit(GameState.answer_deduction(state, deduction, option_id))
+
+
+func mark_messages_delivered(count: int) -> void:
+	if count <= int(state["story"]["deliveredCount"]):
+		return
+	var next := state.duplicate(true)
+	next["story"]["deliveredCount"] = count
+	commit(next)
+
+
+func mark_messages_read(count: int) -> void:
+	if count <= int(state["story"]["readCount"]):
+		return
+	var next := state.duplicate(true)
+	next["story"]["readCount"] = count
+	commit(next)
+
+
+func ticket_status(ticket_id: String) -> String:
+	return state["tickets"].get(ticket_id, {}).get("status", "NEW")
+
+
+func active_ticket_id() -> String:
+	var current: Variant = state.get("currentTicketId")
+	if current != null and ticket_status(str(current)) == "TESTING":
+		return str(current)
+	return ""
+
+
+## The Ticket under test, or the next one waiting.
+func focus_ticket_id() -> String:
+	var active := active_ticket_id()
+	if active != "":
+		return active
+	var next: Variant = catalog.find_next_open_ticket(state)
+	return next["id"] if next != null else ""
+
+
+func scenario(ticket_id: String) -> Variant:
+	return catalog.get_scenario(ticket_id) if ticket_id != "" else null

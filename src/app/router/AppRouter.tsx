@@ -1,13 +1,9 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
-import { DashboardPage } from '../../pages/DashboardPage/DashboardPage'
+import { DesktopPage } from '../../pages/DesktopPage/DesktopPage'
 import { LoginPage } from '../../pages/LoginPage/LoginPage'
 import { StartPage } from '../../pages/StartPage/StartPage'
-import { TicketDetailPage } from '../../pages/TicketDetailPage/TicketDetailPage'
 import { ProductRouter } from '../../components/fake-browser/ProductRouter'
-import { TestWorkspacePage } from '../../pages/TestWorkspacePage/TestWorkspacePage'
-import { ReportBuilderPage } from '../../pages/ReportBuilderPage/ReportBuilderPage'
-import { ReviewResultPage } from '../../pages/ReviewResultPage/ReviewResultPage'
 
 export function AppRouter() {
   return (
@@ -15,11 +11,12 @@ export function AppRouter() {
       <Routes>
         <Route path="/start" element={<StartPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/tickets/:ticketId" element={<TicketDetailPage />} />
-        <Route path="/test/:ticketId" element={<TestWorkspacePage />} />
-        <Route path="/reports/:ticketId" element={<ReportBuilderPage />} />
-        <Route path="/review/:ticketId" element={<ReviewResultPage />} />
+        <Route path="/desktop" element={<DesktopPage />} />
+        <Route path="/dashboard" element={<Navigate to="/desktop" replace />} />
+        <Route path="/tickets/*" element={<Navigate to="/desktop" replace />} />
+        <Route path="/test/*" element={<Navigate to="/desktop" replace />} />
+        <Route path="/reports/*" element={<Navigate to="/desktop" replace />} />
+        <Route path="/review/*" element={<Navigate to="/desktop" replace />} />
         <Route path="/shoply/*" element={<ProductRouter />} />
         <Route path="*" element={<Navigate to="/start" replace />} />
       </Routes>

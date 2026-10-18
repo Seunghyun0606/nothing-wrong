@@ -7,6 +7,7 @@ import type {
 export interface MutationRuntimeContext {
   test: TestContext
   productState: Readonly<Record<string, unknown>>
+  workspace?: Readonly<Record<string, unknown>>
 }
 
 const MISSING = Symbol('missing')
@@ -40,6 +41,10 @@ function readConditionValue(
 
   if (field.startsWith('product.')) {
     return readPath(context.productState, field.slice('product.'.length))
+  }
+
+  if (field.startsWith('workspace.')) {
+    return readPath(context.workspace ?? {}, field.slice('workspace.'.length))
   }
 
   const testValue = readPath(context.test, field)
@@ -85,6 +90,17 @@ export function matchesMutationCondition(
       return (
         Array.isArray(condition.value) &&
         condition.value.some((candidate) => Object.is(candidate, actual))
+      )
+    case 'INCLUDES':
+      return (
+        Array.isArray(actual) &&
+        actual.some((candidate) => Object.is(candidate, condition.value))
+      )
+    case 'STARTS_WITH':
+      return (
+        typeof actual === 'string' &&
+        typeof condition.value === 'string' &&
+        actual.startsWith(condition.value)
       )
   }
 }

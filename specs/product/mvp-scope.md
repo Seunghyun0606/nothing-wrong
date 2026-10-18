@@ -22,7 +22,7 @@ MVP는 Web Desktop에서 동작하는 단일 플레이어 QA Investigation Simul
 - Report 평가는 LLM/NLP가 아닌 구조적 matching으로 수행한다.
 - Account Switcher는 T04에서 해금한다.
 - Reputation은 피드백 수치이며 Game Over 조건이 아니다.
-- Narrative 필드는 확장 지점으로만 보존하고 Runtime은 사용하지 않는다.
+- Narrative hook 필드는 확장 지점으로 보존한다. Ticket별 Story Chapter(briefing, debrief, clue, deduction, epilogue)는 DEC-005에 따라 Scenario data로 Runtime에서 사용한다.
 
 ## Deferred Capabilities
 
