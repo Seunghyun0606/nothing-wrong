@@ -1,14 +1,19 @@
-## Team chat: story messages, links, ticket cards, clues, and deduction replies.
+## Team chat: story messages, links, ticket cards, reports, clues, and deduction replies.
+## While a Ticket is under test, the composer is the report form for its sender.
 extends VBoxContainer
 
 const Kit := preload("res://scripts/ui/kit.gd")
 const P := preload("res://scripts/ui/palette.gd")
 const GameState := preload("res://scripts/domain/game_state.gd")
 const Addresses := preload("res://scripts/domain/addresses.gd")
+const Observations := preload("res://scripts/domain/observations.gd")
+const ReportComposer := preload("res://scripts/ui/apps/report_composer.gd")
 
 var _scroll: ScrollContainer
 var _log_box: VBoxContainer
 var _composer: VBoxContainer
+## Kept across renders so a half-written report survives new messages.
+var _report_form: VBoxContainer
 var _signature := ""
 ## Keep the newest message in view until the player scrolls back.
 var _follow := true
@@ -41,6 +46,7 @@ func _ready() -> void:
 	add_child(composer_panel)
 
 	GameSession.changed.connect(_render)
+	DesktopSession.changed.connect(_render)
 	Settings.language_changed.connect(func():
 		_signature = ""
 		_render())
@@ -53,8 +59,9 @@ func _ready() -> void:
 
 func _render() -> void:
 	var log := DesktopSession.messenger_log()
-	var signature := "%d|%d|%s|%s|%d" % [log["delivered"], log["entries"].size(), str(log["pendingDeduction"] != null), str(log["pendingDiscovery"] != null),
-		GameState.lead_terms(GameSession.state).size()]
+	var active := GameSession.active_ticket_id()
+	var signature := "%d|%d|%s|%s|%d|%s|%s" % [log["delivered"], log["entries"].size(), str(log["pendingDeduction"] != null), str(log["pendingDiscovery"] != null),
+		GameState.lead_terms(GameSession.state).size(), active, str(DesktopSession.report_requested)]
 	if signature == _signature:
 		return
 	_signature = signature
@@ -69,6 +76,8 @@ func _render() -> void:
 	if delivered < entries.size() and entries[delivered]["kind"] == "message":
 		_log_box.add_child(Kit.label(Kit.tf("%s is typing…", entries[delivered]["from"]), 13, P.MUTED))
 
+	if _report_form != null and _report_form.get_parent() == _composer:
+		_composer.remove_child(_report_form)
 	Kit.clear(_composer)
 	var pending: Variant = log["pendingDeduction"]
 	var discovery: Variant = log["pendingDiscovery"]
@@ -83,9 +92,7 @@ func _render() -> void:
 		_composer.add_child(row)
 	elif pending != null and delivered >= entries.size() and pending.get("mode", "") == "board":
 		_composer.add_child(Kit.label(Kit.tf("%s is waiting for your answer. A wrong guess costs nothing.", pending["askedBy"]["from"]), 13, P.WARNING))
-		var board := Kit.primary(Kit.t("Open Case File and connect the clues"), func():
-			DesktopSession.tracker_view = "casefile"
-			DesktopSession.open_app("tracker"))
+		var board := Kit.primary(Kit.t("Open Case File and connect the clues"), DesktopSession.show_case_file)
 		board.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		_composer.add_child(board)
 	elif pending != null and delivered >= entries.size():
@@ -103,9 +110,27 @@ func _render() -> void:
 			button.custom_minimum_size = Vector2(400, 0)
 			reply.add_child(button)
 		_composer.add_child(reply)
+	elif active != "":
+		if _report_form == null or _report_form.ticket_id != active:
+			_drop_report_form()
+			_report_form = ReportComposer.new()
+			_report_form.setup(GameSession.scenario(active))
+		if DesktopSession.report_requested:
+			DesktopSession.report_requested = false
+			_report_form.expanded = true
+		_composer.add_child(_report_form)
+		_report_form.refresh()
 	else:
 		_composer.add_child(Kit.label("The team is typing…" if delivered < entries.size() else "No reply needed right now.", 13, P.MUTED))
+	if _report_form != null and _report_form.get_parent() != _composer:
+		_drop_report_form()
 	_scroll_to_end.call_deferred()
+
+
+func _drop_report_form() -> void:
+	if _report_form != null:
+		_report_form.queue_free()
+		_report_form = null
 
 
 func _scroll_to_end() -> void:
@@ -144,7 +169,7 @@ func _entry(entry: Dictionary) -> Control:
 			var body := Kit.vbox(6)
 			body.add_child(Kit.kicker(Kit.tf("Ticket assigned · %s", entry["ticketId"])))
 			body.add_child(Kit.heading(entry["title"], 15))
-			var open := Kit.button(Kit.tf("Open %s in QA Tracker", entry["ticketId"]), DesktopSession.show_ticket.bind(entry["ticketId"], "detail"))
+			var open := Kit.button(Kit.tf("Open %s in QA Notes", entry["ticketId"]), DesktopSession.show_ticket.bind(entry["ticketId"]))
 			open.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 			body.add_child(open)
 			card.add_child(body)
@@ -165,6 +190,19 @@ func _entry(entry: Dictionary) -> Control:
 			body.add_child(Kit.label(entry["text"], 14, P.TEXT))
 			card.add_child(body)
 			return Kit.margin(card, 44, 0, 0, 0)
+		"report":
+			var card := Kit.panel(P.ACCENT, Color.TRANSPARENT, 10, 12)
+			card.name = "Report"
+			var body := Kit.vbox(2)
+			body.add_child(Kit.heading("You", 13, Color.WHITE))
+			if entry["noIssue"]:
+				body.add_child(Kit.label(Kit.tf("%s: I checked every requirement and nothing breaks a rule. NO ISSUE FOUND.", entry["ticketId"]), 15, Color.WHITE))
+			else:
+				var noted := Observations.describe({ "label": entry["label"], "value": entry["value"] })
+				body.add_child(Kit.label(Kit.tf("On %s, I noticed %s.", [entry["screen"], noted]), 15, Color.WHITE))
+				body.add_child(Kit.label(Kit.tf("That breaks %s: %s", [entry["requirementId"], Kit.t(entry["requirement"])]), 14, Color(1, 1, 1, 0.85)))
+			card.add_child(body)
+			return Kit.margin(card, 80, 0, 0, 0)
 		"player":
 			var card := Kit.panel(P.ACCENT, Color.TRANSPARENT, 10, 12)
 			var body := Kit.vbox(2)

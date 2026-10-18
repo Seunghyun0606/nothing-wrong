@@ -1,5 +1,7 @@
 ## Derives the team chat from Game State. Port of messengerLog.ts.
-## Entry kinds: message, ticket, found, clue, player, system.
+## Entry kinds: message, ticket, report, found, clue, player, system.
+## Reports are the player's messages to the Ticket's sender; a miss gets a reply with a
+## hint, and enough misses bring the team's help (story.assist).
 ## After a debrief the chat pauses until the player finds the record it points to,
 ## then pauses again on the deduction.
 extends RefCounted
@@ -18,6 +20,7 @@ static func build(catalog: RefCounted, state: Dictionary) -> Dictionary:
 			for index in story["briefing"].size():
 				entries.append(_message("%s:briefing:%d" % [scenario_id, index], story["briefing"][index]))
 		entries.append({ "id": "%s:ticket" % scenario_id, "kind": "ticket", "ticketId": ticket_id, "title": ticket["title"] })
+		_append_reports(entries, scenario, state)
 
 		if state["tickets"].get(ticket_id, {}).get("status", "") != "RESOLVED":
 			break
@@ -74,6 +77,48 @@ static func build(catalog: RefCounted, state: Dictionary) -> Dictionary:
 			entries.append({ "id": "%s:complete" % chapter["id"], "kind": "system", "text": "%s complete." % chapter["title"], "chapterTitle": chapter["title"] })
 
 	return { "entries": entries, "pendingDeduction": null, "pendingDiscovery": null }
+
+
+static func _append_reports(entries: Array, scenario: Dictionary, state: Dictionary) -> void:
+	var ticket: Dictionary = scenario["ticket"]
+	var story: Variant = scenario.get("story", null)
+	var assist: Array = story.get("assist", []) if story != null else []
+	var misses := 0
+	for index in state["reportHistory"].size():
+		var report: Dictionary = state["reportHistory"][index]
+		if report["ticketId"] != ticket["id"]:
+			continue
+		var review: Dictionary = state["reviewHistory"][index]
+		entries.append(report_entry(report))
+		if review["valid"]:
+			continue
+		misses += 1
+		var feedback: Array = review.get("feedback", [])
+		var text: String = review.get("hint", "")
+		if text == "" and not feedback.is_empty():
+			text = feedback[-1]
+		entries.append(_message("%s:reply:%s" % [scenario["id"], report["id"]], {
+			"from": ticket["sender"]["name"], "role": ticket["sender"]["role"], "text": text,
+		}))
+		# Missed reports bring the team in: first a nudge, then the answer.
+		for help in assist:
+			if int(help["after"]) == misses:
+				entries.append(_message("%s:assist:%d" % [scenario["id"], misses], help))
+
+
+static func report_entry(report: Dictionary) -> Dictionary:
+	var observation: Dictionary = report.get("observation", {})
+	return {
+		"id": "report:%s" % report["id"],
+		"kind": "report",
+		"ticketId": report["ticketId"],
+		"noIssue": report.get("kind", "BUG") == "NO_ISSUE",
+		"screen": report.get("screen", ""),
+		"label": observation.get("label", ""),
+		"value": observation.get("value", ""),
+		"requirementId": report.get("requirementId", ""),
+		"requirement": report.get("expected", ""),
+	}
 
 
 static func _message(id: String, message: Dictionary) -> Dictionary:

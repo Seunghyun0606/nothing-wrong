@@ -1,5 +1,6 @@
-## Turns a flag into a full Report: the title, reproduction steps, attached Evidence,
-## and severity are filled in, so the player only says what is wrong and which rule breaks.
+## Turns a report in Messenger into a full Report: the title, reproduction steps,
+## attached Evidence, and severity are filled in, so the player only says what they noted
+## and which rule it breaks.
 extends RefCounted
 
 const Observations := preload("res://scripts/domain/observations.gd")
@@ -37,7 +38,7 @@ static func steps_until(interactions: Array, evidence_id: String) -> Array:
 
 
 ## The severity a defect against this requirement carries. Severity is not part of the
-## puzzle, so the flag takes it from the Ticket instead of asking.
+## puzzle, so the report takes it from the Ticket instead of asking.
 static func severity_for(scenario: Dictionary, requirement: Dictionary) -> String:
 	for bug in scenario["expectedBugs"]:
 		if bug.get("requirementId", "") == requirement["id"]:
@@ -46,8 +47,9 @@ static func severity_for(scenario: Dictionary, requirement: Dictionary) -> Strin
 
 
 static func bug_report(scenario: Dictionary, interactions: Array, requirement: Dictionary,
-		observation: Dictionary, severity: String = "") -> Dictionary:
+		observation: Dictionary, severity: String = "", screen: String = "") -> Dictionary:
 	return {
+		"screen": screen,
 		"ticketId": scenario["ticket"]["id"],
 		"kind": "BUG",
 		"title": "%s: %s" % [scenario["ticket"]["title"], Observations.describe(observation)],

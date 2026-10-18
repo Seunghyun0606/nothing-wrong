@@ -1,6 +1,6 @@
-## Workstation session: windows, browser history, app selections, notifications,
-## and paced Messenger delivery. Port of DesktopProvider.tsx and useMessenger.ts.
-## Window layout and browser history are not saved.
+## Workstation session: windows, browser tabs and their history, app selections,
+## notifications, and paced Messenger delivery. Port of DesktopProvider.tsx and
+## useMessenger.ts. Window layout and browser tabs are not saved.
 extends Node
 
 signal changed
@@ -13,21 +13,25 @@ signal reference_pinned(ticket_id: String, attachment_id: String)
 const Addresses := preload("res://scripts/domain/addresses.gd")
 const MessengerLog := preload("res://scripts/domain/messenger_log.gd")
 
-const APPS := ["messenger", "tracker", "browser", "notes"]
-const APP_TITLES := { "messenger": "Messenger", "tracker": "QA Tracker", "browser": "Browser", "notes": "QA Notes" }
+const APPS := ["messenger", "browser", "notes"]
+const APP_TITLES := { "messenger": "Messenger", "browser": "Browser", "notes": "QA Notes" }
 const MESSAGE_DELAY := 0.9
 const FIRST_MESSAGE_DELAY := 1.8
 const TOAST_SECONDS := 7.0
+const MAX_TABS := 6
 
 var windows := {}
 var focused_app := ""
-var history: Array = [Addresses.new_tab()]
-var history_index := 0
+## Each Browser tab keeps its own history. Links from other apps open in a new tab.
+var tabs: Array = [{ "id": 0, "history": [Addresses.new_tab()], "index": 0 }]
+var active_tab := 0
 var reload_key := 0
 var viewport := "DESKTOP"
-var tracker_ticket_id := ""
-var tracker_view := "detail"
+## QA Notes shows a Ticket page or the Case File.
+var notes_view := "ticket"
 var notes_ticket_id := ""
+## Messenger opens its report form on the next render.
+var report_requested := false
 var toasts: Array = []
 ## Messages are delivered only while the desktop is on screen.
 var delivery_enabled := false
@@ -35,6 +39,7 @@ var delivery_enabled := false
 var instant_messages := false
 
 var _toast_counter := 0
+var _tab_counter := 0
 var _z := 0
 var _delivery_timer: Timer
 var _scheduled_for := -1
@@ -54,11 +59,11 @@ func reset_layout() -> void:
 	for app in APPS:
 		windows[app] = { "open": false, "minimized": false, "maximized": false, "z": 0 }
 	focused_app = ""
-	history = [Addresses.new_tab()]
-	history_index = 0
-	tracker_ticket_id = ""
-	tracker_view = "detail"
+	tabs = [_tab_state(Addresses.new_tab())]
+	active_tab = 0
+	notes_view = "ticket"
 	notes_ticket_id = ""
+	report_requested = false
 	toasts = []
 	changed.emit()
 	toasts_changed.emit()
@@ -106,16 +111,83 @@ func is_visible_app(app: String) -> bool:
 
 # --- Browser ---------------------------------------------------------------
 
+func _tab_state(first: Dictionary) -> Dictionary:
+	_tab_counter += 1
+	return { "id": _tab_counter, "history": [first], "index": 0 }
+
+
+func _tab() -> Dictionary:
+	return tabs[active_tab]
+
+
 func location() -> Dictionary:
-	return history[history_index]
+	return _tab()["history"][_tab()["index"]]
+
+
+## Changes whenever the Browser shows a different page: another tab or another step in
+## a tab's history.
+func location_key() -> String:
+	return "%d#%d" % [_tab()["id"], _tab()["index"]]
+
+
+func tab_location(index: int) -> Dictionary:
+	return tabs[index]["history"][tabs[index]["index"]]
+
+
+## Every address visited in any tab, oldest first.
+func visited() -> Array:
+	var all: Array = []
+	for tab in tabs:
+		all.append_array(tab["history"])
+	return all
 
 
 func can_go_back() -> bool:
-	return history_index > 0
+	return _tab()["index"] > 0
 
 
 func can_go_forward() -> bool:
-	return history_index < history.size() - 1
+	return _tab()["index"] < _tab()["history"].size() - 1
+
+
+func open_tab(first: Dictionary = Addresses.new_tab()) -> void:
+	tabs.append(_tab_state(first))
+	if tabs.size() > MAX_TABS:
+		tabs.remove_at(0)
+	active_tab = tabs.size() - 1
+	_record_visit(first)
+	changed.emit()
+
+
+func switch_tab(index: int) -> void:
+	if index == active_tab or index < 0 or index >= tabs.size():
+		return
+	active_tab = index
+	_record_visit(location())
+	changed.emit()
+
+
+func close_tab(index: int) -> void:
+	if tabs.size() == 1:
+		tabs = [_tab_state(Addresses.new_tab())]
+		active_tab = 0
+		changed.emit()
+		return
+	tabs.remove_at(index)
+	if active_tab >= index and active_tab > 0:
+		active_tab -= 1
+	_record_visit(location())
+	changed.emit()
+
+
+## Opens a page from another app: in the current tab when it is blank, otherwise in a
+## new tab, so the page the player was testing stays open.
+func open_in_browser(target: Dictionary) -> void:
+	open_app("browser")
+	if location()["kind"] == "newtab":
+		navigate(target)
+	else:
+		open_tab(target)
 
 
 ## Opens a link. Intranet documents attached to a Ticket are pinned into that
@@ -128,14 +200,12 @@ func open_url(address: String) -> void:
 		if not owner.is_empty():
 			pin_reference(owner["ticketId"], owner["attachment"])
 			return
-	open_app("browser")
-	navigate(target)
+	open_in_browser(target)
 
 
 ## Opens the Browser on intranet search results for a lead.
 func search_intranet(term: String) -> void:
-	open_app("browser")
-	navigate(Addresses.search(term))
+	open_in_browser(Addresses.search(term))
 
 
 func _document_owner(slug: String) -> Dictionary:
@@ -172,23 +242,24 @@ func arrange_side_by_side(left_app: String = "browser", right_app: String = "not
 
 
 func navigate(next: Dictionary) -> void:
-	history = history.slice(0, history_index + 1)
-	history.append(next)
-	history_index = history.size() - 1
+	var tab := _tab()
+	tab["history"] = tab["history"].slice(0, tab["index"] + 1)
+	tab["history"].append(next)
+	tab["index"] = tab["history"].size() - 1
 	_record_visit(next)
 	changed.emit()
 
 
 func go_back() -> void:
 	if can_go_back():
-		history_index -= 1
+		_tab()["index"] -= 1
 		_record_visit(location())
 		changed.emit()
 
 
 func go_forward() -> void:
 	if can_go_forward():
-		history_index += 1
+		_tab()["index"] += 1
 		_record_visit(location())
 		changed.emit()
 
@@ -255,28 +326,35 @@ func qa_context() -> Dictionary:
 			"evidenceCount": evidence.size(),
 			"capturedPaths": evidence.map(func(item): return item["context"]["currentPath"]),
 			"visitedPaths": (WorkspaceSession.interactions_for(active) if active != "" else []).map(func(action): return action.get("target", "")),
-			"flagCount": GameSession.state["tickets"][active]["reportIds"].size() if active != "" else 0,
+			"reportCount": GameSession.state["tickets"][active]["reportIds"].size() if active != "" else 0,
 		},
 	}
 
 
 # --- App selections ----------------------------------------------------------
 
-func show_ticket(ticket_id: String, view: String = "detail") -> void:
-	tracker_ticket_id = ticket_id
-	tracker_view = view
-	open_app("tracker")
+func show_ticket(ticket_id: String) -> void:
+	notes_ticket_id = ticket_id
+	notes_view = "ticket"
+	open_app("notes")
 
 
-func set_tracker_view(view: String) -> void:
-	tracker_view = view
-	changed.emit()
+func show_case_file() -> void:
+	notes_view = "casefile"
+	open_app("notes")
 
 
 func show_notes(ticket_id: String = "") -> void:
 	if ticket_id != "":
 		notes_ticket_id = ticket_id
+	notes_view = "ticket"
 	open_app("notes")
+
+
+## Opens Messenger with the report form for the Ticket under test.
+func open_report() -> void:
+	report_requested = true
+	open_app("messenger")
 
 
 # --- Notifications -------------------------------------------------------------

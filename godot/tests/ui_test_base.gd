@@ -57,28 +57,41 @@ func press(root: Node, text: String, exact: bool = true) -> bool:
 	return true
 
 
-## Flags the current Browser screen: the value that looks wrong and the rule it breaks.
-func _flag(desktop: Control, requirement: String, observation: String) -> void:
+## Notes one part of the Browser page, as clicking its highlight in Note mode does.
+func _note(desktop: Control, target: String) -> void:
 	DesktopSession.open_app("browser")
-	check(press(desktop, "🚩 Flag"), "flag")
-	var panel: Node = find_named(desktop, "FlagPanel")
-	check(panel != null, "flag panel open")
-	if panel == null:
+	check(press(desktop, "📌 Note"), "note mode")
+	var marker: Node = find_named(desktop, "Mark%s" % target.replace(".", "_"))
+	check(marker != null, "highlight for %s" % target)
+	if marker:
+		marker.pressed.emit()
+
+
+## Reports a note and the requirement it breaks to the Ticket's sender in Messenger.
+func _report(desktop: Control, note: String, requirement: String) -> void:
+	DesktopSession.open_report()
+	var form: Node = find_named(desktop, "ReportComposer")
+	check(form != null, "report form open")
+	if form == null:
 		return
-	check(press(panel, observation, false), "observation %s" % observation)
-	check(press(panel, requirement, false), "requirement %s" % requirement)
-	check(press(panel, "Send flag"), "send flag")
+	check(press(form, note, false), "note %s" % note)
+	check(press(form, requirement, false), "requirement %s" % requirement)
+	check(press(form, "Send report"), "send report")
 
 
 func _no_issue(desktop: Control) -> void:
-	DesktopSession.open_app("tracker")
-	check(press(desktop, "Close as NO ISSUE FOUND"), "close as no issue")
-	check(press(desktop, "Confirm NO ISSUE FOUND"), "confirm no issue")
+	DesktopSession.open_report()
+	var form: Node = find_named(desktop, "ReportComposer")
+	check(form != null, "report form open")
+	if form == null:
+		return
+	check(press(form, "Nothing is wrong"), "nothing is wrong")
+	check(press(form, "Send NO ISSUE FOUND"), "send no issue")
 
 
 func _accept(desktop: Control, ticket_id: String) -> void:
 	DesktopSession.open_app("messenger")
-	check(press(desktop, "Open %s in QA Tracker" % ticket_id), "ticket card %s" % ticket_id)
+	check(press(desktop, "Open %s in QA Notes" % ticket_id), "ticket card %s" % ticket_id)
 	check(press(desktop, "Start test"), "start %s" % ticket_id)
 
 

@@ -1,5 +1,6 @@
-## QA Notes: a Ticket sheet with links, leads from the console, personal notes,
-## Evidence, and the activity log.
+## QA Notes: the QA workbook. A page per Ticket (request, requirements, the spec, what you
+## noted in the Browser, console leads, and your own notes) and the Case File, where the
+## clues are connected. Reports go to the team in Messenger.
 extends HBoxContainer
 
 const Kit := preload("res://scripts/ui/kit.gd")
@@ -21,8 +22,9 @@ func _ready() -> void:
 	size_flags_vertical = Control.SIZE_EXPAND_FILL
 	add_theme_constant_override("separation", 0)
 	var files_panel := Kit.panel(P.SUBTLE, Color.TRANSPARENT, 0, 8)
-	files_panel.custom_minimum_size = Vector2(130, 0)
+	files_panel.custom_minimum_size = Vector2(150, 0)
 	_files = Kit.vbox(4)
+	_files.name = "TicketFiles"
 	files_panel.add_child(_files)
 	add_child(files_panel)
 	_document = Kit.vbox(18)
@@ -48,49 +50,123 @@ func _ticket_id() -> String:
 
 
 func _render() -> void:
+	var state: Dictionary = GameSession.state
 	var ticket_id := _ticket_id()
-	var evidence := WorkspaceSession.evidence_for(ticket_id)
-	var actions := WorkspaceSession.interactions_for(ticket_id)
-	var pinned := WorkspaceSession.references_for(ticket_id)
-	var leads := GameState.leads_for(GameSession.state, ticket_id)
-	var signature := "%s|%s|%d|%d|%s|%s|%s|%s" % [ticket_id, GameSession.ticket_status(ticket_id), evidence.size(), actions.size(), str(pinned), Settings.language,
-		str(leads), str(GameSession.state["story"].get("foundDocuments", []))]
+	var statuses := []
+	for id in GameSession.catalog.ticket_ids():
+		statuses.append(GameSession.ticket_status(id))
+	var log := DesktopSession.messenger_log()
+	var signature := "|".join([DesktopSession.notes_view, ticket_id, ",".join(statuses), Settings.language,
+		str(WorkspaceSession.evidence_for(ticket_id).size()), str(WorkspaceSession.references_for(ticket_id)),
+		str(state["story"].get("leads", [])), str(state["story"].get("foundDocuments", [])),
+		str(state["story"]["deductions"]), str(log["delivered"] >= log["entries"].size())])
 	if signature == _signature:
 		return
 	_signature = signature
+	_render_files(ticket_id)
+	Kit.clear(_document)
+	if DesktopSession.notes_view == "casefile":
+		_document.add_child(_case_file())
+		return
+	if not GameSession.catalog.is_ticket_unlocked(state, ticket_id):
+		_document.add_child(Kit.label("Resolve the previous Ticket to unlock this one.", 15, P.MUTED))
+		return
+	_ticket_page(GameSession.scenario(ticket_id))
 
+
+func _render_files(ticket_id: String) -> void:
 	Kit.clear(_files)
+	_files.add_child(Kit.kicker("Tickets"))
 	for id in GameSession.catalog.ticket_ids():
 		if not GameSession.catalog.is_ticket_unlocked(GameSession.state, id):
 			continue
-		var file := Kit.button("📝 %s.txt" % id, DesktopSession.show_notes.bind(id), "ChoiceButton")
+		var file := Kit.button("📝 %s\n%s" % [id, Kit.status_label(GameSession.ticket_status(id))], DesktopSession.show_ticket.bind(id), "ChoiceButton")
+		file.name = "File%s" % id
 		file.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		if id == ticket_id:
-			file.add_theme_stylebox_override("normal", Kit.style(P.ACCENT, P.ACCENT, 6, 12, 9))
-			file.add_theme_color_override("font_color", Color.WHITE)
+		_highlight(file, DesktopSession.notes_view == "ticket" and id == ticket_id)
 		_files.add_child(file)
+	_files.add_child(Kit.kicker("Story"))
+	var case_file := Kit.button("🗂 %s" % Kit.t("Case File"), DesktopSession.show_case_file, "ChoiceButton")
+	case_file.name = "CaseFileTab"
+	case_file.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_highlight(case_file, DesktopSession.notes_view == "casefile")
+	_files.add_child(case_file)
 
-	Kit.clear(_document)
-	var ticket: Dictionary = GameSession.catalog.get_ticket(ticket_id)
+
+static func _highlight(button: Button, on: bool) -> void:
+	if not on:
+		return
+	button.add_theme_stylebox_override("normal", Kit.style(P.ACCENT, P.ACCENT, 6, 12, 9))
+	button.add_theme_color_override("font_color", Color.WHITE)
+	button.add_theme_color_override("font_hover_color", P.ACCENT)
+
+
+# --- Ticket page -----------------------------------------------------------------
+
+func _ticket_page(scenario: Dictionary) -> void:
+	var ticket: Dictionary = scenario["ticket"]
+	var ticket_id: String = ticket["id"]
+	var status := GameSession.ticket_status(ticket_id)
+
 	var sheet := Kit.panel(P.SUBTLE, P.BORDER_STRONG, 6, 14)
+	sheet.name = "TicketDetail"
 	var sheet_body := Kit.vbox(6)
 	sheet.add_child(sheet_body)
-	sheet_body.add_child(Kit.kicker("%s · %s" % [ticket_id, Kit.status_label(GameSession.ticket_status(ticket_id))]))
-	sheet_body.add_child(Kit.heading(ticket["title"], 18))
+	var meta := Kit.hbox(8)
+	meta.add_child(Kit.kicker(ticket_id))
+	meta.add_child(Kit.kicker(ticket["priority"], P.WARNING))
+	meta.add_child(Kit.kicker(Kit.status_label(status), P.MUTED))
+	sheet_body.add_child(meta)
+	sheet_body.add_child(Kit.heading(ticket["title"], 20))
+	sheet_body.add_child(Kit.label(Kit.tf("From %s · %s", [ticket["sender"]["name"], Kit.t(ticket["sender"]["role"])]), 14, P.MUTED))
 	var start_url := Addresses.shoply_url(ticket["startingContext"]["currentPath"])
-	var start_row := Kit.hbox(4)
-	start_row.add_child(Kit.label("Start here:", 14, P.MUTED, false))
-	start_row.add_child(Kit.link(Addresses.display(start_url), DesktopSession.open_url.bind(start_url)))
-	sheet_body.add_child(start_row)
-	for attachment in ticket.get("attachments", []):
-		var doc_row := Kit.hbox(4)
-		doc_row.add_child(Kit.label("Doc:", 14, P.MUTED, false))
-		doc_row.add_child(Kit.link(attachment["name"], DesktopSession.open_url.bind(Addresses.doc_url(attachment["name"]))))
-		sheet_body.add_child(doc_row)
-	for requirement in ticket["requirements"]:
-		sheet_body.add_child(Kit.label("• %s  %s" % [requirement["id"], Kit.t(requirement["description"])], 14))
+	if status == "NEW" or status == "ACCEPTED":
+		var start := Kit.primary("Start test", GameSession.start_ticket.bind(ticket_id))
+		start.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		sheet_body.add_child(start)
+	elif status == "TESTING":
+		var callout := Kit.panel(P.ACCENT_SOFT, Color.TRANSPARENT, 6, 12)
+		var callout_body := Kit.vbox(6)
+		callout_body.add_child(Kit.label(Kit.tf("Testing. Open Shoply, press 📌 Note on anything that looks wrong, then report it to %s in Messenger.", ticket["sender"]["name"]), 14))
+		callout_body.add_child(Kit.link(Addresses.display(start_url), DesktopSession.open_url.bind(start_url)))
+		var report := Kit.button(Kit.tf("📝 Report to %s", ticket["sender"]["name"]), DesktopSession.open_report)
+		report.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		callout_body.add_child(report)
+		callout.add_child(callout_body)
+		sheet_body.add_child(callout)
+	elif status == "RESOLVED":
+		var done := Kit.hbox(10)
+		done.add_child(Kit.label("Resolved. The team took it from here.", 14, P.SUCCESS, false))
+		done.add_child(Kit.link("Open Case File", DesktopSession.show_case_file))
+		sheet_body.add_child(done)
 	_document.add_child(sheet)
 
+	var brief := Kit.vbox(8)
+	brief.add_child(Kit.kicker("Request"))
+	brief.add_child(Kit.label(ticket["request"], 15))
+	brief.add_child(Kit.kicker("Acceptance requirements"))
+	for requirement in ticket["requirements"]:
+		var row := Kit.hbox(10)
+		var code := Kit.label(requirement["id"], 13, P.MUTED, false)
+		code.custom_minimum_size = Vector2(96, 0)
+		row.add_child(code)
+		row.add_child(Kit.label(requirement["description"], 15))
+		brief.add_child(row)
+	brief.add_child(Kit.kicker("Test scope"))
+	brief.add_child(Kit.label(" · ".join(ticket["scope"].map(func(item): return Kit.t(item))), 14))
+	var context: Dictionary = ticket["startingContext"]
+	brief.add_child(Kit.label(Kit.tf("Account %s · Viewport %s · Locale %s", [context["account"], context["viewport"], context["locale"]]), 13, P.MUTED))
+	for attachment in ticket.get("attachments", []):
+		brief.add_child(Kit.link("📎 %s" % Kit.t(attachment["name"]), DesktopSession.open_url.bind(Addresses.doc_url(attachment["name"]))))
+	var hints: Array = ticket.get("hints", [])
+	if not hints.is_empty():
+		var hint_text := Kit.label("\n".join(hints.map(func(hint): return "• %s" % Kit.t(hint["text"]))), 14)
+		hint_text.visible = false
+		brief.add_child(Kit.link("Need a hint?", func(): hint_text.visible = not hint_text.visible))
+		brief.add_child(hint_text)
+	_document.add_child(brief)
+
+	var pinned := WorkspaceSession.references_for(ticket_id)
 	_references = Kit.vbox(10)
 	_references.name = "References"
 	_document.add_child(_references)
@@ -100,6 +176,17 @@ func _render() -> void:
 		if pinned.has(attachment["id"]):
 			_references.add_child(_reference_card(ticket_id, attachment))
 
+	var noted: Array = WorkspaceSession.evidence_for(ticket_id).filter(func(item): return item.has("focus"))
+	var noted_section := Kit.vbox(8)
+	noted_section.name = "Noted"
+	noted_section.add_child(Kit.kicker(Kit.tf("What I noted · %d", noted.size())))
+	if noted.is_empty():
+		noted_section.add_child(Kit.label("Nothing noted yet. In the Browser, press 📌 Note and click what looks wrong.", 14, P.MUTED))
+	for index in range(noted.size() - 1, -1, -1):
+		noted_section.add_child(note_card(noted[index]))
+	_document.add_child(noted_section)
+
+	var leads := GameState.leads_for(GameSession.state, ticket_id)
 	if not leads.is_empty():
 		var lead_panel := Kit.panel(P.WARNING_SOFT, Color("#e6d27a"), 6, 12)
 		lead_panel.name = "Leads"
@@ -107,43 +194,30 @@ func _render() -> void:
 		lead_panel.add_child(lead_body)
 		lead_body.add_child(Kit.kicker("Leads from the console"))
 		lead_body.add_child(Kit.label("Names and codes Shoply logged while the defect was on screen. Search the intranet for them.", 13, P.MUTED))
-		var chips := HFlowContainer.new()
-		chips.add_theme_constant_override("h_separation", 6)
-		chips.add_theme_constant_override("v_separation", 6)
-		for term in leads:
-			chips.add_child(Kit.button("🔎 %s" % term, DesktopSession.search_intranet.bind(term)))
-		lead_body.add_child(chips)
+		lead_body.add_child(_lead_chips(leads))
 		_document.add_child(lead_panel)
 
 	var notes_section := Kit.vbox(6)
 	notes_section.add_child(Kit.kicker("My notes"))
 	_note_editor = TextEdit.new()
 	_note_editor.name = "MyNotes"
-	_note_editor.custom_minimum_size = Vector2(0, 120)
+	_note_editor.custom_minimum_size = Vector2(0, 110)
 	_note_editor.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	_note_editor.placeholder_text = "Observations, hypotheses, reproduction details…"
 	_note_editor.text = WorkspaceSession.notes.get(ticket_id, "")
 	_note_editor.text_changed.connect(func(): WorkspaceSession.set_note(ticket_id, _note_editor.text))
 	notes_section.add_child(_note_editor)
-	notes_section.add_child(Kit.label("Saved automatically · Notes are never scored.", 13, P.MUTED))
+	notes_section.add_child(Kit.label("Saved automatically.", 13, P.MUTED))
 	_document.add_child(notes_section)
 
-	var evidence_section := Kit.vbox(8)
-	evidence_section.name = "Evidence"
-	evidence_section.add_child(Kit.kicker(Kit.tf("Evidence · %d", evidence.size())))
-	if evidence.is_empty():
-		evidence_section.add_child(Kit.label("Nothing flagged yet. Press 🚩 Flag in the Browser while the problem is on screen.", 14, P.MUTED))
-	for index in range(evidence.size() - 1, -1, -1):
-		evidence_section.add_child(evidence_card(evidence[index]))
-	_document.add_child(evidence_section)
 
-	var activity := Kit.vbox(3)
-	activity.add_child(Kit.kicker(Kit.tf("Activity log · %d", actions.size())))
-	for action in actions.slice(maxi(0, actions.size() - 30)):
-		var line := "%s  %s%s" % [Kit.time_text(float(action["timestamp"])), str(action["type"]).replace("_", " ").to_lower(),
-			" · %s" % action["target"] if action.has("target") else ""]
-		activity.add_child(Kit.label(line, 13, P.MUTED))
-	_document.add_child(activity)
+static func _lead_chips(leads: Array) -> Control:
+	var chips := HFlowContainer.new()
+	chips.add_theme_constant_override("h_separation", 6)
+	chips.add_theme_constant_override("v_separation", 6)
+	for term in leads:
+		chips.add_child(Kit.button("🔎 %s" % term, DesktopSession.search_intranet.bind(term)))
+	return chips
 
 
 func _reference_card(ticket_id: String, attachment: Dictionary) -> Control:
@@ -159,45 +233,167 @@ func _reference_card(ticket_id: String, attachment: Dictionary) -> Control:
 	var actions := Kit.hbox(12)
 	actions.add_child(Kit.link("Place beside Browser", DesktopSession.arrange_side_by_side.bind("browser", "notes")))
 	var url := Addresses.doc_url(attachment["name"])
-	actions.add_child(Kit.link("Open in Browser", func():
-		DesktopSession.open_app("browser")
-		DesktopSession.navigate(Addresses.parse(url))))
+	actions.add_child(Kit.link("Open in Browser", DesktopSession.open_in_browser.bind(Addresses.parse(url))))
 	actions.add_child(Kit.link("Unpin", WorkspaceSession.unpin_reference.bind(ticket_id, attachment["id"])))
 	body.add_child(actions)
 	return card
 
 
-static func evidence_card(item: Dictionary) -> Control:
-	var card := Kit.panel(P.SURFACE, P.BORDER_STRONG, 8, 0)
-	var column := Kit.vbox(0)
-	card.add_child(column)
-	var thumb := Kit.panel(P.SHOP_BG, Color.TRANSPARENT, 8, 14)
-	var thumb_row := Kit.hbox(10)
-	var swatch := ColorRect.new()
-	swatch.color = P.SHOP_CORAL
-	swatch.custom_minimum_size = Vector2(52, 52)
-	thumb_row.add_child(swatch)
-	var heading: String = str(item["snapshot"].get("heading", "Shoply page"))
-	var thumb_text := Kit.vbox(0)
-	thumb_text.add_child(Kit.label("SHOPLY", 11, P.SHOP_MUTED, false))
-	var thumb_title := Kit.heading(heading, 18, P.SHOP_INK)
-	thumb_title.autowrap_mode = TextServer.AUTOWRAP_OFF
-	thumb_text.add_child(thumb_title)
-	thumb_row.add_child(thumb_text)
-	thumb.add_child(thumb_row)
-	column.add_child(thumb)
-	var info := Kit.vbox(4)
+## One thing the player clicked in the Browser, with where and when it was seen.
+static func note_card(item: Dictionary) -> Control:
+	var card := Kit.panel(P.SURFACE, P.BORDER_STRONG, 8, 12)
+	var body := Kit.vbox(4)
+	card.add_child(body)
+	var row := Kit.hbox(8)
+	var pin := Kit.label("📌", 16, P.TEXT, false)
+	row.add_child(pin)
+	var value := Kit.heading(Observations.describe(item["focus"]), 15)
+	value.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	value.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(value)
+	body.add_child(row)
 	var context: Dictionary = item["context"]
-	info.add_child(Kit.label("%s · %s · %s" % [context["account"], context["viewport"], Kit.time_text(float(item["capturedAt"]))], 13, P.MUTED))
-	info.add_child(Kit.label(Addresses.display(Addresses.shoply_url(context["currentPath"])), 13, P.ACCENT))
-	var values := Kit.vbox(2)
-	values.name = "CapturedValues"
-	for observation in Observations.observations_of(item):
-		values.add_child(Kit.label(Observations.describe(observation), 14))
-	info.add_child(values)
+	var where := Kit.label("%s · %s · %s · %s" % [item["snapshot"].get("heading", ""), Addresses.display(Addresses.shoply_url(context["currentPath"])),
+		context["account"], Kit.time_text(float(item["capturedAt"]))], 13, P.MUTED)
+	where.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	body.add_child(where)
 	for line in item["snapshot"].get("console", []):
 		var logged := Kit.label("⚠ %s" % line, 13, P.WARNING)
 		logged.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-		info.add_child(logged)
-	column.add_child(Kit.margin(info, 12, 10, 12, 12))
+		body.add_child(logged)
 	return card
+
+
+# --- Case File -------------------------------------------------------------------
+
+func _case_file() -> Control:
+	var column := Kit.vbox(16)
+	column.name = "CaseFile"
+	var state: Dictionary = GameSession.state
+	var log := DesktopSession.messenger_log()
+	var pending: Variant = log["pendingDeduction"]
+	if pending != null and pending.get("mode", "") == "board" and log["delivered"] >= log["entries"].size():
+		column.add_child(_clue_board(pending))
+	for chapter in GameSession.catalog.chapters:
+		var beats: Array = GameSession.catalog.scenarios.filter(func(scenario):
+			return scenario.get("story", null) != null and scenario["story"]["chapterId"] == chapter["id"])
+		if beats.is_empty():
+			continue
+		var found: int = GameSession.catalog.found_clues(state, chapter["id"]).size()
+		var closed: bool = state["story"]["deductions"].get(chapter["finaleDeductionId"], {}).get("solved", false)
+		var header := Kit.hbox(10)
+		var title_column := Kit.vbox(2)
+		title_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		title_column.add_child(Kit.kicker("Case file"))
+		title_column.add_child(Kit.heading(chapter["title"], 22))
+		header.add_child(title_column)
+		header.add_child(Kit.label(Kit.t("Case closed") if closed else Kit.tf("%d / %d clues", [found, beats.size()]), 15, P.MUTED, false))
+		column.add_child(header)
+		column.add_child(Kit.label(chapter["synopsis"], 15, P.MUTED))
+		for scenario in beats:
+			column.add_child(_clue_card(scenario))
+		if closed:
+			var last: Dictionary = chapter["epilogue"][-1]
+			column.add_child(Kit.label("%s: %s" % [last["from"], Kit.t(last["text"])], 15, P.WARNING))
+	return column
+
+
+func _clue_card(scenario: Dictionary) -> Control:
+	var state: Dictionary = GameSession.state
+	var story: Dictionary = scenario["story"]
+	var ticket_id: String = scenario["ticket"]["id"]
+	var resolved := GameSession.ticket_status(ticket_id) == "RESOLVED"
+	var clue_found: bool = GameSession.catalog.is_clue_found(state, scenario)
+	var card := Kit.panel(P.WARNING_SOFT if clue_found else P.SUBTLE, Color("#e6d27a") if clue_found else P.BORDER, 8, 14)
+	var body := Kit.vbox(4)
+	body.add_child(Kit.kicker(ticket_id))
+	if clue_found:
+		body.add_child(Kit.heading(story["clue"]["title"], 16))
+		body.add_child(Kit.label(story["clue"]["text"], 14))
+		var connected: bool = state["story"]["deductions"].get(story["deduction"]["id"], {}).get("solved", false) if story.has("deduction") else true
+		body.add_child(Kit.kicker("Connected" if connected else "Not yet connected", P.SUCCESS if connected else P.MUTED))
+	elif resolved:
+		body.add_child(Kit.heading("Record not found yet", 16, P.MUTED))
+		body.add_child(Kit.label(story.get("discovery", {}).get("hint", ""), 14, P.MUTED))
+	elif GameState.has_found(state, story.get("discovery", {}).get("documentId", "")):
+		body.add_child(Kit.heading("Record found early", 16, P.MUTED))
+		body.add_child(Kit.label(Kit.tf("Report the defect in %s to connect it.", ticket_id), 14, P.MUTED))
+	else:
+		body.add_child(Kit.heading("Unknown clue", 16, P.MUTED))
+		body.add_child(Kit.label(Kit.tf("Test %s and keep an eye on the Console.", ticket_id), 14, P.MUTED))
+	var leads := GameState.leads_for(state, ticket_id)
+	if not leads.is_empty() and not clue_found:
+		body.add_child(_lead_chips(leads))
+	card.add_child(body)
+	return card
+
+
+## Pick the clues that prove a conclusion, then send it to the lead.
+func _clue_board(deduction: Dictionary) -> Control:
+	var board := Kit.panel(P.ACCENT_SOFT, P.ACCENT, 10, 16)
+	board.name = "ClueBoard"
+	var body := Kit.vbox(10)
+	board.add_child(body)
+	body.add_child(Kit.kicker("Connect the clues"))
+	body.add_child(Kit.heading(Kit.t(deduction["prompt"]), 18))
+	body.add_child(Kit.label("Pick the clues that prove it:", 14, P.MUTED))
+	var selected := {}
+	var picked := { "option": "" }
+	var send := Kit.primary(Kit.tf("Send to %s", deduction["askedBy"]["from"]), func(): pass)
+	var refresh_send := func():
+		send.disabled = picked["option"] == "" or selected.is_empty()
+	var clue_list := Kit.vbox(8)
+	for clue in GameSession.catalog.found_clues(GameSession.state, _chapter_of(deduction)):
+		var card := Kit.button("📌 %s" % Kit.t(clue["title"]), func(): pass, "ChoiceButton")
+		card.name = "Clue%s" % clue["id"]
+		card.toggle_mode = true
+		card.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var id: String = clue["id"]
+		card.toggled.connect(func(on):
+			if on:
+				selected[id] = true
+			else:
+				selected.erase(id)
+			refresh_send.call())
+		clue_list.add_child(card)
+	body.add_child(clue_list)
+	body.add_child(Kit.label("Conclusion:", 14, P.MUTED))
+	var group := ButtonGroup.new()
+	for option in deduction["options"]:
+		var choice := Kit.button(option["text"], func(): pass, "ChoiceButton")
+		choice.toggle_mode = true
+		choice.button_group = group
+		choice.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		choice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		choice.custom_minimum_size = Vector2(420, 0)
+		var option_id: String = option["id"]
+		choice.pressed.connect(func():
+			picked["option"] = option_id
+			refresh_send.call())
+		body.add_child(choice)
+	var attempts: Array = GameSession.state["story"]["deductions"].get(deduction["id"], {}).get("boardAttempts", [])
+	if not attempts.is_empty():
+		var last: Dictionary = attempts[-1]
+		var response := ""
+		for option in deduction["options"]:
+			if option["id"] == last["option"]:
+				response = option["response"] if (last["correct"] or not option["correct"]) else deduction.get("boardHint", "")
+		body.add_child(Kit.label(Kit.t(response), 14, P.WARNING))
+	send.pressed.connect(func():
+		GameSession.answer_board(deduction, picked["option"], selected.keys())
+		var solved: bool = GameSession.state["story"]["deductions"].get(deduction["id"], {}).get("solved", false)
+		Sfx.play("success" if solved else "fail")
+		if solved:
+			DesktopSession.open_app("messenger"))
+	send.disabled = true
+	body.add_child(send)
+	return board
+
+
+func _chapter_of(deduction: Dictionary) -> String:
+	for scenario in GameSession.catalog.scenarios:
+		var story: Variant = scenario.get("story", null)
+		if story != null and story.get("deduction", {}).get("id", "") == deduction["id"]:
+			return story["chapterId"]
+	return ""

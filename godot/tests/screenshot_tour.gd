@@ -47,6 +47,15 @@ func _press(text: String) -> void:
 	await process_frame
 
 
+func _mark(target: String) -> void:
+	var marker := main.find_child("Mark%s" % target, true, false) as Button
+	if marker:
+		marker.pressed.emit()
+	else:
+		print("missing marker: %s" % target)
+	await process_frame
+
+
 func _tour() -> void:
 	root.size = Vector2i(1440, 900)
 	# Autoload names are not compile-time identifiers inside a SceneTree script.
@@ -70,11 +79,11 @@ func _tour() -> void:
 	await _shot("g2-desktop")
 	DesktopSession.open_app("messenger")
 	await _shot("g3-messenger")
-	root.get_node("DesktopSession").show_ticket("T01")
+	DesktopSession.show_ticket("T01")
 	await process_frame
-	await _shot("g4-tracker")
+	await _shot("g4-notes-ticket")
 	await _press("Start test")
-	await _shot("g4b-tracker-testing")
+	await _shot("g4b-notes-testing")
 	DesktopSession.open_url("https://shoply.local")
 	await _shot("g4a-storefront")
 	await _press("shoply.local/product/everyday-pack")
@@ -83,20 +92,32 @@ func _tour() -> void:
 	await _press("Add to bag")
 	await _press("View bag")
 	await _shot("g5-cart")
+	# A miss in the bag: noted, reported, and Maya replies.
+	await _press("📌 Note")
+	await _shot("g5a-noting")
+	await _mark("cart_subtotal")
+	DesktopSession.open_report()
+	await process_frame
+	await _press("Subtotal")
+	await _press("T01-02")
+	await _shot("g5b-report-form")
+	await _press("Send report")
+	await _shot("g5c-reply")
+	DesktopSession.open_app("browser")
 	await _press("Continue to checkout")
 	await _shot("g6-checkout")
 	(main.find_child("ConsoleButton", true, false) as Button).pressed.emit()
 	await _shot("g6b-console")
-	await _press("🚩 Flag")
-	await _press("Confirm order button: Secondary action style")
-	await _press("T01-02")
-	await _shot("g8-flag")
-	await _press("Send flag")
-	await _shot("g9-flag-accepted")
-	DesktopSession.open_app("notes")
+	await _press("📌 Note")
+	await _shot("g6c-noting")
+	await _mark("checkout_confirmButton")
+	DesktopSession.show_notes("T01")
 	await _shot("g7-notes")
-	await _press("The team replied · Open Messenger")
-	DesktopSession.open_app("messenger")
+	DesktopSession.open_report()
+	await process_frame
+	await _press("Confirm order button")
+	await _press("T01-02")
+	await _press("Send report")
 	await _shot("g10-chat-debrief")
 	await _press("🔎 release-bot")
 	await _shot("g11-search")

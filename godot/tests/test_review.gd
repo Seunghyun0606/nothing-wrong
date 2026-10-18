@@ -39,6 +39,37 @@ func _report(ticket_id: String, requirement: String, evidence: Dictionary, targe
 	}
 
 
+func test_reply_hints_say_where_to_look_without_the_answer() -> void:
+	var t01: Dictionary = Catalog.load_from().get_scenario("T01")
+	var bag := _evidence("T01", "/shoply/cart", [
+		{ "target": "cart.subtotal", "label": "Subtotal", "value": "$30.00" },
+	], { "cart": { "quantity": 1 }, "coupon": "" })
+	check(Review.reply_hint(_report("T01", "REQ-T01-01", bag, "cart.subtotal", [], "LOW"), t01, bag).begins_with("I checked that screen"), "wrong screen")
+	var checkout := _evidence("T01", "/shoply/checkout", [
+		{ "target": "cart.total", "label": "Total", "value": "$35.00" },
+		{ "target": "checkout.confirmButton", "label": "Confirm order button", "value": "Secondary action style" },
+	], { "cart": { "quantity": 1 }, "coupon": "" })
+	check(Review.reply_hint(_report("T01", "REQ-T01-02", checkout, "cart.total", [], "LOW"), t01, checkout).begins_with("You're on the right screen"), "wrong value")
+	check(Review.reply_hint(_report("T01", "REQ-T01-01", checkout, "checkout.confirmButton", [], "LOW"), t01, checkout).begins_with("That value is wrong"), "wrong rule")
+	var t02: Dictionary = Catalog.load_from().get_scenario("T02")
+	var one := _evidence("T02", "/shoply/cart", [
+		{ "target": "cart.subtotal", "label": "Subtotal", "value": "$30.00" },
+	], { "cart": { "quantity": 1 }, "coupon": "" })
+	check(Review.reply_hint(_report("T02", "REQ-T02-01", one, "cart.subtotal", [], "MEDIUM"), t02, one).begins_with("That part can go wrong"), "wrong state")
+	var t05: Dictionary = Catalog.load_from().get_scenario("T05")
+	check("NO ISSUE FOUND" in Review.reply_hint(_report("T05", "REQ-T05-01", one, "cart.subtotal", [], "MEDIUM"), t05, one), "clean build")
+
+
+func test_flag_steps_score_but_do_not_block() -> void:
+	var scenario: Dictionary = Catalog.load_from().get_scenario("T01")
+	var evidence := _evidence("T01", "/shoply/checkout", [
+		{ "target": "checkout.confirmButton", "label": "Confirm order button", "value": "Secondary action style" },
+	], { "cart": { "quantity": 1 }, "coupon": "" })
+	var result := Review.review_report(_report("T01", "REQ-T01-02", evidence, "checkout.confirmButton", [{ "action": "OPEN_CHECKOUT" }], "LOW"), scenario, [evidence])
+	check(result["valid"], "valid without every step")
+	check_eq(result["scores"]["reproduction"], 0, "missing steps cost points")
+
+
 func test_t01_valid_report_scores_100() -> void:
 	var scenario: Dictionary = Catalog.load_from().get_scenario("T01")
 	var evidence := _evidence("T01", "/shoply/checkout", [
@@ -54,7 +85,6 @@ func test_t01_valid_report_scores_100() -> void:
 	report["observation"]["target"] = "cart.total"
 	var wrong := Review.review_report(report, scenario, [evidence])
 	check(not wrong["valid"], "a correct figure is not a defect")
-	check_eq(wrong["reputationDelta"], -1, "false report reputation")
 
 
 func test_t02_requires_quantity_two_and_names_missing_steps() -> void:
@@ -96,7 +126,7 @@ func test_no_issue_found_misses_a_real_defect_but_passes_a_clean_ticket() -> voi
 	var scenario: Dictionary = Catalog.load_from().get_scenario("T01")
 	var evidence := _evidence("T01", "/shoply/checkout", [], {})
 	var report := { "id": "R", "ticketId": "T01", "kind": "NO_ISSUE", "reproductionSteps": [{ "id": "S0", "order": 0, "action": "OPEN_CHECKOUT" }], "evidenceIds": ["E1"] }
-	check_eq(Review.review_report(report, scenario, [evidence])["reputationDelta"], -1, "missed bug")
+	check(not Review.review_report(report, scenario, [evidence])["valid"], "missed bug")
 	var clean := scenario.duplicate(true)
 	clean["expectedBugs"] = []
 	var result := Review.review_report(report, clean, [evidence])

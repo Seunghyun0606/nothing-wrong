@@ -26,21 +26,33 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
 - **Spec documents:** links to intranet documents pin the document into the Ticket's
   QA Notes and place QA Notes beside the Browser, so the spec stays readable while
   testing. Typing a `docs.nothingwrong.local` address still opens it in the Browser.
+- **Three apps (DEC-010):** Messenger (the team and your reports), Browser, and QA Notes.
+  QA Notes is the workbook: a page per Ticket (Start test, request, requirements, pinned
+  spec, what you noted, console leads, your own notes) and the Case File. There is no
+  XP, level, or reputation; the job grows as the team assigns Tickets and tools.
 - **Deduction first (DEC-009):** testing Shoply is how the player explores; the story
   is the game. A defect leaves a trace in the Browser **Console** (`trace` on a Mutation:
   a log line plus lead `terms`). The Console button shows `⚠ n` when the screen logged
-  something. Opening it, or flagging that screen, notes the terms as **leads** (QA Notes,
-  Case File, Messenger). A lead opens its intranet record early (`unlockedByLeads` in
-  `data/intranet.json`); the clue connects once the Ticket's defect is flagged.
-- **Flag:** **🚩 Flag** in the Browser captures the screen and asks two things: which
-  value looks wrong and which rule it breaks. Steps, Evidence, and severity are filled in
-  by `scripts/domain/report_draft.gd`. A wrong flag costs 1 Reputation and explains what
-  to look at. A clean Ticket is closed in QA Tracker with **Close as NO ISSUE FOUND**.
+  something. Opening it, or noting something on that screen, records the terms as
+  **leads** (QA Notes, Case File, Messenger). A lead opens its intranet record early
+  (`unlockedByLeads` in `data/intranet.json`); the clue connects once the defect is
+  reported.
+- **Note, then report:** **📌 Note** in the Browser highlights what can be recorded on the
+  page; clicking one saves it to QA Notes with the screen and its console. The report is
+  a message to the Ticket's sender in Messenger: pick a note and the requirement it
+  breaks, or say nothing is wrong (NO ISSUE FOUND). Steps, Evidence, and severity are
+  filled in by `scripts/domain/report_draft.gd`. The sender answers in the chat: the
+  debrief when it is right, or a hint about where to look (wrong screen, state, value, or
+  rule). After a few misses the team gives a nudge and then the answer (`story.assist` in
+  `data/scenarios.json`; T01 helps after one miss).
 - **Intranet search:** `search.nothingwrong.local` (also on the Browser's new tab). Leads
   are one-click searches; typed searches accept English or Korean keywords and one typo.
   Opening the record a debrief asks for reveals the clue and lets the story continue.
-- **Hints:** T01–T02 show the sticky-note guide; from T03 the note starts folded as
-  "Need a hint?" (`guide.hintMode`).
+- **No tutorial overlay:** the team's messages are the guide. Maya's T01 briefing
+  explains noting and reporting; each Ticket keeps an optional "Need a hint?" in QA Notes.
+- **Notifications** rise from behind the taskbar in the bottom-right corner.
+- **Browser tabs:** links and lead searches from other apps open in a new tab (up to six),
+  so the page under test stays open; each tab keeps its own Back/Forward history.
 - **Case File board:** the T04 finale is answered on the Case File by picking the clues
   that prove a conclusion (`deduction.mode = "board"`, `requiredClues`).
 - **Sound:** synthesized effects and office ambience (`scripts/autoload/sfx.gd`); toggle on
@@ -48,7 +60,7 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
 
 ## Content
 
-Edit content directly in `data/`: `scenarios.json` (tickets, guides, story, chapters),
+Edit content directly in `data/`: `scenarios.json` (tickets, story, chapters),
 `intranet.json` (searchable records), and `shoply.json` (products and orders). Add the
 Korean text for every new string to `i18n/ko.json`; `tests/test_workstation.gd` fails
 when a ticket, story, or record string has no Korean.
@@ -60,7 +72,7 @@ when a ticket, story, or record string has no Korean.
 ```
 
 - `tests/test_domain.gd`, `tests/test_review.gd`: pure game logic (conditions, Mutations,
-  Review scoring, Game State, messenger log, guide, addresses, pricing).
+  Review scoring, Game State, messenger log, addresses, pricing).
 - `tests/test_ui_flow.gd`: plays the real desktop scene by pressing its buttons,
   including the whole of Chapter 1 (T01→T04).
 - `tests/test_workstation.gd`: Korean catalog coverage for every ticket, story, and record
@@ -81,6 +93,6 @@ Visual check (renders each screen to PNG; uses a throwaway session):
 | `scripts/domain/` | Pure logic ported from `src/game` (no nodes) |
 | `scripts/autoload/` | `GameSession`, `WorkspaceSession`, `ShoplyStore`, `DesktopSession` |
 | `scripts/ui/` | Title, lock screen, desktop, window frame, theme (`kit.gd`, `palette.gd`) |
-| `scripts/ui/apps/` | Messenger, QA Tracker, Browser (+ Console, Flag panel), QA Notes |
+| `scripts/ui/apps/` | Messenger (+ report form), Browser (+ Console, Note), QA Notes (+ Case File) |
 | `scripts/ui/shoply/` | Shoply storefront pages; reads Mutations only through `mutate()` |
 | `data/` | Exported content (generated) |

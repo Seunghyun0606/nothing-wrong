@@ -1,7 +1,8 @@
-## In-game browser: address bar, QA bar (viewport, account, Console, Flag), and pages for
+## In-game browser: tabs, address bar, QA bar (viewport, account, Console, Note), and pages for
 ## shoply.local, docs.nothingwrong.local, intranet search, new tab, and unreachable hosts.
 ## The Console logs what Shoply's code did on screen; a defect leaves a trace there whose
-## terms become leads for the story.
+## terms become leads for the story. Note highlights what can be recorded on the page;
+## clicking one saves it to QA Notes, ready to report in Messenger.
 extends VBoxContainer
 
 const Kit := preload("res://scripts/ui/kit.gd")
@@ -11,24 +12,30 @@ const Mutations := preload("res://scripts/domain/mutations.gd")
 const Intranet := preload("res://scripts/domain/intranet.gd")
 const GameState := preload("res://scripts/domain/game_state.gd")
 const ShoplyView := preload("res://scripts/ui/shoply/shoply_view.gd")
-const FlagPanel := preload("res://scripts/ui/apps/flag_panel.gd")
+const Observations := preload("res://scripts/domain/observations.gd")
 
 const VIEWPORT_WIDTHS := { "DESKTOP": 0.0, "TABLET": 768.0, "MOBILE": 390.0 }
 
 var view: RefCounted = ShoplyView.new()
+var _tab_row: HBoxContainer
+var _tab_signature := ""
 var _address: LineEdit
 var _back: Button
 var _forward: Button
 var _ticket_label: Label
 var _viewport_buttons := {}
 var _account_box: HBoxContainer
-var _flag: Button
+var _note: Button
 var _console_button: Button
 var _console: PanelContainer
 var _console_open := false
-var _flag_holder: VBoxContainer
+var _note_bar: PanelContainer
 var _traces: Array = []
 var _stage: ScrollContainer
+## While noting, every recordable part of the page gets a highlight to click.
+var _noting := false
+var _markers: Control
+var _marked: Array = []
 var _page: VBoxContainer
 var _signature := ""
 var _location_key := ""
@@ -42,6 +49,13 @@ func _ready() -> void:
 	view.record = _record
 	view.mutate = _mutate
 	view.rerender = _render
+
+	var tab_panel := PanelContainer.new()
+	tab_panel.add_theme_stylebox_override("panel", Kit.style(Color("#e4e8ee"), Color.TRANSPARENT, 0, 6, 4))
+	_tab_row = Kit.hbox(4)
+	_tab_row.name = "BrowserTabs"
+	tab_panel.add_child(_tab_row)
+	add_child(tab_panel)
 
 	var toolbar_panel := Kit.panel(P.SUBTLE, Color.TRANSPARENT, 0, 8)
 	var toolbar := Kit.hbox(6)
@@ -84,23 +98,40 @@ func _ready() -> void:
 	_console_button.name = "ConsoleButton"
 	_console_button.tooltip_text = "Show what the page logged"
 	qa.add_child(_console_button)
-	_flag = Kit.primary("🚩 Flag", flag)
-	_flag.name = "Flag"
-	qa.add_child(_flag)
+	_note = Kit.primary("📌 Note", toggle_noting)
+	_note.name = "Note"
+	qa.add_child(_note)
 	add_child(qa_panel)
-	# Console and flag sheet dock under the QA bar, next to their buttons and clear of
+	# Console and the noting bar dock under the QA bar, next to their buttons and clear of
 	# the desktop sticky note.
 	_console = Kit.panel(Color("#1f2933"), Color.TRANSPARENT, 0, 10)
 	_console.name = "Console"
 	_console.visible = false
 	add_child(_console)
-	_flag_holder = Kit.vbox(0)
-	add_child(_flag_holder)
+	_note_bar = Kit.panel(P.WARNING_SOFT, Color("#e6d27a"), 0, 8)
+	_note_bar.name = "NoteBar"
+	_note_bar.visible = false
+	var note_row := Kit.hbox(10)
+	var note_text := Kit.label("Click the part of the page that looks wrong. It goes into QA Notes.", 14, P.STICKY_TEXT)
+	note_row.add_child(note_text)
+	note_row.add_child(Kit.button("Cancel", stop_noting))
+	_note_bar.add_child(note_row)
+	add_child(_note_bar)
 
 	_page = Kit.vbox(0)
 	_stage = Kit.scroll(_page)
 	_stage.add_theme_stylebox_override("panel", Kit.style(Color("#e9edf2"), Color.TRANSPARENT, 0))
-	add_child(_stage)
+	_stage.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var holder := Control.new()
+	holder.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	holder.add_child(_stage)
+	_markers = Control.new()
+	_markers.name = "NoteMarkers"
+	_markers.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_markers.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_markers.clip_contents = true
+	holder.add_child(_markers)
+	add_child(holder)
 
 	for source in [DesktopSession.changed, ShoplyStore.changed, GameSession.changed]:
 		source.connect(_render)
@@ -142,7 +173,8 @@ func _change_account(tier: String) -> void:
 
 func _render() -> void:
 	var location := DesktopSession.location()
-	var location_key := "%s#%d" % [Addresses.format(location), DesktopSession.history_index]
+	_render_tabs()
+	var location_key := "%s|%s" % [DesktopSession.location_key(), Addresses.format(location)]
 	if location_key != _location_key:
 		_location_key = location_key
 		_address.text = Addresses.format(location).uri_decode()
@@ -150,7 +182,7 @@ func _render() -> void:
 		view.confirmed_order = null
 		view.coupon_draft = ""
 		_stage.scroll_vertical = 0
-		close_flag()
+		stop_noting()
 		if location["kind"] == "record":
 			_on_record_opened(location["id"])
 	_back.disabled = not DesktopSession.can_go_back()
@@ -165,8 +197,10 @@ func _render() -> void:
 	for button in _account_box.get_children():
 		var pressed: bool = button.text.to_upper() == ShoplyStore.account
 		button.add_theme_stylebox_override("normal", Kit.style(Color("#f2c94c") if pressed else P.SURFACE, P.BORDER, 6, 12, 7))
-	_flag.disabled = active == "" or location["kind"] != "shoply" or GameSession.ticket_status(active) != "TESTING"
-	_flag.tooltip_text = "Something on this screen breaks a rule? Flag it." if not _flag.disabled else "Start a Ticket in QA Tracker and open Shoply to flag"
+	_note.disabled = active == "" or location["kind"] != "shoply" or GameSession.ticket_status(active) != "TESTING"
+	_note.tooltip_text = "Something on this page looks wrong? Note it." if not _note.disabled else "Start a Ticket in QA Notes and open Shoply to take notes"
+	if _note.disabled and _noting:
+		stop_noting()
 
 	var signature := "%s|%s|%d|%s|%s|%s|%s" % [location_key, DesktopSession.viewport, DesktopSession.reload_key,
 		JSON.stringify([ShoplyStore.cart, ShoplyStore.coupon, ShoplyStore.account, ShoplyStore.orders]), active,
@@ -182,6 +216,8 @@ func _build_page(location: Dictionary) -> void:
 	_traces = []
 	_fill_page(location)
 	_render_console()
+	if _noting:
+		_refresh_markers.call_deferred()
 
 
 func _fill_page(location: Dictionary) -> void:
@@ -314,7 +350,7 @@ func _on_record_opened(id: String) -> void:
 			if GameSession.ticket_status(scenario["ticket"]["id"]) == "RESOLVED":
 				DesktopSession.push_toast(Kit.t("Record found"), Kit.tf("New clue in the Case File: %s", Kit.t(story["clue"]["title"])), "messenger")
 			else:
-				DesktopSession.push_toast(Kit.t("Record found"), Kit.tf("Saved to the Case File. Flag the defect in %s to connect it.", scenario["ticket"]["id"]), "tracker")
+				DesktopSession.push_toast(Kit.t("Record found"), Kit.tf("Saved to the Case File. Report the defect in %s to connect it.", scenario["ticket"]["id"]), "notes")
 			return
 	Sfx.play("click")
 
@@ -329,7 +365,7 @@ func _new_tab() -> Control:
 	column.add_child(_search_box(""))
 	var seen := {}
 	var recent: Array = []
-	for location in DesktopSession.history:
+	for location in DesktopSession.visited():
 		var address := Addresses.format(location)
 		if address != "" and not seen.has(address):
 			seen[address] = true
@@ -339,6 +375,64 @@ func _new_tab() -> Control:
 		for address in recent.slice(maxi(0, recent.size() - 5)):
 			column.add_child(Kit.link(Addresses.display(address), DesktopSession.open_url.bind(address)))
 	return Kit.margin(column, 56, 56, 56, 56)
+
+
+# --- Tabs ----------------------------------------------------------------------
+
+func _render_tabs() -> void:
+	var titles: Array = []
+	for index in DesktopSession.tabs.size():
+		titles.append(tab_title(DesktopSession.tab_location(index)))
+	var signature := "%s|%d|%s" % [str(titles), DesktopSession.active_tab, Settings.language]
+	if signature == _tab_signature:
+		return
+	_tab_signature = signature
+	Kit.clear(_tab_row)
+	for index in titles.size():
+		var active: bool = index == DesktopSession.active_tab
+		var tab := PanelContainer.new()
+		tab.add_theme_stylebox_override("panel", Kit.style(P.SURFACE if active else Color.TRANSPARENT, P.BORDER if active else Color.TRANSPARENT, 6, 6, 0))
+		tab.name = "Tab%d" % index
+		var row := Kit.hbox(2)
+		tab.add_child(row)
+		var title := Kit.button(titles[index], DesktopSession.switch_tab.bind(index), "FlatLink")
+		title.name = "TabTitle"
+		title.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		title.add_theme_color_override("font_color", P.TEXT if active else P.MUTED)
+		title.tooltip_text = Addresses.display(Addresses.format(DesktopSession.tab_location(index)))
+		row.add_child(title)
+		var close := Kit.button("×", DesktopSession.close_tab.bind(index), "FlatLink")
+		close.name = "TabClose"
+		close.tooltip_text = "Close tab"
+		close.add_theme_color_override("font_color", P.MUTED)
+		row.add_child(close)
+		_tab_row.add_child(tab)
+	var add := Kit.button("+", DesktopSession.open_tab, "FlatLink")
+	add.name = "NewTab"
+	add.tooltip_text = "New tab"
+	_tab_row.add_child(add)
+
+
+## A short title for a tab, like a page title.
+static func tab_title(location: Dictionary) -> String:
+	var title: String
+	match location.get("kind", "newtab"):
+		"shoply":
+			var path := str(location["path"]).trim_prefix("/shoply")
+			title = "Shoply %s" % (path if path != "" else "/")
+		"docs":
+			title = Kit.t("Intranet docs")
+		"search":
+			var query: String = location.get("query", "")
+			title = Kit.tf("Search: %s", query) if query != "" else Kit.t("NW Search")
+		"record":
+			var document: Variant = GameSession.intranet.get_document(location["id"])
+			title = Kit.t(document["title"]) if document != null else Kit.t("NW Search")
+		"unreachable":
+			title = Addresses.display(location["address"]).split("/")[0]
+		_:
+			title = Kit.t("New tab")
+	return title if title.length() <= 22 else title.substr(0, 21) + "…"
 
 
 # --- Console -------------------------------------------------------------------
@@ -406,27 +500,119 @@ func _note_leads(traces: Array) -> void:
 	DesktopSession.push_toast(Kit.t("New lead"), Kit.tf("%s was noted in QA Notes. Search the intranet for it.", ", ".join(fresh)), "notes")
 
 
-# --- Flag ----------------------------------------------------------------------
+# --- Note ----------------------------------------------------------------------
 
-## Captures this screen and asks two questions about it.
-func flag() -> void:
-	var item := capture()
-	if item.is_empty():
+func toggle_noting() -> void:
+	if _noting:
+		stop_noting()
 		return
-	close_flag()
-	var panel: PanelContainer = FlagPanel.new()
-	panel.setup(GameSession.scenario(_active()), item)
-	panel.closed.connect(close_flag)
-	_flag_holder.add_child(panel)
+	if _note.disabled:
+		return
+	_noting = true
+	_note_bar.visible = true
+	_note.text = Kit.t("📌 Noting…")
+	_refresh_markers()
 
 
-func close_flag() -> void:
-	if _flag_holder != null:
-		Kit.clear(_flag_holder)
+func stop_noting() -> void:
+	if _markers == null:
+		return
+	_noting = false
+	_note_bar.visible = false
+	_note.text = Kit.t("📌 Note")
+	_marked = []
+	Kit.clear(_markers)
 
 
-## Saves the visible Shoply screen, its values, and its console to QA Notes.
-func capture() -> Dictionary:
+func _unhandled_input(event: InputEvent) -> void:
+	if _noting and event.is_action_pressed("ui_cancel"):
+		stop_noting()
+		get_viewport().set_input_as_handled()
+
+
+## One highlight per recordable part of the page. Parents come first, so a smaller part
+## inside a card sits on top of the card's highlight.
+func _refresh_markers() -> void:
+	_marked = []
+	Kit.clear(_markers)
+	if not _noting:
+		return
+	var nodes: Array = []
+	_collect_nodes(_page, nodes)
+	var normal := Kit.style(Color(0.043, 0.341, 0.69, 0.06), P.ACCENT, 4, 0, 0, 2)
+	var hover := Kit.style(Color(0.949, 0.788, 0.298, 0.35), Color("#d4a106"), 4, 0, 0, 3)
+	for node in nodes:
+		var marker := Button.new()
+		marker.name = "Mark%s" % str(node.get_meta("evidence_target")).replace(".", "_")
+		marker.flat = false
+		marker.focus_mode = Control.FOCUS_NONE
+		marker.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		for state in ["normal", "focus", "disabled"]:
+			marker.add_theme_stylebox_override(state, normal)
+		for state in ["hover", "pressed", "hover_pressed"]:
+			marker.add_theme_stylebox_override(state, hover)
+		marker.tooltip_text = Observations.describe(_observation_of(node))
+		marker.pressed.connect(note.bind(node))
+		_markers.add_child(marker)
+		_marked.append([node, marker])
+	_place_markers()
+
+
+func _collect_nodes(node: Node, nodes: Array) -> void:
+	if node.has_meta("evidence_target") and node is Control and (node as Control).is_visible_in_tree():
+		nodes.append(node)
+	for child in node.get_children():
+		_collect_nodes(child, nodes)
+
+
+func _process(_delta: float) -> void:
+	if _noting:
+		_place_markers()
+
+
+func _place_markers() -> void:
+	for pair in _marked:
+		var node: Control = pair[0]
+		var marker: Button = pair[1]
+		if not is_instance_valid(node) or not node.is_inside_tree():
+			continue
+		var rect := node.get_global_rect().grow(4)
+		marker.position = rect.position - _markers.get_global_rect().position
+		marker.size = rect.size
+
+
+static func _observation_of(node: Node) -> Dictionary:
+	var value: String = node.get_meta("evidence_value", "")
+	if value == "" and (node is Label or node is Button):
+		value = node.text
+	var label: String = node.get_meta("evidence_label", "")
+	return { "target": node.get_meta("evidence_target"), "label": label if label != "" else node.get_meta("evidence_target"), "value": value }
+
+
+## Records one part of the page in QA Notes, with the screen it was on.
+func note(node: Node) -> Dictionary:
+	var focus := _observation_of(node)
+	stop_noting()
+	var item := capture(focus)
+	if item.is_empty():
+		return {}
+	DesktopSession.push_toast(Kit.t("Noted in QA Notes"), Observations.describe(focus), "notes")
+	return item
+
+
+## Notes the part of the page with this evidence target (used by tests and tours).
+func note_target(target: String) -> Dictionary:
+	var nodes: Array = []
+	_collect_nodes(_page, nodes)
+	for node in nodes:
+		if node.get_meta("evidence_target") == target:
+			return note(node)
+	return {}
+
+
+## Saves the visible Shoply screen, its values, and its console to QA Notes. `focus` is
+## the part the player clicked.
+func capture(focus: Dictionary = {}) -> Dictionary:
 	var active := _active()
 	var location := DesktopSession.location()
 	if active == "" or location["kind"] != "shoply":
@@ -451,6 +637,8 @@ func capture() -> Dictionary:
 			"console": _traces.map(func(trace): return trace["text"]),
 		},
 	}
+	if not focus.is_empty():
+		item["focus"] = focus
 	WorkspaceSession.add_evidence(item)
 	WorkspaceSession.record_interaction(active, "CAPTURE_EVIDENCE", location["path"], { "evidenceId": item["id"] })
 	Sfx.play("capture")

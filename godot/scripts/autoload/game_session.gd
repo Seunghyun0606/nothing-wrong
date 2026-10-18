@@ -87,13 +87,17 @@ func note_leads(terms: Array, ticket_id: String) -> Array:
 	return fresh
 
 
-## Reviews a flag or a NO ISSUE FOUND report and applies the result.
+## Reviews a report from Messenger (a defect or NO ISSUE FOUND) and applies the result.
 func submit_report(input: Dictionary) -> Dictionary:
 	var target: Variant = scenario(input["ticketId"])
 	var report := input.duplicate(true)
 	report["id"] = WorkspaceSession.new_id("REPORT")
 	report["submittedAt"] = int(Time.get_unix_time_from_system() * 1000)
-	var review := Review.review_report(report, target, WorkspaceSession.evidence_for(input["ticketId"]))
+	var evidence := WorkspaceSession.evidence_for(input["ticketId"])
+	var review := Review.review_report(report, target, evidence)
+	if not review["valid"] and report.get("kind", "BUG") == "BUG":
+		var noted: Array = evidence.filter(func(item): return report["evidenceIds"].has(item["id"]))
+		review["hint"] = Review.reply_hint(report, target, noted[0] if not noted.is_empty() else {})
 	complete_review(report, review, target.get("progression", {}))
 	return review
 

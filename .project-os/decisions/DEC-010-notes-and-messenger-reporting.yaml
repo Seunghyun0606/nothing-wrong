@@ -1,0 +1,28 @@
+id: DEC-010
+title: QA Notes absorbs QA Tracker; defects are noted in the Browser and reported in Messenger
+status: active
+decided_at: "2026-10-18"
+context: >-
+  The project owner asked to merge QA Notes and QA Tracker, said level, XP, and reputation
+  are not needed because the job can simply grow through the work, and asked for a
+  natural way to report a defect and hear back through QA Notes or Messenger instead of
+  the automatic Flag result.
+decision: >-
+  The workstation has three apps: Messenger, Browser, and QA Notes. QA Notes holds the
+  Ticket pages and the Case File. In the Browser, Note mode highlights what can be
+  recorded and saves the clicked part to QA Notes. A report is a message to the Ticket's
+  sender in Messenger (a note plus the requirement it breaks, or NO ISSUE FOUND); the
+  sender replies in the chat with the debrief or a hint. Level, XP, and reputation are
+  removed; progression is new Tickets and tools.
+consequences:
+  - QA Tracker, the Review screen, and the Flag panel are removed.
+  - Review results are never shown as scores; the reply in Messenger is the feedback.
+  - Missed reports and the team's help (story.assist) are part of the chat history.
+  - The sticky-note tutorial and Ticket intros are removed; Messenger briefings explain the
+    job, and the Browser opens links from other apps in new tabs.
+supersedes_parts_of:
+  - .project-os/decisions/DEC-009-deduction-first-qa-exploration.yaml
+applies_to:
+  - global
+references:
+  - godot/README.md

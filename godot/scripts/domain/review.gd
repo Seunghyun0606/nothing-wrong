@@ -5,9 +5,6 @@ const Conditions := preload("res://scripts/domain/conditions.gd")
 const Observations := preload("res://scripts/domain/observations.gd")
 
 const NOISE_PENALTY := 5
-## Flags are cheap to retry, so a wrong one costs little.
-const FALSE_REPORT_REPUTATION := -1
-const CORRECT_NO_ISSUE_REPUTATION := 2
 
 
 static func normalize(value: String) -> String:
@@ -67,8 +64,6 @@ static func _invalid(feedback: Array) -> Dictionary:
 		"valid": false,
 		"scores": { "detection": 0, "reproduction": 0, "evidence": 0, "severity": 0 },
 		"totalScore": 0,
-		"xp": 0,
-		"reputationDelta": FALSE_REPORT_REPUTATION,
 		"feedback": feedback,
 	}
 
@@ -129,7 +124,8 @@ static func evaluate_bug(
 		"evidence": max(0, int(scoring["evidence"]) - (NOISE_PENALTY if noisy_evidence else 0)) if evidence_matches else 0,
 		"severity": int(scoring["severity"]) if severity_matches else 0,
 	}
-	var valid := detection_matches and reproduction_matches and evidence_matches
+	# The flag fills in the steps from what the player did, so they score but never block.
+	var valid := detection_matches and evidence_matches
 
 	var detection_feedback: String
 	if detection_matches:
@@ -137,11 +133,11 @@ static func evaluate_bug(
 	elif not requirement_matches and observation_matches:
 		detection_feedback = "Your observation shows a real defect, but the selected requirement is not the one it breaks. Which rule does that value contradict?"
 	elif requirement_matches and observation_target_valid and not observation_in_failing_state:
-		detection_feedback = "The selected observation was captured before the failure appeared, so it still meets the requirement. Reproduce the failure, then capture again."
+		detection_feedback = "That value still meets the requirement in the state you noted. Reproduce the failure, then note it again."
 	elif requirement_matches:
-		detection_feedback = "The selected observation does not show the problem. Pick the captured value that contradicts the requirement."
+		detection_feedback = "The value you picked does not show the problem. Pick the value that contradicts the requirement."
 	else:
-		detection_feedback = "Neither the requirement nor the observation identifies a defect yet. Re-read the requirements and compare them with what you captured."
+		detection_feedback = "Neither the requirement nor the value identifies a defect yet. Re-read the requirements and compare them with what Shoply shows."
 
 	var reproduction_feedback: String
 	if reproduction_matches:
@@ -157,14 +153,12 @@ static func evaluate_bug(
 	if evidence_matches:
 		evidence_feedback = "Attached Evidence shows the defect, but several attachments do not. Leave those out next time." if noisy_evidence else "Attached Evidence shows the defect in the failing state."
 	else:
-		evidence_feedback = "Attach Evidence captured while the defect was on screen."
+		evidence_feedback = "Note the screen while the defect is visible."
 
 	var result := {
 		"valid": valid,
 		"scores": scores,
 		"totalScore": _sum(scores),
-		"xp": int(scenario.get("progression", {}).get("xp", 0)) if valid else 0,
-		"reputationDelta": int(scenario.get("progression", {}).get("reputationDelta", 0)) if valid else FALSE_REPORT_REPUTATION,
 		"feedback": [
 			detection_feedback,
 			reproduction_feedback,
@@ -177,11 +171,44 @@ static func evaluate_bug(
 	return result
 
 
+## The lead's reply to a report that missed, in the player's terms: is the defect on
+## that screen, in that state, in that value, against that rule? It never names the
+## answer; the team does that after a few misses (story.assist).
+static func reply_hint(report: Dictionary, scenario: Dictionary, evidence: Dictionary) -> String:
+	if report.get("kind", "BUG") == "NO_ISSUE":
+		return ""
+	if scenario["expectedBugs"].is_empty():
+		return "I checked, and every number holds. If nothing breaks a rule, report this Ticket as NO ISSUE FOUND."
+	var targets := evidence_targets(evidence)
+	var picked: String = str(report.get("observation", {}).get("target", ""))
+	var best_rank := 0
+	var hint := "I checked that screen and it matches the Ticket. The problem must be somewhere else on the path."
+	for bug in scenario["expectedBugs"]:
+		var valid_targets: Array = bug["validEvidenceTargets"]
+		if not valid_targets.any(func(target): return targets.has(target)):
+			continue
+		var rank: int
+		var line: String
+		if not conditions_match_evidence(evidence, bug):
+			rank = 1
+			line = "That part can go wrong, but in the state you noted it still holds. Try a different quantity, account, or coupon, or try the action on that screen."
+		elif not valid_targets.has(picked):
+			rank = 2
+			line = "You're on the right screen, but that value is fine. Look at the others again."
+		else:
+			rank = 3
+			line = "That value is wrong, but it breaks a different requirement. Which one does it contradict?"
+		if rank > best_rank:
+			best_rank = rank
+			hint = line
+	return hint
+
+
 static func review_no_issue(report: Dictionary, scenario: Dictionary, attached: Array) -> Dictionary:
 	if not scenario["expectedBugs"].is_empty():
 		return _invalid([
 			"A documented defect exists within this Ticket scope, so NO ISSUE FOUND misses it.",
-			"Compare every requirement with what Shoply actually shows, including different quantities, accounts, and actions.",
+			"Are you sure? Something in this Ticket still breaks a requirement. Try other quantities, accounts, and actions.",
 		])
 	var scoring: Dictionary = scenario["scoring"]
 	# Either a capture or a recorded visit to Shoply shows what was checked.
@@ -196,9 +223,7 @@ static func review_no_issue(report: Dictionary, scenario: Dictionary, attached: 
 		"valid": covered,
 		"scores": scores,
 		"totalScore": _sum(scores),
-		"xp": int(scenario.get("progression", {}).get("xp", 0)) if covered else 0,
-		"reputationDelta": int(scenario.get("progression", {}).get("reputationDelta", CORRECT_NO_ISSUE_REPUTATION)) if covered else 0,
-		"feedback": ["Correct call. Every requirement in scope holds, and your Evidence shows what you checked."] if covered else ["Check Shoply against the requirements before closing a Ticket as NO ISSUE FOUND."],
+		"feedback": ["Correct call. Every requirement in scope holds, and your Evidence shows what you checked."] if covered else ["Did you open Shoply? Check it against the requirements before you report NO ISSUE FOUND."],
 	}
 
 

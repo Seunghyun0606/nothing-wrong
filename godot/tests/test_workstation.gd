@@ -24,19 +24,6 @@ func _content_strings() -> Array:
 		for bug in scenario["expectedBugs"]:
 			for matcher in bug.get("reproductionActions", []):
 				add.call(matcher["label"])
-		var guide: Dictionary = scenario.get("guide", {})
-		add.call(guide.get("label"))
-		if guide.has("ticketIntro"):
-			for key in ["label", "heading", "body"]:
-				add.call(guide["ticketIntro"][key])
-			for step in guide["ticketIntro"]["steps"]:
-				add.call(step)
-		for step in guide.get("workspace", []):
-			for key in ["label", "title", "instruction"]:
-				add.call(step[key])
-		if guide.has("review"):
-			add.call(guide["review"]["valid"])
-			add.call(guide["review"]["invalid"])
 		var story: Variant = scenario.get("story", null)
 		if story != null:
 			for message in story["briefing"] + story["debrief"]:
@@ -45,6 +32,8 @@ func _content_strings() -> Array:
 			add.call(story["clue"]["title"])
 			add.call(story["clue"]["text"])
 			add.call(story.get("discovery", {}).get("hint"))
+			for help in story.get("assist", []):
+				add.call(help["text"])
 			if story.has("deduction"):
 				add.call(story["deduction"]["prompt"])
 				add.call(story["deduction"].get("boardHint"))
@@ -74,7 +63,7 @@ func test_korean_language_translates_ui_and_templates() -> void:
 	Settings.persist = false
 	Settings.set_language("ko")
 	check_eq(Kit.t("Start test"), "테스트 시작", "plain string")
-	check_eq(Kit.tf("Open %s in QA Tracker", "T01"), "QA 트래커에서 T01 열기", "template")
+	check_eq(Kit.tf("Open %s in QA Notes", "T01"), "QA 노트에서 T01 열기", "template")
 	check_eq(Kit.status_label("TESTING"), "테스트 중", "status")
 	Settings.set_language("en")
 	check_eq(Kit.t("Start test"), "Start test", "back to English")

@@ -3,7 +3,6 @@
 extends RefCounted
 
 const SAVE_VERSION := 1
-const FIRST_TRY_DEDUCTION_BONUS := 1
 
 const ALLOWED_TRANSITIONS := {
 	"NEW": ["ACCEPTED"],
@@ -21,7 +20,7 @@ static func create_initial(ticket_ids: Array) -> Dictionary:
 	for id in ticket_ids:
 		tickets[id] = new_ticket_state()
 	return {
-		"profile": { "name": "J. PARK", "level": 1, "career": "JUNIOR_QA", "xp": 0, "reputation": 100 },
+		"profile": { "name": "J. PARK", "career": "JUNIOR_QA" },
 		"tickets": tickets,
 		"currentTicketId": null,
 		"unlockedTools": [],
@@ -105,10 +104,6 @@ static func apply_review(
 			if not next["unlockedTools"].has(tool):
 				next["unlockedTools"].append(tool)
 
-	var xp: int = int(next["profile"]["xp"]) + int(review["xp"])
-	next["profile"]["xp"] = xp
-	next["profile"]["level"] = int(floor(xp / 100.0)) + 1
-	next["profile"]["reputation"] = int(next["profile"]["reputation"]) + int(review["reputationDelta"])
 	next["currentTicketId"] = null if valid else ticket_id
 	next["reportHistory"].append(report)
 	next["reviewHistory"].append(review)
@@ -129,10 +124,7 @@ static func answer_deduction(state: Dictionary, deduction: Dictionary, option_id
 	var next := state.duplicate(true)
 	var attempts: Array = progress["attempts"].duplicate()
 	attempts.append(option_id)
-	var first_try: bool = option["correct"] and attempts.size() == 1
 	next["story"]["deductions"][deduction["id"]] = { "attempts": attempts, "solved": option["correct"] }
-	if first_try:
-		next["profile"]["reputation"] = int(next["profile"]["reputation"]) + FIRST_TRY_DEDUCTION_BONUS
 	return next
 
 
@@ -197,9 +189,17 @@ static func answer_board(state: Dictionary, deduction: Dictionary, option_id: St
 	var board: Array = progress.get("boardAttempts", []).duplicate(true)
 	board.append({ "option": option_id, "clues": clue_ids.duplicate(), "correct": correct })
 	next["story"]["deductions"][deduction["id"]] = { "attempts": attempts, "boardAttempts": board, "solved": correct }
-	if correct and attempts.size() == 1:
-		next["profile"]["reputation"] = int(next["profile"]["reputation"]) + FIRST_TRY_DEDUCTION_BONUS
 	return next
+
+
+## How many submissions on a Ticket the review turned down.
+static func misses(state: Dictionary, ticket_id: String) -> int:
+	var count := 0
+	for index in state["reportHistory"].size():
+		if state["reportHistory"][index]["ticketId"] == ticket_id and not state["reviewHistory"][index]["valid"]:
+			count += 1
+	return count
+
 
 
 ## The review for the most recent report on a Ticket, or null.

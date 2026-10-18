@@ -5,7 +5,6 @@ const Conditions := preload("res://scripts/domain/conditions.gd")
 const Mutations := preload("res://scripts/domain/mutations.gd")
 const GameState := preload("res://scripts/domain/game_state.gd")
 const MessengerLog := preload("res://scripts/domain/messenger_log.gd")
-const Guide := preload("res://scripts/domain/guide.gd")
 const Addresses := preload("res://scripts/domain/addresses.gd")
 const Rules := preload("res://scripts/domain/shoply_rules.gd")
 const Intranet := preload("res://scripts/domain/intranet.gd")
@@ -58,32 +57,30 @@ func test_game_state_start_review_and_unlock() -> void:
 	state = GameState.start_ticket(state, "T01", 1)
 	check_eq(state["tickets"]["T01"]["status"], "TESTING", "testing")
 	var report := { "id": "R1", "ticketId": "T01", "kind": "BUG" }
-	var review := { "valid": true, "xp": 100, "reputationDelta": 2 }
+	var review := { "valid": true }
 	state = GameState.apply_review(state, report, review, {}, 2)
 	check_eq(state["tickets"]["T01"]["status"], "RESOLVED", "resolved")
-	check_eq(state["profile"]["level"], 2, "level")
-	check_eq(state["profile"]["reputation"], 102, "reputation")
+	check(not state["profile"].has("xp") and not state["profile"].has("reputation"), "no points to keep")
 	check(catalog.is_ticket_unlocked(state, "T02"), "T02 unlocked")
 	check_eq(catalog.find_next_open_ticket(state)["id"], "T02", "next ticket")
 
 
 func test_invalid_review_keeps_testing_and_no_issue_uses_its_status_path() -> void:
 	var state := GameState.start_ticket(GameState.create_initial(["T01"]), "T01", 1)
-	state = GameState.apply_review(state, { "id": "R1", "ticketId": "T01", "kind": "NO_ISSUE" }, { "valid": false, "xp": 0, "reputationDelta": -2 }, {}, 2)
+	state = GameState.apply_review(state, { "id": "R1", "ticketId": "T01", "kind": "NO_ISSUE" }, { "valid": false }, {}, 2)
 	check_eq(state["tickets"]["T01"]["status"], "TESTING", "back to testing")
-	check_eq(state["profile"]["reputation"], 98, "reputation")
 	check_eq(state["currentTicketId"], "T01", "current ticket kept")
 
 
-func test_deduction_rewards_first_try_only() -> void:
+func test_deduction_keeps_every_attempt() -> void:
 	var deduction: Dictionary = _catalog().get_scenario("T01")["story"]["deduction"]
 	var right: Dictionary = deduction["options"].filter(func(option): return option["correct"])[0]
 	var wrong: Dictionary = deduction["options"].filter(func(option): return not option["correct"])[0]
 	var state := GameState.create_initial(["T01"])
-	var first_try := GameState.answer_deduction(state, deduction, right["id"])
-	check_eq(first_try["profile"]["reputation"], 101, "first try bonus")
-	var retried := GameState.answer_deduction(GameState.answer_deduction(state, deduction, wrong["id"]), deduction, right["id"])
-	check_eq(retried["profile"]["reputation"], 100, "no bonus after a miss")
+	var missed := GameState.answer_deduction(state, deduction, wrong["id"])
+	check(not missed["story"]["deductions"][deduction["id"]]["solved"], "a wrong guess keeps it open")
+	var retried := GameState.answer_deduction(missed, deduction, right["id"])
+	check(retried["story"]["deductions"][deduction["id"]]["solved"], "solved")
 	check_eq(retried["story"]["deductions"][deduction["id"]]["attempts"].size(), 2, "attempts")
 
 
@@ -109,6 +106,35 @@ func test_messenger_log_pauses_on_the_deduction() -> void:
 	state = GameState.answer_deduction(state, deduction, right["id"])
 	log = MessengerLog.build(catalog, state)
 	check_eq(log["entries"][-1]["ticketId"], "T02", "next briefing card")
+
+
+func test_missed_flags_bring_a_nudge_then_the_answer() -> void:
+	var catalog := _catalog()
+	var state := GameState.start_ticket(GameState.create_initial(catalog.ticket_ids()), "T01", 1)
+	check_eq(_assists(MessengerLog.build(catalog, state)).size(), 0, "no help before a miss")
+	var reported := MessengerLog.build(catalog, GameState.apply_review(state, { "id": "R0", "ticketId": "T01", "kind": "BUG" }, { "valid": false, "hint": "Look again." }, {}, 2))
+	var tail: Array = reported["entries"].slice(-3)
+	check_eq(tail[0]["kind"], "report", "the report is the player's message")
+	check_eq([tail[1]["from"], tail[1]["text"]], ["Maya Kim", "Look again."], "the sender replies with the hint")
+	var miss := { "valid": false, "hint": "Look again." }
+	state = GameState.apply_review(state, { "id": "R1", "ticketId": "T01", "kind": "BUG" }, miss, {}, 2)
+	check_eq(GameState.misses(state, "T01"), 1, "one miss")
+	var help := _assists(MessengerLog.build(catalog, state))
+	check_eq(help.size(), 1, "a nudge after the first miss")
+	check(str(help[0]["text"]).begins_with("Tip:"), "the nudge does not give the answer away")
+	state = GameState.apply_review(state, { "id": "R2", "ticketId": "T01", "kind": "BUG" }, miss, {}, 3)
+	help = _assists(MessengerLog.build(catalog, state))
+	check_eq(help.size(), 2, "the answer after the second miss")
+	check("REQ-T01-02" in str(help[1]["text"]), "the answer names the rule")
+	state = GameState.apply_review(state, { "id": "R3", "ticketId": "T01", "kind": "BUG" }, { "valid": true }, {}, 4)
+	var log := MessengerLog.build(catalog, state)
+	check_eq(_assists(log).size(), 2, "help stays in the chat after the Ticket is resolved")
+	var ids: Array = log["entries"].map(func(entry): return entry["id"])
+	check(ids.find("SCENARIO-T01:assist:2") < ids.find("SCENARIO-T01:debrief:0"), "help comes before the debrief")
+
+
+func _assists(log: Dictionary) -> Array:
+	return log["entries"].filter(func(entry): return ":assist:" in str(entry["id"]))
 
 
 func test_intranet_search_is_lenient_and_gated_by_progress() -> void:
@@ -138,7 +164,6 @@ func test_clue_board_needs_the_right_conclusion_and_clues() -> void:
 	check(not state["story"]["deductions"][deduction["id"]]["solved"], "not solved without the right clues")
 	state = GameState.answer_board(state, deduction, right, ["CLUE-0214", "CLUE-MERGE-RULE"])
 	check(state["story"]["deductions"][deduction["id"]]["solved"], "solved")
-	check_eq(state["profile"]["reputation"], 100, "no first-try bonus after a miss")
 
 
 func test_report_steps_are_drafted_from_the_capture() -> void:
@@ -159,14 +184,6 @@ func test_report_steps_are_drafted_from_the_capture() -> void:
 		{ "evidenceId": "E1", "target": "checkout.confirmButton", "label": "Confirm order button", "value": "Secondary action style" }, "LOW")
 	check_eq(report["evidenceIds"], ["E1"], "the chosen capture is the Evidence")
 	check_eq(report["actual"], "Confirm order button: Secondary action style", "actual from the observation")
-
-
-func test_guide_follows_the_t01_journey() -> void:
-	var steps: Array = _catalog().get_scenario("T01")["guide"]["workspace"]
-	check_eq(Guide.resolve_step(steps, _context("about:blank", 0))["id"], "T01-GUIDE-OPEN-SHOPLY", "not on shoply")
-	check_eq(Guide.resolve_step(steps, _context("/shoply/product/everyday-pack", 0))["id"], "T01-GUIDE-PRODUCT", "product")
-	check_eq(Guide.resolve_step(steps, _context("/shoply/checkout", 1))["id"], "T01-GUIDE-CHECKOUT", "checkout")
-	check_eq(Guide.resolve_step(steps, _context("/shoply/checkout", 1, "BASIC", "", ["/shoply/checkout"]))["id"], "T01-GUIDE-CAPTURED", "after a wrong flag")
 
 
 func test_addresses_parse_and_format() -> void:

@@ -111,107 +111,7 @@
         "severity": 15
       },
       "progression": {
-        "xp": 100,
-        "reputationDelta": 2,
         "unlockedTools": []
-      },
-      "guide": {
-        "label": "First Ticket tutorial",
-        "ticketIntro": {
-          "label": "How to play your first Ticket",
-          "heading": "What am I supposed to do?",
-          "body": "Explore Shoply like a customer and compare it with the requirements. When something is off, flag it. Then follow the leads: that is where the real story is.",
-          "steps": [
-            "Read the briefing in Messenger and the requirements below.",
-            "Select Start test, then open Shoply in the Browser and follow product → bag → checkout.",
-            "When something looks wrong, press Flag in the Browser and pick it.",
-            "Read what the team says, and follow the leads."
-          ]
-        },
-        "workspace": [
-          {
-            "id": "T01-GUIDE-CAPTURED",
-            "label": "Try again",
-            "title": "Not quite yet.",
-            "instruction": "Read the feedback in QA Tracker, then flag the value that breaks a requirement.",
-            "conditions": [
-              {
-                "field": "workspace.flagCount",
-                "operator": "GTE",
-                "value": 1
-              },
-              {
-                "field": "test.currentPath",
-                "operator": "EQ",
-                "value": "/shoply/checkout"
-              }
-            ]
-          },
-          {
-            "id": "T01-GUIDE-CHECKOUT",
-            "label": "Compare",
-            "title": "Check this screen against the Ticket.",
-            "instruction": "Compare this screen with the requirements and the spec. If something is off, press Flag in the Browser and pick it.",
-            "conditions": [
-              {
-                "field": "test.currentPath",
-                "operator": "EQ",
-                "value": "/shoply/checkout"
-              }
-            ]
-          },
-          {
-            "id": "T01-GUIDE-CART",
-            "label": "Continue the journey",
-            "title": "Inspect the bag, then continue to checkout.",
-            "instruction": "Compare each screen with the requirements in QA Tracker as you go.",
-            "conditions": [
-              {
-                "field": "test.currentPath",
-                "operator": "EQ",
-                "value": "/shoply/cart"
-              }
-            ]
-          },
-          {
-            "id": "T01-GUIDE-PRODUCT",
-            "label": "Explore",
-            "title": "Try Shoply as a customer.",
-            "instruction": "Use Add to bag on the product page, then open Bag. The requirements are in QA Tracker.",
-            "conditions": [
-              {
-                "field": "test.currentPath",
-                "operator": "STARTS_WITH",
-                "value": "/shoply/product/"
-              }
-            ]
-          },
-          {
-            "id": "T01-GUIDE-OPEN-SHOPLY",
-            "label": "Open the site",
-            "title": "Open Shoply in the Browser.",
-            "instruction": "Select the shoply.local link in Maya's message, or open Browser and type shoply.local into the address bar.",
-            "conditions": [
-              {
-                "field": "workspace.onShoply",
-                "operator": "EQ",
-                "value": false
-              }
-            ]
-          },
-          {
-            "id": "T01-GUIDE-DETOUR",
-            "label": "Explore freely",
-            "title": "Return to the purchase journey when you are ready.",
-            "instruction": "Select the Shoply logo, open the Everyday Carry Pack, then explore the product, bag, and checkout against the Ticket requirements.",
-            "conditions": []
-          }
-        ],
-        "review": {
-          "valid": "First case complete. The team has questions. Read Messenger.",
-          "invalid": "Read the feedback, then flag again. Look for the value that breaks a requirement."
-        },
-        "hintMode": "always"
       },
       "story": {
         "chapterId": "CH1",
@@ -234,7 +134,7 @@
           {
             "from": "Maya Kim",
             "role": "QA Lead",
-            "text": "Accept T01 in QA Tracker first. Then open the staging site and start from the product page. The spec is on the intranet.",
+            "text": "Accept T01 in QA Notes first. Then open the staging site and start from the product page. The spec is on the intranet.",
             "links": [
               {
                 "label": "shoply.local/product/everyday-pack",
@@ -245,6 +145,11 @@
                 "url": "https://docs.nothingwrong.local/checkout-interaction-specification"
               }
             ]
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "When something doesn't match the spec, press 📌 Note in the Browser and click it. Then come back here and send me the note with the requirement it breaks. If nothing breaks a rule, tell me that too."
           }
         ],
         "debrief": [
@@ -295,7 +200,21 @@
         "discovery": {
           "documentId": "DOC-CHECKOUT-HISTORY",
           "hint": "Open the Console in the Browser on the checkout screen. Select the name you see there to search the intranet."
-        }
+        },
+        "assist": [
+          {
+            "after": 1,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Tip: the bag is fine. The trouble is on the checkout screen. Open the spec from my first message and compare it with the Confirm order button."
+          },
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Here's how, so you can move on: on the checkout screen press 📌 Note and click the Confirm order button. Then report it to me here with REQ-T01-02. The spec says it should be primary."
+          }
+        ]
       }
     },
     {
@@ -433,107 +352,7 @@
         "severity": 15
       },
       "progression": {
-        "xp": 100,
-        "reputationDelta": 2,
         "unlockedTools": []
-      },
-      "guide": {
-        "label": "Guided Ticket",
-        "ticketIntro": {
-          "label": "New skill: verify the numbers",
-          "heading": "New skill: verify the numbers",
-          "body": "A screen can look perfect and still show the wrong figures. This time, work out what each figure should be and compare it with what Shoply shows.",
-          "steps": [
-            "Read the briefing in Messenger and open the pricing rules on the intranet.",
-            "Put the pack in your bag and change the quantity.",
-            "Do the math for every figure in the Order summary.",
-            "Flag the figure that is wrong."
-          ]
-        },
-        "workspace": [
-          {
-            "id": "T02-GUIDE-CAPTURED",
-            "label": "Try again",
-            "title": "Not quite yet.",
-            "instruction": "Was the wrong figure on screen when you flagged? Try another quantity and flag the figure that breaks the rule.",
-            "conditions": [
-              {
-                "field": "workspace.flagCount",
-                "operator": "GTE",
-                "value": 1
-              }
-            ]
-          },
-          {
-            "id": "T02-GUIDE-MATH",
-            "label": "Do the math",
-            "title": "Price × quantity: does every figure agree?",
-            "instruction": "Compare the line total, Subtotal, and Total with REQ-T02-01. If one is wrong, press Flag and pick it.",
-            "conditions": [
-              {
-                "field": "test.currentPath",
-                "operator": "EQ",
-                "value": "/shoply/cart"
-              },
-              {
-                "field": "product.cart.quantity",
-                "operator": "GTE",
-                "value": 2
-              }
-            ]
-          },
-          {
-            "id": "T02-GUIDE-QUANTITY",
-            "label": "Change the quantity",
-            "title": "One item is easy. Try more than one.",
-            "instruction": "Use the Qty selector and watch the Order summary as it updates.",
-            "conditions": [
-              {
-                "field": "test.currentPath",
-                "operator": "EQ",
-                "value": "/shoply/cart"
-              }
-            ]
-          },
-          {
-            "id": "T02-GUIDE-PRODUCT",
-            "label": "Start",
-            "title": "Put the pack in your bag.",
-            "instruction": "Select Add to bag, then open Bag.",
-            "conditions": [
-              {
-                "field": "test.currentPath",
-                "operator": "STARTS_WITH",
-                "value": "/shoply/product/"
-              }
-            ]
-          },
-          {
-            "id": "T02-GUIDE-OPEN-SHOPLY",
-            "label": "Open the site",
-            "title": "Head back to Shoply.",
-            "instruction": "Use the link in the briefing or QA Notes, or type shoply.local in the Browser.",
-            "conditions": [
-              {
-                "field": "workspace.onShoply",
-                "operator": "EQ",
-                "value": false
-              }
-            ]
-          },
-          {
-            "id": "T02-GUIDE-DETOUR",
-            "label": "Head to the bag",
-            "title": "The figures to check are in the bag.",
-            "instruction": "Select Bag in the Shoply header, or the Shoply logo to browse the shop.",
-            "conditions": []
-          }
-        ],
-        "review": {
-          "valid": "Numbers verified. The pattern is starting to show. Read Messenger.",
-          "invalid": "Check the feedback. Flag the figure that breaks the rule while it is on screen."
-        },
-        "hintMode": "always"
       },
       "story": {
         "chapterId": "CH1",
@@ -617,7 +436,21 @@
         "discovery": {
           "documentId": "DOC-PROMO-ARCHIVE",
           "hint": "Check the Console on the bag screen at quantity two, then search for the rule it names."
-        }
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Stay on the bag and set the quantity to 2. Then compare Line total with Subtotal."
+          },
+          {
+            "after": 3,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Here's the answer: in the bag at quantity 2, note the Subtotal ($50.00) and report it with REQ-T02-01. Two packs at $30.00 should come to $60.00."
+          }
+        ]
       }
     },
     {
@@ -745,77 +578,9 @@
         "severity": 15
       },
       "progression": {
-        "xp": 100,
-        "reputationDelta": 2,
         "unlockedTools": [
           "ACCOUNT_SWITCHER"
         ]
-      },
-      "guide": {
-        "label": "Field guide",
-        "ticketIntro": {
-          "label": "New skill: action and result",
-          "heading": "New skill: action and result",
-          "body": "Every label makes a promise. Check that each action takes the customer where its label says it will.",
-          "steps": [
-            "Read the briefing and the order management rules on the intranet.",
-            "Act like the customer: try to cancel order #1042.",
-            "Flag the screen if the result breaks the rule."
-          ]
-        },
-        "workspace": [
-          {
-            "id": "T03-GUIDE-CAPTURED",
-            "label": "Try again",
-            "title": "Not quite yet.",
-            "instruction": "Flag the screen the action opened, and match it to the rule it breaks.",
-            "conditions": [
-              {
-                "field": "workspace.flagCount",
-                "operator": "GTE",
-                "value": 1
-              }
-            ]
-          },
-          {
-            "id": "T03-GUIDE-RESULT",
-            "label": "Look closely",
-            "title": "Is this where the action should lead?",
-            "instruction": "Compare this screen with REQ-T03-01. If it is wrong, press Flag and pick it.",
-            "conditions": [
-              {
-                "field": "test.currentPath",
-                "operator": "EQ",
-                "value": "/shoply/payment"
-              }
-            ]
-          },
-          {
-            "id": "T03-GUIDE-OPEN-SHOPLY",
-            "label": "Find the order",
-            "title": "Go to order #1042.",
-            "instruction": "Type the order address from the briefing into the Browser. QA Notes has it too.",
-            "conditions": [
-              {
-                "field": "workspace.onShoply",
-                "operator": "EQ",
-                "value": false
-              }
-            ]
-          },
-          {
-            "id": "T03-GUIDE-INVESTIGATE",
-            "label": "Investigate",
-            "title": "Do what the customer would do.",
-            "instruction": "Order #1042 is in Orders. Use its actions and watch where they lead.",
-            "conditions": []
-          }
-        ],
-        "review": {
-          "valid": "Behavior verified. A new tool is now unlocked. Read the debrief first.",
-          "invalid": "Check the feedback. Flag the screen the action opened."
-        },
-        "hintMode": "on_request"
       },
       "story": {
         "chapterId": "CH1",
@@ -884,7 +649,21 @@
         "discovery": {
           "documentId": "DOC-EXPERIMENT",
           "hint": "The Console on order #1042 names the flag behind it. Search the intranet for it."
-        }
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Open order #1042 and press Cancel order. Where does it take you?"
+          },
+          {
+            "after": 3,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Here's the answer: press Cancel order on #1042. It opens the payment form, so note that screen and report it with REQ-T03-01."
+          }
+        ]
       }
     },
     {
@@ -1059,59 +838,7 @@
         "severity": 15
       },
       "progression": {
-        "xp": 100,
-        "reputationDelta": 2,
         "unlockedTools": []
-      },
-      "guide": {
-        "label": "Field note",
-        "ticketIntro": {
-          "label": "New tool: Account Switcher",
-          "heading": "New tool: Account Switcher",
-          "body": "Some rules only apply to certain customers. The Account Switcher in the Browser's QA bar lets you test as a Basic or Gold member without leaving the session. This time, you choose what to try.",
-          "steps": [
-            "Read the briefing and the promotion rules.",
-            "Combine account, coupon, and quantity until something breaks a rule.",
-            "Flag the value that breaks it."
-          ]
-        },
-        "workspace": [
-          {
-            "id": "T04-GUIDE-VARY",
-            "label": "Vary it",
-            "title": "Gold and SAVE20 are active.",
-            "instruction": "Now change the quantity and check the discount at each step against the promotion rules. If one is wrong, press Flag and pick it.",
-            "conditions": [
-              {
-                "field": "test.account",
-                "operator": "EQ",
-                "value": "GOLD"
-              },
-              {
-                "field": "product.coupon",
-                "operator": "EQ",
-                "value": "SAVE20"
-              },
-              {
-                "field": "test.currentPath",
-                "operator": "EQ",
-                "value": "/shoply/cart"
-              }
-            ]
-          },
-          {
-            "id": "T04-GUIDE-TOOL",
-            "label": "New tool",
-            "title": "Requirements depend on the account tier.",
-            "instruction": "Use the Account Switcher in the Browser's QA bar to test as Basic and as Gold.",
-            "conditions": []
-          }
-        ],
-        "review": {
-          "valid": "Conditional defect proven. This is the last piece: read the debrief and close the case.",
-          "invalid": "Check the feedback. Was the failing combination of account, coupon, and quantity on screen when you flagged?"
-        },
-        "hintMode": "on_request"
       },
       "story": {
         "chapterId": "CH1",
@@ -1186,7 +913,21 @@
         "discovery": {
           "documentId": "DOC-BOT-CONFIG",
           "hint": "Search the intranet for release-bot's merge rule."
-        }
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "The discount only breaks in one combination: the Gold account, coupon SAVE20, and three or more packs."
+          },
+          {
+            "after": 3,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Here's the answer: switch to the Gold account, apply SAVE20, and set the quantity to 3. Then note the Discount (−$9.00) and report it with REQ-T04-02. 20% of $90.00 is $18.00."
+          }
+        ]
       }
     },
     {
@@ -1269,49 +1010,7 @@
         "severity": 15
       },
       "progression": {
-        "xp": 100,
-        "reputationDelta": 2,
         "unlockedTools": []
-      },
-      "guide": {
-        "label": "Field note",
-        "hintMode": "on_request",
-        "ticketIntro": {
-          "label": "New skill: when nothing is wrong",
-          "heading": "New skill: when nothing is wrong",
-          "body": "Not every Ticket hides a bug, and not every complaint is a defect. Check each requirement. If everything holds, close the Ticket as NO ISSUE FOUND.",
-          "steps": [
-            "Read the briefing and the RC4 checklist.",
-            "Check each requirement in Shoply, including the customer's case.",
-            "If something breaks a rule, flag it. If nothing does, close the Ticket as NO ISSUE FOUND in QA Tracker."
-          ]
-        },
-        "workspace": [
-          {
-            "id": "T05-GUIDE-CAPTURED",
-            "label": "Decide",
-            "title": "Does anything break a rule?",
-            "instruction": "If every requirement holds, open QA Tracker and select Close as NO ISSUE FOUND.",
-            "conditions": [
-              {
-                "field": "workspace.visitedPaths",
-                "operator": "INCLUDES",
-                "value": "/shoply/cart"
-              }
-            ]
-          },
-          {
-            "id": "T05-GUIDE-CHECK",
-            "label": "Check each rule",
-            "title": "Test every requirement, including the customer's case.",
-            "instruction": "Try one item and two items, then Gold with SAVE20. Compare each figure with the rules.",
-            "conditions": []
-          }
-        ],
-        "review": {
-          "valid": "Right call. A clean build is a result too. Read the debrief.",
-          "invalid": "Check the feedback. Did a requirement really break, or did the product follow the rules?"
-        }
       },
       "story": {
         "chapterId": "CH2",
@@ -1348,6 +1047,14 @@
           "documentId": "DOC-ARCHIVE-ACCESS",
           "hint": "Search the intranet for the archive's access log."
         },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Before you report again, check every number against the rules. If they all hold, this build may be clean. Report it as NO ISSUE FOUND."
+          }
+        ],
         "clue": {
           "id": "CLUE-OPS-TEMP",
           "title": "ops-temp",

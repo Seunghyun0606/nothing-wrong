@@ -1,4 +1,5 @@
-## The QA workstation desktop: icons, app windows, taskbar, notifications, and guide.
+## The QA workstation desktop: icons, app windows, taskbar, and notifications.
+## The team's messages are the guide; there is no separate tutorial.
 extends Control
 
 signal signed_out
@@ -6,14 +7,11 @@ signal signed_out
 const Kit := preload("res://scripts/ui/kit.gd")
 const P := preload("res://scripts/ui/palette.gd")
 const OsWindow := preload("res://scripts/ui/os_window.gd")
-const Guide := preload("res://scripts/domain/guide.gd")
-const GameState := preload("res://scripts/domain/game_state.gd")
 const MessengerApp := preload("res://scripts/ui/apps/messenger_app.gd")
-const TrackerApp := preload("res://scripts/ui/apps/tracker_app.gd")
 const BrowserApp := preload("res://scripts/ui/apps/browser_app.gd")
 const NotesApp := preload("res://scripts/ui/apps/notes_app.gd")
 
-const ICONS := { "messenger": "💬", "tracker": "📋", "browser": "🌐", "notes": "📝" }
+const ICONS := { "messenger": "💬", "browser": "🌐", "notes": "📝" }
 const TASKBAR_HEIGHT := 52.0
 
 var windows_layer: Control
@@ -21,10 +19,9 @@ var windows := {}
 var _icon_badge: Label
 var _taskbar_buttons := {}
 var _toast_box: VBoxContainer
-var _guide_box: PanelContainer
-## Steps the player folded, and folded-by-default hints the player opened.
-var _collapsed := {}
-var _expanded := {}
+## Notification cards by id, so a new one can slide in without rebuilding the rest.
+var _toast_cards := {}
+var _toast_tween: Tween
 var _sound_button: Button
 var _clock: Label
 var _start_menu: PopupMenu
@@ -79,18 +76,15 @@ func _ready() -> void:
 	windows_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
 	windows_layer.offset_bottom = -TASKBAR_HEIGHT
 	add_child(windows_layer)
-	_add_window("messenger", Rect2(132, 28, 460, 620), MessengerApp.new())
-	_add_window("tracker", Rect2(220, 16, 1000, 700), TrackerApp.new())
+	_add_window("messenger", Rect2(132, 28, 480, 680), MessengerApp.new())
 	_add_window("browser", Rect2(160, 10, 1140, 740), BrowserApp.new())
-	_add_window("notes", Rect2(760, 60, 540, 640), NotesApp.new())
-
-	_guide_box = PanelContainer.new()
-	_guide_box.name = "GuideNote"
-	add_child(_guide_box)
+	_add_window("notes", Rect2(300, 24, 860, 690), NotesApp.new())
 
 	_toast_box = Kit.vbox(8)
 	_toast_box.name = "Toasts"
 	_toast_box.custom_minimum_size = Vector2(360, 0)
+	# Wrapped text can leave the stack taller than its cards; keep them at the bottom.
+	_toast_box.alignment = BoxContainer.ALIGNMENT_END
 	add_child(_toast_box)
 
 	_build_taskbar()
@@ -98,8 +92,6 @@ func _ready() -> void:
 	DesktopSession.changed.connect(_sync)
 	DesktopSession.toasts_changed.connect(_render_toasts)
 	GameSession.changed.connect(_sync)
-	ShoplyStore.changed.connect(_render_guide)
-	WorkspaceSession.changed.connect(_render_guide)
 	resized.connect(_layout_overlays)
 	DesktopSession.set_delivery_enabled(true)
 	Sfx.start_ambience()
@@ -237,145 +229,80 @@ func _sync() -> void:
 		button.set_pressed_no_signal(false)
 		button.add_theme_stylebox_override("normal", Kit.style(P.ACCENT_SOFT if DesktopSession.is_visible_app(app) else P.SURFACE, P.ACCENT if DesktopSession.focused_app == app else P.BORDER, 6, 12, 7))
 	var active := GameSession.active_ticket_id()
-	windows["tracker"].set_subtitle(Kit.tf("%s in testing", active) if active != "" else "")
-	_render_guide()
+	windows["notes"].set_subtitle(Kit.tf("%s in testing", active) if active != "" else "")
 
 
 func _layout_overlays() -> void:
-	_toast_box.position = Vector2(size.x - 376, size.y - TASKBAR_HEIGHT - 16 - _toast_box.size.y)
-	_guide_box.position = Vector2(16, size.y - TASKBAR_HEIGHT - 16 - _guide_box.size.y)
+	if _toast_tween != null and _toast_tween.is_running():
+		return
+	_toast_box.reset_size()
+	_toast_box.position = _toast_target()
+
+
+## Notifications sit in the bottom-right corner, just above the taskbar.
+func _toast_target() -> Vector2:
+	return Vector2(size.x - 376, size.y - TASKBAR_HEIGHT - 16 - _toast_box.size.y)
 
 
 func _render_toasts() -> void:
-	Kit.clear(_toast_box)
+	var ids: Array = DesktopSession.toasts.map(func(toast): return toast["id"])
+	for id in _toast_cards.keys():
+		if not ids.has(id):
+			var gone: Control = _toast_cards[id]
+			_toast_cards.erase(id)
+			_toast_box.remove_child(gone)
+			gone.queue_free()
+	var fresh: Array = []
 	for toast in DesktopSession.toasts:
-		var card := Kit.panel(P.SURFACE, P.BORDER_STRONG, 8, 12)
-		var row := Kit.hbox(8)
-		card.add_child(row)
-		var text_column := Kit.vbox(2)
-		text_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var title := Kit.heading(toast["title"], 15)
-		text_column.add_child(title)
-		var body := Kit.label(toast["text"], 14, P.MUTED)
-		body.max_lines_visible = 2
-		text_column.add_child(body)
-		row.add_child(text_column)
-		var id: int = toast["id"]
-		var app: String = toast.get("app", "")
-		var open := Kit.link("Open", func():
-			if app != "":
-				DesktopSession.open_app(app)
-			DesktopSession.dismiss_toast(id))
-		row.add_child(open)
-		row.add_child(Kit.link("×", func(): DesktopSession.dismiss_toast(id)))
-		_toast_box.add_child(card)
+		if not _toast_cards.has(toast["id"]):
+			var card := _toast_card(toast)
+			_toast_box.add_child(card)
+			_toast_cards[toast["id"]] = card
+			fresh.append(card)
 	_toast_box.reset_size()
-	_layout_overlays.call_deferred()
-
-
-## Picks the sticky-note step: workstation steps first, then the Scenario guide.
-## From T03 on, Scenario hints start folded until the player asks for them.
-func guide_step() -> Dictionary:
-	var focus := GameSession.focus_ticket_id()
-	var scenario: Variant = GameSession.scenario(focus)
-	var guide: Variant = scenario.get("guide", null) if scenario != null else null
-	var log := DesktopSession.messenger_log()
-	var caught_up: bool = log["delivered"] >= log["entries"].size()
-	var pending: Variant = log["pendingDeduction"]
-	var discovery: Variant = log["pendingDiscovery"]
-	var label: String = guide["label"] if guide != null else "Guide"
-	var folded: bool = guide != null and guide.get("hintMode", "always") == "on_request"
-	var status := GameSession.ticket_status(focus) if focus != "" else ""
-
-	if pending != null and caught_up and pending.get("mode", "") == "board":
-		return { "note": "Case notes", "label": "Case File", "title": "Connect the clues.",
-			"instruction": "Open the Case File in QA Tracker, pick the clues that prove it, and choose a conclusion.",
-			"action": "Open Case File", "run": _open_case_file, "folded": false }
-	if pending != null and caught_up:
-		return { "note": "Case notes", "label": "Team chat", "title": "The team is waiting for your answer.",
-			"instruction": "Open Messenger, read the debrief, and reply with your conclusion.",
-			"action": "Open Messenger", "run": func(): DesktopSession.open_app("messenger"), "folded": false }
-	if discovery != null and caught_up:
-		var owner: Variant = _discovery_owner(discovery["documentId"])
-		var owner_folded: bool = owner != null and owner.get("guide", {}).get("hintMode", "always") == "on_request"
-		var leads: Array = GameState.leads_for(GameSession.state, owner["ticket"]["id"]) if owner != null else []
-		if not leads.is_empty():
-			return { "note": "Case notes", "label": "Find the record", "title": "The team needs a record from the intranet.",
-				"instruction": Kit.tf("The console gave you a lead: %s. Search the intranet for it.", leads[0]),
-				"action": "Search for the lead", "run": DesktopSession.search_intranet.bind(leads[0]), "folded": owner_folded }
-		return { "note": "Case notes", "label": "Find the record", "title": "The team needs a record from the intranet.",
-			"instruction": discovery["hint"], "action": "Open intranet search",
-			"run": func(): DesktopSession.open_url("https://search.nothingwrong.local"), "folded": owner_folded }
-	if guide == null:
-		return {}
-	if log["unread"] > 0:
-		return { "note": label, "label": "New message", "title": "You have a new message.",
-			"instruction": "Open Messenger to read your briefing.",
-			"action": "Open Messenger", "run": func(): DesktopSession.open_app("messenger"), "folded": false }
-	if status == "NEW" or status == "ACCEPTED":
-		return { "note": label, "label": "Accept the Ticket", "title": Kit.tf("%s is waiting in QA Tracker.", focus),
-			"instruction": "Open QA Tracker, read the requirements, and select Start test.",
-			"action": "Open QA Tracker", "run": func(): DesktopSession.show_ticket(focus), "folded": folded }
-	if status == "TESTING" and guide.has("workspace"):
-		var step: Variant = Guide.resolve_step(guide["workspace"], DesktopSession.qa_context())
-		if step != null:
-			return { "note": label, "label": step["label"], "title": step["title"], "instruction": step["instruction"], "folded": folded }
-	return {}
-
-
-func _discovery_owner(document_id: String) -> Variant:
-	for scenario in GameSession.catalog.scenarios:
-		if scenario.get("story", {}).get("discovery", {}).get("documentId", "") == document_id:
-			return scenario
-	return null
-
-
-func _open_case_file() -> void:
-	DesktopSession.tracker_view = "casefile"
-	DesktopSession.open_app("tracker")
-
-
-func _step_key(step: Dictionary) -> String:
-	return "%s|%s|%s" % [step["note"], step["label"], step["title"]]
-
-
-func _render_guide() -> void:
-	if not is_inside_tree():
-		return
-	Kit.clear(_guide_box)
-	var step := guide_step()
-	_guide_box.visible = not step.is_empty()
-	if step.is_empty():
-		return
-	_guide_box.add_theme_stylebox_override("panel", Kit.style(P.STICKY, Color("#e6d27a"), 4, 14, 12))
-	var key := _step_key(step)
-	var collapsed: bool = _collapsed.has(key) or (step.get("folded", false) and not _expanded.has(key))
-	if collapsed:
-		_guide_box.custom_minimum_size = Vector2.ZERO
-		var tab_text: String = Kit.t("Need a hint?") if step.get("folded", false) else Kit.t(step["note"])
-		_guide_box.add_child(Kit.link("📌 %s" % tab_text, func():
-			_collapsed.erase(key)
-			_expanded[key] = true
-			_render_guide()))
+	if fresh.is_empty():
+		_layout_overlays.call_deferred()
 	else:
-		_guide_box.custom_minimum_size = Vector2(340, 0)
-		var column := Kit.vbox(6)
-		_guide_box.add_child(column)
-		var header := Kit.hbox(6)
-		var tag := Kit.kicker("📌 %s · %s" % [Kit.t(step["note"]), Kit.t(step["label"])], P.STICKY_TEXT)
-		tag.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		header.add_child(tag)
-		header.add_child(Kit.link("–", func():
-			_expanded.erase(key)
-			_collapsed[key] = true
-			_render_guide()))
-		column.add_child(header)
-		for line in [Kit.heading(step["title"], 16, P.STICKY_TEXT), Kit.label(step["instruction"], 14, P.STICKY_TEXT)]:
-			# A known wrap width keeps the note from measuring itself one word per line.
-			line.custom_minimum_size = Vector2(312, 0)
-			column.add_child(line)
-		if step.has("action"):
-			column.add_child(Kit.link("%s →" % Kit.t(step["action"]), step["run"]))
-	_guide_box.size = Vector2.ZERO
-	_guide_box.reset_size()
-	_layout_overlays.call_deferred()
+		_slide_in.call_deferred(fresh)
+
+
+func _toast_card(toast: Dictionary) -> Control:
+	var card := Kit.panel(P.SURFACE, P.BORDER_STRONG, 8, 12)
+	card.name = "Toast%d" % toast["id"]
+	var row := Kit.hbox(8)
+	card.add_child(row)
+	var text_column := Kit.vbox(2)
+	text_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_column.add_child(Kit.heading(toast["title"], 15))
+	var body := Kit.label(toast["text"], 14, P.MUTED)
+	body.max_lines_visible = 2
+	text_column.add_child(body)
+	row.add_child(text_column)
+	var id: int = toast["id"]
+	var app: String = toast.get("app", "")
+	row.add_child(Kit.link("Open", func():
+		if app != "":
+			DesktopSession.open_app(app)
+		DesktopSession.dismiss_toast(id)))
+	row.add_child(Kit.link("×", func(): DesktopSession.dismiss_toast(id)))
+	return card
+
+
+## New notifications rise from behind the taskbar and fade in, pushing older ones up.
+func _slide_in(fresh: Array) -> void:
+	_toast_box.reset_size()
+	var target := _toast_target()
+	var rise := 0.0
+	for card in fresh:
+		if is_instance_valid(card):
+			rise += maxf(card.size.y, card.get_combined_minimum_size().y) + 8.0
+			card.modulate.a = 0.0
+	if _toast_tween != null:
+		_toast_tween.kill()
+	_toast_box.position = target + Vector2(0, rise)
+	_toast_tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_toast_tween.tween_property(_toast_box, "position", target, 0.35)
+	for card in fresh:
+		if is_instance_valid(card):
+			_toast_tween.tween_property(card, "modulate:a", 1.0, 0.3)
+	_toast_tween.chain().tween_callback(_layout_overlays)
