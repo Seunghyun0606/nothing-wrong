@@ -51,6 +51,7 @@ func test_key_terms_are_marked_bold() -> void:
 	check_eq(KeyTerms.find("COMMUNITY_PARTNER_OVERRIDE and the COMMUNITY tier"), ["COMMUNITY_PARTNER_OVERRIDE", "COMMUNITY"], "a constant is one term")
 	check_eq(KeyTerms.find("from \"release/*\" to \"release/*, exp/*, promo/*\" at 02:14"), ["release/*", "release/*", "exp/*", "promo/*", "02:14"], "branch patterns and times")
 	check_eq(KeyTerms.find("Check the read-only cross-system view"), [], "ordinary words stay plain")
+	check_eq(KeyTerms.find("shows $24 instead of $24.00, and $1,240.00 on 2021-10-17"), ["$24", "$24.00", "$1,240.00", "2021-10-17"], "money keeps its cents; ISO dates count")
 	check_eq(KeyTerms.mark("RC3 [draft]"), "[b]RC3[/b] [lb]draft]", "BBCode in the text is escaped")
 
 

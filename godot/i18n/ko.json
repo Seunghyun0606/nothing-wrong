@@ -1521,7 +1521,6 @@
   "Compare the deduction lines in the details and the summary.": "상세와 요약의 공제 항목을 비교해 보세요.",
   "Here's the answer: the summary is missing the Community Contribution line. Note its Target amount and report it with REQ-T15-01.": "정답을 알려줄게요. 요약에 Community Contribution 항목이 빠졌어요. Target 금액을 기록하고 REQ-T15-01과 함께 보고하세요.",
   "You can inspect three areas. What you inspect is what you can attach.": "영역은 세 곳까지 점검할 수 있어요. 점검한 것만 첨부할 수 있어요.",
-  "You have three area inspections left in the validation budget. Whatever you didn't inspect, you can't attach.": "검증 예산으로 영역 점검이 세 번 남았어요. 점검하지 않은 건 첨부할 수 없어요.",
   "Inspect": "점검",
   "Inspect (%d left)": "점검 (%d회 남음)",
   "Inspected": "점검함",
@@ -1532,5 +1531,8 @@
   "Direct messages": "다이렉트 메시지",
   "Direct message · %s": "다이렉트 메시지 · %s",
   "The team is waiting for you in %s.": "%s에서 팀이 기다리고 있어요.",
-  "Go to %s": "%s 열기"
+  "Go to %s": "%s 열기",
+  "%s · %s · past due": "%s · %s · 마감 지남",
+  "The validation budget covers three area inspections. Whatever you didn't inspect, you can't attach.": "검증 예산으로 점검할 수 있는 영역은 세 곳이에요. 점검하지 않은 건 첨부할 수 없어요.",
+  "(not inspected)": "(점검 안 함)"
 }

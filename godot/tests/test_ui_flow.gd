@@ -159,6 +159,15 @@ func test_no_issue_found_on_a_defective_ticket_is_a_missed_bug() -> void:
 	_finish()
 
 
+## The conversations Messenger offers, from its picker (the list folds into it when narrow).
+func _conversations(desktop: Control) -> Array:
+	var picker := find_named(desktop, "ConversationPicker") as OptionButton
+	var names: Array = []
+	for index in picker.item_count:
+		names.append(picker.get_item_text(index).split("  (")[0])
+	return names
+
+
 func test_full_story() -> void:
 	var desktop := _start()
 	_accept(desktop, "T01")
@@ -270,7 +279,7 @@ func test_full_story() -> void:
 	_find_record(desktop, "WS-14", "DOC-ASSET-REGISTER")
 	DesktopSession.open_app("messenger")
 	check_eq((find_named(desktop, "ChannelName") as Label).text, "Mina Seo", "Mina asks about Leo in a direct message")
-	check(find_button(find_named(desktop, "Conversations"), "# shoply-autumn-release") != null, "the channel stays in the list")
+	check(_conversations(desktop).has("# shoply-autumn-release"), "the channel stays in the list")
 	check(press(desktop, "Open Case File and connect the clues"), "the finale is on the board")
 	_deduce(desktop, { "who": "Leo Ortiz", "where": "WS-14", "what": "exp/retention-push" })
 	DesktopSession.open_app("messenger")
@@ -506,11 +515,15 @@ func test_full_story() -> void:
 
 	DesktopSession.show_chat("# oh-source-data")
 	check_eq((find_named(desktop, "ChannelName") as Label).text, "# oh-source-data", "an older conversation can be reread")
-	check(press(find_named(desktop, "Conversations"), "# oh-benefits-settlement"), "back to the newest conversation")
+	DesktopSession.show_chat("# oh-benefits-settlement")
+	check_eq(DesktopSession.chat_pinned, "", "picking the newest conversation follows the chat again")
 	_accept(desktop, "T28")
-	check(find_button(find_named(desktop, "Conversations"), "Alex Han") != null, "Alex writes in private")
+	check(_conversations(desktop).has("Alex Han"), "Alex writes in private")
+	DesktopSession.open_report()
+	var half_written := find_named(desktop, "ReportComposer")
 	DesktopSession.show_chat("@Alex Han")
 	check(press(desktop, "Go to # oh-benefits-settlement"), "the composer points back to where the report is due")
+	check(half_written != null and find_named(desktop, "ReportComposer") == half_written, "a half-written report survives a look at another conversation")
 	check_eq((find_named(desktop, "ChannelName") as Label).text, "# oh-benefits-settlement", "back in the channel")
 	_address(desktop, "qa.onehorizon.local/benefit-codes")
 	_note(desktop, "benefit-codes.DB-01.target.description")

@@ -14,11 +14,16 @@ const DeductionForm := preload("res://scripts/ui/apps/deduction_form.gd")
 const StoryClock := preload("res://scripts/domain/story_clock.gd")
 const MessengerLog := preload("res://scripts/domain/messenger_log.gd")
 
-const LIST_WIDTH := 260
+const LIST_WIDTH := 240
+## Narrower than this, the conversation list folds into a picker above the chat.
+const COMPACT_WIDTH := 640
 
 var _scroll: ScrollContainer
 var _chats_box: VBoxContainer
 var _list: VBoxContainer
+var _sidebar: Control
+var _picker: OptionButton
+var _picker_ids: Array = []
 var _composer: VBoxContainer
 var _channel_name: Label
 var _channel_members: Label
@@ -42,12 +47,12 @@ func _ready() -> void:
 	var layout := Kit.hbox(0)
 	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	add_child(layout)
-	var sidebar := Kit.panel(Color("#eef1f5"), Color.TRANSPARENT, 0, 0)
-	sidebar.custom_minimum_size = Vector2(LIST_WIDTH, 0)
+	_sidebar = Kit.panel(Color("#eef1f5"), Color.TRANSPARENT, 0, 0)
+	_sidebar.custom_minimum_size = Vector2(LIST_WIDTH, 0)
 	_list = Kit.vbox(2)
 	_list.name = "Conversations"
-	sidebar.add_child(Kit.scroll(Kit.margin(_list, 8, 12, 8, 12)))
-	layout.add_child(sidebar)
+	_sidebar.add_child(Kit.scroll(Kit.margin(_list, 8, 12, 8, 12)))
+	layout.add_child(_sidebar)
 	var column := Kit.vbox(0)
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -55,7 +60,9 @@ func _ready() -> void:
 	layout.add_child(column)
 
 	var channel := Kit.panel(P.SUBTLE, Color.TRANSPARENT, 0, 12)
+	var header := Kit.hbox(10)
 	var channel_text := Kit.vbox(2)
+	channel_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_channel_name = Kit.heading("", 16)
 	_channel_name.name = "ChannelName"
 	_channel_name.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
@@ -63,8 +70,17 @@ func _ready() -> void:
 	_channel_members = Kit.label("", 13, P.MUTED)
 	_channel_members.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	channel_text.add_child(_channel_members)
-	channel.add_child(channel_text)
+	header.add_child(channel_text)
+	_picker = OptionButton.new()
+	_picker.name = "ConversationPicker"
+	_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	_picker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_picker.visible = false
+	_picker.item_selected.connect(func(index): DesktopSession.show_chat(_picker_ids[index]))
+	header.add_child(_picker)
+	channel.add_child(header)
 	column.add_child(channel)
+	resized.connect(_fit)
 
 	_chats_box = Kit.vbox(0)
 	_chats_box.name = "TeamChat"
@@ -104,16 +120,33 @@ func _render() -> void:
 	if signature == _signature:
 		return
 	_signature = signature
-	_follow = true
 	_render_list(log, current)
 	_render_channel(log, current)
 	_render_chats(log, current)
 	_render_composer(log, current, active)
-	_scroll_to_end.call_deferred()
+	if _follow:
+		_scroll_to_end.call_deferred()
+
+
+func _fit() -> void:
+	# Before the first layout the width is still 0; keep the list until it is known.
+	var compact := size.x > 0 and size.x < COMPACT_WIDTH
+	_sidebar.visible = not compact
+	_picker.visible = compact and _picker.item_count > 1
 
 
 ## Every conversation the story has opened, newest first; channels, then direct messages.
+## A narrow window lists them in the picker instead.
 func _render_list(log: Dictionary, current: String) -> void:
+	_picker.clear()
+	_picker_ids = []
+	for conversation in log["conversations"]:
+		var unread := int(log["unreadIn"].get(conversation, 0))
+		_picker.add_item(MessengerLog.conversation_name(conversation) + ("  (%d)" % unread if unread > 0 else ""))
+		_picker_ids.append(conversation)
+		if conversation == current:
+			_picker.select(_picker.item_count - 1)
+	_fit()
 	Kit.clear(_list)
 	for direct in [false, true]:
 		var conversations: Array = log["conversations"].filter(func(each): return MessengerLog.is_direct(each) == direct)
@@ -195,6 +228,8 @@ func _render_chats(log: Dictionary, current: String) -> void:
 				divider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				chat["box"].add_child(divider)
 			chat["box"].add_child(_entry(entry))
+			if conversation == current:
+				_follow = true
 			chat["ids"].append(entry["id"])
 	for conversation in _chats:
 		_chats[conversation]["box"].visible = conversation == current
@@ -237,7 +272,7 @@ func _render_composer(log: Dictionary, current: String, active: String) -> void:
 	var waiting_in: String = log["pendingIn"]
 	if waiting_in == "" and active != "":
 		waiting_in = MessengerLog.conversation_of(GameSession.catalog, GameSession.scenario(active))
-	if waiting_in != "" and waiting_in != current and (discovery != null or pending != null or active != "") and delivered >= entries.size():
+	if waiting_in != "" and waiting_in != current and (discovery != null or pending != null or active != ""):
 		var row := Kit.hbox(8)
 		row.add_child(Kit.label(Kit.tf("The team is waiting for you in %s.", MessengerLog.conversation_name(waiting_in)), 13, P.WARNING))
 		var go := Kit.button(Kit.tf("Go to %s", MessengerLog.conversation_name(waiting_in)), DesktopSession.show_chat.bind(waiting_in))
@@ -286,7 +321,7 @@ func _render_composer(log: Dictionary, current: String, active: String) -> void:
 		_report_form.refresh()
 	else:
 		_composer.add_child(Kit.label("The team is typing…" if delivered < entries.size() else "No reply needed right now.", 13, P.MUTED))
-	if _report_form != null and _report_form.get_parent() != _composer:
+	if _report_form != null and _report_form.get_parent() != _composer and (active == "" or _report_form.ticket_id != active):
 		_drop_report_form()
 
 
@@ -310,6 +345,12 @@ func _render_channel(log: Dictionary, current: String) -> void:
 		return
 	members.append(Kit.t("you"))
 	_channel_members.text = ", ".join(members)
+
+
+## The kept report form is not in the tree while another conversation is on screen.
+func _exit_tree() -> void:
+	if _report_form != null and _report_form.get_parent() == null:
+		_report_form.free()
 
 
 func _drop_report_form() -> void:

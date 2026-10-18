@@ -78,7 +78,7 @@ func _ready() -> void:
 	windows_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
 	windows_layer.offset_bottom = -TASKBAR_HEIGHT
 	add_child(windows_layer)
-	_add_window("messenger", Rect2(132, 28, 480, 680), MessengerApp.new())
+	_add_window("messenger", Rect2(132, 28, 780, 680), MessengerApp.new())
 	_add_window("browser", Rect2(160, 10, 1140, 740), BrowserApp.new())
 	_add_window("notes", Rect2(300, 24, 860, 690), NotesApp.new())
 
@@ -219,8 +219,14 @@ func _tick() -> void:
 	if at < 0:
 		_deadline.text = ""
 		return
+	var when := "%s %s" % [Kit.t(StoryClock.day_of(at)), StoryClock.hhmm(at)]
+	# Deadlines are absolute; once the chat runs past one, the chapter ends late.
+	if now >= at:
+		_deadline.text = Kit.tf("%s · %s · past due", [Kit.t(deadline["label"]), when])
+		_deadline.add_theme_color_override("font_color", P.DANGER)
+		return
 	var hours := StoryClock.hours_until(now, at)
-	_deadline.text = Kit.tf("%s · %s · %dh left", [Kit.t(deadline["label"]), "%s %s" % [Kit.t(StoryClock.day_of(at)), StoryClock.hhmm(at)], hours])
+	_deadline.text = Kit.tf("%s · %s · %dh left", [Kit.t(deadline["label"]), when, hours])
 	_deadline.add_theme_color_override("font_color", P.DANGER if hours <= 3 else (P.WARNING if hours <= 24 else P.MUTED))
 
 

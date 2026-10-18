@@ -67,7 +67,8 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
   come as direct messages (`channel` on a chapter, story, message, or deduction in
   `data/scenarios.json`). Messenger lists the conversations the story has opened with
   unread badges, follows the newest message until the player picks another one, and
-  points the composer to the conversation where the team is waiting.
+  points the composer to the conversation where the team is waiting. A narrow window
+  folds the list into a picker above the chat.
 - **Key terms:** chat messages and clue cards show record IDs, codes, dates, times, and
   the names in `data/key_terms.json` in bold (`scripts/domain/key_terms.gd`).
 - **Text input:** the window's IME is switched on whenever a text field takes focus

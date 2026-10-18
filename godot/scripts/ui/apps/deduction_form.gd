@@ -67,7 +67,7 @@ func _sentence() -> Control:
 				pick.add_item(Kit.t(option))
 			else:
 				# Some answers need groundwork first (the Final's inspections).
-				pick.add_item("%s %s" % [Kit.t(option), Kit.t("(inspect first)")])
+				pick.add_item("%s %s" % [Kit.t(option), Kit.t("(inspect first)" if _can_still_inspect(option) else "(not inspected)")])
 				pick.set_item_disabled(pick.item_count - 1, true)
 		pick.item_selected.connect(func(index):
 			if index == 0:
@@ -94,6 +94,16 @@ func _allowed(option: String) -> bool:
 		return true
 	var done: Array = GameSession.state["story"].get("inspected", {}).get(needs["view"], [])
 	return needs["keys"].all(func(key): return done.has(key))
+
+
+## Whether the inspections an option needs can still be made within the view's budget.
+func _can_still_inspect(option: String) -> bool:
+	var needs: Dictionary = deduction.get("optionRequires", {}).get(option, {})
+	var view: Variant = GameSession.horizon.get_view(needs.get("view", ""))
+	var budget := int(view.get("inspect", {}).get("budget", 0)) if view != null else 0
+	var done: Array = GameSession.state["story"].get("inspected", {}).get(needs.get("view", ""), [])
+	var missing: Array = needs.get("keys", []).filter(func(key): return not done.has(key))
+	return done.size() + missing.size() <= budget
 
 
 ## Chooses an option for a blank, as picking it from the drop-down does.

@@ -421,7 +421,8 @@ func messenger_log() -> Dictionary:
 	var read_in: Dictionary = story.get("readIn", {})
 	var read_until := {}
 	for conversation in read_in:
-		read_until[conversation] = _position_after(entries, str(read_in[conversation]), legacy_read)
+		# A read marker the story no longer has counts as read up to now.
+		read_until[conversation] = _position_after(entries, str(read_in[conversation]), delivered)
 	var conversations: Array = []
 	var unread_in := {}
 	var unread := 0
