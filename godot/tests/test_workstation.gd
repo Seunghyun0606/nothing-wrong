@@ -53,6 +53,11 @@ func _content_strings() -> Array:
 		add.call(chapter["title"])
 		add.call(chapter["synopsis"])
 		add.call(chapter.get("deadline", {}).get("label"))
+		add.call(chapter.get("defaultEnding"))
+		for ending in chapter.get("endings", []):
+			add.call(ending["title"])
+			for message in ending["epilogue"]:
+				add.call(message["text"])
 		add.call(chapter["synopsis"])
 		for message in chapter["epilogue"]:
 			add.call(message["text"])

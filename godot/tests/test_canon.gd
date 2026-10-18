@@ -48,7 +48,8 @@ func _texts_by_chapter() -> Dictionary:
 		add.call(chapter, scenario["expectedBugs"])
 		add.call(chapter, scenario["mutations"])
 	for chapter in catalog.chapters:
-		add.call(chapter["id"], [chapter["title"], chapter["synopsis"], chapter["epilogue"], chapter.get("lateEpilogue", [])])
+		add.call(chapter["id"], [chapter["title"], chapter["synopsis"], chapter["epilogue"], chapter.get("lateEpilogue", []),
+			chapter.get("endings", []), chapter.get("defaultEnding", "")])
 	for view in horizon["views"]:
 		add.call(chapter_of_ticket.get(view["ticket"], "CH1"), view)
 	for document in intranet["documents"]:

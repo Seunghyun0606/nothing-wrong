@@ -2123,6 +2123,420 @@
           }
         }
       ]
+    },
+    {
+      "id": "archive-cases",
+      "ticket": "T34",
+      "system": "Document Archive · migration (QA role ARCHIVE_VIEWER)",
+      "title": "Internal-control cases · 2021",
+      "mode": "table",
+      "keyLabel": "Case",
+      "columns": [
+        {
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "id": "owner",
+          "label": "Owner"
+        },
+        {
+          "id": "created",
+          "label": "Created"
+        },
+        {
+          "id": "closed",
+          "label": "Closed"
+        },
+        {
+          "id": "closure",
+          "label": "Closure reason"
+        },
+        {
+          "id": "preview",
+          "label": "Attachment preview"
+        }
+      ],
+      "note": "ARCHIVE_VIEWER may preview attachments of cases in migration scope (all 2021 internal-control cases). Case bodies are not shown.",
+      "console": [
+        "info: permission rule ARCHIVE_VIEWER evaluated for 3 cases",
+        "warn: preview refused: ERR_SCOPE for 1 case"
+      ],
+      "rows": [
+        {
+          "key": "CASE-2021-0412",
+          "values": {
+            "title": "Travel policy exceptions Q1",
+            "owner": "a.lim",
+            "created": "2021-04-12",
+            "closed": "2021-06-30",
+            "closure": "Resolved",
+            "preview": "ALLOWED"
+          }
+        },
+        {
+          "key": "CASE-2021-0907",
+          "values": {
+            "title": "Duplicate expense claims SEA-02",
+            "owner": "r.holt",
+            "created": "2021-09-07",
+            "closed": "2021-09-29",
+            "closure": "Resolved",
+            "preview": "ALLOWED"
+          }
+        },
+        {
+          "key": "CASE-2021-1012",
+          "values": {
+            "title": "Irregular Vendor and Foundation Transactions",
+            "owner": "d.park",
+            "created": "2021-10-12",
+            "closed": "2021-10-18",
+            "closure": "Owner unavailable · closed administratively",
+            "preview": "DENIED (ERR_SCOPE)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "archive-attachments",
+      "ticket": "T35",
+      "system": "Document Archive · attachment previews",
+      "title": "CASE-2021-1012 · attachments",
+      "mode": "table",
+      "keyLabel": "Attachment",
+      "columns": [
+        {
+          "id": "file",
+          "label": "File"
+        },
+        {
+          "id": "taken",
+          "label": "Taken (camera clock)"
+        },
+        {
+          "id": "exif",
+          "label": "EXIF orientation"
+        },
+        {
+          "id": "orientation",
+          "label": "Preview"
+        },
+        {
+          "id": "content",
+          "label": "Content (alt text)",
+          "wide": true
+        }
+      ],
+      "note": "Previews only. Faces are tagged by CMS face match and are not verified.",
+      "console": [
+        "info: preview renderer v2 loaded 2 attachments"
+      ],
+      "rows": [
+        {
+          "key": "ATT-1012-01",
+          "values": {
+            "file": "vendor_summary.pdf",
+            "taken": "—",
+            "exif": "—",
+            "orientation": "Upright",
+            "content": "A list of vendor contracts under review: titles only."
+          }
+        },
+        {
+          "key": "ATT-1012-02",
+          "values": {
+            "file": "IMG007 · ridge_terrace.jpg",
+            "taken": "2021-10-17 21:40",
+            "exif": "6 (upright when rotated)",
+            "orientation": "Rotated 90°",
+            "content": "Daniel Park, Grace Yoon, Samuel Kwon, and a man in a Foundation security jacket (badge FS-01), on the terrace of Building B."
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-timeline",
+      "ticket": "T36",
+      "system": "Horizon Ridge · joined access timeline",
+      "title": "Timeline · 17–18 October 2021",
+      "mode": "compare",
+      "keyLabel": "Log",
+      "columns": [
+        {
+          "id": "event",
+          "label": "Event"
+        },
+        {
+          "id": "time",
+          "label": "Time"
+        }
+      ],
+      "note": "Source: raw logs in UTC. Target: the timeline display, which should show site local time (UTC−7).",
+      "console": [
+        "info: 5 logs joined",
+        "info: timezone conversion applied to badge, alarm, medical, transfer logs"
+      ],
+      "rows": [
+        {
+          "key": "BADGE-B",
+          "source": {
+            "event": "Badge E-18419 · Building B entry (no exit recorded)",
+            "time": "2021-10-18 05:48 UTC"
+          },
+          "target": {
+            "event": "Badge E-18419 · Building B entry (no exit recorded)",
+            "time": "2021-10-17 22:48"
+          }
+        },
+        {
+          "key": "ALARM",
+          "source": {
+            "event": "Fire alarm · Building A",
+            "time": "2021-10-18 06:06 UTC"
+          },
+          "target": {
+            "event": "Fire alarm · Building A",
+            "time": "2021-10-17 23:06"
+          }
+        },
+        {
+          "key": "MED-EVENT",
+          "source": {
+            "event": "Medical event · Building A, east stairwell",
+            "time": "2021-10-18 06:11 UTC"
+          },
+          "target": {
+            "event": "Medical event · Building A, east stairwell",
+            "time": "2021-10-17 23:11"
+          }
+        },
+        {
+          "key": "VEH-FS01",
+          "source": {
+            "event": "Foundation vehicle FS-01 · gate exit",
+            "time": "2021-10-18 06:18 UTC"
+          },
+          "target": {
+            "event": "Foundation vehicle FS-01 · gate exit",
+            "time": "2021-10-18 06:18"
+          }
+        },
+        {
+          "key": "TRANSFER",
+          "source": {
+            "event": "Hospital transfer",
+            "time": "2021-10-18 07:14 UTC"
+          },
+          "target": {
+            "event": "Hospital transfer",
+            "time": "2021-10-18 00:14"
+          }
+        }
+      ]
+    },
+    {
+      "id": "org-master",
+      "ticket": "T37",
+      "system": "Organization Master → public org tree",
+      "title": "Control chains",
+      "mode": "compare",
+      "keyLabel": "Company",
+      "columns": [
+        {
+          "id": "legal",
+          "label": "Legal parent"
+        },
+        {
+          "id": "chain",
+          "label": "Control chain",
+          "wide": true
+        }
+      ],
+      "note": "Source: Organization Master. Target: the public org tree. Control means board seats and voting rights, not sole ownership.",
+      "console": [
+        "info: org tree display depth = 1 (config ORG_TREE_DEPTH)"
+      ],
+      "rows": [
+        {
+          "key": "HG-RETAIL",
+          "source": {
+            "legal": "Horizon Holdings",
+            "chain": "Horizon Group Retail (Shoply) → Horizon Holdings → Horizon Community Trust → Horizon Foundation"
+          },
+          "target": {
+            "legal": "Horizon Holdings",
+            "chain": "Horizon Group Retail (Shoply) → Horizon Holdings"
+          }
+        },
+        {
+          "key": "HORIZON-LIVING",
+          "source": {
+            "legal": "Horizon Holdings",
+            "chain": "Horizon Living → Horizon Holdings → Horizon Community Trust → Horizon Foundation"
+          },
+          "target": {
+            "legal": "Horizon Holdings",
+            "chain": "Horizon Living → Horizon Holdings"
+          }
+        },
+        {
+          "key": "HG-PEOPLE",
+          "source": {
+            "legal": "Horizon Holdings",
+            "chain": "Horizon People Services → Horizon Holdings → Horizon Community Trust → Horizon Foundation"
+          },
+          "target": {
+            "legal": "Horizon Holdings",
+            "chain": "Horizon People Services → Horizon Holdings"
+          }
+        }
+      ]
+    },
+    {
+      "id": "vendor-parents",
+      "ticket": "T38",
+      "system": "Organization Master · vendor and customer records",
+      "title": "Vendor parent chains",
+      "mode": "table",
+      "keyLabel": "Record",
+      "columns": [
+        {
+          "id": "name",
+          "label": "Name"
+        },
+        {
+          "id": "parent",
+          "label": "Legal parent"
+        },
+        {
+          "id": "control",
+          "label": "Controlling interest"
+        },
+        {
+          "id": "type",
+          "label": "Type"
+        }
+      ],
+      "note": "Control types: INDEPENDENT, INFLUENCE (board seats or voting rights), PARTNER (community partner agreement).",
+      "console": [
+        "info: 4 records validated against the control codebook"
+      ],
+      "rows": [
+        {
+          "key": "V-4001",
+          "values": {
+            "name": "OfficeLine",
+            "parent": "OfficeLine Inc.",
+            "control": "—",
+            "type": "INDEPENDENT"
+          }
+        },
+        {
+          "key": "V-5120",
+          "values": {
+            "name": "MedSupply North",
+            "parent": "MedSupply Group",
+            "control": "—",
+            "type": "INDEPENDENT"
+          }
+        },
+        {
+          "key": "V-2201",
+          "values": {
+            "name": "Bright Future Consulting",
+            "parent": "—",
+            "control": "Horizon Community Trust (partner agreement)",
+            "type": "PARTNER"
+          }
+        },
+        {
+          "key": "V-6001",
+          "values": {
+            "name": "Northstar Quality Services",
+            "parent": "Northstar Services Holdings",
+            "control": "Horizon Community Trust (board seats)",
+            "type": "INFLUENCE"
+          }
+        }
+      ]
+    },
+    {
+      "id": "release-validation",
+      "ticket": "T39",
+      "system": "ONE HORIZON · release validation",
+      "title": "Release criteria",
+      "mode": "table",
+      "keyLabel": "Area",
+      "columns": [
+        {
+          "id": "result",
+          "label": "Result"
+        },
+        {
+          "id": "blocking",
+          "label": "Blocking defects"
+        },
+        {
+          "id": "open",
+          "label": "Open findings (non-blocking)",
+          "wide": true
+        }
+      ],
+      "note": "Release criteria: every area PASS with zero blocking defects. Non-blocking findings are tracked by their owners.",
+      "console": [
+        "info: validation suite 6/6 PASS"
+      ],
+      "rows": [
+        {
+          "key": "Identity",
+          "values": {
+            "result": "PASS",
+            "blocking": "0",
+            "open": "DATA_INTEGRITY · P-004217 (Historical Exception · G. Yoon)"
+          }
+        },
+        {
+          "key": "Payroll",
+          "values": {
+            "result": "PASS",
+            "blocking": "0",
+            "open": "DATA_INTEGRITY · B-44210 (Known Issue · program office)"
+          }
+        },
+        {
+          "key": "Travel",
+          "values": {
+            "result": "PASS",
+            "blocking": "0",
+            "open": "—"
+          }
+        },
+        {
+          "key": "Procurement",
+          "values": {
+            "result": "PASS",
+            "blocking": "0",
+            "open": "Working as designed · COMMUNITY_PARTNER_OVERRIDE (Procurement Board)"
+          }
+        },
+        {
+          "key": "Medical",
+          "values": {
+            "result": "PASS",
+            "blocking": "0",
+            "open": "Transfer SKU-MD204 → HF-WELL-03 (CareBridge)"
+          }
+        },
+        {
+          "key": "Organization",
+          "values": {
+            "result": "PASS",
+            "blocking": "0",
+            "open": "DOC_GAP · CA-70, org tree depth (PeopleCore, Org Master)"
+          }
+        }
+      ]
     }
   ]
 }

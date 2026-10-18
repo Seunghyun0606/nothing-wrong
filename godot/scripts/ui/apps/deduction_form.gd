@@ -17,7 +17,7 @@ var _send: Button
 
 func setup(source: Dictionary) -> void:
 	deduction = source
-	board = source.get("mode", "") == "board"
+	board = source.get("mode", "") in ["board", "choice"]
 
 
 func _ready() -> void:

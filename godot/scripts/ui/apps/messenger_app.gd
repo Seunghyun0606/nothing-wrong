@@ -135,7 +135,7 @@ func _render() -> void:
 			for term in terms.slice(0, 1 if missed < 4 else terms.size()):
 				row.add_child(Kit.button("🔎 %s" % term, DesktopSession.search_intranet.bind(term)))
 			_composer.add_child(row)
-	elif pending != null and delivered >= entries.size() and pending.get("mode", "") == "board":
+	elif pending != null and delivered >= entries.size() and GameState.on_board(pending):
 		_composer.add_child(Kit.label(Kit.tf("%s is waiting for your answer. A wrong guess costs nothing.", pending["askedBy"]["from"]), 13, P.WARNING))
 		var board := Kit.primary(Kit.t("Open Case File and connect the clues"), DesktopSession.show_case_file)
 		board.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
@@ -289,6 +289,23 @@ func _entry(entry: Dictionary) -> Control:
 				body.add_child(Kit.label(Kit.tf("Clues: %s", ", ".join(clue_names)), 13, Color(1, 1, 1, 0.85)))
 			card.add_child(body)
 			return Kit.margin(card, 80, 0, 0, 0)
+		"ending":
+			# The release screen every ending closes on (canon: NW-FINAL).
+			var card := Kit.panel(Color("#0f1720"), Color.TRANSPARENT, 10, 22)
+			card.name = "EndingCard"
+			var body := Kit.vbox(6)
+			if str(entry.get("title", "")) != "":
+				var title := Kit.kicker(Kit.t(entry["title"]), Color("#f7c948"))
+				title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				body.add_child(title)
+			for index in entry["lines"].size():
+				var last: bool = index == entry["lines"].size() - 1
+				var text := Kit.heading(entry["lines"][index], 30 if last else 15, Color.WHITE if last else Color("#cbd2d9"))
+				text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				text.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+				body.add_child(text)
+			card.add_child(body)
+			return card
 		_:
 			var system := Kit.panel(P.SUCCESS_SOFT, P.SUCCESS, 14, 8)
 			var text := Kit.heading(Kit.tf("%s complete.", Kit.t(entry["chapterTitle"])) if entry.has("chapterTitle") else entry["text"], 14, P.SUCCESS)

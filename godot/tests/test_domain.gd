@@ -71,6 +71,22 @@ func test_a_late_finale_changes_how_the_chapter_ends() -> void:
 	check(str(lines[1]["text"]).contains("missed code freeze"), "Mina says what it cost")
 
 
+func test_the_final_choice_decides_the_ending() -> void:
+	var catalog := _catalog()
+	var final_chapter: Dictionary = catalog.get_chapter("FINAL")
+	var deduction: Dictionary = catalog.get_scenario("T39")["story"]["deduction"]
+	var ending := func(filled: Dictionary) -> String:
+		var state := GameState.answer_deduction(GameState.create_initial(catalog.ticket_ids()), deduction, filled)
+		return str(MessengerLog.ending_for(final_chapter, state["story"]["deductions"][deduction["id"]]).get("id", "default"))
+	var formal: String = deduction["blanks"]["route"]["options"][0]
+	var chain: String = deduction["blanks"]["evidence"]["options"][0]
+	check_eq(ending.call({ "decision": "HOLD", "route": formal, "evidence": chain }), "escalate", "hold, the formal channel, and the full chain")
+	check_eq(ending.call({ "decision": "HOLD", "route": formal, "evidence": "my own suspicions" }), "default", "too little evidence: working as intended")
+	check_eq(ending.call({ "decision": "SHIP", "route": "nobody", "evidence": chain }), "default", "ship: working as intended")
+	check_eq(ending.call({ "decision": "HOLD", "route": "a journalist, off the record", "evidence": chain }), "removed", "a leak takes you off the project")
+	check(GameState.check_deduction(deduction, { "decision": "SHIP", "route": "nobody", "evidence": "the photos" })["correct"], "a choice has no wrong answer")
+
+
 func test_a_ticket_with_two_defects_needs_both_reported() -> void:
 	var state := GameState.start_ticket(GameState.create_initial(_catalog().ticket_ids()), "T11", 1)
 	state = GameState.apply_review(state, { "id": "R1", "ticketId": "T11", "kind": "BUG" }, { "valid": true, "matchedBugId": "BUG-T11-001", "partial": true }, {}, 2)

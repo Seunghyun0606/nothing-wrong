@@ -1,5 +1,5 @@
 ## Derives the team chat from Game State. Port of messengerLog.ts.
-## Entry kinds: message, ticket, report, found, clue, player, system.
+## Entry kinds: message, ticket, report, found, clue, player, system, ending.
 ## Reports are the player's messages to the Ticket's sender; a miss gets a reply with a
 ## hint, and enough misses bring the team's help (story.assist).
 ## After a debrief the chat pauses until the player finds the record it points to,
@@ -116,13 +116,32 @@ static func _build(catalog: RefCounted, state: Dictionary) -> Dictionary:
 
 		var chapter: Variant = catalog.get_chapter(story["chapterId"])
 		if chapter != null and chapter["finaleDeductionId"] == deduction["id"]:
-			for index in chapter["epilogue"].size():
-				var line := _message("%s:epilogue:%d" % [chapter["id"], index], chapter["epilogue"][index])
+			var ending := ending_for(chapter, progress)
+			var lines: Array = ending.get("epilogue", chapter["epilogue"])
+			for index in lines.size():
+				var line := _message("%s:epilogue:%d" % [chapter["id"], index], lines[index])
 				line["epilogueOf"] = chapter["id"]
 				entries.append(line)
 			entries.append({ "id": "%s:complete" % chapter["id"], "kind": "system", "text": "%s complete." % chapter["title"], "chapterTitle": chapter["title"] })
+			if chapter.has("finalCard"):
+				entries.append({ "id": "%s:ending" % chapter["id"], "kind": "ending", "lines": chapter["finalCard"],
+					"ending": ending.get("id", "default"), "title": ending.get("title", chapter.get("defaultEnding", "")) })
 
 	return { "entries": entries, "pendingDeduction": null, "pendingDiscovery": null }
+
+
+## The ending a chapter's final choice leads to: the first of `chapter.endings` whose
+## `requires` all match the answer, or {} for the chapter's default epilogue.
+static func ending_for(chapter: Dictionary, progress: Dictionary) -> Dictionary:
+	var attempts: Array = progress.get("attempts", [])
+	if attempts.is_empty() or typeof(attempts[-1]) != TYPE_DICTIONARY:
+		return {}
+	var filled: Dictionary = attempts[-1].get("filled", {})
+	for ending in chapter.get("endings", []):
+		var requires: Dictionary = ending.get("requires", {})
+		if requires.keys().all(func(key): return str(filled.get(key, "")) == str(requires[key])):
+			return ending
+	return {}
 
 
 static func _append_reports(entries: Array, scenario: Dictionary, state: Dictionary) -> void:

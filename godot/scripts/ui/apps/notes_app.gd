@@ -263,7 +263,7 @@ func _case_file() -> Control:
 	var state: Dictionary = GameSession.state
 	var log := DesktopSession.messenger_log()
 	var pending: Variant = log["pendingDeduction"]
-	if pending != null and pending.get("mode", "") == "board" and log["delivered"] >= log["entries"].size():
+	if pending != null and GameState.on_board(pending) and log["delivered"] >= log["entries"].size():
 		column.add_child(_clue_board(pending))
 	# The newest chapter first: that is where the open questions are.
 	var chapters: Array = GameSession.catalog.chapters.duplicate()
@@ -290,8 +290,11 @@ func _case_file() -> Control:
 		for scenario in beats:
 			column.add_child(_clue_card(scenario))
 		if closed:
-			var last: Dictionary = chapter["epilogue"][-1]
-			column.add_child(Kit.label("%s: %s" % [last["from"], Kit.t(last["text"])], 15, P.WARNING))
+			# The closing line the chat actually used: a late or chosen ending changes it.
+			var closing: Array = log["entries"].filter(func(entry): return entry.get("epilogueOf", "") == chapter["id"])
+			if not closing.is_empty():
+				var last: Dictionary = closing[-1]
+				column.add_child(Kit.label("%s: %s" % [last["from"], Kit.t(last["text"])], 15, P.WARNING))
 	return column
 
 

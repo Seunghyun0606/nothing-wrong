@@ -117,9 +117,19 @@ static func apply_review(
 	return next
 
 
-## Checks a filled-in conclusion: how many of its blanks are right.
+## Board deductions (chapter finales) and choices (the final decision) are answered on
+## the Case File rather than in the chat.
+static func on_board(deduction: Dictionary) -> bool:
+	return deduction.get("mode", "") in ["board", "choice"]
+
+
+## Checks a filled-in conclusion: how many of its blanks are right. A choice has no wrong
+## answer: every complete answer closes it, and the chapter's ending follows from it.
 static func check_deduction(deduction: Dictionary, filled: Dictionary) -> Dictionary:
 	var blanks: Dictionary = deduction.get("blanks", {})
+	if deduction.get("mode", "") == "choice":
+		var complete := blanks.keys().all(func(key): return filled.has(key))
+		return { "right": blanks.size() if complete else 0, "total": blanks.size(), "correct": complete }
 	var right := 0
 	for key in blanks:
 		if str(filled.get(key, "")) == str(blanks[key]["answer"]):

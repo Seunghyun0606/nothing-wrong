@@ -5749,6 +5749,868 @@
           "success": "Working as designed. That's what frightens me. And Daniel saw it before we did."
         }
       }
+    },
+    {
+      "id": "SCENARIO-T34",
+      "ticket": {
+        "id": "T34",
+        "projectId": "one-horizon",
+        "canonId": "NW-027",
+        "title": "Archive preview permission check",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that the ARCHIVE_VIEWER test role can preview attachments of cases in migration scope.",
+        "scope": [
+          "Document archive"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T34-01",
+            "description": "ARCHIVE_VIEWER can preview attachments of every case in migration scope."
+          },
+          {
+            "id": "REQ-T34-02",
+            "description": "Case bodies stay hidden from QA roles."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/archive-cases"
+        },
+        "hints": [
+          {
+            "id": "HINT-T34-01",
+            "text": "Every 2021 internal-control case is in migration scope."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T34-001",
+          "type": "DATA",
+          "title": "Preview denied for an in-scope case",
+          "target": "archive-cases.CASE-2021-1012.preview",
+          "severity": "HIGH",
+          "requirementId": "REQ-T34-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/archive-cases"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "ALLOWED",
+          "actual": "DENIED",
+          "validEvidenceTargets": [
+            "archive-cases.CASE-2021-1012.preview"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH9",
+        "time": "W7 Mon 09:10",
+        "briefing": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "Document archive migration. Your role can preview attachments, not case bodies. Check the permission rule does what it says.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/archive-cases",
+                "url": "https://qa.onehorizon.local/archive-cases"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "Permission rule fixed in UAT. The preview opens now; the case body stays sealed."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "He opened it on 12 October. It was closed on the 18th, the day after he died. 'Owner unavailable.'"
+          }
+        ],
+        "clue": {
+          "id": "CLUE-CASE-1012",
+          "title": "CASE-2021-1012 · closed the next day",
+          "text": "Daniel Park opened internal-control case 'Irregular Vendor and Foundation Transactions' on 12 October 2021. It was closed administratively on 18 October, 'owner unavailable'. Who closed it, and on whose instruction, is not recorded."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Find the in-scope case whose preview is refused."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: CASE-2021-1012's preview is DENIED although it is in scope. Note it and report it with REQ-T34-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T35",
+      "ticket": {
+        "id": "T35",
+        "projectId": "one-horizon",
+        "canonId": "NW-028",
+        "title": "Attachment preview orientation",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that attachment previews show images the right way up.",
+        "scope": [
+          "Attachments"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T35-01",
+            "description": "Previews honour the image's EXIF orientation."
+          },
+          {
+            "id": "REQ-T35-02",
+            "description": "Every preview shows its capture time from the file."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/archive-attachments"
+        },
+        "hints": [
+          {
+            "id": "HINT-T35-01",
+            "text": "Camera clocks can be wrong. The orientation flag is not a clock."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T35-001",
+          "type": "DATA",
+          "title": "Preview ignores EXIF orientation",
+          "target": "archive-attachments.ATT-1012-02.orientation",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T35-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/archive-attachments"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Upright",
+          "actual": "Rotated 90°",
+          "validEvidenceTargets": [
+            "archive-attachments.ATT-1012-02.orientation"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH9",
+        "time": "W7 Mon 14:30",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "CASE-2021-1012's attachments preview now. One image comes out sideways. Check the orientation handling.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/archive-attachments",
+                "url": "https://qa.onehorizon.local/archive-attachments"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Ninety minutes before the alarm: Daniel, Grace, Kwon, and a man in a Foundation security jacket, on the terrace of Building B. Together. That's all the photo says."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-IMG007",
+          "title": "IMG007 · Building B terrace, 21:40",
+          "text": "An image attached to Daniel's case, camera clock 21:40 on 17 October 2021 (unverified), shows Daniel Park, Grace Yoon, Samuel Kwon, and a Foundation security officer (badge FS-01) on the terrace of Building B at Horizon Ridge."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare each preview's orientation with the file's EXIF flag."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: ATT-1012-02 is shown rotated 90° although EXIF says upright. Note the orientation and report it with REQ-T35-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T36",
+      "ticket": {
+        "id": "T36",
+        "projectId": "one-horizon",
+        "canonId": "NW-028B",
+        "title": "Access timeline time zones",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that the access timeline shows every log in site local time.",
+        "scope": [
+          "Access timeline"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T36-01",
+            "description": "Every log time is shown in site local time (UTC−7)."
+          },
+          {
+            "id": "REQ-T36-02",
+            "description": "Each event keeps the location its log recorded."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/access-timeline"
+        },
+        "hints": [
+          {
+            "id": "HINT-T36-01",
+            "text": "Convert one time by hand to check the display."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T36-001",
+          "type": "DATA",
+          "title": "One log is shown in UTC",
+          "target": "access-timeline.VEH-FS01.target.time",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T36-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/access-timeline"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "2021-10-17 23:18",
+          "actual": "2021-10-18 06:18",
+          "validEvidenceTargets": [
+            "access-timeline.VEH-FS01.target.time"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH9",
+        "time": "W7 Tue 10:20",
+        "briefing": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "Badge, alarm, medical, vehicle, and transfer logs, joined into one timeline. Raw times are UTC; the display should be local.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/access-timeline",
+                "url": "https://qa.onehorizon.local/access-timeline"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Converted, the Foundation vehicle left at 23:18, twelve minutes after the alarm. And Daniel's badge says Building B at 22:48 with no exit, while the medical event is in Building A."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Write down what the timeline shows. Then stop there."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-TIMELINE",
+          "title": "22:48 · 23:06 · 23:18",
+          "text": "With the clocks corrected: Daniel's badge enters Building B at 22:48 with no exit; the alarm sounds at 23:06; a medical event is logged in Building A at 23:11; Foundation vehicle FS-01 leaves at 23:18; the hospital transfer is at 00:14. The records place him in two buildings. They do not say how or why."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Subtract seven hours from each raw time and compare with the display."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: the vehicle log VEH-FS01 is shown in UTC, 06:18, instead of 23:18 local. Note its Target time and report it with REQ-T36-01."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T36",
+          "askedBy": {
+            "from": "Mina Seo",
+            "role": "QA Lead"
+          },
+          "prompt": "With the clocks fixed, what does the timeline show? Only what it shows.",
+          "sentence": "After the correction, the records {show}, and the Foundation vehicle left {when}.",
+          "blanks": {
+            "show": {
+              "options": [
+                "still place Daniel in two buildings",
+                "prove he was harmed on purpose",
+                "prove it was an accident"
+              ],
+              "answer": "still place Daniel in two buildings"
+            },
+            "when": {
+              "options": [
+                "twelve minutes after the alarm",
+                "the next morning",
+                "before the alarm"
+              ],
+              "answer": "twelve minutes after the alarm"
+            }
+          },
+          "success": "That's what the timeline shows. Whether anyone meant it, these records can't say, and we won't pretend they do."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T37",
+      "ticket": {
+        "id": "T37",
+        "projectId": "one-horizon",
+        "canonId": "NW-029",
+        "title": "Organization master consolidation",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Compare the public org tree with the Organization Master's control hierarchy.",
+        "scope": [
+          "Organization master"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T37-01",
+            "description": "The org tree shows each company's control chain as recorded in the Organization Master."
+          },
+          {
+            "id": "REQ-T37-02",
+            "description": "Every company in the tree has a legal parent."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/org-master"
+        },
+        "hints": [
+          {
+            "id": "HINT-T37-01",
+            "text": "A display limit can be a choice. Is the choice written down anywhere?"
+          }
+        ],
+        "status": "NEW",
+        "outcomes": [
+          "BUG",
+          "DATA_INTEGRITY",
+          "DOC_GAP"
+        ]
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T37-001",
+          "type": "DATA",
+          "title": "Public tree stops at Holdings, by an unwritten setting",
+          "target": "org-master.HG-RETAIL.target.chain",
+          "severity": "HIGH",
+          "requirementId": "REQ-T37-01",
+          "outcome": "DOC_GAP",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/org-master"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Full control chain",
+          "actual": "Stops at Horizon Holdings",
+          "validEvidenceTargets": [
+            "org-master.HG-RETAIL.target.chain",
+            "org-master.HORIZON-LIVING.target.chain"
+          ],
+          "outcomeHint": "That's the chain, and that's the rule. The tree stops at Holdings because a setting tells it to; nobody wrote that limit into the requirements. Pick the kind of problem again."
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH9",
+        "time": "W7 Wed 11:00",
+        "briefing": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "Organization Master consolidation. The public org tree should show the same chain the master holds.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/org-master",
+                "url": "https://qa.onehorizon.local/org-master"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Horizon Holdings answers to Horizon Community Trust, and the Trust to Horizon Foundation. The public tree stops one step short of that."
+          },
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "Display depth is a config value. Somebody set it to one, and nobody wrote down why."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-CONTROL",
+          "title": "Holdings → Community Trust → Foundation",
+          "text": "In the Organization Master, Horizon Holdings is controlled through Horizon Community Trust, which is directed by Horizon Foundation. The public org tree is set to stop at Holdings. Control here means board seats and voting rights, not sole ownership."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare the Control chain column between Source and Target."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: the public tree stops every chain at Horizon Holdings by design, and that limit is undocumented. Note HG-RETAIL's Target chain, report it with REQ-T37-01 as a documentation gap."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T38",
+      "ticket": {
+        "id": "T38",
+        "projectId": "one-horizon",
+        "canonId": "NW-030",
+        "title": "Vendor parent chain validation",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that every vendor record names its legal parent and its controlling interest.",
+        "scope": [
+          "Vendor records",
+          "Organization master"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T38-01",
+            "description": "Every vendor record names its legal parent and its controlling interest."
+          },
+          {
+            "id": "REQ-T38-02",
+            "description": "Control types use the codebook: INDEPENDENT, INFLUENCE, PARTNER."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/vendor-parents"
+        },
+        "hints": [
+          {
+            "id": "HINT-T38-01",
+            "text": "Read every row, including the one you know best."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH9",
+        "time": "W7 Thu 15:00",
+        "briefing": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "Last mapping check: vendor and customer records, with their parent chains.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/vendor-parents",
+                "url": "https://qa.onehorizon.local/vendor-parents"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Northstar. Our own company sits under the same Trust, through board seats."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Two QA engineers before you touched these legacy records. Both were moved off the project. That is why I kept telling you to stay in scope. Not to stop you. To keep you here."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-NORTHSTAR",
+          "title": "Northstar · INFLUENCE",
+          "text": "Northstar Quality Services is a legally independent contractor whose parent, Northstar Services Holdings, has board seats held by Horizon Community Trust. The record is correct. The QA vendor checking ONE HORIZON answers, in part, to the same Trust."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Check that each row names a legal parent and a control type from the codebook."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: every record is complete and uses the codebook. Report NO ISSUE FOUND."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T38",
+          "askedBy": {
+            "from": "Mina Seo",
+            "role": "QA Lead"
+          },
+          "mode": "board",
+          "prompt": "Case file: what does the chain show, and what can't it show? Open the Case File, read your clues, and fill in what they prove.",
+          "sentence": "Daniel opened a case on {topic} on 12 October; it was closed the day after he died, and the companies he questioned, and {employer}, answer to {top}.",
+          "blanks": {
+            "topic": {
+              "options": [
+                "irregular vendor and Foundation transactions",
+                "a migration bug",
+                "his own promotion"
+              ],
+              "answer": "irregular vendor and Foundation transactions"
+            },
+            "employer": {
+              "options": [
+                "Northstar",
+                "Shoply",
+                "the county"
+              ],
+              "answer": "Northstar"
+            },
+            "top": {
+              "options": [
+                "Horizon Community Trust",
+                "Horizon Holdings alone",
+                "the Procurement Board"
+              ],
+              "answer": "Horizon Community Trust"
+            }
+          },
+          "success": "That's the chain. What happened to Daniel on the 17th is still a question. What happened to his case on the 18th isn't."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T39",
+      "ticket": {
+        "id": "T39",
+        "projectId": "one-horizon",
+        "canonId": "NW-FINAL",
+        "title": "ONE HORIZON release validation",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Confirm the ONE HORIZON release criteria, then make your release decision.",
+        "scope": [
+          "Release validation"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T39-01",
+            "description": "Every area passes with zero blocking defects."
+          },
+          {
+            "id": "REQ-T39-02",
+            "description": "Every open finding has an owner and a status."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/release-validation"
+        },
+        "hints": [
+          {
+            "id": "HINT-T39-01",
+            "text": "Zero blocking defects is not zero risk."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "FINAL",
+        "time": "W8 Mon 09:00",
+        "briefing": [
+          {
+            "from": "Grace Yoon",
+            "role": "Horizon Program Manager",
+            "text": "Final validation for ONE HORIZON. Please confirm the release criteria. Northstar signs today.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/release-validation",
+                "url": "https://qa.onehorizon.local/release-validation"
+              }
+            ]
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Check the criteria first. Then decide what you sign."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The criteria pass. Every one of them. Now the part no test covers."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-RELEASE",
+          "title": "Blocking defects: 0",
+          "text": "Every ONE HORIZON area passes. The exceptions, documentation gaps, and policy findings from the last six weeks are not blocking defects, so they are not in the release criteria."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Check each area against the release criteria."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: every area passes and every finding has an owner. Report NO ISSUE FOUND, then decide."
+          }
+        ],
+        "deduction": {
+          "id": "DED-FINAL",
+          "askedBy": {
+            "from": "Mina Seo",
+            "role": "QA Lead"
+          },
+          "mode": "choice",
+          "prompt": "Your release decision. Open the Case File and make it. There is no wrong answer here, only consequences.",
+          "sentence": "Release decision: {decision}. My findings go to {route}, with {evidence}.",
+          "blanks": {
+            "decision": {
+              "options": [
+                "SHIP",
+                "HOLD"
+              ],
+              "answer": "HOLD"
+            },
+            "route": {
+              "options": [
+                "Compliance and the external auditor, through the formal channel",
+                "nobody",
+                "a journalist, off the record"
+              ],
+              "answer": "Compliance and the external auditor, through the formal channel"
+            },
+            "evidence": {
+              "options": [
+                "the full record chain, October 17 to the Org Master",
+                "the photos",
+                "my own suspicions"
+              ],
+              "answer": "the full record chain, October 17 to the Org Master"
+            }
+          },
+          "success": "Decision recorded."
+        }
+      }
     }
   ],
   "chapters": [
@@ -6109,6 +6971,122 @@
           "role": "Integration Developer",
           "text": "Next phase is the document archive migration. Daniel's old internal-control cases are in it."
         }
+      ]
+    },
+    {
+      "id": "CH9",
+      "canonAct": "ACT 6",
+      "title": "Chapter 9 · Daniel's Last Case",
+      "synopsis": "Daniel Park was investigating the Foundation's vendors when he died. His case was closed the next day. The chain of control reaches further than anyone wrote down, including to Northstar.",
+      "quiet": true,
+      "caseFileAfter": "T25",
+      "channel": "# one-horizon-migration",
+      "finaleDeductionId": "DED-T38",
+      "deadline": {
+        "label": "Release sign-off",
+        "at": "W8 Mon 18:00"
+      },
+      "epilogue": [
+        {
+          "from": "Grace Yoon",
+          "role": "Horizon Program Manager",
+          "text": "ONE HORIZON final validation is scheduled for Monday. Northstar will sign the release."
+        },
+        {
+          "from": "Mina Seo",
+          "role": "QA Lead",
+          "text": "We'll sign what we can prove."
+        }
+      ]
+    },
+    {
+      "id": "FINAL",
+      "canonAct": "NW-FINAL",
+      "title": "Final · ONE HORIZON",
+      "synopsis": "Every system passes. Every rule works as designed. Decide what Northstar signs.",
+      "channel": "# one-horizon-release",
+      "finaleDeductionId": "DED-FINAL",
+      "deadline": {
+        "label": "Release sign-off",
+        "at": "W8 Mon 18:00"
+      },
+      "defaultEnding": "Ending · Working as Intended",
+      "epilogue": [
+        {
+          "from": "Grace Yoon",
+          "role": "Horizon Program Manager",
+          "text": "Thank you. ONE HORIZON ships on schedule. Every validation passed."
+        },
+        {
+          "from": "Alex Han",
+          "role": "Integration Developer",
+          "text": "Zero blocking defects. Technically, that's true."
+        },
+        {
+          "from": "Mina Seo",
+          "role": "QA Lead",
+          "text": "Nothing is broken. That was never the problem."
+        }
+      ],
+      "endings": [
+        {
+          "id": "removed",
+          "title": "Ending · Off the Project",
+          "requires": {
+            "route": "a journalist, off the record"
+          },
+          "epilogue": [
+            {
+              "from": "Grace Yoon",
+              "role": "Horizon Program Manager",
+              "text": "Northstar's access to ONE HORIZON is suspended pending review. Material left the program without authorization."
+            },
+            {
+              "from": "Mina Seo",
+              "role": "QA Lead",
+              "text": "I told you what happened to the last two. The records are still there. You just cannot reach them any more."
+            }
+          ]
+        },
+        {
+          "id": "escalate",
+          "title": "Ending · Hold and Escalate",
+          "requires": {
+            "decision": "HOLD",
+            "route": "Compliance and the external auditor, through the formal channel",
+            "evidence": "the full record chain, October 17 to the Org Master"
+          },
+          "epilogue": [
+            {
+              "from": "Mina Seo",
+              "role": "QA Lead",
+              "text": "HOLD, with the full chain, through the formal channel. Grace can't close that as an exception. It isn't hers to close."
+            },
+            {
+              "from": "Grace Yoon",
+              "role": "Horizon Program Manager",
+              "text": "The program office notes the HOLD. Compliance will contact Northstar."
+            },
+            {
+              "from": "Alex Han",
+              "role": "Integration Developer",
+              "text": "The rules will still pass every test tomorrow. But now somebody outside has to read them."
+            },
+            {
+              "from": "Mina Seo",
+              "role": "QA Lead",
+              "text": "We never proved what happened to Daniel. We proved his records were cut apart, and by which rules. That has to be enough to make someone look."
+            }
+          ]
+        }
+      ],
+      "finalCard": [
+        "VALIDATION COMPLETE",
+        "Identity · Payroll · Travel · Procurement · Medical · Organization: PASS",
+        "Blocking defects: 0",
+        "SYSTEM STATUS: NORMAL",
+        "Everything is working as intended.",
+        "NOTHING WRONG"
       ]
     }
   ]

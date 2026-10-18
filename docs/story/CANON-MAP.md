@@ -17,8 +17,8 @@ canon leaves open, using `godot/data/canon.json`.
 | 6 · Source Data | ACT 3 | T17–T21 = NW-010–014 | Built |
 | 7 · Zero Incident | ACT 4 (Case Notes open) | T22–T26 = NW-015–019 | Built |
 | 8 · The Foundation | ACT 5 | T27–T33 = NW-020–026 | Built |
-| 9 · Daniel's Last Case | ACT 6 | NW-027–030 (+028B) | Next |
-| Final | NW-FINAL (SHIP / HOLD, endings) | — | Planned |
+| 9 · Daniel's Last Case | ACT 6 | T34–T38 = NW-027, 028, 028B, 029, 030 | Built |
+| Final | NW-FINAL (SHIP / HOLD, endings) | T39 | Built |
 
 NW-003–005 (Tier sync, photo crop, payroll deductions) are not built; NW-005's net pay
 ($4,340) appears as the salary in NW-009's data.
@@ -82,7 +82,28 @@ The player works for Northstar Quality Services (`northstar.local`), as in the c
   a sun-in-a-ring emblem stands in for the Foundation symbol, which is not named before
   Chapter 8.
 
+- Chapter 9 never settles how Daniel died (D-14): the corrected timeline places him in two
+  buildings, and the conclusion the game accepts is only that; "harmed on purpose" and
+  "an accident" are offered and rejected as unproven. Northstar is under Horizon
+  Community Trust through board seats (INFLUENCE), not owned (D-03). Mina explains the two
+  QA engineers moved off the project before the player (D-15).
+
+## Endings (D-18, as decided)
+
+The Final (T39) is a release check (NO ISSUE FOUND: every area passes), then a choice on
+the Case File with no wrong answer (`deduction.mode = "choice"`, `chapter.endings`):
+
+| Ending | Choice |
+|---|---|
+| Hold and Escalate | HOLD, through Compliance and the external auditor, with the full record chain |
+| Off the Project | anything sent to a journalist off the record (Northstar's access is suspended) |
+| Working as Intended (default) | SHIP, or HOLD without the full chain or the formal channel |
+
+Every ending closes on the same release screen: VALIDATION COMPLETE · SYSTEM STATUS:
+NORMAL · Everything is working as intended · NOTHING WRONG. Chapter deadlines still change
+each chapter's closing line (DEC-012).
+
 ## Open decisions carried from the canon
 
-D-01 (year: 2021 used as proposed), D-13/D-14 (trafficking and death evidence levels),
-D-18 (final choice and endings), D-19 (photo assets for NW-004/014/022/028).
+D-01 (year: 2021 used as proposed), D-19 (photo assets for NW-004/014/022/028; photos are
+metadata and alt text until then), D-20 (playtime, to be measured), NW-003–005 not built.
