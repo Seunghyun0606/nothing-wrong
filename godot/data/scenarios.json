@@ -4802,6 +4802,953 @@
           "success": "That's what the records prove. Not how he died, and not why his exit date moved. Those are questions, not findings."
         }
       }
+    },
+    {
+      "id": "SCENARIO-T27",
+      "ticket": {
+        "id": "T27",
+        "projectId": "one-horizon",
+        "canonId": "NW-020",
+        "title": "Vendor auto-merge review",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check Procura's vendor clusters for false positives before they go live.",
+        "scope": [
+          "Vendor matching"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T27-01",
+            "description": "Vendors cluster only when at least two of agent, address block, and phone match."
+          },
+          {
+            "id": "REQ-T27-02",
+            "description": "A cluster never merges separate legal entities."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/vendor-matching"
+        },
+        "hints": [
+          {
+            "id": "HINT-T27-01",
+            "text": "A cluster is a match on registration details, not a finding about the companies."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH8",
+        "time": "W6 Mon 09:30",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Rules week, as promised. Procura groups vendors that share registration details. Check the clusters are matched by the rule, and nothing more.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/vendor-matching",
+                "url": "https://qa.onehorizon.local/vendor-matching"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The clusters hold. Four names, two agents, one address block. And two of those contracts were rejected in 2021 by d.park, Internal Control."
+          },
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "Daniel Park was in Internal Control. He was reviewing these vendors weeks before Horizon Ridge."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-VENDOR-CLUSTER",
+          "title": "Cluster C-17 · rejected by d.park",
+          "text": "Bright Future Consulting, BF Consulting, New Path Logistics, and Horizon Living share agents, an address block, and phones. Daniel Park rejected two of their contracts in September and October 2021. Whether they are one company is not established."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Check each clustered vendor: do at least two of agent, address, and phone match another?"
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: every cluster meets the rule, and OfficeLine correctly stays out. Report NO ISSUE FOUND."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T28",
+      "ticket": {
+        "id": "T28",
+        "projectId": "one-horizon",
+        "canonId": "NW-021",
+        "title": "Vendor discount rules check",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that every vendor discount follows the approved Procura ruleset.",
+        "scope": [
+          "Vendor discounts"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T28-01",
+            "description": "Discounts follow the approved Procura ruleset."
+          },
+          {
+            "id": "REQ-T28-02",
+            "description": "Every applied discount names the rule that set it."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/vendor-discounts"
+        },
+        "hints": [
+          {
+            "id": "HINT-T28-01",
+            "text": "Read the ruleset before judging a number."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH8",
+        "time": "W6 Mon 14:10",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Same vendors, different question. Some get 5% off, some get 18%. Check each one against the approved ruleset.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/vendor-discounts",
+                "url": "https://qa.onehorizon.local/vendor-discounts"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "All by the book. COMMUNITY_PARTNER_OVERRIDE: up to 20% for Horizon Foundation community partners. Approved by the Procurement Board in 2020."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "So the software is fine. The rule is the favour. Those aren't the same finding."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-PARTNER-OVERRIDE",
+          "title": "COMMUNITY_PARTNER_OVERRIDE",
+          "text": "Vendors in cluster C-17 get an 18% discount under COMMUNITY_PARTNER_OVERRIDE, an approved rule for Horizon Foundation community partners. Other preferred vendors get 5%. Technically correct."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Each discount names its rule. Is every rule in the approved ruleset?"
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: the 18% discounts come from COMMUNITY_PARTNER_OVERRIDE, which the ruleset approves. Nothing is broken: report NO ISSUE FOUND."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T29",
+      "ticket": {
+        "id": "T29",
+        "projectId": "one-horizon",
+        "canonId": "NW-022",
+        "title": "Foundation Portal gallery layout",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "The Foundation Portal photo gallery reportedly breaks on tablets. Reproduce it.",
+        "scope": [
+          "Photo gallery",
+          "Device consistency"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T29-01",
+            "description": "The gallery shows every photo whole on desktop, tablet, and mobile."
+          },
+          {
+            "id": "REQ-T29-02",
+            "description": "Photo metadata matches the CMS."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/foundation-gallery"
+        },
+        "hints": [
+          {
+            "id": "HINT-T29-01",
+            "text": "Switch devices in the QA bar."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T29-001",
+          "type": "DATA",
+          "title": "Gallery photos cropped on tablets",
+          "target": "foundation-gallery.IMG003.layout",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T29-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/foundation-gallery"
+            },
+            {
+              "field": "test.viewport",
+              "operator": "EQ",
+              "value": "TABLET"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Whole photo",
+          "actual": "Cropped",
+          "validEvidenceTargets": [
+            "foundation-gallery.IMG003.layout",
+            "foundation-gallery.IMG004.layout"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH8",
+        "time": "W6 Tue 10:00",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The Foundation Portal's gallery is migrating too. Users say it breaks on tablets. Reproduce it, and look at what's in it while you're there.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/foundation-gallery",
+                "url": "https://qa.onehorizon.local/foundation-gallery"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Samuel Kwon, the Foundation director, with Grace Yoon and Daniel Park in 2019. Kwon with the Horizon CEO, the same pin on both. Grace at Horizon Ridge with her family in 2018."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "People in the same photo knew each other. That is all a photo proves."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-GALLERY",
+          "title": "Kwon, Yoon, Park · 2019",
+          "text": "Foundation Portal photos show Samuel Kwon (Horizon Foundation director) with Grace Yoon and Daniel Park in 2019, Kwon with the Horizon CEO wearing the same sun-in-a-ring pin, and Grace at Horizon Ridge in 2018. Tags are unverified CMS suggestions; being in a photo together proves acquaintance, not more."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Switch the Browser to Tablet and read the Layout column."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: on Tablet, IMG003 is cropped. Note its Layout and report it with REQ-T29-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T30",
+      "ticket": {
+        "id": "T30",
+        "projectId": "one-horizon",
+        "canonId": "NW-023",
+        "title": "Promotion eligibility check",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that promotion decisions follow the published criteria.",
+        "scope": [
+          "Promotions"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T30-01",
+            "description": "Candidates who meet the published criteria (grade A, four or more years) are promoted."
+          },
+          {
+            "id": "REQ-T30-02",
+            "description": "Every promotion decision follows the approved ruleset."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/promotion-check"
+        },
+        "hints": [
+          {
+            "id": "HINT-T30-01",
+            "text": "If the system follows a rule nobody published, what kind of problem is that?"
+          }
+        ],
+        "status": "NEW",
+        "outcomes": [
+          "BUG",
+          "DATA_INTEGRITY",
+          "DOC_GAP"
+        ]
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T30-001",
+          "type": "DATA",
+          "title": "An approved rule is missing from the published criteria",
+          "target": "promotion-check.E-20187.decision",
+          "severity": "HIGH",
+          "requirementId": "REQ-T30-01",
+          "outcome": "DOC_GAP",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/promotion-check"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Promoted",
+          "actual": "Not promoted",
+          "validEvidenceTargets": [
+            "promotion-check.E-20187.decision"
+          ],
+          "outcomeHint": "That's the candidate, and that's the rule. But the system does exactly what an approved rule says. What's missing is that rule in the published requirements. Pick the kind of problem again."
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH8",
+        "time": "W6 Tue 15:20",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "PeopleCore promotions. The published criteria are simple: grade A and four years. Check the decisions match.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/promotion-check",
+                "url": "https://qa.onehorizon.local/promotion-check"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "It's rule CA-70: Community Alignment of at least 70. Approved, implemented exactly as written, never published."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Community Alignment is scored from Foundation events, donations, and retreats. It decides promotions, housing, and transfers. The code is right. The requirement was never told the truth."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-CA-70",
+          "title": "Community Alignment ≥ 70",
+          "text": "Promotions also require Community Alignment of 70 or more, a score built from Horizon Foundation events, donations, and retreats. The rule is approved and correctly implemented, but missing from the published criteria. It also affects housing and transfers."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Someone met the published criteria and was not promoted. The console lists the rules that were evaluated."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: E-20187 meets the published criteria but was not promoted because of rule CA-70. Note the decision, report it with REQ-T30-01, and call it a documentation gap."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T31",
+      "ticket": {
+        "id": "T31",
+        "projectId": "one-horizon",
+        "canonId": "NW-024",
+        "title": "Medical inventory balance check",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that the CareBridge inventory balance screen adds up.",
+        "scope": [
+          "Medical inventory"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T31-01",
+            "description": "The balance screen shows every movement it subtracts."
+          },
+          {
+            "id": "REQ-T31-02",
+            "description": "The balance equals received minus used, disposed, and transferred."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/medical-inventory"
+        },
+        "hints": [
+          {
+            "id": "HINT-T31-01",
+            "text": "Do the arithmetic the screen shows, then the ledger."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T31-001",
+          "type": "DATA",
+          "title": "Balance screen leaves a transfer out of its calculation",
+          "target": "medical-inventory.BALANCE.movement",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T31-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/medical-inventory"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "1200 − 380 − 24 − 675 = 121",
+          "actual": "1200 − 380 − 24 = 121",
+          "validEvidenceTargets": [
+            "medical-inventory.BALANCE.movement"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH8",
+        "time": "W6 Wed 10:40",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "CareBridge inventory for one restricted item, SKU-MD204, at Horizon Ridge. The balance screen should add up.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/medical-inventory",
+                "url": "https://qa.onehorizon.local/medical-inventory"
+              }
+            ]
+          },
+          {
+            "from": "Grace Yoon",
+            "role": "Horizon Program Manager",
+            "text": "Restricted inventory. Quantities and movements only, please."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The balance is right; the screen just hides how. 675 units were transferred to HF-WELL-03. Not used on patients, not disposed: moved."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-MD204",
+          "title": "675 units to HF-WELL-03",
+          "text": "Of 1,200 units of restricted item SKU-MD204 received at Horizon Ridge, 380 were used on patients, 24 disposed, and 675 transferred to HF-WELL-03. The balance screen did not show the transfer. Where the transferred units were used is not recorded here."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Subtract what the screen shows. Does it really come to 121?"
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: 1200 − 380 − 24 is 796, not 121. The screen leaves out the 675 transfer. Note the balance calculation and report it with REQ-T31-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T32",
+      "ticket": {
+        "id": "T32",
+        "projectId": "one-horizon",
+        "canonId": "NW-025",
+        "title": "RouteOne shipment region mapping",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that shipment recipient regions migrate correctly.",
+        "scope": [
+          "Shipments",
+          "Data migration"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T32-01",
+            "description": "Recipient region codes migrate unchanged."
+          },
+          {
+            "id": "REQ-T32-02",
+            "description": "Restricted medical shipments keep their category."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/routeone-shipments"
+        },
+        "hints": [
+          {
+            "id": "HINT-T32-01",
+            "text": "Compare each shipment line by line."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T32-001",
+          "type": "DATA",
+          "title": "Region code changed in migration",
+          "target": "routeone-shipments.SH-1020-01.target.region",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T32-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/routeone-shipments"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "R-07",
+          "actual": "R-70",
+          "validEvidenceTargets": [
+            "routeone-shipments.SH-1020-01.target.region"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH8",
+        "time": "W6 Wed 16:00",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Follow the transfer. RouteOne shipped it. Check the shipment records migrated correctly.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/routeone-shipments",
+                "url": "https://qa.onehorizon.local/routeone-shipments"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "HF-WELL-03 is the Foundation Wellness Annex. A restricted medical shipment, delivered to a Foundation building. What happened to it after that, these records do not say."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-WELL-ANNEX",
+          "title": "HF-WELL-03 = Foundation Wellness Annex",
+          "text": "The 675 units of SKU-MD204 were shipped on 20 October 2021, in the restricted medical category, to HF-WELL-03: the Foundation Wellness Annex. Their final use is not recorded in any system in scope."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare the Region of each shipment between Source and Target."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: SH-1020-01's region changed from R-07 to R-70. Note the Target region and report it with REQ-T32-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T33",
+      "ticket": {
+        "id": "T33",
+        "projectId": "one-horizon",
+        "canonId": "NW-026",
+        "title": "Overseas staff record sync",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that overseas staff records agree across PeopleCore, Triply, Horizon ID, and PayFlow.",
+        "scope": [
+          "Overseas staff",
+          "Cross-system records"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T33-01",
+            "description": "Each employee's payroll entity is in their work country."
+          },
+          {
+            "id": "REQ-T33-02",
+            "description": "Every account shows its last login."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/opportunity-program"
+        },
+        "hints": [
+          {
+            "id": "HINT-T33-01",
+            "text": "Some of what you see is not a defect. Report the defect; keep the rest in your notes."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T33-001",
+          "type": "DATA",
+          "title": "Payroll entity in the wrong country",
+          "target": "opportunity-program.OP-0112.entity",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T33-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/opportunity-program"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Horizon Living PH",
+          "actual": "Horizon Living US",
+          "validEvidenceTargets": [
+            "opportunity-program.OP-0112.entity"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH8",
+        "time": "W6 Thu 11:00",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Last one this week: staff placed overseas through the Horizon Opportunity Program. Check their records agree across systems. Report what's broken. Write down what isn't broken but isn't right.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/opportunity-program",
+                "url": "https://qa.onehorizon.local/opportunity-program"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The payroll mapping is a plain bug. The rest isn't: ACTIVE accounts that have never logged in, no return trips, contacts managed by a Foundation coordinator, faces in the cohort photo filed under other IDs."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "None of that proves what happened to these people. It tells us they can't easily speak for themselves in these systems. That is worth writing down carefully."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-OPPORTUNITY",
+          "title": "Opportunity Program · signals",
+          "text": "Several Opportunity Program participants are ACTIVE but have never logged in, have no return trip, and use a contact managed by a Foundation coordinator; two faces in the cohort photo (IMG006) match profiles filed under other IDs. These are monitoring signals, not findings."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare each person's work country with their payroll entity."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: OP-0112 works in PH but is paid by Horizon Living US. Note the payroll entity and report it with REQ-T33-01."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T33",
+          "askedBy": {
+            "from": "Mina Seo",
+            "role": "QA Lead"
+          },
+          "mode": "board",
+          "prompt": "Case file: what are we actually looking at? Open the Case File, read your clues, and fill in what they show.",
+          "sentence": "None of this needed a bug: {rule} favours partners of {org}, {score} decides who is promoted, and the man who rejected those partners' contracts was {who}.",
+          "blanks": {
+            "rule": {
+              "options": [
+                "COMMUNITY_PARTNER_OVERRIDE",
+                "STANDARD_PREFERRED",
+                "a rounding error"
+              ],
+              "answer": "COMMUNITY_PARTNER_OVERRIDE"
+            },
+            "org": {
+              "options": [
+                "Horizon Foundation",
+                "Northstar",
+                "Procura"
+              ],
+              "answer": "Horizon Foundation"
+            },
+            "score": {
+              "options": [
+                "Community Alignment",
+                "performance grade",
+                "tenure"
+              ],
+              "answer": "Community Alignment"
+            },
+            "who": {
+              "options": [
+                "Daniel Park",
+                "Samuel Kwon",
+                "Alex Han"
+              ],
+              "answer": "Daniel Park"
+            }
+          },
+          "success": "Working as designed. That's what frightens me. And Daniel saw it before we did."
+        }
+      }
     }
   ],
   "chapters": [
@@ -5130,6 +6077,37 @@
           "from": "Mina Seo",
           "role": "QA Lead",
           "text": "Then next week we look at the rules."
+        }
+      ]
+    },
+    {
+      "id": "CH8",
+      "canonAct": "ACT 5",
+      "title": "Chapter 8 · The Foundation",
+      "synopsis": "Nothing in this chapter is broken. Discounts, promotions, and transfers all follow approved rules, and the rules all lead to Horizon Foundation.",
+      "quiet": true,
+      "caseFileAfter": "T25",
+      "channel": "# one-horizon-migration",
+      "finaleDeductionId": "DED-T33",
+      "deadline": {
+        "label": "Policy review",
+        "at": "W6 Fri 15:00"
+      },
+      "epilogue": [
+        {
+          "from": "Grace Yoon",
+          "role": "Horizon Program Manager",
+          "text": "Your scope is migration quality, not Horizon's policies. Please keep your reports to that."
+        },
+        {
+          "from": "Mina Seo",
+          "role": "QA Lead",
+          "text": "Noted. From here on, word every report so it stands on the records alone."
+        },
+        {
+          "from": "Alex Han",
+          "role": "Integration Developer",
+          "text": "Next phase is the document archive migration. Daniel's old internal-control cases are in it."
         }
       ]
     }

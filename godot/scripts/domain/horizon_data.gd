@@ -40,6 +40,18 @@ static func cell_target(view: Dictionary, key: String, side: String, column: Str
 	return "%s.%s.%s.%s" % [view["id"], key, side, column] if side != "" else "%s.%s.%s" % [view["id"], key, column]
 
 
+## A table row as the current device shows it: `byViewport` overrides some values on
+## some devices (a gallery that breaks only on tablets).
+static func values_on(row: Dictionary, viewport: String) -> Dictionary:
+	var values: Dictionary = row.get("values", {})
+	var overrides: Dictionary = row.get("byViewport", {}).get(viewport, {})
+	if overrides.is_empty():
+		return values
+	var merged := values.duplicate()
+	merged.merge(overrides, true)
+	return merged
+
+
 ## Rows whose filter column matches `value` ("" keeps every row).
 static func filtered_rows(view: Dictionary, value: String) -> Array:
 	var column: String = view.get("filter", "")

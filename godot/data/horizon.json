@@ -1554,6 +1554,575 @@
           }
         }
       ]
+    },
+    {
+      "id": "vendor-matching",
+      "ticket": "T27",
+      "system": "Procura · global vendor matching",
+      "title": "Vendor clusters",
+      "mode": "table",
+      "keyLabel": "Vendor",
+      "columns": [
+        {
+          "id": "name",
+          "label": "Name"
+        },
+        {
+          "id": "agent",
+          "label": "Agent"
+        },
+        {
+          "id": "address",
+          "label": "Address"
+        },
+        {
+          "id": "phone",
+          "label": "Phone"
+        },
+        {
+          "id": "cluster",
+          "label": "Cluster"
+        },
+        {
+          "id": "history",
+          "label": "Approval history",
+          "wide": true
+        }
+      ],
+      "note": "A cluster means shared registration details above the matching threshold. It does not mean one legal entity.",
+      "console": [
+        "info: matcher grouped 4 vendors into cluster C-17",
+        "info: 1 vendor below threshold"
+      ],
+      "rows": [
+        {
+          "key": "V-2201",
+          "values": {
+            "name": "Bright Future Consulting",
+            "agent": "R. Calder",
+            "address": "1180 Harbor Way, Ste 4",
+            "phone": "+1-555-0148",
+            "cluster": "C-17",
+            "history": "2021-09-30 contract review: REJECTED by d.park (Internal Control)"
+          }
+        },
+        {
+          "key": "V-2207",
+          "values": {
+            "name": "BF Consulting",
+            "agent": "R. Calder",
+            "address": "1180 Harbor Way, Ste 4B",
+            "phone": "+1-555-0148",
+            "cluster": "C-17",
+            "history": "—"
+          }
+        },
+        {
+          "key": "V-3110",
+          "values": {
+            "name": "New Path Logistics",
+            "agent": "M. Orsi",
+            "address": "1180 Harbor Way, Ste 9",
+            "phone": "+1-555-0172",
+            "cluster": "C-17",
+            "history": "2021-10-05 contract review: REJECTED by d.park (Internal Control)"
+          }
+        },
+        {
+          "key": "V-3302",
+          "values": {
+            "name": "Horizon Living",
+            "agent": "M. Orsi",
+            "address": "22 Ridge Road",
+            "phone": "+1-555-0172",
+            "cluster": "C-17",
+            "history": "—"
+          }
+        },
+        {
+          "key": "V-4001",
+          "values": {
+            "name": "OfficeLine",
+            "agent": "J. Wu",
+            "address": "400 Pine St",
+            "phone": "+1-555-0110",
+            "cluster": "— (no match)",
+            "history": "—"
+          }
+        }
+      ]
+    },
+    {
+      "id": "vendor-discounts",
+      "ticket": "T28",
+      "system": "Procura · pricing rules",
+      "title": "Vendor discounts",
+      "mode": "table",
+      "keyLabel": "Vendor",
+      "columns": [
+        {
+          "id": "name",
+          "label": "Name"
+        },
+        {
+          "id": "tier",
+          "label": "Tier"
+        },
+        {
+          "id": "standard",
+          "label": "Standard"
+        },
+        {
+          "id": "applied",
+          "label": "Applied"
+        },
+        {
+          "id": "rule",
+          "label": "Rule"
+        }
+      ],
+      "note": "Ruleset v12 (approved 2020-02, Procurement Board): STANDARD_PREFERRED 5%; COMMUNITY_PARTNER_OVERRIDE up to 20% for Horizon Foundation community partners.",
+      "console": [
+        "info: ruleset v12 evaluated for 5 vendors"
+      ],
+      "rows": [
+        {
+          "key": "V-4001",
+          "values": {
+            "name": "OfficeLine",
+            "tier": "PREFERRED",
+            "standard": "5%",
+            "applied": "5%",
+            "rule": "STANDARD_PREFERRED"
+          }
+        },
+        {
+          "key": "V-5120",
+          "values": {
+            "name": "MedSupply North",
+            "tier": "PREFERRED",
+            "standard": "5%",
+            "applied": "5%",
+            "rule": "STANDARD_PREFERRED"
+          }
+        },
+        {
+          "key": "V-2201",
+          "values": {
+            "name": "Bright Future Consulting",
+            "tier": "PREFERRED",
+            "standard": "5%",
+            "applied": "18%",
+            "rule": "COMMUNITY_PARTNER_OVERRIDE"
+          }
+        },
+        {
+          "key": "V-3110",
+          "values": {
+            "name": "New Path Logistics",
+            "tier": "PREFERRED",
+            "standard": "5%",
+            "applied": "18%",
+            "rule": "COMMUNITY_PARTNER_OVERRIDE"
+          }
+        },
+        {
+          "key": "V-3302",
+          "values": {
+            "name": "Horizon Living",
+            "tier": "PREFERRED",
+            "standard": "5%",
+            "applied": "18%",
+            "rule": "COMMUNITY_PARTNER_OVERRIDE"
+          }
+        }
+      ]
+    },
+    {
+      "id": "foundation-gallery",
+      "ticket": "T29",
+      "system": "Foundation Portal · gallery (staging)",
+      "title": "Horizon Foundation · photo gallery",
+      "mode": "table",
+      "keyLabel": "Photo",
+      "columns": [
+        {
+          "id": "event",
+          "label": "Event"
+        },
+        {
+          "id": "taken",
+          "label": "Taken"
+        },
+        {
+          "id": "people",
+          "label": "In the photo (alt text)",
+          "wide": true
+        },
+        {
+          "id": "layout",
+          "label": "Layout"
+        }
+      ],
+      "note": "Tags are CMS face-match suggestions and are not verified.",
+      "console": [
+        "info: gallery rendered 3 photos for the current device"
+      ],
+      "rows": [
+        {
+          "key": "IMG003",
+          "values": {
+            "event": "Foundation Gala 2019",
+            "taken": "2019-11-09",
+            "people": "Tagged: S. Kwon (Foundation Director), G. Yoon, D. Park. Banner: Horizon Foundation, sun-in-a-ring emblem.",
+            "layout": "Whole"
+          },
+          "byViewport": {
+            "TABLET": {
+              "layout": "Cropped: right two thirds hidden"
+            }
+          }
+        },
+        {
+          "key": "IMG004",
+          "values": {
+            "event": "Leadership Dinner",
+            "taken": "2020-06-12",
+            "people": "Tagged: S. Kwon, Horizon CEO. Both wear the sun-in-a-ring pin.",
+            "layout": "Whole"
+          },
+          "byViewport": {
+            "TABLET": {
+              "layout": "Overlaps IMG003, bottom cut off"
+            }
+          }
+        },
+        {
+          "key": "IMG005",
+          "values": {
+            "event": "Foundation Family Retreat",
+            "taken": "2018-08-04",
+            "people": "Tagged: G. Yoon, with family. Location banner: Horizon Ridge.",
+            "layout": "Whole"
+          }
+        }
+      ]
+    },
+    {
+      "id": "promotion-check",
+      "ticket": "T30",
+      "system": "PeopleCore · promotion cycle 2026",
+      "title": "Promotion decisions",
+      "mode": "table",
+      "keyLabel": "Employee",
+      "columns": [
+        {
+          "id": "grade",
+          "label": "Grade"
+        },
+        {
+          "id": "tenure",
+          "label": "Tenure"
+        },
+        {
+          "id": "published",
+          "label": "Published criteria"
+        },
+        {
+          "id": "decision",
+          "label": "Decision"
+        }
+      ],
+      "note": "Published criteria: performance grade A and at least four years of tenure.",
+      "console": [
+        "info: ruleset PR-2026 evaluated 4 candidates",
+        "info: rules applied: PUBLISHED-CRITERIA, CA-70 (Community Alignment >= 70)"
+      ],
+      "rows": [
+        {
+          "key": "E-20114",
+          "values": {
+            "grade": "A",
+            "tenure": "4 years",
+            "published": "Meets",
+            "decision": "PROMOTED"
+          }
+        },
+        {
+          "key": "E-20187",
+          "values": {
+            "grade": "A",
+            "tenure": "5 years",
+            "published": "Meets",
+            "decision": "NOT PROMOTED"
+          }
+        },
+        {
+          "key": "E-20231",
+          "values": {
+            "grade": "B",
+            "tenure": "2 years",
+            "published": "Does not meet",
+            "decision": "NOT PROMOTED"
+          }
+        },
+        {
+          "key": "E-20290",
+          "values": {
+            "grade": "A",
+            "tenure": "4 years",
+            "published": "Meets",
+            "decision": "PROMOTED"
+          }
+        }
+      ]
+    },
+    {
+      "id": "medical-inventory",
+      "ticket": "T31",
+      "system": "CareBridge · inventory (restricted, QA view)",
+      "title": "SKU-MD204 · Horizon Ridge · 2021",
+      "mode": "table",
+      "keyLabel": "Line",
+      "columns": [
+        {
+          "id": "date",
+          "label": "Date"
+        },
+        {
+          "id": "movement",
+          "label": "Movement"
+        },
+        {
+          "id": "quantity",
+          "label": "Quantity"
+        },
+        {
+          "id": "location",
+          "label": "To / from"
+        }
+      ],
+      "note": "Restricted item. Quantities and movements only.",
+      "console": [
+        "info: ledger lines loaded: 4",
+        "info: balance view uses received, patient use, disposed"
+      ],
+      "rows": [
+        {
+          "key": "RCV-01",
+          "values": {
+            "date": "2021-09-01",
+            "movement": "RECEIVED",
+            "quantity": "+1200",
+            "location": "Supplier"
+          }
+        },
+        {
+          "key": "USE-Q4",
+          "values": {
+            "date": "2021-09 to 2021-12",
+            "movement": "PATIENT_USE",
+            "quantity": "−380",
+            "location": "HRDG-01 clinic"
+          }
+        },
+        {
+          "key": "TRF-01",
+          "values": {
+            "date": "2021-10-20",
+            "movement": "TRANSFER",
+            "quantity": "−675",
+            "location": "HF-WELL-03"
+          }
+        },
+        {
+          "key": "DSP-01",
+          "values": {
+            "date": "2021-12-30",
+            "movement": "DISPOSED",
+            "quantity": "−24",
+            "location": "Waste contractor"
+          }
+        },
+        {
+          "key": "BALANCE",
+          "values": {
+            "date": "2021-12-31",
+            "movement": "Balance shown: 1200 − 380 − 24 = 121",
+            "quantity": "121",
+            "location": "HRDG-01"
+          }
+        }
+      ]
+    },
+    {
+      "id": "routeone-shipments",
+      "ticket": "T32",
+      "system": "RouteOne Legacy → RouteOne Next",
+      "title": "Shipments · October 2021",
+      "mode": "compare",
+      "keyLabel": "Shipment",
+      "columns": [
+        {
+          "id": "sku",
+          "label": "SKU"
+        },
+        {
+          "id": "destination",
+          "label": "Destination"
+        },
+        {
+          "id": "region",
+          "label": "Region"
+        },
+        {
+          "id": "category",
+          "label": "Category"
+        }
+      ],
+      "note": "Destination names come from the RouteOne site register.",
+      "console": [
+        "info: 3 shipments compared"
+      ],
+      "rows": [
+        {
+          "key": "SH-1012-04",
+          "source": {
+            "sku": "SKU-OF110",
+            "destination": "SEA-02 · Seattle Office",
+            "region": "R-02",
+            "category": "General"
+          },
+          "target": {
+            "sku": "SKU-OF110",
+            "destination": "SEA-02 · Seattle Office",
+            "region": "R-02",
+            "category": "General"
+          }
+        },
+        {
+          "key": "SH-1020-01",
+          "source": {
+            "sku": "SKU-MD204",
+            "destination": "HF-WELL-03 · Foundation Wellness Annex",
+            "region": "R-07",
+            "category": "Restricted medical"
+          },
+          "target": {
+            "sku": "SKU-MD204",
+            "destination": "HF-WELL-03 · Foundation Wellness Annex",
+            "region": "R-70",
+            "category": "Restricted medical"
+          }
+        },
+        {
+          "key": "SH-1024-02",
+          "source": {
+            "sku": "SKU-OF204",
+            "destination": "LAX-03 · Los Angeles Office",
+            "region": "R-11",
+            "category": "General"
+          },
+          "target": {
+            "sku": "SKU-OF204",
+            "destination": "LAX-03 · Los Angeles Office",
+            "region": "R-11",
+            "category": "General"
+          }
+        }
+      ]
+    },
+    {
+      "id": "opportunity-program",
+      "ticket": "T33",
+      "system": "PeopleCore + Triply + Horizon ID + PayFlow · joined QA view",
+      "title": "Overseas staff · record sync",
+      "mode": "table",
+      "keyLabel": "Person",
+      "columns": [
+        {
+          "id": "program",
+          "label": "Program"
+        },
+        {
+          "id": "country",
+          "label": "Work country"
+        },
+        {
+          "id": "entity",
+          "label": "Payroll entity"
+        },
+        {
+          "id": "status",
+          "label": "Status"
+        },
+        {
+          "id": "login",
+          "label": "Last login"
+        },
+        {
+          "id": "contact",
+          "label": "Contact"
+        },
+        {
+          "id": "return",
+          "label": "Return trip"
+        }
+      ],
+      "note": "Names masked. Attachment IMG006 (cohort photo, 12 people): two faces match profile photos filed under other IDs (CMS face match, unverified).",
+      "console": [
+        "info: 4 records joined across 4 systems"
+      ],
+      "rows": [
+        {
+          "key": "E-30120",
+          "values": {
+            "program": "—",
+            "country": "US",
+            "entity": "Horizon Group US",
+            "status": "ACTIVE",
+            "login": "2026-11-02",
+            "contact": "Own",
+            "return": "—"
+          }
+        },
+        {
+          "key": "OP-0112",
+          "values": {
+            "program": "Horizon Opportunity Program",
+            "country": "PH",
+            "entity": "Horizon Living US",
+            "status": "ACTIVE",
+            "login": "Never",
+            "contact": "hf.coordinator (admin-managed)",
+            "return": "None"
+          }
+        },
+        {
+          "key": "OP-0118",
+          "values": {
+            "program": "Horizon Opportunity Program",
+            "country": "PH",
+            "entity": "Horizon Living PH",
+            "status": "ACTIVE",
+            "login": "Never",
+            "contact": "hf.coordinator (admin-managed)",
+            "return": "None"
+          }
+        },
+        {
+          "key": "OP-0131",
+          "values": {
+            "program": "Horizon Opportunity Program",
+            "country": "VN",
+            "entity": "Horizon Living VN",
+            "status": "ACTIVE",
+            "login": "2022-03-01",
+            "contact": "Own",
+            "return": "2022-12 (scheduled)"
+          }
+        }
+      ]
     }
   ]
 }

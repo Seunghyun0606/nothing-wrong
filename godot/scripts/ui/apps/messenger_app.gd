@@ -19,6 +19,11 @@ var _channel_members: Label
 ## Kept across renders so a half-written report survives new messages.
 var _report_form: VBoxContainer
 var _signature := ""
+## Ids of the entries already in the chat. New messages are appended; the chat is only
+## rebuilt when its history changes (a new language, a new game).
+var _rendered_ids: Array = []
+var _last_day := -1
+var _typing: Label
 ## Keep the newest message in view until the player scrolls back.
 var _follow := true
 
@@ -58,6 +63,7 @@ func _ready() -> void:
 	DesktopSession.changed.connect(_render)
 	Settings.language_changed.connect(func():
 		_signature = ""
+		_rendered_ids = ["<rebuild>"]
 		_render())
 	visibility_changed.connect(func():
 		if is_visible_in_tree():
@@ -77,26 +83,36 @@ func _render() -> void:
 	_signature = signature
 	_follow = true
 	_render_channel()
-	Kit.clear(_log_box)
 	var entries: Array = log["entries"]
 	var delivered: int = log["delivered"]
-	if delivered == 0 and entries.is_empty():
+	var ids: Array = entries.slice(0, delivered).map(func(entry): return entry["id"])
+	if _rendered_ids.is_empty() or _rendered_ids.size() > ids.size() or ids.slice(0, _rendered_ids.size()) != _rendered_ids:
+		Kit.clear(_log_box)
+		_rendered_ids = []
+		_last_day = -1
+		_typing = null
+	if _typing != null:
+		_log_box.remove_child(_typing)
+		_typing.queue_free()
+		_typing = null
+	if delivered == 0 and entries.is_empty() and _log_box.get_child_count() == 0:
 		_log_box.add_child(Kit.label("No messages yet.", 14, P.MUTED))
-	var day := -1
-	for index in delivered:
+	for index in range(_rendered_ids.size(), delivered):
 		var entry: Dictionary = entries[index]
 		# A divider whenever the story moves to another day.
 		var today: int = int(entry.get("time", 0)) / 1440
-		if today != day:
-			day = today
+		if today != _last_day:
+			_last_day = today
 			var divider := Kit.label("— %s —" % Kit.t(StoryClock.day_name(int(entry.get("time", 0)))), 12, P.MUTED, false)
 			divider.name = "Day%d" % today
 			divider.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			divider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			_log_box.add_child(divider)
 		_log_box.add_child(_entry(entry))
+		_rendered_ids.append(entry["id"])
 	if delivered < entries.size() and entries[delivered]["kind"] == "message":
-		_log_box.add_child(Kit.label(Kit.tf("%s is typing…", entries[delivered]["from"]), 13, P.MUTED))
+		_typing = Kit.label(Kit.tf("%s is typing…", entries[delivered]["from"]), 13, P.MUTED)
+		_log_box.add_child(_typing)
 
 	if _report_form != null and _report_form.get_parent() == _composer:
 		_composer.remove_child(_report_form)

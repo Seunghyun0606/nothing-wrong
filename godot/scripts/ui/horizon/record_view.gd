@@ -116,7 +116,7 @@ func _grid(view: Dictionary) -> Control:
 			_values(grid, view, key, "target", row.get("target", null), columns, TARGET_BG)
 		else:
 			grid.add_child(_cell(key, P.SURFACE, true))
-			_values(grid, view, key, "", row.get("values", {}), columns, P.SURFACE)
+			_values(grid, view, key, "", HorizonData.values_on(row, DesktopSession.viewport), columns, P.SURFACE)
 	return grid
 
 

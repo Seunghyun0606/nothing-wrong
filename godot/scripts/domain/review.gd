@@ -201,7 +201,7 @@ static func reply_hint(report: Dictionary, scenario: Dictionary, evidence: Dicti
 			line = "You're on the right screen, but that value is fine. Look at the others again."
 		elif report.get("requirementId", "") == bug.get("requirementId", "") and str(report.get("outcome", "BUG")) != str(bug.get("outcome", "BUG")):
 			rank = 4
-			line = "That's the record, and that's the rule. But is it a broken feature, or records that disagree with each other? Pick the kind of problem again."
+			line = str(bug.get("outcomeHint", "That's the record, and that's the rule. But is it a broken feature, or records that disagree with each other? Pick the kind of problem again."))
 		else:
 			rank = 3
 			line = "That value is wrong, but it breaks a different requirement. Which one does it contradict?"
