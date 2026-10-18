@@ -1,0 +1,27 @@
+id: DEC-011
+title: Reading the console and typing searches are the puzzle; deductions are filled in
+status: active
+decided_at: "2026-10-18"
+context: >-
+  Compared with No Results Found, the game guided too much: console terms were one-click
+  searches, a console badge pointed at the defective screen, each record was one search
+  away, and deductions were three-way choices. The project owner asked to apply every
+  improvement (typed leads, no badge, multi-step records, fill-in deductions, more
+  tension, and a second chapter).
+decision: >-
+  Console traces sit among everyday log lines with no badge and no search buttons; the
+  player reads and types the terms. Records can require another record first, and decoys
+  answer broad searches. Only after two missed searches does Messenger suggest a term.
+  Deductions are sentences with blanks; the lead says how many parts hold up. Each Ticket
+  happens at a set time in release week and the taskbar counts down to the release.
+  Chapter 2 (T06, T07) adds device-specific defects and a chain of records to its finale.
+consequences:
+  - Story pacing depends on the player reading; Messenger's search suggestion is the safety net.
+  - Deduction attempts are stored as filled blanks; old option-id attempts are ignored.
+  - Shoply has two new mutation hooks, cart.shipping and orders.cancelAction.visible.
+applies_to:
+  - global
+references:
+  - .project-os/decisions/DEC-009-deduction-first-qa-exploration.yaml
+  - .project-os/decisions/DEC-010-notes-and-messenger-reporting.yaml
+  - godot/README.md

@@ -1,7 +1,8 @@
 ## Intranet records and the search engine that finds them (res://data/intranet.json).
-## Story records become searchable once their Ticket is resolved, or earlier once the
-## player has seen one of their leads in the Browser console. Finding one reveals that
-## Ticket's clue. Matching is lenient: substrings, either language, and one typo.
+## Story records become searchable once their Ticket is resolved, earlier once the player
+## has seen one of their leads in the Browser console, or once a record that leads to them
+## was read (`unlockedByDocuments`), so some records are a search or two away. Finding one
+## reveals that Ticket's clue. Matching is lenient: substrings, either language, one typo.
 extends RefCounted
 
 const DEFAULT_PATH := "res://data/intranet.json"
@@ -30,6 +31,10 @@ static func is_available(document: Dictionary, state: Dictionary) -> bool:
 		return true
 	for lead in state.get("story", {}).get("leads", []):
 		if document.get("unlockedByLeads", []).has(lead["term"]):
+			return true
+	var found: Array = state.get("story", {}).get("foundDocuments", [])
+	for id in document.get("unlockedByDocuments", []):
+		if found.has(id):
 			return true
 	return false
 

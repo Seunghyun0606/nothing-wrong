@@ -110,22 +110,46 @@ static func apply_review(
 	return next
 
 
-static func answer_deduction(state: Dictionary, deduction: Dictionary, option_id: String) -> Dictionary:
-	var option: Variant = null
-	for candidate in deduction["options"]:
-		if candidate["id"] == option_id:
-			option = candidate
-	assert(option != null, "Unknown option %s" % option_id)
+## Checks a filled-in conclusion: how many blanks are right, and on a clue board whether
+## every required clue was picked.
+static func check_deduction(deduction: Dictionary, filled: Dictionary, clue_ids: Array = []) -> Dictionary:
+	var blanks: Dictionary = deduction.get("blanks", {})
+	var right := 0
+	for key in blanks:
+		if str(filled.get(key, "")) == str(blanks[key]["answer"]):
+			right += 1
+	var clues_ok := true
+	if deduction.get("mode", "") == "board":
+		for required in deduction.get("requiredClues", []):
+			if not clue_ids.has(required):
+				clues_ok = false
+	return { "right": right, "total": blanks.size(), "cluesOk": clues_ok, "correct": right == blanks.size() and clues_ok }
 
+
+static func answer_deduction(state: Dictionary, deduction: Dictionary, filled: Dictionary, clue_ids: Array = []) -> Dictionary:
 	var progress: Dictionary = state["story"]["deductions"].get(deduction["id"], { "attempts": [], "solved": false })
 	if progress["solved"]:
 		return state
-
+	var check := check_deduction(deduction, filled, clue_ids)
 	var next := state.duplicate(true)
-	var attempts: Array = progress["attempts"].duplicate()
-	attempts.append(option_id)
-	next["story"]["deductions"][deduction["id"]] = { "attempts": attempts, "solved": option["correct"] }
+	var attempts: Array = progress["attempts"].duplicate(true)
+	attempts.append({ "filled": filled.duplicate(), "clues": clue_ids.duplicate(), "right": check["right"],
+		"total": check["total"], "correct": check["correct"] })
+	next["story"]["deductions"][deduction["id"]] = { "attempts": attempts, "solved": check["correct"] }
 	return next
+
+
+## Counts a search that did not turn up the record the team is waiting for.
+static func note_search_miss(state: Dictionary, document_id: String) -> Dictionary:
+	var next := state.duplicate(true)
+	var misses: Dictionary = next["story"].get("searchMisses", {})
+	misses[document_id] = int(misses.get(document_id, 0)) + 1
+	next["story"]["searchMisses"] = misses
+	return next
+
+
+static func search_misses(state: Dictionary, document_id: String) -> int:
+	return int(state["story"].get("searchMisses", {}).get(document_id, 0))
 
 
 static func find_document(state: Dictionary, document_id: String) -> Dictionary:
@@ -163,33 +187,6 @@ static func leads_for(state: Dictionary, ticket_id: String) -> Array:
 
 static func has_found(state: Dictionary, document_id: String) -> bool:
 	return state["story"].get("foundDocuments", []).has(document_id)
-
-
-## A clue-board answer is right when the conclusion is right and every required clue is picked.
-static func board_answer_correct(deduction: Dictionary, option_id: String, clue_ids: Array) -> bool:
-	for option in deduction["options"]:
-		if option["id"] == option_id:
-			if not option["correct"]:
-				return false
-			for required in deduction.get("requiredClues", []):
-				if not clue_ids.has(required):
-					return false
-			return true
-	return false
-
-
-static func answer_board(state: Dictionary, deduction: Dictionary, option_id: String, clue_ids: Array) -> Dictionary:
-	var progress: Dictionary = state["story"]["deductions"].get(deduction["id"], { "attempts": [], "solved": false })
-	if progress["solved"]:
-		return state
-	var correct := board_answer_correct(deduction, option_id, clue_ids)
-	var next := state.duplicate(true)
-	var attempts: Array = progress["attempts"].duplicate()
-	attempts.append(option_id)
-	var board: Array = progress.get("boardAttempts", []).duplicate(true)
-	board.append({ "option": option_id, "clues": clue_ids.duplicate(), "correct": correct })
-	next["story"]["deductions"][deduction["id"]] = { "attempts": attempts, "boardAttempts": board, "solved": correct }
-	return next
 
 
 ## How many submissions on a Ticket the review turned down.

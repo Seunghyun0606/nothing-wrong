@@ -8,6 +8,7 @@ const GameState := preload("res://scripts/domain/game_state.gd")
 const Addresses := preload("res://scripts/domain/addresses.gd")
 const Observations := preload("res://scripts/domain/observations.gd")
 const ReportComposer := preload("res://scripts/ui/apps/report_composer.gd")
+const DeductionForm := preload("res://scripts/ui/apps/deduction_form.gd")
 
 var _scroll: ScrollContainer
 var _log_box: VBoxContainer
@@ -60,8 +61,9 @@ func _ready() -> void:
 func _render() -> void:
 	var log := DesktopSession.messenger_log()
 	var active := GameSession.active_ticket_id()
-	var signature := "%d|%d|%s|%s|%d|%s|%s" % [log["delivered"], log["entries"].size(), str(log["pendingDeduction"] != null), str(log["pendingDiscovery"] != null),
-		GameState.lead_terms(GameSession.state).size(), active, str(DesktopSession.report_requested)]
+	var discovery_id: String = log["pendingDiscovery"]["documentId"] if log["pendingDiscovery"] != null else ""
+	var signature := "%d|%d|%s|%s|%d|%s|%s" % [log["delivered"], log["entries"].size(), str(log["pendingDeduction"] != null), discovery_id,
+		GameState.search_misses(GameSession.state, discovery_id), active, str(DesktopSession.report_requested)]
 	if signature == _signature:
 		return
 	_signature = signature
@@ -83,13 +85,20 @@ func _render() -> void:
 	var discovery: Variant = log["pendingDiscovery"]
 	if discovery != null and delivered >= entries.size():
 		_composer.add_child(Kit.label("The team is waiting for what you find on the intranet.", 13, P.WARNING))
-		var row := Kit.hbox(6)
-		row.name = "LeadSearch"
-		for term in GameState.lead_terms(GameSession.state).slice(-3):
-			row.add_child(Kit.button("🔎 %s" % term, DesktopSession.search_intranet.bind(term)))
 		var search := Kit.button(Kit.t("Open intranet search"), DesktopSession.open_url.bind("https://search.nothingwrong.local"))
-		row.add_child(search)
-		_composer.add_child(row)
+		search.name = "OpenSearch"
+		search.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		_composer.add_child(search)
+		# Search terms are the player's to find; after a few misses the team suggests one.
+		var missed := GameState.search_misses(GameSession.state, discovery_id)
+		var terms: Array = discovery.get("searchTerms", [])
+		if missed >= 2 and not terms.is_empty():
+			var row := Kit.hbox(6)
+			row.name = "SearchHelp"
+			row.add_child(Kit.label("Stuck? Try searching:", 13, P.MUTED, false))
+			for term in terms.slice(0, 1 if missed < 4 else terms.size()):
+				row.add_child(Kit.button("🔎 %s" % term, DesktopSession.search_intranet.bind(term)))
+			_composer.add_child(row)
 	elif pending != null and delivered >= entries.size() and pending.get("mode", "") == "board":
 		_composer.add_child(Kit.label(Kit.tf("%s is waiting for your answer. A wrong guess costs nothing.", pending["askedBy"]["from"]), 13, P.WARNING))
 		var board := Kit.primary(Kit.t("Open Case File and connect the clues"), DesktopSession.show_case_file)
@@ -99,16 +108,9 @@ func _render() -> void:
 		var reply := Kit.vbox(6)
 		reply.name = "Reply"
 		reply.add_child(Kit.label(Kit.tf("%s is waiting for your answer. A wrong guess costs nothing.", pending["askedBy"]["from"]), 13, P.WARNING))
-		var attempts: Array = GameSession.state["story"]["deductions"].get(pending["id"], {}).get("attempts", [])
-		for option in pending["options"]:
-			if attempts.has(option["id"]):
-				continue
-			var button := Kit.button(option["text"], GameSession.answer_deduction.bind(pending, option["id"]), "ChoiceButton")
-			button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-			button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			# A known wrap width keeps the reply from measuring one word per line.
-			button.custom_minimum_size = Vector2(400, 0)
-			reply.add_child(button)
+		var form: VBoxContainer = DeductionForm.new()
+		form.setup(pending)
+		reply.add_child(form)
 		_composer.add_child(reply)
 	elif active != "":
 		if _report_form == null or _report_form.ticket_id != active:
@@ -155,7 +157,8 @@ func _entry(entry: Dictionary) -> Control:
 			author.add_child(from)
 			author.add_child(Kit.label("· %s" % Kit.t(entry["role"]), 13, P.MUTED, false))
 			column.add_child(author)
-			column.add_child(Kit.label(entry["text"], 15))
+			var args: Array = entry.get("args", [])
+			column.add_child(Kit.label(Kit.tf(entry["text"], args) if not args.is_empty() else entry["text"], 15))
 			for link in entry.get("links", []):
 				var url: String = link["url"]
 				var button := Kit.button("🔗 %s" % Kit.t(link["label"]), DesktopSession.open_url.bind(url))
@@ -207,8 +210,9 @@ func _entry(entry: Dictionary) -> Control:
 			var card := Kit.panel(P.ACCENT, Color.TRANSPARENT, 10, 12)
 			var body := Kit.vbox(2)
 			body.add_child(Kit.heading("You", 13, Color.WHITE))
-			body.add_child(Kit.label(entry["text"], 15, Color.WHITE))
-			if entry.has("clues"):
+			var said: String = DeductionForm.filled_text(entry["sentence"], entry["filled"]) if entry.has("sentence") else entry["text"]
+			body.add_child(Kit.label(said, 15, Color.WHITE))
+			if not entry.get("clues", []).is_empty():
 				var clue_names: Array = entry["clues"].map(func(title): return Kit.t(title))
 				body.add_child(Kit.label(Kit.tf("Clues: %s", ", ".join(clue_names)), 13, Color(1, 1, 1, 0.85)))
 			card.add_child(body)

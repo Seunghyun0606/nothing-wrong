@@ -102,8 +102,9 @@ func submit_report(input: Dictionary) -> Dictionary:
 	return review
 
 
-func answer_board(deduction: Dictionary, option_id: String, clue_ids: Array) -> void:
-	commit(GameState.answer_board(state, deduction, option_id, clue_ids))
+## A search that missed the record the team is waiting for; enough of them bring help.
+func note_search_miss(document_id: String) -> void:
+	commit(GameState.note_search_miss(state, document_id))
 
 
 func has_progress() -> bool:
@@ -126,8 +127,8 @@ func complete_review(report: Dictionary, review: Dictionary, reward: Dictionary)
 	commit(GameState.apply_review(state, report, review, reward, int(Time.get_unix_time_from_system() * 1000)))
 
 
-func answer_deduction(deduction: Dictionary, option_id: String) -> void:
-	commit(GameState.answer_deduction(state, deduction, option_id))
+func answer_deduction(deduction: Dictionary, filled: Dictionary, clue_ids: Array = []) -> void:
+	commit(GameState.answer_deduction(state, deduction, filled, clue_ids))
 
 
 func mark_messages_delivered(count: int) -> void:

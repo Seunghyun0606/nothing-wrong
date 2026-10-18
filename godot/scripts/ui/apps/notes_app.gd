@@ -8,6 +8,7 @@ const P := preload("res://scripts/ui/palette.gd")
 const GameState := preload("res://scripts/domain/game_state.gd")
 const Addresses := preload("res://scripts/domain/addresses.gd")
 const Observations := preload("res://scripts/domain/observations.gd")
+const DeductionForm := preload("res://scripts/ui/apps/deduction_form.gd")
 
 var _files: VBoxContainer
 var _document: VBoxContainer
@@ -186,17 +187,6 @@ func _ticket_page(scenario: Dictionary) -> void:
 		noted_section.add_child(note_card(noted[index]))
 	_document.add_child(noted_section)
 
-	var leads := GameState.leads_for(GameSession.state, ticket_id)
-	if not leads.is_empty():
-		var lead_panel := Kit.panel(P.WARNING_SOFT, Color("#e6d27a"), 6, 12)
-		lead_panel.name = "Leads"
-		var lead_body := Kit.vbox(6)
-		lead_panel.add_child(lead_body)
-		lead_body.add_child(Kit.kicker("Leads from the console"))
-		lead_body.add_child(Kit.label("Names and codes Shoply logged while the defect was on screen. Search the intranet for them.", 13, P.MUTED))
-		lead_body.add_child(_lead_chips(leads))
-		_document.add_child(lead_panel)
-
 	var notes_section := Kit.vbox(6)
 	notes_section.add_child(Kit.kicker("My notes"))
 	_note_editor = TextEdit.new()
@@ -209,15 +199,6 @@ func _ticket_page(scenario: Dictionary) -> void:
 	notes_section.add_child(_note_editor)
 	notes_section.add_child(Kit.label("Saved automatically.", 13, P.MUTED))
 	_document.add_child(notes_section)
-
-
-static func _lead_chips(leads: Array) -> Control:
-	var chips := HFlowContainer.new()
-	chips.add_theme_constant_override("h_separation", 6)
-	chips.add_theme_constant_override("v_separation", 6)
-	for term in leads:
-		chips.add_child(Kit.button("🔎 %s" % term, DesktopSession.search_intranet.bind(term)))
-	return chips
 
 
 func _reference_card(ticket_id: String, attachment: Dictionary) -> Control:
@@ -320,15 +301,12 @@ func _clue_card(scenario: Dictionary) -> Control:
 		body.add_child(Kit.label(Kit.tf("Report the defect in %s to connect it.", ticket_id), 14, P.MUTED))
 	else:
 		body.add_child(Kit.heading("Unknown clue", 16, P.MUTED))
-		body.add_child(Kit.label(Kit.tf("Test %s and keep an eye on the Console.", ticket_id), 14, P.MUTED))
-	var leads := GameState.leads_for(state, ticket_id)
-	if not leads.is_empty() and not clue_found:
-		body.add_child(_lead_chips(leads))
+		body.add_child(Kit.label(Kit.tf("Test %s and read the Console carefully.", ticket_id), 14, P.MUTED))
 	card.add_child(body)
 	return card
 
 
-## Pick the clues that prove a conclusion, then send it to the lead.
+## Pick the clues that prove a conclusion, fill in its blanks, and send it to the lead.
 func _clue_board(deduction: Dictionary) -> Control:
 	var board := Kit.panel(P.ACCENT_SOFT, P.ACCENT, 10, 16)
 	board.name = "ClueBoard"
@@ -336,64 +314,13 @@ func _clue_board(deduction: Dictionary) -> Control:
 	board.add_child(body)
 	body.add_child(Kit.kicker("Connect the clues"))
 	body.add_child(Kit.heading(Kit.t(deduction["prompt"]), 18))
-	body.add_child(Kit.label("Pick the clues that prove it:", 14, P.MUTED))
-	var selected := {}
-	var picked := { "option": "" }
-	var send := Kit.primary(Kit.tf("Send to %s", deduction["askedBy"]["from"]), func(): pass)
-	var refresh_send := func():
-		send.disabled = picked["option"] == "" or selected.is_empty()
-	var clue_list := Kit.vbox(8)
-	for clue in GameSession.catalog.found_clues(GameSession.state, _chapter_of(deduction)):
-		var card := Kit.button("📌 %s" % Kit.t(clue["title"]), func(): pass, "ChoiceButton")
-		card.name = "Clue%s" % clue["id"]
-		card.toggle_mode = true
-		card.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var id: String = clue["id"]
-		card.toggled.connect(func(on):
-			if on:
-				selected[id] = true
-			else:
-				selected.erase(id)
-			refresh_send.call())
-		clue_list.add_child(card)
-	body.add_child(clue_list)
-	body.add_child(Kit.label("Conclusion:", 14, P.MUTED))
-	var group := ButtonGroup.new()
-	for option in deduction["options"]:
-		var choice := Kit.button(option["text"], func(): pass, "ChoiceButton")
-		choice.toggle_mode = true
-		choice.button_group = group
-		choice.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		choice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		choice.custom_minimum_size = Vector2(420, 0)
-		var option_id: String = option["id"]
-		choice.pressed.connect(func():
-			picked["option"] = option_id
-			refresh_send.call())
-		body.add_child(choice)
-	var attempts: Array = GameSession.state["story"]["deductions"].get(deduction["id"], {}).get("boardAttempts", [])
-	if not attempts.is_empty():
+	var attempts: Array = GameSession.state["story"]["deductions"].get(deduction["id"], {}).get("attempts", [])
+	if not attempts.is_empty() and typeof(attempts[-1]) == TYPE_DICTIONARY:
 		var last: Dictionary = attempts[-1]
-		var response := ""
-		for option in deduction["options"]:
-			if option["id"] == last["option"]:
-				response = option["response"] if (last["correct"] or not option["correct"]) else deduction.get("boardHint", "")
-		body.add_child(Kit.label(Kit.t(response), 14, P.WARNING))
-	send.pressed.connect(func():
-		GameSession.answer_board(deduction, picked["option"], selected.keys())
-		var solved: bool = GameSession.state["story"]["deductions"].get(deduction["id"], {}).get("solved", false)
-		Sfx.play("success" if solved else "fail")
-		if solved:
-			DesktopSession.open_app("messenger"))
-	send.disabled = true
-	body.add_child(send)
+		var response: String = Kit.t(deduction.get("boardHint", "")) if int(last["right"]) == int(last["total"]) \
+			else Kit.tf("%d of %d parts hold up. Look at your clues again.", [int(last["right"]), int(last["total"])])
+		body.add_child(Kit.label(response, 14, P.WARNING))
+	var form: VBoxContainer = DeductionForm.new()
+	form.setup(deduction)
+	body.add_child(form)
 	return board
-
-
-func _chapter_of(deduction: Dictionary) -> String:
-	for scenario in GameSession.catalog.scenarios:
-		var story: Variant = scenario.get("story", null)
-		if story != null and story.get("deduction", {}).get("id", "") == deduction["id"]:
-			return story["chapterId"]
-	return ""

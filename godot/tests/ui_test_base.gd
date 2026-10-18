@@ -89,6 +89,22 @@ func _no_issue(desktop: Control) -> void:
 	check(press(form, "Send NO ISSUE FOUND"), "send no issue")
 
 
+## Fills in the open deduction (in Messenger or on the Case File board) and sends it.
+func _deduce(desktop: Control, answers: Dictionary, clues: Array = []) -> void:
+	var form: Node = find_named(desktop, "DeductionForm")
+	check(form != null, "deduction form open")
+	if form == null:
+		return
+	for id in clues:
+		var card := form.find_child("Clue%s" % id, true, false) as Button
+		check(card != null, "clue %s on the board" % id)
+		if card:
+			card.button_pressed = true
+	for key in answers:
+		form.fill(key, answers[key])
+	check(press(form, "Send to", false), "send deduction")
+
+
 func _accept(desktop: Control, ticket_id: String) -> void:
 	DesktopSession.open_app("messenger")
 	check(press(desktop, "Open %s in QA Notes" % ticket_id), "ticket card %s" % ticket_id)

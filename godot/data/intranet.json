@@ -38,21 +38,16 @@
     },
     {
       "id": "DOC-PROMO-ARCHIVE",
-      "title": "Promotion archive · TWO FOR $50",
+      "title": "Promotion archive · Spring Duo (TWO FOR $50)",
       "source": "Marketing / retired promotions",
       "keywords": [
-        "two for",
+        "spring duo",
+        "duo",
         "two for 50",
         "two for $50",
-        "promotion",
-        "promo",
-        "$50",
-        "fifty",
-        "spring",
-        "subtotal",
-        "two_for_50",
-        "promo/two-for-50",
-        "legacy rule"
+        "campaign",
+        "retired promotion",
+        "promotion archive"
       ],
       "availableAfter": "T02",
       "lines": [
@@ -61,16 +56,15 @@
         "Still referenced by: RC3 cart/subtotal, merged at 02:14 by release-bot."
       ],
       "keywordsKo": [
-        "프로모션",
+        "스프링 듀오",
+        "봄 프로모션",
         "2개 50달러",
         "두 개 50달러",
-        "50달러",
-        "봄 프로모션",
-        "소계"
+        "종료된 프로모션",
+        "캠페인"
       ],
-      "unlockedByLeads": [
-        "TWO_FOR_50",
-        "promo/two-for-50"
+      "unlockedByDocuments": [
+        "DOC-PRICING-RULES"
       ]
     },
     {
@@ -95,6 +89,7 @@
         "exp/retention-push. Goal: reduce order cancellations.",
         "Variant A: route Cancel order to the payment page.",
         "Variant B (\"margin guard\"): cap discounts at 10% on carts of three or more items.",
+        "Owner: Growth team (s.ortiz).",
         "Status: archived in March. Not approved for release."
       ],
       "keywordsKo": [
@@ -125,10 +120,11 @@
       ],
       "availableAfter": "T04",
       "lines": [
-        "Tuesday 18:40: include pattern changed from release/* to release/*, exp/*, promo/*",
+        "Monday 18:40: include pattern changed from release/* to release/*, exp/*, promo/*",
         "Reason: \"ship new promo branches automatically\"",
         "Edited by: d.reyes",
-        "Next run (02:14): matched 1 release branch and 6 archived branches."
+        "Next run (02:14): matched 1 release branch and 6 archived branches.",
+        "Thursday 19:05: exp/* and promo/* removed again (d.reyes). release/* still included."
       ],
       "keywordsKo": [
         "병합 규칙",
@@ -241,6 +237,199 @@
         "메뉴",
         "식당",
         "커피"
+      ]
+    },
+    {
+      "id": "DOC-PRICING-RULES",
+      "title": "Pricing rule registry",
+      "source": "Shoply engineering / pricing",
+      "keywords": [
+        "pricing",
+        "pricing rule",
+        "pricing rules",
+        "rule registry",
+        "two_for_50",
+        "legacy rule",
+        "standard_price"
+      ],
+      "keywordsKo": [
+        "가격",
+        "가격 규칙",
+        "규칙 목록"
+      ],
+      "lines": [
+        "Active rules: STANDARD_PRICE, SAVE10, SAVE20 (Gold only).",
+        "Retired rules: TWO_FOR_50, from the campaign \"Spring Duo\" (retired in June).",
+        "Retired rules must never run in production."
+      ]
+    },
+    {
+      "id": "DOC-PROMO-CALENDAR",
+      "title": "Autumn promotion calendar",
+      "source": "Marketing / campaigns",
+      "keywords": [
+        "promotion",
+        "promo",
+        "promotions",
+        "campaign",
+        "coupon",
+        "save10",
+        "save20",
+        "autumn sale",
+        "bundle"
+      ],
+      "keywordsKo": [
+        "프로모션",
+        "쿠폰",
+        "캠페인",
+        "가을 세일",
+        "묶음"
+      ],
+      "lines": [
+        "SAVE10: everyone, 10% off orders over $30.00.",
+        "SAVE20: Gold members, 20% off at every quantity.",
+        "No bundle promotions this season."
+      ]
+    },
+    {
+      "id": "DOC-RELEASE-BOT",
+      "title": "release-bot · service account",
+      "source": "Platform team / automation",
+      "keywords": [
+        "release-bot",
+        "bot",
+        "service account",
+        "automation",
+        "nightly",
+        "sync"
+      ],
+      "keywordsKo": [
+        "봇",
+        "서비스 계정",
+        "자동화"
+      ],
+      "lines": [
+        "Automated merge account for Shoply releases.",
+        "Runs nightly at 02:14 and merges every branch that matches its merge rule.",
+        "Rule changes are logged in the release-bot configuration history."
+      ]
+    },
+    {
+      "id": "DOC-EXP-CHECKOUT-SPEED",
+      "title": "Experiment registry · exp/checkout-speed",
+      "source": "Growth team / experiments",
+      "keywords": [
+        "experiment",
+        "experiments",
+        "exp/",
+        "growth",
+        "checkout speed"
+      ],
+      "keywordsKo": [
+        "실험",
+        "그로스"
+      ],
+      "lines": [
+        "exp/checkout-speed. Goal: a faster checkout.",
+        "Status: shipped in May. Owner: Platform team."
+      ]
+    },
+    {
+      "id": "DOC-IT-POLICY",
+      "title": "IT policy · workstations and keys",
+      "source": "Office / IT",
+      "keywords": [
+        "it policy",
+        "policy",
+        "workstation",
+        "workstations",
+        "asset",
+        "api key",
+        "key",
+        "keys",
+        "temporary account"
+      ],
+      "keywordsKo": [
+        "정책",
+        "워크스테이션",
+        "자산",
+        "api 키",
+        "키",
+        "임시 계정"
+      ],
+      "lines": [
+        "Every workstation has an asset tag such as WS-02, listed in the asset register.",
+        "API keys are issued per person and logged in the key registry.",
+        "Temporary accounts must name an owner."
+      ]
+    },
+    {
+      "id": "DOC-MOBILE-FEES",
+      "title": "Branch record · release/mobile-fees",
+      "source": "Shoply engineering / branches",
+      "keywords": [
+        "release/mobile-fees",
+        "mobile-fees",
+        "mobile fees",
+        "mobile fee"
+      ],
+      "keywordsKo": [
+        "모바일 요금",
+        "모바일 배송비"
+      ],
+      "lines": [
+        "Created Monday 23:20 by ops-temp, ten minutes after the archive was opened.",
+        "Content: copied from exp/retention-push, Variant C (charge shipping on mobile, hide Cancel on tablet).",
+        "Named release/* so every merge rule includes it.",
+        "Pushed with API key ak-7731."
+      ],
+      "availableAfter": "T06",
+      "unlockedByLeads": [
+        "release/mobile-fees"
+      ]
+    },
+    {
+      "id": "DOC-API-KEYS",
+      "title": "Key registry · ak-7731",
+      "source": "Platform team / security",
+      "keywords": [
+        "ak-7731",
+        "ak7731",
+        "key registry"
+      ],
+      "keywordsKo": [
+        "키 목록"
+      ],
+      "lines": [
+        "ak-7731: issued Monday 23:05 to ops-temp.",
+        "Requested from workstation WS-14.",
+        "Revoked Wednesday, together with ops-temp."
+      ],
+      "availableAfter": "T07",
+      "unlockedByDocuments": [
+        "DOC-MOBILE-FEES"
+      ]
+    },
+    {
+      "id": "DOC-ASSET-REGISTER",
+      "title": "Asset register · WS-14",
+      "source": "Office / IT",
+      "keywords": [
+        "ws-14",
+        "ws14",
+        "ws 14",
+        "asset register"
+      ],
+      "keywordsKo": [
+        "자산 대장"
+      ],
+      "lines": [
+        "WS-14: floor 3, desk 12.",
+        "Assigned to: Sam Ortiz (Shoply engineering)."
+      ],
+      "availableAfter": "T07",
+      "unlockedByDocuments": [
+        "DOC-API-KEYS"
       ]
     }
   ]

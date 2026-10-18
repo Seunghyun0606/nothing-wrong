@@ -15,6 +15,15 @@ const ShoplyView := preload("res://scripts/ui/shoply/shoply_view.gd")
 const Observations := preload("res://scripts/domain/observations.gd")
 
 const VIEWPORT_WIDTHS := { "DESKTOP": 0.0, "TABLET": 768.0, "MOBILE": 390.0 }
+## Everyday log lines, so a defect's trace has to be read rather than spotted.
+const CONSOLE_NOISE := {
+	"/shoply": ["info: hero banner bucket=control", "warn: font-display swap for Fraunces"],
+	"/shoply/product": ["warn: image srcset fallback for everyday-pack.jpg", "info: reviews widget lazy-loaded"],
+	"/shoply/cart": ["warn: cart.v1 API is deprecated (sunset 2027)", "info: recommendations skipped (no history)"],
+	"/shoply/checkout": ["warn: autofill disabled for postal code field", "info: payment iframe ready"],
+	"/shoply/orders": ["info: order cache refreshed (3 orders)", "warn: tracking service slow (812 ms)"],
+	"/shoply/payment": ["warn: 3-D Secure running in sandbox mode", "info: card form mounted"],
+}
 
 var view: RefCounted = ShoplyView.new()
 var _tab_row: HBoxContainer
@@ -185,6 +194,8 @@ func _render() -> void:
 		stop_noting()
 		if location["kind"] == "record":
 			_on_record_opened(location["id"])
+		elif location["kind"] == "search" and str(location.get("query", "")) != "":
+			_check_search(location["query"])
 	_back.disabled = not DesktopSession.can_go_back()
 	_forward.disabled = not DesktopSession.can_go_forward()
 	var active := _active()
@@ -377,6 +388,16 @@ func _new_tab() -> Control:
 	return Kit.margin(column, 56, 56, 56, 56)
 
 
+## A search that misses the record the team is waiting for counts toward their help.
+func _check_search(query: String) -> void:
+	var pending: Variant = DesktopSession.messenger_log()["pendingDiscovery"]
+	if pending == null:
+		return
+	var found: Array = GameSession.intranet.search(query, GameSession.state).map(func(document): return document["id"])
+	if not found.has(pending["documentId"]):
+		GameSession.note_search_miss(pending["documentId"])
+
+
 # --- Tabs ----------------------------------------------------------------------
 
 func _render_tabs() -> void:
@@ -447,19 +468,34 @@ func _console_lines(location: Dictionary) -> Array:
 		return []
 	var lines: Array = [
 		{ "level": "info", "text": "GET %s 200" % location["path"] },
-		{ "level": "info", "text": "render %s" % (view.heading if view.heading != "" else "page") },
+		{ "level": "info", "text": "analytics: page_view queued" },
 	]
+	var noise: Array = []
+	var best := ""
+	for prefix in CONSOLE_NOISE:
+		if str(location["path"]).begins_with(prefix) and prefix.length() > best.length():
+			best = prefix
+	if best != "":
+		noise = CONSOLE_NOISE[best]
+	for text in noise.slice(0, 1):
+		lines.append(_log_line(text))
 	for trace in _traces:
-		lines.append({ "level": "warn", "text": trace["text"], "terms": trace["terms"] })
+		lines.append({ "level": "warn", "text": "warn: %s" % trace["text"] })
+	for text in noise.slice(1):
+		lines.append(_log_line(text))
+	lines.append({ "level": "info", "text": "render %s" % (view.heading if view.heading != "" else "page") })
 	return lines
+
+
+static func _log_line(text: String) -> Dictionary:
+	return { "level": "warn" if text.begins_with("warn") else "info", "text": text }
 
 
 ## While a page is being built, leads are noted after the build so state does not
 ## change in the middle of a render.
 func _render_console(defer: bool = true) -> void:
 	var warnings := _traces.size()
-	_console_button.text = Kit.tf("Console ⚠ %d", warnings) if warnings > 0 and not _console_open else Kit.t("Console")
-	_console_button.add_theme_color_override("font_color", P.WARNING if warnings > 0 and not _console_open else P.TEXT)
+	_console_button.text = Kit.t("Console")
 	_console.visible = _console_open
 	Kit.clear(_console)
 	if not _console_open:
@@ -474,30 +510,20 @@ func _render_console(defer: bool = true) -> void:
 		var text := Kit.label("%s  %s" % ["⚠" if warn else "›", line["text"]], 13, Color("#f7c948") if warn else Color("#cbd2d9"), false)
 		text.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 		body.add_child(text)
-		if warn:
-			var terms := Kit.hbox(6)
-			terms.add_child(Kit.label("Lead:", 13, Color("#9aa5b1"), false))
-			for term in line["terms"]:
-				var chip := Kit.button("🔎 %s" % term, DesktopSession.search_intranet.bind(term))
-				chip.name = "Lead%s" % term.replace("/", "_").replace(":", "_")
-				terms.add_child(chip)
-			body.add_child(terms)
 	if warnings > 0 and defer:
 		_note_leads.call_deferred(_traces.duplicate())
 	elif warnings > 0:
 		_note_leads(_traces.duplicate())
 
 
-## Terms seen in the console become leads in QA Notes and the Case File.
+## Terms in a trace the player has seen are remembered quietly: they open their records
+## early and let the team suggest a search when the player is stuck. Reading and typing
+## them is the player's job.
 func _note_leads(traces: Array) -> void:
 	var terms: Array = []
 	for trace in traces:
 		terms.append_array(trace["terms"])
-	var fresh: Array = GameSession.note_leads(terms, _active())
-	if fresh.is_empty():
-		return
-	Sfx.play("discover")
-	DesktopSession.push_toast(Kit.t("New lead"), Kit.tf("%s was noted in QA Notes. Search the intranet for it.", ", ".join(fresh)), "notes")
+	GameSession.note_leads(terms, _active())
 
 
 # --- Note ----------------------------------------------------------------------
@@ -634,7 +660,7 @@ func capture(focus: Dictionary = {}) -> Dictionary:
 			"visibleTargets": controls.map(func(control): return control["target"]),
 			"controls": controls,
 			"productState": context["product"],
-			"console": _traces.map(func(trace): return trace["text"]),
+			"console": _console_lines(location).filter(func(line): return line["level"] == "warn").map(func(line): return line["text"]),
 		},
 	}
 	if not focus.is_empty():

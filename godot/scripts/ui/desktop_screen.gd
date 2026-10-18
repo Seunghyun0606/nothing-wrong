@@ -24,6 +24,7 @@ var _toast_cards := {}
 var _toast_tween: Tween
 var _sound_button: Button
 var _clock: Label
+var _deadline: Label
 var _start_menu: PopupMenu
 
 
@@ -167,7 +168,9 @@ func _build_taskbar() -> void:
 		_taskbar_buttons[app] = button
 
 	row.add_child(Kit.spacer())
-	row.add_child(Kit.label("Shoply RC3 · Staging", 13, P.MUTED, false))
+	_deadline = Kit.label("", 13, P.MUTED, false)
+	_deadline.name = "Deadline"
+	row.add_child(_deadline)
 	_sound_button = Kit.button("", _toggle_sound, "FlatLink")
 	_sound_button.name = "SoundToggle"
 	_sound_button.tooltip_text = "Sound"
@@ -175,13 +178,9 @@ func _build_taskbar() -> void:
 	_sound_button.text = "🔊" if Settings.sound else "🔇"
 	row.add_child(_sound_button)
 	_clock = Kit.label("", 14, P.TEXT, false)
+	_clock.name = "Clock"
+	_clock.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	row.add_child(_clock)
-	var timer := Timer.new()
-	timer.wait_time = 15.0
-	timer.autostart = true
-	timer.timeout.connect(_tick)
-	add_child(timer)
-	_tick()
 
 
 func _toggle_sound() -> void:
@@ -197,10 +196,31 @@ func _open_start_menu() -> void:
 	_start_menu.popup(Rect2i(at, _start_menu.size))
 
 
+const DAYS := ["Mon", "Tue", "Wed", "Thu", "Fri"]
+## The Autumn Release ships Friday at 10:00, in minutes from Monday 00:00.
+const RELEASE_AT := 4 * 1440 + 10 * 60
+
+
+## The story's clock: each Ticket happens at a set time in release week ("Thu 15:30").
+func _story_time() -> String:
+	var focus := GameSession.focus_ticket_id()
+	var scenario: Variant = GameSession.scenario(focus) if focus != "" else GameSession.catalog.scenarios[-1]
+	return str(scenario.get("story", {}).get("time", ""))
+
+
 func _tick() -> void:
-	var now := Time.get_time_dict_from_system()
-	var hour: int = now["hour"]
-	_clock.text = Kit.clock_text(hour, now["minute"])
+	var time := _story_time()
+	var parts := time.split(" ")
+	if parts.size() != 2:
+		_clock.text = ""
+		_deadline.text = Kit.t("Autumn Release · Fri 10:00")
+		return
+	_clock.text = "%s %s" % [Kit.t(parts[0]), parts[1]]
+	var hm := parts[1].split(":")
+	var now := DAYS.find(parts[0]) * 1440 + int(hm[0]) * 60 + int(hm[1])
+	var hours := int(ceil((RELEASE_AT - now) / 60.0))
+	_deadline.text = Kit.tf("Autumn Release · Fri 10:00 · %dh left", hours) if hours > 0 else Kit.t("Autumn Release · Fri 10:00")
+	_deadline.add_theme_color_override("font_color", P.DANGER if hours <= 3 else (P.WARNING if hours <= 24 else P.MUTED))
 
 
 func _toggle_app(app: String) -> void:
@@ -230,6 +250,7 @@ func _sync() -> void:
 		button.add_theme_stylebox_override("normal", Kit.style(P.ACCENT_SOFT if DesktopSession.is_visible_app(app) else P.SURFACE, P.ACCENT if DesktopSession.focused_app == app else P.BORDER, 6, 12, 7))
 	var active := GameSession.active_ticket_id()
 	windows["notes"].set_subtitle(Kit.tf("%s in testing", active) if active != "" else "")
+	_tick()
 
 
 func _layout_overlays() -> void:

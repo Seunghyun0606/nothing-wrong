@@ -44,29 +44,25 @@ static func build(catalog: RefCounted, state: Dictionary) -> Dictionary:
 			"from": asked_by["from"], "role": asked_by["role"], "text": deduction["prompt"],
 		}))
 		var progress: Dictionary = state["story"]["deductions"].get(deduction["id"], { "attempts": [], "solved": false })
-		var attempts: Array = progress["attempts"]
-		var board: Array = progress.get("boardAttempts", [])
-		for index in board.size():
-			var attempt: Dictionary = board[index]
-			for option in deduction["options"]:
-				if option["id"] == attempt["option"]:
-					var clue_titles: Array = attempt["clues"].map(func(id):
-						var clue: Variant = catalog.find_clue(id)
-						return clue["title"] if clue != null else id)
-					entries.append({ "id": "%s:board:%d" % [scenario_id, index], "kind": "player", "text": option["text"], "clues": clue_titles })
-					var response: String = option["response"] if attempt["correct"] or not option["correct"] else deduction.get("boardHint", option["response"])
-					entries.append(_message("%s:boardResponse:%d" % [scenario_id, index], {
-						"from": asked_by["from"], "role": asked_by["role"], "text": response,
-					}))
-		if not board.is_empty():
-			attempts = []
-		for index in attempts.size():
-			for option in deduction["options"]:
-				if option["id"] == attempts[index]:
-					entries.append({ "id": "%s:reply:%d" % [scenario_id, index], "kind": "player", "text": option["text"] })
-					entries.append(_message("%s:response:%d" % [scenario_id, index], {
-						"from": asked_by["from"], "role": asked_by["role"], "text": option["response"],
-					}))
+		var answered := 0
+		for attempt in progress["attempts"]:
+			if typeof(attempt) != TYPE_DICTIONARY:
+				continue
+			var clue_titles: Array = attempt.get("clues", []).map(func(id):
+				var clue: Variant = catalog.find_clue(id)
+				return clue["title"] if clue != null else id)
+			entries.append({ "id": "%s:answer:%d" % [scenario_id, answered], "kind": "player", "text": "",
+				"sentence": deduction["sentence"], "blanks": deduction["blanks"], "filled": attempt["filled"], "clues": clue_titles })
+			var reply := { "from": asked_by["from"], "role": asked_by["role"] }
+			if attempt["correct"]:
+				reply["text"] = deduction["success"]
+			elif int(attempt["right"]) == int(attempt["total"]):
+				reply["text"] = deduction.get("boardHint", "")
+			else:
+				reply["text"] = "%d of %d parts hold up. Look at your clues again."
+				reply["args"] = [int(attempt["right"]), int(attempt["total"])]
+			entries.append(_message("%s:answerReply:%d" % [scenario_id, answered], reply))
+			answered += 1
 		if not progress["solved"]:
 			return { "entries": entries, "pendingDeduction": deduction, "pendingDiscovery": null }
 
@@ -128,5 +124,6 @@ static func _message(id: String, message: Dictionary) -> Dictionary:
 		"from": message["from"],
 		"role": message["role"],
 		"text": message["text"],
+		"args": message.get("args", []),
 		"links": message.get("links", []),
 	}

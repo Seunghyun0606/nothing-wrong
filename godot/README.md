@@ -28,15 +28,14 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
   testing. Typing a `docs.nothingwrong.local` address still opens it in the Browser.
 - **Three apps (DEC-010):** Messenger (the team and your reports), Browser, and QA Notes.
   QA Notes is the workbook: a page per Ticket (Start test, request, requirements, pinned
-  spec, what you noted, console leads, your own notes) and the Case File. There is no
+  spec, what you noted, your own notes) and the Case File. There is no
   XP, level, or reputation; the job grows as the team assigns Tickets and tools.
 - **Deduction first (DEC-009):** testing Shoply is how the player explores; the story
   is the game. A defect leaves a trace in the Browser **Console** (`trace` on a Mutation:
-  a log line plus lead `terms`). The Console button shows `⚠ n` when the screen logged
-  something. Opening it, or noting something on that screen, records the terms as
-  **leads** (QA Notes, Case File, Messenger). A lead opens its intranet record early
-  (`unlockedByLeads` in `data/intranet.json`); the clue connects once the defect is
-  reported.
+  a log line plus `terms`), mixed in with everyday log lines (`CONSOLE_NOISE` in
+  `browser_app.gd`) and with no badge, so the player has to read it. Terms the player has
+  seen are remembered quietly: they open a record early (`unlockedByLeads` in
+  `data/intranet.json`); the clue connects once the defect is reported.
 - **Note, then report:** **📌 Note** in the Browser highlights what can be recorded on the
   page; clicking one saves it to QA Notes with the screen and its console. The report is
   a message to the Ticket's sender in Messenger: pick a note and the requirement it
@@ -45,16 +44,25 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
   debrief when it is right, or a hint about where to look (wrong screen, state, value, or
   rule). After a few misses the team gives a nudge and then the answer (`story.assist` in
   `data/scenarios.json`; T01 helps after one miss).
-- **Intranet search:** `search.nothingwrong.local` (also on the Browser's new tab). Leads
-  are one-click searches; typed searches accept English or Korean keywords and one typo.
-  Opening the record a debrief asks for reveals the clue and lets the story continue.
+- **Intranet search (DEC-011):** `search.nothingwrong.local` (also on the Browser's new
+  tab). The player types what they read; searches accept English or Korean keywords and
+  one typo. Some records are a hop away: a record names the next term to search
+  (`unlockedByDocuments`), and decoy records answer broad searches. After two searches
+  that miss the record the team is waiting for, Messenger suggests a term
+  (`discovery.searchTerms`). Opening that record reveals the clue.
+- **Deductions:** a conclusion with blanks (`deduction.sentence`, `blanks`). The player
+  fills each blank from a drop-down and sends it; the lead answers with how many parts
+  hold up, or `success`. Board deductions (the chapter finales, `mode = "board"`) also
+  need the clues that prove it (`requiredClues`).
+- **Release week:** each Ticket happens at a set time (`story.time`, e.g. `Thu 15:30`);
+  the taskbar shows that clock and the hours left until the Autumn Release (Fri 10:00).
+- **Chapters:** Chapter 1 (T01–T04) finds why RC3 broke; Chapter 2 (T05–T07) finds who
+  opened the archive, through device-specific defects and a chain of records.
 - **No tutorial overlay:** the team's messages are the guide. Maya's T01 briefing
   explains noting and reporting; each Ticket keeps an optional "Need a hint?" in QA Notes.
 - **Notifications** rise from behind the taskbar in the bottom-right corner.
 - **Browser tabs:** links and lead searches from other apps open in a new tab (up to six),
   so the page under test stays open; each tab keeps its own Back/Forward history.
-- **Case File board:** the T04 finale is answered on the Case File by picking the clues
-  that prove a conclusion (`deduction.mode = "board"`, `requiredClues`).
 - **Sound:** synthesized effects and office ambience (`scripts/autoload/sfx.gd`); toggle on
   the title screen or the taskbar speaker.
 

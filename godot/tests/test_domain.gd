@@ -23,8 +23,29 @@ func _context(path: String, quantity: int, account := "BASIC", coupon := "", cap
 	}
 
 
-func test_catalog_loads_four_tickets_in_order() -> void:
-	check_eq(_catalog().ticket_ids(), ["T01", "T02", "T03", "T04", "T05"], "ticket ids")
+func test_catalog_loads_two_chapters_of_tickets_in_order() -> void:
+	check_eq(_catalog().ticket_ids(), ["T01", "T02", "T03", "T04", "T05", "T06", "T07"], "ticket ids")
+
+
+## The right word for every blank of a deduction.
+static func _answers(deduction: Dictionary) -> Dictionary:
+	var filled := {}
+	for key in deduction["blanks"]:
+		filled[key] = deduction["blanks"][key]["answer"]
+	return filled
+
+
+func test_chapter_two_defects_depend_on_the_device() -> void:
+	var t06: Array = _catalog().get_scenario("T06")["mutations"]
+	var mobile := _context("/shoply/cart", 2)
+	mobile["test"]["viewport"] = "MOBILE"
+	check_eq(Mutations.resolve("cart.shipping", 0.0, mobile, t06), 5.0, "mobile carts pay shipping")
+	check_eq(Mutations.resolve("cart.shipping", 0.0, _context("/shoply/cart", 2), t06), 0.0, "desktop is free")
+	var t07: Array = _catalog().get_scenario("T07")["mutations"]
+	var tablet := _context("/shoply/orders/order-1042", 0)
+	tablet["test"]["viewport"] = "TABLET"
+	check_eq(Mutations.resolve("orders.cancelAction.visible", true, tablet, t07), false, "tablets lose Cancel order")
+	check_eq(Mutations.resolve("orders.cancelAction.visible", true, _context("/shoply/orders/order-1042", 0), t07), true, "desktop keeps it")
 
 
 func test_conditions_support_every_operator() -> void:
@@ -74,12 +95,14 @@ func test_invalid_review_keeps_testing_and_no_issue_uses_its_status_path() -> vo
 
 func test_deduction_keeps_every_attempt() -> void:
 	var deduction: Dictionary = _catalog().get_scenario("T01")["story"]["deduction"]
-	var right: Dictionary = deduction["options"].filter(func(option): return option["correct"])[0]
-	var wrong: Dictionary = deduction["options"].filter(func(option): return not option["correct"])[0]
+	var right := _answers(deduction)
+	var wrong := right.duplicate()
+	wrong["who"] = "the design team"
+	check_eq(GameState.check_deduction(deduction, wrong)["right"], 2, "two of three blanks are right")
 	var state := GameState.create_initial(["T01"])
-	var missed := GameState.answer_deduction(state, deduction, wrong["id"])
+	var missed := GameState.answer_deduction(state, deduction, wrong)
 	check(not missed["story"]["deductions"][deduction["id"]]["solved"], "a wrong guess keeps it open")
-	var retried := GameState.answer_deduction(missed, deduction, right["id"])
+	var retried := GameState.answer_deduction(missed, deduction, right)
 	check(retried["story"]["deductions"][deduction["id"]]["solved"], "solved")
 	check_eq(retried["story"]["deductions"][deduction["id"]]["attempts"].size(), 2, "attempts")
 
@@ -102,8 +125,12 @@ func test_messenger_log_pauses_on_the_deduction() -> void:
 	check(catalog.is_clue_found(state, catalog.get_scenario("T01")), "clue revealed")
 	check_eq(log["pendingDeduction"]["id"], "DED-T01", "pending deduction")
 	var deduction: Dictionary = log["pendingDeduction"]
-	var right: Dictionary = deduction["options"].filter(func(option): return option["correct"])[0]
-	state = GameState.answer_deduction(state, deduction, right["id"])
+	var wrong := _answers(deduction)
+	wrong["when"] = "18:40"
+	state = GameState.answer_deduction(state, deduction, wrong)
+	log = MessengerLog.build(catalog, state)
+	check_eq([log["entries"][-2]["kind"], log["entries"][-1]["args"]], ["player", [2, 3]], "the lead says how many parts hold up")
+	state = GameState.answer_deduction(state, deduction, _answers(deduction))
 	log = MessengerLog.build(catalog, state)
 	check_eq(log["entries"][-1]["ticketId"], "T02", "next briefing card")
 
@@ -154,15 +181,16 @@ func test_intranet_search_is_lenient_and_gated_by_progress() -> void:
 
 func test_clue_board_needs_the_right_conclusion_and_clues() -> void:
 	var deduction: Dictionary = _catalog().get_scenario("T04")["story"]["deduction"]
-	var right: String = deduction["options"].filter(func(option): return option["correct"])[0]["id"]
-	var wrong: String = deduction["options"].filter(func(option): return not option["correct"])[0]["id"]
-	check(not GameState.board_answer_correct(deduction, wrong, ["CLUE-0214", "CLUE-MERGE-RULE"]), "wrong conclusion")
-	check(not GameState.board_answer_correct(deduction, right, ["CLUE-0214"]), "missing the mechanism")
-	check(GameState.board_answer_correct(deduction, right, ["CLUE-0214", "CLUE-MERGE-RULE", "CLUE-TWO-FOR-50"]), "extra clues are fine")
+	var right := _answers(deduction)
+	var wrong := right.duplicate()
+	wrong["who"] = "ops-temp"
+	check(not GameState.check_deduction(deduction, wrong, ["CLUE-0214", "CLUE-MERGE-RULE"])["correct"], "wrong conclusion")
+	check(not GameState.check_deduction(deduction, right, ["CLUE-0214"])["correct"], "missing the mechanism")
+	check(GameState.check_deduction(deduction, right, ["CLUE-0214", "CLUE-MERGE-RULE", "CLUE-TWO-FOR-50"])["correct"], "extra clues are fine")
 	var state := GameState.create_initial(["T04"])
-	state = GameState.answer_board(state, deduction, right, ["CLUE-0214"])
+	state = GameState.answer_deduction(state, deduction, right, ["CLUE-0214"])
 	check(not state["story"]["deductions"][deduction["id"]]["solved"], "not solved without the right clues")
-	state = GameState.answer_board(state, deduction, right, ["CLUE-0214", "CLUE-MERGE-RULE"])
+	state = GameState.answer_deduction(state, deduction, right, ["CLUE-0214", "CLUE-MERGE-RULE"])
 	check(state["story"]["deductions"][deduction["id"]]["solved"], "solved")
 
 
@@ -218,6 +246,26 @@ func test_console_leads_unlock_records_before_the_ticket_is_resolved() -> void:
 	var found: Array = intranet.search("release-bot", state).map(func(document): return document["id"])
 	check(found.has("DOC-CHECKOUT-HISTORY"), "lead unlocks the record")
 	check(not catalog.is_clue_found(GameState.find_document(state, "DOC-CHECKOUT-HISTORY"), catalog.get_scenario("T01")), "the clue still waits for the flag")
+
+
+func _ids(intranet: RefCounted, query: String, state: Dictionary) -> Array:
+	return intranet.search(query, state).map(func(document): return document["id"])
+
+
+func test_some_records_are_a_search_away_from_others() -> void:
+	var intranet: RefCounted = Intranet.load_from()
+	var state := GameState.create_initial(_catalog().ticket_ids())
+	check(_ids(intranet, "TWO_FOR_50", state).has("DOC-PRICING-RULES"), "the rule name finds the registry")
+	check(not _ids(intranet, "Spring Duo", state).has("DOC-PROMO-ARCHIVE"), "the campaign waits for the registry")
+	state = GameState.find_document(state, "DOC-PRICING-RULES")
+	check(_ids(intranet, "spring duo", state).has("DOC-PROMO-ARCHIVE"), "the registry names the campaign")
+	check(not _ids(intranet, "TWO_FOR_50", state).has("DOC-PROMO-ARCHIVE"), "the rule name alone does not reach the archive")
+	check(_ids(intranet, "promotion", state).has("DOC-PROMO-CALENDAR"), "decoys answer broad searches")
+	check(not _ids(intranet, "WS-14", state).has("DOC-ASSET-REGISTER"), "the desk waits for the key")
+	state = GameState.find_document(GameState.find_document(state, "DOC-MOBILE-FEES"), "DOC-API-KEYS")
+	check(_ids(intranet, "ws-14", state).has("DOC-ASSET-REGISTER"), "the key names the desk")
+	state = GameState.note_search_miss(GameState.note_search_miss(state, "DOC-API-KEYS"), "DOC-API-KEYS")
+	check_eq(GameState.search_misses(state, "DOC-API-KEYS"), 2, "missed searches are counted")
 
 
 func test_flag_fills_in_severity_from_the_ticket() -> void:

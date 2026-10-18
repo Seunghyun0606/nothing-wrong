@@ -134,7 +134,8 @@ func _summary(parent: Container) -> void:
 	var normal_rate := 0.0 if summary["subtotal"] == 0.0 else float(summary["discount"]) / float(summary["subtotal"])
 	var rate := float(mutate.call("cart.discountRate", normal_rate))
 	var discount := roundf(subtotal * rate * 100.0) / 100.0
-	var total := roundf((subtotal - discount + float(summary["shipping"])) * 100.0) / 100.0
+	var shipping := float(mutate.call("cart.shipping", summary["shipping"]))
+	var total := roundf((subtotal - discount + shipping) * 100.0) / 100.0
 
 	var card := _card()
 	card.name = "OrderSummary"
@@ -144,7 +145,7 @@ func _summary(parent: Container) -> void:
 	_summary_line(column, "Subtotal", Rules.money(subtotal), "cart.subtotal")
 	if float(summary["discount"]) > 0.0:
 		_summary_line(column, "Discount", "−%s" % Rules.money(discount), "cart.discount")
-	_summary_line(column, "Shipping", "Free" if summary["shipping"] == 0.0 else Rules.money(summary["shipping"]), "cart.shipping")
+	_summary_line(column, "Shipping", "Free" if shipping == 0.0 else Rules.money(shipping), "cart.shipping")
 	column.add_child(HSeparator.new())
 	_summary_line(column, "Total", Rules.money(total), "cart.total", true)
 	parent.add_child(card)
@@ -420,7 +421,11 @@ func _order_detail(page: VBoxContainer, order_id: String) -> void:
 	actions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var actions_body := Kit.vbox(10)
 	actions_body.add_child(_serif("Need to make a change?", 20))
-	if order["status"] == "PROCESSING":
+	if order["status"] == "PROCESSING" and not bool(mutate.call("orders.cancelAction.visible", true)):
+		var help := _text("To change this order, contact support.", 15)
+		Kit.evidence(help, "orders.cancelAction", "Cancel action", "Not shown, contact support")
+		actions_body.add_child(help)
+	elif order["status"] == "PROCESSING":
 		actions_body.add_child(_text("This order is still processing and can be cancelled before shipment.", 15))
 		var normal_destination := "/shoply/orders/%s/cancel" % order_id
 		var destination := str(mutate.call("orders.cancelAction.destination", normal_destination))

@@ -176,30 +176,40 @@
             "role": "QA Lead"
           },
           "prompt": "Daniel said nothing changed in checkout. What does the evidence say?",
-          "options": [
-            {
-              "id": "DED-T01-A",
-              "text": "Checkout did change: an automated merge modified it overnight.",
-              "correct": true,
-              "response": "Exactly. Something changed, even if no person meant to change it."
+          "sentence": "Checkout {changed} at {when}, and the change came from {who}.",
+          "blanks": {
+            "changed": {
+              "options": [
+                "did change",
+                "did not change"
+              ],
+              "answer": "did change"
             },
-            {
-              "id": "DED-T01-B",
-              "text": "A designer changed the button and forgot to mention it.",
-              "correct": false,
-              "response": "Design says they made no change, and the commit came from release-bot, not a person. Look at the author again."
+            "when": {
+              "options": [
+                "02:14",
+                "18:40",
+                "10:00"
+              ],
+              "answer": "02:14"
             },
-            {
-              "id": "DED-T01-C",
-              "text": "Nothing changed. The button was always secondary.",
-              "correct": false,
-              "response": "The specification says primary, and the history shows an edit at 02:14. Something did change."
+            "who": {
+              "options": [
+                "release-bot",
+                "the design team",
+                "Daniel Reyes"
+              ],
+              "answer": "release-bot"
             }
-          ]
+          },
+          "success": "Exactly. Something changed at 02:14, even if no person meant to change it."
         },
         "discovery": {
           "documentId": "DOC-CHECKOUT-HISTORY",
-          "hint": "Open the Console in the Browser on the checkout screen. Select the name you see there to search the intranet."
+          "hint": "Read the Console on the checkout screen. Type the name you see there into intranet search.",
+          "searchTerms": [
+            "release-bot"
+          ]
         },
         "assist": [
           {
@@ -214,7 +224,8 @@
             "role": "QA Lead",
             "text": "Here's how, so you can move on: on the checkout screen press 📌 Note and click the Confirm order button. Then report it to me here with REQ-T01-02. The spec says it should be primary."
           }
-        ]
+        ],
+        "time": "Tue 09:10"
       }
     },
     {
@@ -398,6 +409,11 @@
             "from": "Maya Kim",
             "role": "QA Lead",
             "text": "Pull that thread. Search the intranet for it."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "A rule name alone won't tell us much. The pricing rule registry should say which campaign it belonged to."
           }
         ],
         "clue": {
@@ -412,30 +428,42 @@
             "role": "QA Lead"
           },
           "prompt": "Two unrelated screens broke on the same night. What links them?",
-          "options": [
-            {
-              "id": "DED-T02-A",
-              "text": "The customer's coupon caused both problems.",
-              "correct": false,
-              "response": "No coupon was applied in your test, and coupons do not change button styles. Look at who changed both files."
+          "sentence": "The button style and the {what} both changed in the same {when} merge by {who}.",
+          "blanks": {
+            "what": {
+              "options": [
+                "subtotal rule",
+                "coupon",
+                "shipping fee"
+              ],
+              "answer": "subtotal rule"
             },
-            {
-              "id": "DED-T02-B",
-              "text": "Both changes came from the same overnight merge by release-bot.",
-              "correct": true,
-              "response": "Right. One merge, two broken screens. That's a pattern, not a coincidence."
+            "when": {
+              "options": [
+                "02:14",
+                "18:40",
+                "10:00"
+              ],
+              "answer": "02:14"
             },
-            {
-              "id": "DED-T02-C",
-              "text": "Shoply's servers were overloaded that night.",
-              "correct": false,
-              "response": "An overload would not rewrite a button style or bring back old promotion code. Check the timestamps."
+            "who": {
+              "options": [
+                "release-bot",
+                "the customer",
+                "the design team"
+              ],
+              "answer": "release-bot"
             }
-          ]
+          },
+          "success": "Right. One merge, two broken screens. That's a pattern, not a coincidence."
         },
         "discovery": {
           "documentId": "DOC-PROMO-ARCHIVE",
-          "hint": "Check the Console on the bag screen at quantity two, then search for the rule it names."
+          "hint": "Search the rule name from the Console on the bag screen. The rule registry says which campaign it came from; search for that campaign.",
+          "searchTerms": [
+            "TWO_FOR_50",
+            "Spring Duo"
+          ]
         },
         "assist": [
           {
@@ -450,7 +478,8 @@
             "role": "QA Lead",
             "text": "Here's the answer: in the bag at quantity 2, note the Subtotal ($50.00) and report it with REQ-T02-01. Two packs at $30.00 should come to $60.00."
           }
-        ]
+        ],
+        "time": "Tue 13:40"
       }
     },
     {
@@ -625,30 +654,41 @@
             "role": "QA Lead"
           },
           "prompt": "Old promotion code, an archived experiment, the same 02:14 merge. What is the most likely explanation so far?",
-          "options": [
-            {
-              "id": "DED-T03-A",
-              "text": "A developer is secretly sabotaging Shoply.",
-              "correct": false,
-              "response": "Every change came through release-bot, not a person's account. Don't accuse anyone without evidence."
+          "sentence": "release-bot merged {what} into RC3, and {flag} made Cancel order open {where}.",
+          "blanks": {
+            "what": {
+              "options": [
+                "archived branches",
+                "new Autumn features",
+                "a designer's mockup"
+              ],
+              "answer": "archived branches"
             },
-            {
-              "id": "DED-T03-B",
-              "text": "The new Autumn features simply were not tested.",
-              "correct": false,
-              "response": "None of these are new features. They are old code that was retired or archived."
+            "flag": {
+              "options": [
+                "exp/retention-push",
+                "promo/two-for-50",
+                "release/autumn"
+              ],
+              "answer": "exp/retention-push"
             },
-            {
-              "id": "DED-T03-C",
-              "text": "release-bot merged old, archived branches into RC3.",
-              "correct": true,
-              "response": "That fits every clue so far. One more Ticket: let's see if it holds."
+            "where": {
+              "options": [
+                "the payment page",
+                "the cancellation flow",
+                "the home page"
+              ],
+              "answer": "the payment page"
             }
-          ]
+          },
+          "success": "That fits every clue so far. One more Ticket: let's see if it holds."
         },
         "discovery": {
           "documentId": "DOC-EXPERIMENT",
-          "hint": "The Console on order #1042 names the flag behind it. Search the intranet for it."
+          "hint": "The Console on order #1042 names the flag behind it. Type it into intranet search.",
+          "searchTerms": [
+            "exp/retention-push"
+          ]
         },
         "assist": [
           {
@@ -663,7 +703,8 @@
             "role": "QA Lead",
             "text": "Here's the answer: press Cancel order on #1042. It opens the payment form, so note that screen and report it with REQ-T03-01."
           }
-        ]
+        ],
+        "time": "Wed 10:20"
       }
     },
     {
@@ -857,6 +898,11 @@
             "from": "Sam Ortiz",
             "role": "Shoply Engineer",
             "text": "If it is broken too, check bigger carts. exp/retention-push also had a \"margin guard\" for large orders."
+          },
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "Code freeze is tonight at 18:00. I need a yes, not a lecture."
           }
         ],
         "debrief": [
@@ -874,7 +920,7 @@
         "clue": {
           "id": "CLUE-MERGE-RULE",
           "title": "The widened merge rule",
-          "text": "On Tuesday the release-bot merge rule was widened to include exp/* and promo/*. Every archived experiment and retired promotion matched it."
+          "text": "On Monday evening the release-bot merge rule was widened to include exp/* and promo/*. Every archived experiment and retired promotion matched it."
         },
         "deduction": {
           "id": "DED-T04",
@@ -882,37 +928,57 @@
             "from": "Maya Kim",
             "role": "QA Lead"
           },
-          "prompt": "Case file: what really happened to RC3? Open the Case File, pick the clues that prove it, and choose a conclusion.",
-          "options": [
-            {
-              "id": "DED-T04-A",
-              "text": "Four developers made four unrelated mistakes on the same night.",
-              "correct": false,
-              "response": "Every defect traces back to one 02:14 merge by release-bot. Look at what the clues share."
-            },
-            {
-              "id": "DED-T04-B",
-              "text": "A widened merge rule made release-bot pull archived experiments and retired promotions into RC3.",
-              "correct": true,
-              "response": "That explains every clue: the 02:14 merge, the old promotion, and both pieces of exp/retention-push."
-            },
-            {
-              "id": "DED-T04-C",
-              "text": "Someone shipped the retention experiment on purpose to cut cancellations.",
-              "correct": false,
-              "response": "Every change came in through the merge rule. There's no evidence of intent, only of a rule that matched too much."
-            }
-          ],
+          "prompt": "Case file: what really happened to RC3? Open the Case File, pick the clues that prove it, and fill in the conclusion.",
           "mode": "board",
           "requiredClues": [
             "CLUE-0214",
             "CLUE-MERGE-RULE"
           ],
-          "boardHint": "The conclusion is right, but your clues don't prove it yet. Which clue shows how the archive got in, and which ties it to the night of the merge?"
+          "boardHint": "The conclusion is right, but your clues don't prove it yet. Which clue shows how the archive got in, and which ties it to the night of the merge?",
+          "sentence": "On {day} evening, {who} widened release-bot's merge rule to include {pattern}, so the {when} run pulled archived branches into RC3.",
+          "blanks": {
+            "day": {
+              "options": [
+                "Monday",
+                "Tuesday",
+                "Friday"
+              ],
+              "answer": "Monday"
+            },
+            "who": {
+              "options": [
+                "d.reyes",
+                "ops-temp",
+                "the design team"
+              ],
+              "answer": "d.reyes"
+            },
+            "pattern": {
+              "options": [
+                "exp/* and promo/*",
+                "release/*",
+                "checkout.css"
+              ],
+              "answer": "exp/* and promo/*"
+            },
+            "when": {
+              "options": [
+                "02:14",
+                "18:40",
+                "23:10"
+              ],
+              "answer": "02:14"
+            }
+          },
+          "success": "That explains every clue: the 02:14 merge, the old promotion, and both pieces of exp/retention-push."
         },
         "discovery": {
           "documentId": "DOC-BOT-CONFIG",
-          "hint": "Search the intranet for release-bot's merge rule."
+          "hint": "Search the intranet for release-bot's merge rule.",
+          "searchTerms": [
+            "release-bot",
+            "merge rule"
+          ]
         },
         "assist": [
           {
@@ -927,7 +993,8 @@
             "role": "QA Lead",
             "text": "Here's the answer: switch to the Gold account, apply SAVE20, and set the quantity to 3. Then note the Discount (−$9.00) and report it with REQ-T04-02. 20% of $90.00 is $18.00."
           }
-        ]
+        ],
+        "time": "Thu 15:30"
       }
     },
     {
@@ -1029,6 +1096,11 @@
             "from": "Maya Kim",
             "role": "QA Lead",
             "text": "Verify the fixes and the complaint. If everything holds, say so. Calling a clean build clean is part of the job too."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "It's late, I know. Twelve hours to release. Let's make them count."
           }
         ],
         "debrief": [
@@ -1045,7 +1117,10 @@
         ],
         "discovery": {
           "documentId": "DOC-ARCHIVE-ACCESS",
-          "hint": "Search the intranet for the archive's access log."
+          "hint": "Search the intranet for the archive's access log.",
+          "searchTerms": [
+            "access log"
+          ]
         },
         "assist": [
           {
@@ -1059,6 +1134,480 @@
           "id": "CLUE-OPS-TEMP",
           "title": "ops-temp",
           "text": "A temporary account, ops-temp, gave release-bot write access to the archive on Monday night. The account was deleted two days later."
+        },
+        "time": "Thu 22:10"
+      }
+    },
+    {
+      "id": "SCENARIO-T06",
+      "ticket": {
+        "id": "T06",
+        "projectId": "shoply",
+        "title": "Mobile cart fees",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Final sweep before release. Check that the cart charges the same fees on every device.",
+        "scope": [
+          "Cart totals",
+          "Shipping",
+          "Device consistency"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T06-01",
+            "description": "On every device, shipping is free when the subtotal is $50.00 or more."
+          },
+          {
+            "id": "REQ-T06-02",
+            "description": "The bag keeps its items and quantity when the device changes."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply/product/everyday-pack"
+        },
+        "hints": [
+          {
+            "id": "HINT-T06-01",
+            "text": "Use the Desktop, Tablet, and Mobile buttons in the Browser's QA bar."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T06-001",
+          "type": "DATA",
+          "title": "Mobile carts are charged shipping over $50",
+          "target": "cart.shipping",
+          "severity": "HIGH",
+          "requirementId": "REQ-T06-01",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            },
+            {
+              "field": "test.viewport",
+              "operator": "EQ",
+              "value": "MOBILE"
+            },
+            {
+              "field": "product.cart.quantity",
+              "operator": "GTE",
+              "value": 2
+            }
+          ],
+          "reproductionActions": [
+            {
+              "type": "ADD_TO_CART",
+              "label": "add the product to the bag"
+            },
+            {
+              "type": "CHANGE_VIEWPORT",
+              "target": "MOBILE",
+              "label": "switch to Mobile"
+            }
+          ],
+          "expected": "Free shipping",
+          "actual": "$5.00",
+          "validEvidenceTargets": [
+            "cart.shipping",
+            "cart.total"
+          ]
+        }
+      ],
+      "mutations": [
+        {
+          "id": "MUTATION-T06-001",
+          "type": "WRONG_CALCULATION",
+          "target": "cart.shipping",
+          "conditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            },
+            {
+              "field": "test.viewport",
+              "operator": "EQ",
+              "value": "MOBILE"
+            },
+            {
+              "field": "product.cart.quantity",
+              "operator": "GTE",
+              "value": 2
+            }
+          ],
+          "payload": {
+            "value": 5.0
+          },
+          "trace": {
+            "text": "fees: mobile shipping table loaded from release/mobile-fees",
+            "terms": [
+              "release/mobile-fees"
+            ]
+          }
+        }
+      ],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH2",
+        "time": "Fri 07:40",
+        "briefing": [
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Friday, 07:40. Release at 10:00. One last sweep: the Autumn Release has to work on phones too."
+          },
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "Support says mobile customers are paying shipping on big orders."
+          },
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "Mobile is the same code. We don't have time for this."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Then it'll be quick. The QA bar in the Browser can switch to Mobile."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "That isn't mine. My fix removed exp/* and promo/*. Release branches were always allowed."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Then someone named a branch release/* on purpose. The Console named it. Look it up."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-MOBILE-FEES",
+          "title": "release/mobile-fees",
+          "text": "Ten minutes after opening the archive, ops-temp planted a branch copied from exp/retention-push. It was named release/* so even the fixed merge rule would ship it, and it was pushed with API key ak-7731."
+        },
+        "discovery": {
+          "documentId": "DOC-MOBILE-FEES",
+          "hint": "Read the Console on the Mobile bag screen and search for the branch it names.",
+          "searchTerms": [
+            "release/mobile-fees"
+          ]
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Switch the Browser to Mobile, put two packs in the bag, and compare Shipping with the rule."
+          },
+          {
+            "after": 3,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Here's the answer: on Mobile with two packs ($60.00), note Shipping ($5.00) and report it with REQ-T06-01. Over $50.00 it should be free."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T06",
+          "askedBy": {
+            "from": "Maya Kim",
+            "role": "QA Lead"
+          },
+          "prompt": "What does the mobile fee tell us about ops-temp?",
+          "sentence": "ops-temp opened the archive at {when}, then planted {what} on a branch named {branch} so the fixed rule would still ship it.",
+          "blanks": {
+            "when": {
+              "options": [
+                "23:10",
+                "02:14",
+                "18:40"
+              ],
+              "answer": "23:10"
+            },
+            "what": {
+              "options": [
+                "a mobile shipping fee",
+                "a new button style",
+                "a holiday banner"
+              ],
+              "answer": "a mobile shipping fee"
+            },
+            "branch": {
+              "options": [
+                "release/mobile-fees",
+                "exp/retention-push",
+                "promo/two-for-50"
+              ],
+              "answer": "release/mobile-fees"
+            }
+          },
+          "success": "Yes. Whoever ran ops-temp knew the rule would be fixed, and planned around it."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T07",
+      "ticket": {
+        "id": "T07",
+        "projectId": "shoply",
+        "title": "Cancellation on every device",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "A tablet customer cannot cancel order #1042. Check cancellation on every device.",
+        "scope": [
+          "Order details",
+          "Order cancellation",
+          "Device consistency"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T07-01",
+            "description": "Customers can cancel a processing order from its order page on every device."
+          },
+          {
+            "id": "REQ-T07-02",
+            "description": "The order page shows the order status and total."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply/orders/order-1042"
+        },
+        "hints": [
+          {
+            "id": "HINT-T07-01",
+            "text": "Open the same order on Desktop, Tablet, and Mobile."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "orderStatuses": {
+            "order-1042": "PROCESSING"
+          }
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T07-001",
+          "type": "BEHAVIOR",
+          "title": "Cancel order is missing on tablets",
+          "target": "orders.cancelAction",
+          "severity": "HIGH",
+          "requirementId": "REQ-T07-01",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/orders/order-1042"
+            },
+            {
+              "field": "test.viewport",
+              "operator": "EQ",
+              "value": "TABLET"
+            }
+          ],
+          "reproductionActions": [
+            {
+              "type": "CHANGE_VIEWPORT",
+              "target": "TABLET",
+              "label": "switch to Tablet"
+            }
+          ],
+          "expected": "Cancel order is available",
+          "actual": "No cancel option",
+          "validEvidenceTargets": [
+            "orders.cancelAction"
+          ]
+        }
+      ],
+      "mutations": [
+        {
+          "id": "MUTATION-T07-001",
+          "type": "WRONG_ACTION",
+          "target": "orders.cancelAction.visible",
+          "conditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/orders/order-1042"
+            },
+            {
+              "field": "test.viewport",
+              "operator": "EQ",
+              "value": "TABLET"
+            }
+          ],
+          "payload": {
+            "value": false
+          },
+          "trace": {
+            "text": "layout: cancel action removed on tablet by release/mobile-fees",
+            "terms": [
+              "release/mobile-fees"
+            ]
+          }
+        }
+      ],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH2",
+        "time": "Fri 08:50",
+        "briefing": [
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "One more from support: a customer on a tablet says there's no way to cancel order #1042."
+          },
+          {
+            "from": "Sam Ortiz",
+            "role": "Shoply Engineer",
+            "text": "Tablet layouts are fragile. Could be anything. I'd ship and patch it on Monday."
+          },
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "Seventy minutes to release."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Same order as before: shoply.local/orders/order-1042. Check every device."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Sam Ortiz",
+            "role": "Shoply Engineer",
+            "text": "...Fine, it's the same branch. Probably a leftover from the archive."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Leftovers don't come with an API key. The branch record named one. Find out where it came from."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-WS-14",
+          "title": "ak-7731 · WS-14",
+          "text": "API key ak-7731 was issued to ops-temp at 23:05 on Monday, requested from workstation WS-14. WS-14 is assigned to Sam Ortiz."
+        },
+        "discovery": {
+          "documentId": "DOC-ASSET-REGISTER",
+          "hint": "The release/mobile-fees record names the API key that pushed it. Search for the key, then for the workstation it was requested from.",
+          "searchTerms": [
+            "ak-7731",
+            "WS-14"
+          ]
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Open order #1042 and try Desktop, Tablet, and Mobile. Where does Cancel order go missing?"
+          },
+          {
+            "after": 3,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Here's the answer: on Tablet, order #1042 has no Cancel order. Note the cancel action there and report it with REQ-T07-01."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T07",
+          "askedBy": {
+            "from": "Maya Kim",
+            "role": "QA Lead"
+          },
+          "mode": "board",
+          "prompt": "Case file: who opened the archive, and why? Open the Case File, pick the clues that prove it, and fill in the conclusion.",
+          "sentence": "{who} ran ops-temp from {where} to open the archive, so release-bot would ship {what} with the Autumn Release.",
+          "blanks": {
+            "who": {
+              "options": [
+                "Sam Ortiz",
+                "Daniel Reyes",
+                "Priya Nair"
+              ],
+              "answer": "Sam Ortiz"
+            },
+            "where": {
+              "options": [
+                "WS-14",
+                "WS-02",
+                "the release server"
+              ],
+              "answer": "WS-14"
+            },
+            "what": {
+              "options": [
+                "exp/retention-push",
+                "promo/two-for-50",
+                "the design system"
+              ],
+              "answer": "exp/retention-push"
+            }
+          },
+          "requiredClues": [
+            "CLUE-OPS-TEMP",
+            "CLUE-MOBILE-FEES",
+            "CLUE-WS-14"
+          ],
+          "boardHint": "The story is right, but your clues don't prove it yet. Which clue shows the account, which shows what it planted, and which leads to a desk?",
+          "success": "Every clue points to the same desk."
         }
       }
     }
@@ -1090,13 +1639,23 @@
     {
       "id": "CH2",
       "title": "Chapter 2 · Write Access",
-      "synopsis": "RC3's root cause is fixed, but a read-only archive does not open itself. Someone gave release-bot the keys, then deleted the account. To be continued.",
-      "finaleDeductionId": "DED-CH2-FINALE",
+      "synopsis": "RC3's root cause is fixed, but a read-only archive does not open itself. Someone gave release-bot the keys, then deleted the account. Find out who before the Autumn Release ships at 10:00.",
+      "finaleDeductionId": "DED-T07",
       "epilogue": [
+        {
+          "from": "Sam Ortiz",
+          "role": "Shoply Engineer",
+          "text": "Growth shelved my experiment in March, and it cut cancellations by forty percent. When Daniel widened the rule, I just made sure the archive was open."
+        },
+        {
+          "from": "Daniel Reyes",
+          "role": "Shoply Release Manager",
+          "text": "You let me take the blame for RC3."
+        },
         {
           "from": "Maya Kim",
           "role": "QA Lead",
-          "text": "To be continued."
+          "text": "RC4 ships without retention-push, and the keys are revoked. Friday 10:00, and this time we can prove there's nothing wrong."
         }
       ]
     }

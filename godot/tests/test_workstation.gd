@@ -37,9 +37,13 @@ func _content_strings() -> Array:
 			if story.has("deduction"):
 				add.call(story["deduction"]["prompt"])
 				add.call(story["deduction"].get("boardHint"))
-				for option in story["deduction"]["options"]:
-					add.call(option["text"])
-					add.call(option["response"])
+				add.call(story["deduction"]["sentence"])
+				add.call(story["deduction"]["success"])
+				for key in story["deduction"]["blanks"]:
+					for option in story["deduction"]["blanks"][key]["options"]:
+						# Names, times, and code identifiers stay as they are.
+						if not RegEx.create_from_string("[0-9/:.*-]").search(option):
+							add.call(option)
 	for document in GameSession.intranet.documents:
 		add.call(document["title"])
 		add.call(document["source"])
