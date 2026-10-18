@@ -95,46 +95,46 @@ static func apply_review(
 	var reported := transition("TESTING", "NO_ISSUE" if report.get("kind", "BUG") == "NO_ISSUE" else "REPORTED")
 	var reviewed := transition(reported, "REVIEWED")
 	var valid: bool = review["valid"]
-	next_ticket["status"] = transition(reviewed, "RESOLVED" if valid else "TESTING")
+	# A Ticket with several defects stays open until each one has been reported.
+	var resolved: bool = valid and not review.get("partial", false)
+	next_ticket["status"] = transition(reviewed, "RESOLVED" if resolved else "TESTING")
 	next_ticket["reportIds"].append(report["id"])
 	next_ticket["reviewedAt"] = reviewed_at
-	if valid:
+	if valid and review.has("matchedBugId"):
+		var found: Array = next_ticket.get("foundBugIds", [])
+		if not found.has(review["matchedBugId"]):
+			found.append(review["matchedBugId"])
+		next_ticket["foundBugIds"] = found
+	if resolved:
 		next_ticket["resolvedAt"] = reviewed_at
 		for tool in reward.get("unlockedTools", []):
 			if not next["unlockedTools"].has(tool):
 				next["unlockedTools"].append(tool)
 
-	next["currentTicketId"] = null if valid else ticket_id
+	next["currentTicketId"] = null if resolved else ticket_id
 	next["reportHistory"].append(report)
 	next["reviewHistory"].append(review)
 	return next
 
 
-## Checks a filled-in conclusion: how many blanks are right, and on a clue board whether
-## every required clue was picked.
-static func check_deduction(deduction: Dictionary, filled: Dictionary, clue_ids: Array = []) -> Dictionary:
+## Checks a filled-in conclusion: how many of its blanks are right.
+static func check_deduction(deduction: Dictionary, filled: Dictionary) -> Dictionary:
 	var blanks: Dictionary = deduction.get("blanks", {})
 	var right := 0
 	for key in blanks:
 		if str(filled.get(key, "")) == str(blanks[key]["answer"]):
 			right += 1
-	var clues_ok := true
-	if deduction.get("mode", "") == "board":
-		for required in deduction.get("requiredClues", []):
-			if not clue_ids.has(required):
-				clues_ok = false
-	return { "right": right, "total": blanks.size(), "cluesOk": clues_ok, "correct": right == blanks.size() and clues_ok }
+	return { "right": right, "total": blanks.size(), "correct": right == blanks.size() }
 
 
-static func answer_deduction(state: Dictionary, deduction: Dictionary, filled: Dictionary, clue_ids: Array = []) -> Dictionary:
+static func answer_deduction(state: Dictionary, deduction: Dictionary, filled: Dictionary) -> Dictionary:
 	var progress: Dictionary = state["story"]["deductions"].get(deduction["id"], { "attempts": [], "solved": false })
 	if progress["solved"]:
 		return state
-	var check := check_deduction(deduction, filled, clue_ids)
+	var check := check_deduction(deduction, filled)
 	var next := state.duplicate(true)
 	var attempts: Array = progress["attempts"].duplicate(true)
-	attempts.append({ "filled": filled.duplicate(), "clues": clue_ids.duplicate(), "right": check["right"],
-		"total": check["total"], "correct": check["correct"] })
+	attempts.append({ "filled": filled.duplicate(), "right": check["right"], "total": check["total"], "correct": check["correct"] })
 	next["story"]["deductions"][deduction["id"]] = { "attempts": attempts, "solved": check["correct"] }
 	return next
 

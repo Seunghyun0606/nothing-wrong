@@ -95,6 +95,12 @@ func submit_report(input: Dictionary) -> Dictionary:
 	report["submittedAt"] = int(Time.get_unix_time_from_system() * 1000)
 	var evidence := WorkspaceSession.evidence_for(input["ticketId"])
 	var review := Review.review_report(report, target, evidence)
+	var bugs: Array = target["expectedBugs"]
+	if review["valid"] and bugs.size() > 1 and review.has("matchedBugId"):
+		var found: Array = state["tickets"][input["ticketId"]].get("foundBugIds", []).duplicate()
+		if not found.has(review["matchedBugId"]):
+			found.append(review["matchedBugId"])
+		review["partial"] = found.size() < bugs.size()
 	if not review["valid"] and report.get("kind", "BUG") == "BUG":
 		var noted: Array = evidence.filter(func(item): return report["evidenceIds"].has(item["id"]))
 		review["hint"] = Review.reply_hint(report, target, noted[0] if not noted.is_empty() else {})
@@ -127,23 +133,26 @@ func complete_review(report: Dictionary, review: Dictionary, reward: Dictionary)
 	commit(GameState.apply_review(state, report, review, reward, int(Time.get_unix_time_from_system() * 1000)))
 
 
-func answer_deduction(deduction: Dictionary, filled: Dictionary, clue_ids: Array = []) -> void:
-	commit(GameState.answer_deduction(state, deduction, filled, clue_ids))
+func answer_deduction(deduction: Dictionary, filled: Dictionary) -> void:
+	commit(GameState.answer_deduction(state, deduction, filled))
 
 
-func mark_messages_delivered(count: int) -> void:
-	if count <= int(state["story"]["deliveredCount"]):
+## `last_id` is the newest entry delivered; it survives story changes that a count does not.
+func mark_messages_delivered(count: int, last_id: String) -> void:
+	if last_id == str(state["story"].get("deliveredId", "")):
 		return
 	var next := state.duplicate(true)
 	next["story"]["deliveredCount"] = count
+	next["story"]["deliveredId"] = last_id
 	commit(next)
 
 
-func mark_messages_read(count: int) -> void:
-	if count <= int(state["story"]["readCount"]):
+func mark_messages_read(count: int, last_id: String) -> void:
+	if last_id == str(state["story"].get("readId", "")):
 		return
 	var next := state.duplicate(true)
 	next["story"]["readCount"] = count
+	next["story"]["readId"] = last_id
 	commit(next)
 
 

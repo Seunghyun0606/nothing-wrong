@@ -378,14 +378,26 @@ func dismiss_toast(id: int) -> void:
 
 # --- Messenger -------------------------------------------------------------
 
+## How far the chat has been delivered and read is kept as the last entry's id, so
+## messages added to the story later never replay the conversation; the counts are the
+## fallback for older saves.
 func messenger_log() -> Dictionary:
 	var log := MessengerLog.build(GameSession.catalog, GameSession.state)
-	var total: int = log["entries"].size()
-	var delivered := mini(int(GameSession.state["story"]["deliveredCount"]), total)
-	var read := mini(int(GameSession.state["story"]["readCount"]), delivered)
+	var entries: Array = log["entries"]
+	var story: Dictionary = GameSession.state["story"]
+	var delivered := _position_after(entries, str(story.get("deliveredId", "")), int(story["deliveredCount"]))
+	var read := mini(_position_after(entries, str(story.get("readId", "")), int(story["readCount"])), delivered)
 	log["delivered"] = delivered
 	log["unread"] = maxi(0, delivered - read)
 	return log
+
+
+static func _position_after(entries: Array, id: String, fallback: int) -> int:
+	if id != "":
+		for index in entries.size():
+			if entries[index]["id"] == id:
+				return index + 1
+	return mini(fallback, entries.size())
 
 
 func set_delivery_enabled(enabled: bool) -> void:
@@ -405,7 +417,7 @@ func _schedule_delivery() -> void:
 		_mark_read()
 		return
 	if instant_messages:
-		GameSession.mark_messages_delivered(entries.size())
+		GameSession.mark_messages_delivered(entries.size(), entries[-1]["id"])
 		return
 	if _scheduled_for == delivered and not _delivery_timer.is_stopped():
 		return
@@ -426,7 +438,7 @@ func _deliver_next() -> void:
 	if delivered >= log["entries"].size():
 		return
 	var entry: Dictionary = log["entries"][delivered]
-	GameSession.mark_messages_delivered(delivered + 1)
+	GameSession.mark_messages_delivered(delivered + 1, entry["id"])
 	if entry["kind"] == "message":
 		Sfx.play("message")
 	if entry["kind"] == "message" and not is_visible_app("messenger"):
@@ -437,4 +449,6 @@ func _deliver_next() -> void:
 func _mark_read() -> void:
 	if is_visible_app("messenger"):
 		var log := messenger_log()
-		GameSession.mark_messages_read(log["delivered"])
+		var delivered: int = log["delivered"]
+		if delivered > 0:
+			GameSession.mark_messages_read(delivered, log["entries"][delivered - 1]["id"])

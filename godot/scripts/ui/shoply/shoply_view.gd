@@ -210,8 +210,9 @@ func _product(page: VBoxContainer, product_id: String) -> void:
 	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	copy.add_child(_caps(product["category"]))
 	copy.add_child(_serif(product["name"], 36))
-	var price := Kit.heading(Rules.money(float(product["price"])), 24, P.SHOP_INK)
-	Kit.evidence(price, "product.price", "Product price")
+	var price_text := str(mutate.call("product.priceText", Rules.money(float(product["price"]))))
+	var price := Kit.heading(price_text, 24, P.SHOP_INK)
+	Kit.evidence(price, "product.price", "Product price", price_text)
 	copy.add_child(price)
 	copy.add_child(_text(product["description"], 15, P.SHOP_MUTED))
 	for feature in product.get("features", []):
@@ -227,7 +228,9 @@ func _product(page: VBoxContainer, product_id: String) -> void:
 		added.add_child(_text("Added to bag.", 15))
 		added.add_child(_shop_link("View bag", "/shoply/cart"))
 		copy.add_child(added)
-	copy.add_child(_text("In stock · Ships in 1–2 business days", 13, P.SHOP_MUTED))
+	var stock := _text("%d in stock · Ships in 1–2 business days" % int(product["stock"]), 13, P.SHOP_MUTED)
+	Kit.evidence(stock, "product.stock", "Stock", "%d in stock" % int(product["stock"]))
+	copy.add_child(stock)
 	row.add_child(copy)
 
 
@@ -255,19 +258,30 @@ func _cart(page: VBoxContainer) -> void:
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		info.add_child(_caps(product["category"], P.SHOP_MUTED))
 		info.add_child(_serif(product["name"], 20))
-		var remove := _shop_action("Remove", func():
-			ShoplyStore.remove_from_cart(product["id"])
-			record.call("REMOVE_FROM_CART", product["id"], {}))
-		info.add_child(remove)
+		var available := int(mutate.call("cart.stock", int(product["stock"])))
+		var left_text := _text("%d available" % available, 13, P.SHOP_MUTED)
+		Kit.evidence(left_text, "cart.stock", "Stock", "%d available" % available)
+		info.add_child(left_text)
+		if bool(mutate.call("cart.removeAction.visible", true)):
+			var remove := _shop_action("Remove", func():
+				ShoplyStore.remove_from_cart(product["id"])
+				record.call("REMOVE_FROM_CART", product["id"], {}))
+			Kit.evidence(remove, "cart.removeAction", "Remove action", "Remove")
+			info.add_child(remove)
+		else:
+			var stuck := _text("To change your bag, contact support.", 13, P.SHOP_MUTED)
+			Kit.evidence(stuck, "cart.removeAction", "Remove action", "Not shown, contact support")
+			info.add_child(stuck)
 		line.add_child(info)
 		var quantity_box := Kit.vbox(2)
 		quantity_box.add_child(_text("Qty", 13, P.SHOP_MUTED))
 		var quantity := OptionButton.new()
 		quantity.name = "Quantity"
 		quantity.tooltip_text = "Quantity for %s" % product["name"]
-		for value in [1, 2, 3, 4]:
+		var most := clampi(available, 1, 4)
+		for value in range(1, most + 1):
 			quantity.add_item(str(value), value)
-		quantity.select(clampi(int(item["quantity"]), 1, 4) - 1)
+		quantity.select(clampi(int(item["quantity"]), 1, most) - 1)
 		quantity.item_selected.connect(func(index):
 			var next: int = index + 1
 			ShoplyStore.set_quantity(product["id"], next)
@@ -412,8 +426,12 @@ func _order_detail(page: VBoxContainer, order_id: String) -> void:
 	detail_body.add_child(_serif(product["name"] if product != null else "Shoply item", 22))
 	for pair in [["Placed", order["placedAt"]], ["Quantity", str(int(order["quantity"]))], ["Delivery", "Standard shipping"]]:
 		detail_body.add_child(_text("%s   %s" % pair, 15))
-	var total := _text("Total   %s" % Rules.money(float(order["total"])), 15)
-	Kit.evidence(total, "orders.total", "Order total", Rules.money(float(order["total"])))
+	var charged := float(order["total"])
+	if float(order.get("discount", 0.0)) > 0.0:
+		var kept := float(mutate.call("orders.discountKept", 1.0))
+		charged = Rules.round_currency(float(order["subtotal"]) - float(order["discount"]) * kept + float(order["shipping"]))
+	var total := _text("Total   %s" % Rules.money(charged), 15)
+	Kit.evidence(total, "orders.total", "Order total", Rules.money(charged))
 	detail_body.add_child(total)
 	details.add_child(detail_body)
 	row.add_child(details)

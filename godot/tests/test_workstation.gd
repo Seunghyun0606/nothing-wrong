@@ -51,6 +51,7 @@ func _content_strings() -> Array:
 			add.call(line)
 	for chapter in GameSession.catalog.chapters:
 		add.call(chapter["title"])
+		add.call(chapter.get("deadline", {}).get("label"))
 		add.call(chapter["synopsis"])
 		for message in chapter["epilogue"]:
 			add.call(message["text"])
@@ -108,3 +109,11 @@ func test_windows_resize_and_whole_title_bar_drags() -> void:
 	collect.call(window._title_bar, collect)
 	check(blockers.is_empty(), "nothing on the title bar blocks dragging: %s" % str(blockers))
 	_finish()
+
+
+func test_delivered_chat_survives_story_changes() -> void:
+	var before := [{ "id": "a" }, { "id": "b" }, { "id": "c" }]
+	check_eq(DesktopSession._position_after(before, "b", 0), 2, "delivered up to b")
+	var after := [{ "id": "a" }, { "id": "new" }, { "id": "b" }, { "id": "c" }]
+	check_eq(DesktopSession._position_after(after, "b", 2), 3, "a message added earlier does not replay b")
+	check_eq(DesktopSession._position_after(after, "gone", 2), 2, "older saves fall back to the count")

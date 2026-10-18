@@ -1,5 +1,6 @@
-## A conclusion with blanks to fill in, sent to the person who asked. On a clue board the
-## player also picks the clues that prove it. Messenger and the Case File both use it.
+## A conclusion with blanks to fill in, sent to the person who asked. On the Case File
+## board the clues found so far are listed above it to reason from. Messenger and the
+## Case File both use it.
 extends VBoxContainer
 
 const Kit := preload("res://scripts/ui/kit.gd")
@@ -11,7 +12,6 @@ var deduction: Dictionary
 var board := false
 
 var _filled := {}
-var _clues := {}
 var _send: Button
 
 
@@ -25,23 +25,15 @@ func _ready() -> void:
 	add_theme_constant_override("separation", 10)
 	var asked_by: String = deduction["askedBy"]["from"]
 	if board:
-		add_child(Kit.label("Pick the clues that prove it:", 14, P.MUTED))
-		var clue_list := Kit.vbox(6)
+		add_child(Kit.label("Your clues:", 14, P.MUTED))
 		for clue in GameSession.catalog.found_clues(GameSession.state, chapter_of(deduction)):
-			var card := Kit.button("📌 %s" % Kit.t(clue["title"]), func(): pass, "ChoiceButton")
+			var card := Kit.panel(P.WARNING_SOFT, Color("#e6d27a"), 6, 10)
 			card.name = "Clue%s" % clue["id"]
-			card.toggle_mode = true
-			card.alignment = HORIZONTAL_ALIGNMENT_LEFT
-			card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			var id: String = clue["id"]
-			card.toggled.connect(func(on):
-				if on:
-					_clues[id] = true
-				else:
-					_clues.erase(id)
-				_refresh())
-			clue_list.add_child(card)
-		add_child(clue_list)
+			var body := Kit.vbox(2)
+			body.add_child(Kit.heading("📌 %s" % Kit.t(clue["title"]), 14))
+			body.add_child(Kit.label(clue["text"], 13, P.TEXT))
+			card.add_child(body)
+			add_child(card)
 	add_child(Kit.label(Kit.tf("Fill in the blanks and send it to %s.", asked_by), 14, P.MUTED))
 	add_child(_sentence())
 	_send = Kit.primary(Kit.tf("Send to %s", asked_by), _submit)
@@ -103,11 +95,11 @@ func fill(key: String, option: String) -> void:
 
 func _refresh() -> void:
 	var complete: bool = _filled.size() == deduction["blanks"].size()
-	_send.disabled = not complete or (board and _clues.is_empty())
+	_send.disabled = not complete
 
 
 func _submit() -> void:
-	GameSession.answer_deduction(deduction, _filled.duplicate(), _clues.keys())
+	GameSession.answer_deduction(deduction, _filled.duplicate())
 	var solved: bool = GameSession.state["story"]["deductions"].get(deduction["id"], {}).get("solved", false)
 	Sfx.play("success" if solved else "fail")
 	if solved and board:

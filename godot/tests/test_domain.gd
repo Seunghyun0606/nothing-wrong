@@ -9,6 +9,7 @@ const Addresses := preload("res://scripts/domain/addresses.gd")
 const Rules := preload("res://scripts/domain/shoply_rules.gd")
 const Intranet := preload("res://scripts/domain/intranet.gd")
 const Draft := preload("res://scripts/domain/report_draft.gd")
+const StoryClock := preload("res://scripts/domain/story_clock.gd")
 
 
 func _catalog() -> RefCounted:
@@ -23,8 +24,68 @@ func _context(path: String, quantity: int, account := "BASIC", coupon := "", cap
 	}
 
 
-func test_catalog_loads_two_chapters_of_tickets_in_order() -> void:
-	check_eq(_catalog().ticket_ids(), ["T01", "T02", "T03", "T04", "T05", "T06", "T07"], "ticket ids")
+func test_catalog_loads_four_chapters_of_tickets_in_order() -> void:
+	check_eq(_catalog().ticket_ids(), ["T01", "T02", "T03", "T04", "T05", "T06", "T07", "T08", "T09", "T10", "T11", "T12"], "ticket ids")
+	check_eq(_catalog().chapters.map(func(chapter): return chapter["id"]), ["CH1", "CH2", "CH3", "CH4"], "chapters")
+
+
+## Chapter 1 played to its finale, with `misses` wrong reports on T04.
+func _chapter_one_done(misses: int) -> Dictionary:
+	var catalog := _catalog()
+	var state := GameState.create_initial(catalog.ticket_ids())
+	for id in ["T01", "T02", "T03", "T04"]:
+		state = GameState.start_ticket(state, id, 1)
+		if id == "T04":
+			for index in misses:
+				state = GameState.apply_review(state, { "id": "M%d" % index, "ticketId": id, "kind": "BUG" }, { "valid": false, "hint": "Look again." }, {}, 2)
+		state = GameState.apply_review(state, { "id": "R-%s" % id, "ticketId": id, "kind": "BUG" }, { "valid": true }, {}, 3)
+		var story: Dictionary = catalog.get_scenario(id)["story"]
+		state = GameState.find_document(state, story["discovery"]["documentId"])
+		state = GameState.answer_deduction(state, story["deduction"], _answers(story["deduction"]))
+	if misses > 0:
+		state = GameState.find_document(state, "DOC-PRICING-RULES")
+	return state
+
+
+func test_a_late_finale_changes_how_the_chapter_ends() -> void:
+	var on_time := MessengerLog.build(_catalog(), _chapter_one_done(0))
+	var lines: Array = on_time["entries"].filter(func(entry): return entry.get("epilogueOf", "") == "CH1")
+	check_eq(lines.size(), 3, "the epilogue is there")
+	check(not lines[1].get("late", false), "answered before code freeze")
+	var late_log := MessengerLog.build(_catalog(), _chapter_one_done(8))
+	lines = late_log["entries"].filter(func(entry): return entry.get("epilogueOf", "") == "CH1")
+	check(lines[1].get("late", false), "eight misses push the finale past 18:00")
+	check(str(lines[1]["text"]).contains("missed code freeze"), "Maya says what it cost")
+
+
+func test_a_ticket_with_two_defects_needs_both_reported() -> void:
+	var state := GameState.start_ticket(GameState.create_initial(_catalog().ticket_ids()), "T11", 1)
+	state = GameState.apply_review(state, { "id": "R1", "ticketId": "T11", "kind": "BUG" }, { "valid": true, "matchedBugId": "BUG-T11-001", "partial": true }, {}, 2)
+	check_eq(state["tickets"]["T11"]["status"], "TESTING", "one of two keeps the Ticket open")
+	check_eq(state["tickets"]["T11"]["foundBugIds"], ["BUG-T11-001"], "the first defect is remembered")
+	state = GameState.apply_review(state, { "id": "R2", "ticketId": "T11", "kind": "BUG" }, { "valid": true, "matchedBugId": "BUG-T11-002" }, {}, 3)
+	check_eq(state["tickets"]["T11"]["status"], "RESOLVED", "both resolve it")
+
+
+func test_chapter_three_defects_need_a_gold_account() -> void:
+	var t08: Array = _catalog().get_scenario("T08")["mutations"]
+	check_eq(Mutations.resolve("orders.discountKept", 1.0, _context("/shoply/orders/order-1043", 0, "GOLD"), t08), 0.0, "Gold orders lose their discount")
+	check_eq(Mutations.resolve("orders.discountKept", 1.0, _context("/shoply/orders/order-1043", 0), t08), 1.0, "Basic orders keep it")
+	var t09: Array = _catalog().get_scenario("T09")["mutations"]
+	check_eq(Mutations.resolve("cart.discountRate", 0.1, _context("/shoply/cart", 1, "GOLD", "SAVE10"), t09), 0.0, "Gold loses SAVE10")
+	check_eq(Mutations.resolve("cart.discountRate", 0.1, _context("/shoply/cart", 1, "BASIC", "SAVE10"), t09), 0.1, "Basic keeps SAVE10")
+
+
+func test_story_clock_and_chat_times() -> void:
+	check_eq(StoryClock.parse("Tue 09:10"), 1440 + 550, "parse")
+	check_eq([StoryClock.day_of(1440 + 550), StoryClock.hhmm(1440 + 550)], ["Tue", "09:10"], "format")
+	check_eq(StoryClock.hours_until(StoryClock.parse("Fri 07:40"), StoryClock.parse("Fri 10:00")), 3, "hours left")
+	check_eq(StoryClock.hours_until(StoryClock.parse("Sun 15:10"), StoryClock.parse("Mon 09:00")), 18, "a deadline next week")
+	check_eq(StoryClock.parse("next Mon 07:40") - StoryClock.parse("Mon 07:40"), StoryClock.WEEK, "the week after")
+	check_eq(StoryClock.day_of(StoryClock.parse("next Mon 07:40")), "Mon", "still a Monday")
+	var log := MessengerLog.build(_catalog(), GameState.create_initial(_catalog().ticket_ids()))
+	check_eq(log["entries"][0]["time"], StoryClock.parse("Tue 09:10"), "the briefing starts at the Ticket's time")
+	check_eq(log["entries"][1]["time"], StoryClock.parse("Tue 09:12"), "two minutes per message")
 
 
 ## The right word for every blank of a deduction.
@@ -179,18 +240,16 @@ func test_intranet_search_is_lenient_and_gated_by_progress() -> void:
 	check(ids.call("banana").is_empty(), "no results")
 
 
-func test_clue_board_needs_the_right_conclusion_and_clues() -> void:
+func test_board_conclusion_needs_every_part_right() -> void:
 	var deduction: Dictionary = _catalog().get_scenario("T04")["story"]["deduction"]
 	var right := _answers(deduction)
 	var wrong := right.duplicate()
 	wrong["who"] = "ops-temp"
-	check(not GameState.check_deduction(deduction, wrong, ["CLUE-0214", "CLUE-MERGE-RULE"])["correct"], "wrong conclusion")
-	check(not GameState.check_deduction(deduction, right, ["CLUE-0214"])["correct"], "missing the mechanism")
-	check(GameState.check_deduction(deduction, right, ["CLUE-0214", "CLUE-MERGE-RULE", "CLUE-TWO-FOR-50"])["correct"], "extra clues are fine")
+	check(not GameState.check_deduction(deduction, wrong)["correct"], "wrong conclusion")
 	var state := GameState.create_initial(["T04"])
-	state = GameState.answer_deduction(state, deduction, right, ["CLUE-0214"])
-	check(not state["story"]["deductions"][deduction["id"]]["solved"], "not solved without the right clues")
-	state = GameState.answer_deduction(state, deduction, right, ["CLUE-0214", "CLUE-MERGE-RULE"])
+	state = GameState.answer_deduction(state, deduction, wrong)
+	check(not state["story"]["deductions"][deduction["id"]]["solved"], "not solved with a wrong part")
+	state = GameState.answer_deduction(state, deduction, right)
 	check(state["story"]["deductions"][deduction["id"]]["solved"], "solved")
 
 

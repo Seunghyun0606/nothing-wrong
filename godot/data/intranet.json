@@ -431,6 +431,215 @@
       "unlockedByDocuments": [
         "DOC-API-KEYS"
       ]
+    },
+    {
+      "id": "DOC-JOB-REGISTRY",
+      "title": "Scheduled jobs · growth-metrics-sync",
+      "source": "Platform team / scheduler",
+      "keywords": [
+        "growth-metrics-sync",
+        "metrics sync",
+        "scheduled job",
+        "scheduler",
+        "job registry"
+      ],
+      "keywordsKo": [
+        "예약 작업",
+        "스케줄러"
+      ],
+      "lines": [
+        "growth-metrics-sync: runs every hour since Monday 22:50.",
+        "Action: restates stored order totals \"for revenue reporting\".",
+        "Created under access request AR-4471."
+      ],
+      "availableAfter": "T08",
+      "unlockedByLeads": [
+        "growth-metrics-sync"
+      ]
+    },
+    {
+      "id": "DOC-Q4-LIFT",
+      "title": "Holdout · q4-lift",
+      "source": "Growth team / experiments",
+      "keywords": [
+        "q4-lift",
+        "q4 lift",
+        "holdout",
+        "holdout group"
+      ],
+      "keywordsKo": [
+        "홀드아웃"
+      ],
+      "lines": [
+        "q4-lift: Gold members are kept from SAVE10 to measure how many stay without discounts.",
+        "Started Monday 23:00. Owner: Growth team.",
+        "Runs under access request AR-4471."
+      ],
+      "availableAfter": "T09",
+      "unlockedByLeads": [
+        "q4-lift"
+      ]
+    },
+    {
+      "id": "DOC-ACCESS-REQUEST",
+      "title": "Access request · AR-4471",
+      "source": "Platform team / security",
+      "keywords": [
+        "ar-4471",
+        "ar4471",
+        "access request"
+      ],
+      "keywordsKo": [
+        "접근 요청"
+      ],
+      "lines": [
+        "Asks for: temporary account ops-temp, job growth-metrics-sync, holdout q4-lift.",
+        "Requested by: s.ortiz, Monday 22:38.",
+        "Approved by: e.park (VP Growth), Monday 22:41.",
+        "Note: \"Measure retention lift for the Q4 review. Do not route through QA.\""
+      ],
+      "availableAfter": "T09",
+      "unlockedByDocuments": [
+        "DOC-JOB-REGISTRY",
+        "DOC-Q4-LIFT"
+      ]
+    },
+    {
+      "id": "DOC-ORG-CHART",
+      "title": "Shoply org chart",
+      "source": "Office / people",
+      "keywords": [
+        "org chart",
+        "organization",
+        "team",
+        "vp",
+        "growth team",
+        "e.park",
+        "elena",
+        "manager"
+      ],
+      "keywordsKo": [
+        "조직도",
+        "조직",
+        "팀"
+      ],
+      "lines": [
+        "Elena Park: VP Growth. The Growth team, including s.ortiz, reports to her.",
+        "Daniel Reyes: Release Manager.",
+        "Priya Nair: Support Lead."
+      ]
+    },
+    {
+      "id": "DOC-Q4-REVIEW",
+      "title": "Q4 business review · agenda",
+      "source": "Leadership / planning",
+      "keywords": [
+        "q4 review",
+        "business review",
+        "agenda",
+        "retention",
+        "q4"
+      ],
+      "keywordsKo": [
+        "q4 리뷰",
+        "리뷰",
+        "안건",
+        "리텐션"
+      ],
+      "lines": [
+        "Monday 09:00. Presenter: E. Park (VP Growth).",
+        "Topics: retention, Gold member growth, weekend revenue."
+      ]
+    },
+    {
+      "id": "DOC-SNAPSHOT-0905",
+      "title": "Snapshot · SNAP-0905",
+      "source": "Platform team / backups",
+      "keywords": [
+        "snap-0905",
+        "snap0905",
+        "snapshot snap-0905"
+      ],
+      "keywordsKo": [
+        "스냅샷 0905"
+      ],
+      "lines": [
+        "Taken Monday 23:05 by ops-temp.",
+        "Five minutes later, ops-temp opened the archive for writing.",
+        "Contains: inventory, price templates, routes, bag layout."
+      ],
+      "availableAfter": "T10",
+      "unlockedByLeads": [
+        "SNAP-0905"
+      ]
+    },
+    {
+      "id": "DOC-RC5-PLAN",
+      "title": "Rollback plan · rc5-rollback",
+      "source": "Platform team / releases",
+      "keywords": [
+        "rc5-rollback",
+        "rc5 rollback",
+        "rollback plan",
+        "rc5"
+      ],
+      "keywordsKo": [
+        "롤백 계획"
+      ],
+      "lines": [
+        "rc5-rollback picks the newest snapshot taken before the RC3 merge (Tuesday 02:14).",
+        "Picked: SNAP-0905. Who took it was not checked.",
+        "Every rollback point is listed in the snapshot index."
+      ],
+      "availableAfter": "T11",
+      "unlockedByLeads": [
+        "rc5-rollback"
+      ]
+    },
+    {
+      "id": "DOC-SNAPSHOT-INDEX",
+      "title": "Snapshot index",
+      "source": "Platform team / backups",
+      "keywords": [
+        "snapshot index",
+        "snapshot list",
+        "snapshots",
+        "rollback points"
+      ],
+      "keywordsKo": [
+        "스냅샷 목록",
+        "롤백 지점"
+      ],
+      "lines": [
+        "SNAP-0901: Sunday 21:00, platform team (weekly).",
+        "SNAP-0905: Monday 23:05, ops-temp.",
+        "SNAP-1101: Tuesday 02:20, release-bot (after the RC3 merge)."
+      ],
+      "availableAfter": "T12",
+      "unlockedByDocuments": [
+        "DOC-RC5-PLAN"
+      ]
+    },
+    {
+      "id": "DOC-BACKUP-POLICY",
+      "title": "Backup policy",
+      "source": "Platform team / policy",
+      "keywords": [
+        "backup",
+        "backups",
+        "snapshot",
+        "backup policy",
+        "rollback"
+      ],
+      "keywordsKo": [
+        "백업",
+        "스냅샷",
+        "롤백"
+      ],
+      "lines": [
+        "Weekly snapshots are taken every Sunday at 21:00.",
+        "Anyone with archive access can take an extra snapshot."
+      ]
     }
   ]
 }

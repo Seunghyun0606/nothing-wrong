@@ -1,0 +1,22 @@
+id: DEC-012
+title: Deadlines change the ending; Chapter 4 completes the planned Ticket types
+status: active
+decided_at: "2026-10-18"
+context: >-
+  The project owner asked that release-time pressure change the dialogue rather than block
+  play, and asked to finish the remaining chapters. The initial plan listed eight Ticket
+  types; cross-screen, multiple-bug, and mini-regression Tickets had not been used.
+decision: >-
+  Wrong reports and wrong conclusions cost 20 minutes on the story clock. Each chapter has
+  a deadline; a finale answered after it closes the chapter with a late epilogue. Chapter 4
+  (Rollback, T10–T12) is the final chapter: a cross-screen stock check, a Ticket with two
+  defects that both must be reported, and a regression pass over the previous week's fixes.
+consequences:
+  - A Ticket with several expected bugs stays in testing until each one is reported (foundBugIds).
+  - Story times can be in the following week ("next Mon 07:40").
+  - The story is complete at Chapter 4; further chapters would be new scope.
+applies_to:
+  - global
+references:
+  - .project-os/decisions/DEC-011-reading-and-searching-are-the-puzzle.yaml
+  - godot/README.md

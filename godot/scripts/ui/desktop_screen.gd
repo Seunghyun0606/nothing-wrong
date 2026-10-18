@@ -8,6 +8,7 @@ const Kit := preload("res://scripts/ui/kit.gd")
 const P := preload("res://scripts/ui/palette.gd")
 const OsWindow := preload("res://scripts/ui/os_window.gd")
 const MessengerApp := preload("res://scripts/ui/apps/messenger_app.gd")
+const StoryClock := preload("res://scripts/domain/story_clock.gd")
 const BrowserApp := preload("res://scripts/ui/apps/browser_app.gd")
 const NotesApp := preload("res://scripts/ui/apps/notes_app.gd")
 
@@ -196,30 +197,30 @@ func _open_start_menu() -> void:
 	_start_menu.popup(Rect2i(at, _start_menu.size))
 
 
-const DAYS := ["Mon", "Tue", "Wed", "Thu", "Fri"]
-## The Autumn Release ships Friday at 10:00, in minutes from Monday 00:00.
-const RELEASE_AT := 4 * 1440 + 10 * 60
-
-
-## The story's clock: each Ticket happens at a set time in release week ("Thu 15:30").
-func _story_time() -> String:
+## The story's clock: each Ticket happens at a set time ("Thu 15:30"), and each chapter
+## counts down to its deadline (`chapter.deadline`). The countdown sets the mood only.
+func _tick() -> void:
 	var focus := GameSession.focus_ticket_id()
 	var scenario: Variant = GameSession.scenario(focus) if focus != "" else GameSession.catalog.scenarios[-1]
-	return str(scenario.get("story", {}).get("time", ""))
-
-
-func _tick() -> void:
-	var time := _story_time()
-	var parts := time.split(" ")
-	if parts.size() != 2:
+	var story: Dictionary = scenario.get("story", {})
+	var now := StoryClock.parse(str(story.get("time", "")))
+	# The clock moves on with the chat.
+	var log := DesktopSession.messenger_log()
+	if now >= 0 and int(log["delivered"]) > 0:
+		now = maxi(now, int(log["entries"][int(log["delivered"]) - 1].get("time", 0)))
+	if now < 0:
 		_clock.text = ""
-		_deadline.text = Kit.t("Autumn Release · Fri 10:00")
+		_deadline.text = ""
 		return
-	_clock.text = "%s %s" % [Kit.t(parts[0]), parts[1]]
-	var hm := parts[1].split(":")
-	var now := DAYS.find(parts[0]) * 1440 + int(hm[0]) * 60 + int(hm[1])
-	var hours := int(ceil((RELEASE_AT - now) / 60.0))
-	_deadline.text = Kit.tf("Autumn Release · Fri 10:00 · %dh left", hours) if hours > 0 else Kit.t("Autumn Release · Fri 10:00")
+	_clock.text = "%s %s" % [Kit.t(StoryClock.day_of(now)), StoryClock.hhmm(now)]
+	var chapter: Variant = GameSession.catalog.get_chapter(str(story.get("chapterId", "")))
+	var deadline: Dictionary = chapter.get("deadline", {}) if chapter != null else {}
+	var at := StoryClock.parse(str(deadline.get("at", "")))
+	if at < 0:
+		_deadline.text = ""
+		return
+	var hours := StoryClock.hours_until(now, at)
+	_deadline.text = Kit.tf("%s · %s · %dh left", [Kit.t(deadline["label"]), "%s %s" % [Kit.t(StoryClock.day_of(at)), StoryClock.hhmm(at)], hours])
 	_deadline.add_theme_color_override("font_color", P.DANGER if hours <= 3 else (P.WARNING if hours <= 24 else P.MUTED))
 
 

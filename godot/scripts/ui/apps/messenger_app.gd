@@ -9,6 +9,7 @@ const Addresses := preload("res://scripts/domain/addresses.gd")
 const Observations := preload("res://scripts/domain/observations.gd")
 const ReportComposer := preload("res://scripts/ui/apps/report_composer.gd")
 const DeductionForm := preload("res://scripts/ui/apps/deduction_form.gd")
+const StoryClock := preload("res://scripts/domain/story_clock.gd")
 
 var _scroll: ScrollContainer
 var _log_box: VBoxContainer
@@ -73,8 +74,19 @@ func _render() -> void:
 	var delivered: int = log["delivered"]
 	if delivered == 0 and entries.is_empty():
 		_log_box.add_child(Kit.label("No messages yet.", 14, P.MUTED))
+	var day := -1
 	for index in delivered:
-		_log_box.add_child(_entry(entries[index]))
+		var entry: Dictionary = entries[index]
+		# A divider whenever the story moves to another day.
+		var today: int = int(entry.get("time", 0)) / 1440
+		if today != day:
+			day = today
+			var divider := Kit.label("— %s —" % Kit.t(StoryClock.day_name(int(entry.get("time", 0)))), 12, P.MUTED, false)
+			divider.name = "Day%d" % today
+			divider.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			divider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			_log_box.add_child(divider)
+		_log_box.add_child(_entry(entry))
 	if delivered < entries.size() and entries[delivered]["kind"] == "message":
 		_log_box.add_child(Kit.label(Kit.tf("%s is typing…", entries[delivered]["from"]), 13, P.MUTED))
 
@@ -143,6 +155,21 @@ func _scroll_to_end() -> void:
 		_scroll.scroll_vertical = int(_scroll.get_v_scroll_bar().max_value)
 
 
+## When a message was sent, on the story's clock.
+static func _time(entry: Dictionary, color: Color = P.MUTED) -> Label:
+	var stamp := Kit.label(StoryClock.hhmm(int(entry.get("time", 0))), 12, color, false)
+	stamp.name = "SentAt"
+	stamp.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	return stamp
+
+
+static func _you(entry: Dictionary) -> Control:
+	var row := Kit.hbox(6)
+	row.add_child(Kit.heading("You", 13, Color.WHITE))
+	row.add_child(_time(entry, Color(1, 1, 1, 0.75)))
+	return row
+
+
 func _entry(entry: Dictionary) -> Control:
 	match entry["kind"]:
 		"message":
@@ -156,6 +183,7 @@ func _entry(entry: Dictionary) -> Control:
 			from.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 			author.add_child(from)
 			author.add_child(Kit.label("· %s" % Kit.t(entry["role"]), 13, P.MUTED, false))
+			author.add_child(_time(entry))
 			column.add_child(author)
 			var args: Array = entry.get("args", [])
 			column.add_child(Kit.label(Kit.tf(entry["text"], args) if not args.is_empty() else entry["text"], 15))
@@ -197,7 +225,7 @@ func _entry(entry: Dictionary) -> Control:
 			var card := Kit.panel(P.ACCENT, Color.TRANSPARENT, 10, 12)
 			card.name = "Report"
 			var body := Kit.vbox(2)
-			body.add_child(Kit.heading("You", 13, Color.WHITE))
+			body.add_child(_you(entry))
 			if entry["noIssue"]:
 				body.add_child(Kit.label(Kit.tf("%s: I checked every requirement and nothing breaks a rule. NO ISSUE FOUND.", entry["ticketId"]), 15, Color.WHITE))
 			else:
@@ -209,7 +237,7 @@ func _entry(entry: Dictionary) -> Control:
 		"player":
 			var card := Kit.panel(P.ACCENT, Color.TRANSPARENT, 10, 12)
 			var body := Kit.vbox(2)
-			body.add_child(Kit.heading("You", 13, Color.WHITE))
+			body.add_child(_you(entry))
 			var said: String = DeductionForm.filled_text(entry["sentence"], entry["filled"]) if entry.has("sentence") else entry["text"]
 			body.add_child(Kit.label(said, 15, Color.WHITE))
 			if not entry.get("clues", []).is_empty():

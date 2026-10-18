@@ -317,9 +317,7 @@ func _clue_board(deduction: Dictionary) -> Control:
 	var attempts: Array = GameSession.state["story"]["deductions"].get(deduction["id"], {}).get("attempts", [])
 	if not attempts.is_empty() and typeof(attempts[-1]) == TYPE_DICTIONARY:
 		var last: Dictionary = attempts[-1]
-		var response: String = Kit.t(deduction.get("boardHint", "")) if int(last["right"]) == int(last["total"]) \
-			else Kit.tf("%d of %d parts hold up. Look at your clues again.", [int(last["right"]), int(last["total"])])
-		body.add_child(Kit.label(response, 14, P.WARNING))
+		body.add_child(Kit.label(Kit.tf("%d of %d parts hold up. Look at your clues again.", [int(last["right"]), int(last["total"])]), 14, P.WARNING))
 	var form: VBoxContainer = DeductionForm.new()
 	form.setup(deduction)
 	body.add_child(form)

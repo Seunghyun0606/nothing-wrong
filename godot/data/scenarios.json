@@ -928,13 +928,8 @@
             "from": "Maya Kim",
             "role": "QA Lead"
           },
-          "prompt": "Case file: what really happened to RC3? Open the Case File, pick the clues that prove it, and fill in the conclusion.",
+          "prompt": "Case file: what really happened to RC3? Open the Case File, read your clues, and fill in the conclusion.",
           "mode": "board",
-          "requiredClues": [
-            "CLUE-0214",
-            "CLUE-MERGE-RULE"
-          ],
-          "boardHint": "The conclusion is right, but your clues don't prove it yet. Which clue shows how the archive got in, and which ties it to the night of the merge?",
           "sentence": "On {day} evening, {who} widened release-bot's merge rule to include {pattern}, so the {when} run pulled archived branches into RC3.",
           "blanks": {
             "day": {
@@ -1573,7 +1568,7 @@
             "role": "QA Lead"
           },
           "mode": "board",
-          "prompt": "Case file: who opened the archive, and why? Open the Case File, pick the clues that prove it, and fill in the conclusion.",
+          "prompt": "Case file: who opened the archive, and why? Open the Case File, read your clues, and fill in the conclusion.",
           "sentence": "{who} ran ops-temp from {where} to open the archive, so release-bot would ship {what} with the Autumn Release.",
           "blanks": {
             "who": {
@@ -1601,13 +1596,1178 @@
               "answer": "exp/retention-push"
             }
           },
-          "requiredClues": [
-            "CLUE-OPS-TEMP",
-            "CLUE-MOBILE-FEES",
-            "CLUE-WS-14"
-          ],
-          "boardHint": "The story is right, but your clues don't prove it yet. Which clue shows the account, which shows what it planted, and which leads to a desk?",
           "success": "Every clue points to the same desk."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T08",
+      "ticket": {
+        "id": "T08",
+        "projectId": "shoply",
+        "title": "Weekend order totals",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Gold members say their order page shows more than they paid at checkout. Place a real order and compare.",
+        "scope": [
+          "Checkout",
+          "Order details",
+          "Coupon discount"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T08-01",
+            "description": "An order's total matches the total shown at checkout, discount included."
+          },
+          {
+            "id": "REQ-T08-02",
+            "description": "A new order appears in the order list as Processing."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply/product/everyday-pack"
+        },
+        "hints": [
+          {
+            "id": "HINT-T08-01",
+            "text": "Place an order as a Gold member with SAVE20, then open it from Orders."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T08-001",
+          "type": "DATA",
+          "title": "Order page drops the SAVE20 discount",
+          "target": "orders.total",
+          "severity": "HIGH",
+          "requirementId": "REQ-T08-01",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "STARTS_WITH",
+              "value": "/shoply/orders/order-"
+            },
+            {
+              "field": "test.currentPath",
+              "operator": "NEQ",
+              "value": "/shoply/orders/order-1042"
+            },
+            {
+              "field": "test.account",
+              "operator": "EQ",
+              "value": "GOLD"
+            }
+          ],
+          "reproductionActions": [
+            {
+              "type": "CONFIRM_ORDER",
+              "label": "confirm the order"
+            }
+          ],
+          "expected": "The checkout total",
+          "actual": "The total before discount",
+          "validEvidenceTargets": [
+            "orders.total"
+          ]
+        }
+      ],
+      "mutations": [
+        {
+          "id": "MUTATION-T08-001",
+          "type": "WRONG_CALCULATION",
+          "target": "orders.discountKept",
+          "conditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "STARTS_WITH",
+              "value": "/shoply/orders/order-"
+            },
+            {
+              "field": "test.currentPath",
+              "operator": "NEQ",
+              "value": "/shoply/orders/order-1042"
+            },
+            {
+              "field": "test.account",
+              "operator": "EQ",
+              "value": "GOLD"
+            }
+          ],
+          "payload": {
+            "value": 0.0
+          },
+          "trace": {
+            "text": "billing: order total restated without discount by growth-metrics-sync",
+            "terms": [
+              "growth-metrics-sync"
+            ]
+          }
+        }
+      ],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH3",
+        "time": "Sat 10:20",
+        "briefing": [
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "Weekend support queue: Gold members say their order page shows more than they paid at checkout."
+          },
+          {
+            "from": "Elena Park",
+            "role": "VP Growth",
+            "text": "Elena Park, Growth. The weekend numbers look fantastic. Let's not go looking for problems."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "We look anyway. Place a real order as a Gold member with SAVE20, then open it from Orders."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "So the order list says one thing and the order page another. Customers are billed from the order page."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "The Console named the job that rewrote it. Find out who scheduled it."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-METRICS-SYNC",
+          "title": "growth-metrics-sync",
+          "text": "A scheduled job restates order totals without their discounts. It was created Monday 22:50 under access request AR-4471, twenty minutes before ops-temp opened the archive."
+        },
+        "discovery": {
+          "documentId": "DOC-JOB-REGISTRY",
+          "hint": "Read the Console on the new order's page and search for the job it names.",
+          "searchTerms": [
+            "growth-metrics-sync"
+          ]
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Switch to Gold, apply SAVE20 in the bag, confirm the order, then compare the order list with the order page."
+          },
+          {
+            "after": 3,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Here's the answer: open your new order as Gold, note the Order total, and report it with REQ-T08-01. It leaves out the SAVE20 discount."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T08",
+          "askedBy": {
+            "from": "Maya Kim",
+            "role": "QA Lead"
+          },
+          "prompt": "What is growth-metrics-sync, and where did it come from?",
+          "sentence": "A job named {job} restates order totals without their discount. It was created under {request}, {when} before ops-temp opened the archive.",
+          "blanks": {
+            "job": {
+              "options": [
+                "growth-metrics-sync",
+                "release-bot",
+                "ops-temp"
+              ],
+              "answer": "growth-metrics-sync"
+            },
+            "request": {
+              "options": [
+                "AR-4471",
+                "ak-7731",
+                "WS-14"
+              ],
+              "answer": "AR-4471"
+            },
+            "when": {
+              "options": [
+                "twenty minutes",
+                "two days",
+                "an hour"
+              ],
+              "answer": "twenty minutes"
+            }
+          },
+          "success": "So Sam didn't act alone. Someone filed a request for all of it."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T09",
+      "ticket": {
+        "id": "T09",
+        "projectId": "shoply",
+        "title": "Gold member coupons",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "A Gold member says SAVE10 does nothing for her. Check the coupons for both account types.",
+        "scope": [
+          "Account context",
+          "Coupon discount",
+          "Cart totals"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T09-01",
+            "description": "SAVE10 gives every customer 10% off, Basic and Gold alike."
+          },
+          {
+            "id": "REQ-T09-02",
+            "description": "SAVE20 is available only to Gold members."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply/product/everyday-pack"
+        },
+        "hints": [
+          {
+            "id": "HINT-T09-01",
+            "text": "Try SAVE10 as Basic, then as Gold, with the same bag."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T09-001",
+          "type": "CONDITIONAL",
+          "title": "SAVE10 gives Gold members nothing",
+          "target": "cart.total",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T09-01",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            },
+            {
+              "field": "test.account",
+              "operator": "EQ",
+              "value": "GOLD"
+            },
+            {
+              "field": "product.coupon",
+              "operator": "EQ",
+              "value": "SAVE10"
+            }
+          ],
+          "reproductionActions": [
+            {
+              "type": "CHANGE_ACCOUNT",
+              "target": "GOLD",
+              "label": "switch to the Gold account"
+            },
+            {
+              "type": "APPLY_COUPON",
+              "payload": {
+                "code": "SAVE10"
+              },
+              "label": "apply SAVE10"
+            }
+          ],
+          "expected": "10% off",
+          "actual": "No discount",
+          "validEvidenceTargets": [
+            "cart.total",
+            "cart.couponMessage"
+          ]
+        }
+      ],
+      "mutations": [
+        {
+          "id": "MUTATION-T09-001",
+          "type": "WRONG_CALCULATION",
+          "target": "cart.discountRate",
+          "conditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            },
+            {
+              "field": "test.account",
+              "operator": "EQ",
+              "value": "GOLD"
+            },
+            {
+              "field": "product.coupon",
+              "operator": "EQ",
+              "value": "SAVE10"
+            }
+          ],
+          "payload": {
+            "value": 0.0
+          },
+          "trace": {
+            "text": "promo: SAVE10 withheld for holdout group q4-lift (growth-metrics-sync)",
+            "terms": [
+              "q4-lift",
+              "growth-metrics-sync"
+            ]
+          }
+        }
+      ],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH3",
+        "time": "Sun 15:10",
+        "briefing": [
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "One more: a Gold member says SAVE10 does nothing for her, but it works for her friend."
+          },
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "And the billing run is at 18:00. Whatever the order pages say then is what customers get charged."
+          },
+          {
+            "from": "Elena Park",
+            "role": "VP Growth",
+            "text": "I present the Q4 review tomorrow at 09:00. I need clean numbers, not another investigation."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Check SAVE10 as Basic and as Gold. Same bag, same quantity."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Sam Ortiz",
+            "role": "Shoply Engineer",
+            "text": "...q4-lift is a holdout group. Gold members are kept from discounts so we can measure how many stay anyway."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "A holdout needs an approval. Find the request it ran under."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-AR-4471",
+          "title": "AR-4471 · approved by e.park",
+          "text": "Access request AR-4471 asked for the ops-temp account, the growth-metrics-sync job, and the q4-lift holdout. Requested by s.ortiz; approved by e.park at 22:41 on Monday: \"Measure retention lift for the Q4 review. Do not route through QA.\""
+        },
+        "discovery": {
+          "documentId": "DOC-ACCESS-REQUEST",
+          "hint": "The holdout's record names the request it ran under. Search for the holdout, then for the request.",
+          "searchTerms": [
+            "q4-lift",
+            "AR-4471"
+          ]
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Put one pack in the bag and apply SAVE10, first as Basic, then as Gold. Compare the totals."
+          },
+          {
+            "after": 3,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Here's the answer: as Gold with SAVE10, the bag shows no discount. Note the Total and report it with REQ-T09-01."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T09",
+          "askedBy": {
+            "from": "Maya Kim",
+            "role": "QA Lead"
+          },
+          "mode": "board",
+          "prompt": "Case file: who let all of this happen, and why? Open the Case File, read your clues, and fill in the conclusion.",
+          "sentence": "{who} approved AR-4471 so that {what} could be measured before {when}, and asked to keep it away from {team}.",
+          "blanks": {
+            "who": {
+              "options": [
+                "Elena Park",
+                "Daniel Reyes",
+                "Maya Kim"
+              ],
+              "answer": "Elena Park"
+            },
+            "what": {
+              "options": [
+                "retention lift",
+                "page speed",
+                "mobile traffic"
+              ],
+              "answer": "retention lift"
+            },
+            "when": {
+              "options": [
+                "the Q4 review",
+                "the Autumn Release",
+                "code freeze"
+              ],
+              "answer": "the Q4 review"
+            },
+            "team": {
+              "options": [
+                "QA",
+                "Growth",
+                "Support"
+              ],
+              "answer": "QA"
+            }
+          },
+          "success": "That's the whole chain: an approval, a request, a temporary account, and a bot that merged whatever matched."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T10",
+      "ticket": {
+        "id": "T10",
+        "projectId": "shoply",
+        "title": "Stock across screens",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Customers see one stock level on the product page and another in the bag. Compare the two screens.",
+        "scope": [
+          "Product detail",
+          "Cart",
+          "Stock"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T10-01",
+            "description": "The bag shows the same stock as the product page."
+          },
+          {
+            "id": "REQ-T10-02",
+            "description": "Removing an item takes its line out of the bag."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply/product/everyday-pack"
+        },
+        "hints": [
+          {
+            "id": "HINT-T10-01",
+            "text": "Read the stock on the product page, then in the bag."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T10-001",
+          "type": "CROSS_SCREEN",
+          "title": "The bag shows stale stock",
+          "target": "cart.stock",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T10-01",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            }
+          ],
+          "reproductionActions": [
+            {
+              "type": "ADD_TO_CART",
+              "label": "add the product to the bag"
+            }
+          ],
+          "expected": "12 available",
+          "actual": "2 available",
+          "validEvidenceTargets": [
+            "cart.stock"
+          ]
+        }
+      ],
+      "mutations": [
+        {
+          "id": "MUTATION-T10-001",
+          "type": "WRONG_DATA",
+          "target": "cart.stock",
+          "conditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            }
+          ],
+          "payload": {
+            "value": 2
+          },
+          "trace": {
+            "text": "inventory: stock levels loaded from snapshot SNAP-0905 (rollback)",
+            "terms": [
+              "SNAP-0905"
+            ]
+          }
+        }
+      ],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH4",
+        "time": "next Mon 07:40",
+        "briefing": [
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "Platform built RC5 overnight: a full rollback to before the merge. Clean slate."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Leadership wants our findings at 09:00, and proof that RC5 is clean. One pass per area, starting with stock."
+          },
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "Customers say the product page shows 12 in stock, then the bag will not sell them more than two."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "A rollback restores from a snapshot. If the Console named one, that is what RC5 used."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Then let's see what is in that snapshot, and who took it."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-SNAP-0905",
+          "title": "SNAP-0905 · ops-temp",
+          "text": "RC5 restored stock, prices, routes, and the bag layout from snapshot SNAP-0905, taken Monday 23:05 by ops-temp, five minutes before the archive was opened for writing."
+        },
+        "discovery": {
+          "documentId": "DOC-SNAPSHOT-0905",
+          "hint": "Read the Console in the bag and search for the snapshot it names.",
+          "searchTerms": [
+            "SNAP-0905"
+          ]
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Open the product page, then the bag. Compare how many are in stock with how many the bag will sell you."
+          },
+          {
+            "after": 3,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Here's the answer: the bag says 2 available while the product page says 12 in stock. Note the bag's stock and report it with REQ-T10-01."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T10",
+          "askedBy": {
+            "from": "Maya Kim",
+            "role": "QA Lead"
+          },
+          "prompt": "Why would a rollback bring back the wrong stock?",
+          "sentence": "RC5 restored from {snapshot}, which {who} took at {when} on Monday.",
+          "blanks": {
+            "snapshot": {
+              "options": [
+                "SNAP-0905",
+                "SNAP-0901",
+                "SNAP-1101"
+              ],
+              "answer": "SNAP-0905"
+            },
+            "who": {
+              "options": [
+                "ops-temp",
+                "release-bot",
+                "the platform team"
+              ],
+              "answer": "ops-temp"
+            },
+            "when": {
+              "options": [
+                "23:05",
+                "21:00",
+                "02:20"
+              ],
+              "answer": "23:05"
+            }
+          },
+          "success": "So the rollback point was made by ops-temp. Everything in it is suspect."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T11",
+      "ticket": {
+        "id": "T11",
+        "projectId": "shoply",
+        "title": "Rollback spot check",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Spot-check prices and the bag on every device. This Ticket may hide more than one defect; report each one.",
+        "scope": [
+          "Product prices",
+          "Cart",
+          "Device consistency"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T11-01",
+            "description": "Prices show dollars and cents, such as $24.00."
+          },
+          {
+            "id": "REQ-T11-02",
+            "description": "Customers can remove an item from the bag on every device."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply"
+        },
+        "hints": [
+          {
+            "id": "HINT-T11-01",
+            "text": "This Ticket has two defects. Look at every product, and at the bag on every device."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T11-001",
+          "type": "VISUAL",
+          "title": "Travel Sling price has no cents",
+          "target": "product.price",
+          "severity": "LOW",
+          "requirementId": "REQ-T11-01",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/product/travel-sling"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "$24.00",
+          "actual": "$24",
+          "validEvidenceTargets": [
+            "product.price"
+          ]
+        },
+        {
+          "id": "BUG-T11-002",
+          "type": "BEHAVIOR",
+          "title": "No Remove in the bag on mobile",
+          "target": "cart.removeAction",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T11-02",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            },
+            {
+              "field": "test.viewport",
+              "operator": "EQ",
+              "value": "MOBILE"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Remove",
+          "actual": "Not shown",
+          "validEvidenceTargets": [
+            "cart.removeAction"
+          ]
+        }
+      ],
+      "mutations": [
+        {
+          "id": "MUTATION-T11-001",
+          "type": "WRONG_FORMAT",
+          "target": "product.priceText",
+          "conditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/product/travel-sling"
+            }
+          ],
+          "payload": {
+            "value": "$24"
+          },
+          "trace": {
+            "text": "format: price template \"whole dollars\" restored by rc5-rollback",
+            "terms": [
+              "rc5-rollback"
+            ]
+          }
+        },
+        {
+          "id": "MUTATION-T11-002",
+          "type": "WRONG_ACTION",
+          "target": "cart.removeAction.visible",
+          "conditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/cart"
+            },
+            {
+              "field": "test.viewport",
+              "operator": "EQ",
+              "value": "MOBILE"
+            }
+          ],
+          "payload": {
+            "value": false
+          },
+          "trace": {
+            "text": "layout: mobile bag without Remove restored by rc5-rollback",
+            "terms": [
+              "rc5-rollback"
+            ]
+          }
+        }
+      ],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH4",
+        "time": "next Mon 08:05",
+        "briefing": [
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Same snapshot, other areas. Prices and the bag, on every device. There may be more than one problem this time; report each one."
+          },
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "Fifty-five minutes until leadership."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Two defects, one snapshot. The Console named the rollback job. Find out how it picked SNAP-0905."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-RC5-PLAN",
+          "title": "rc5-rollback",
+          "text": "The rollback job rc5-rollback picked the newest snapshot before the RC3 merge, without checking who took it. Every rollback point is listed in the snapshot index."
+        },
+        "discovery": {
+          "documentId": "DOC-RC5-PLAN",
+          "hint": "Read the Console where you found a defect and search for the job it names.",
+          "searchTerms": [
+            "rc5-rollback"
+          ]
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Check the Travel Sling's product page, then the bag on Mobile."
+          },
+          {
+            "after": 3,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Here's the answer: the Travel Sling shows $24 instead of $24.00 (REQ-T11-01), and on Mobile the bag has no Remove (REQ-T11-02). Report each one."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T11",
+          "askedBy": {
+            "from": "Maya Kim",
+            "role": "QA Lead"
+          },
+          "prompt": "How did the rollback end up on that snapshot?",
+          "sentence": "{job} picked the {rule} snapshot before the RC3 merge, without checking {check}.",
+          "blanks": {
+            "job": {
+              "options": [
+                "rc5-rollback",
+                "release-bot",
+                "growth-metrics-sync"
+              ],
+              "answer": "rc5-rollback"
+            },
+            "rule": {
+              "options": [
+                "newest",
+                "oldest",
+                "largest"
+              ],
+              "answer": "newest"
+            },
+            "check": {
+              "options": [
+                "who took it",
+                "its size",
+                "its date"
+              ],
+              "answer": "who took it"
+            }
+          },
+          "success": "Right. A rollback is only as clean as the point it rolls back to."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T12",
+      "ticket": {
+        "id": "T12",
+        "projectId": "shoply",
+        "title": "RC5 regression pass",
+        "sender": {
+          "id": "maya-kim",
+          "name": "Maya Kim",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Before 09:00, re-check every fix from last week on RC5. Report anything that came back, or report NO ISSUE FOUND.",
+        "scope": [
+          "Checkout",
+          "Cart totals",
+          "Order cancellation",
+          "Shipping",
+          "Coupon discount"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T12-01",
+            "description": "The final confirmation control is presented as the primary action."
+          },
+          {
+            "id": "REQ-T12-02",
+            "description": "The cart subtotal equals product price multiplied by quantity."
+          },
+          {
+            "id": "REQ-T12-03",
+            "description": "Cancel Order opens the cancellation flow for a processing order, on every device."
+          },
+          {
+            "id": "REQ-T12-04",
+            "description": "On every device, shipping is free when the subtotal is $50.00 or more."
+          },
+          {
+            "id": "REQ-T12-05",
+            "description": "SAVE10 gives every customer 10% off, Basic and Gold alike."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/shoply"
+        },
+        "hints": [
+          {
+            "id": "HINT-T12-01",
+            "text": "Each requirement is a fix from last week. Check each one on more than one device."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": "",
+          "orderStatuses": {
+            "order-1042": "PROCESSING"
+          }
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T12-001",
+          "type": "BEHAVIOR",
+          "title": "Cancel order opens payment again on mobile",
+          "target": "orders.cancelAction",
+          "severity": "HIGH",
+          "requirementId": "REQ-T12-03",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/payment"
+            },
+            {
+              "field": "test.viewport",
+              "operator": "EQ",
+              "value": "MOBILE"
+            }
+          ],
+          "reproductionActions": [
+            {
+              "type": "CANCEL_ORDER",
+              "label": "select Cancel order"
+            }
+          ],
+          "expected": "Cancellation flow",
+          "actual": "Payment details",
+          "validEvidenceTargets": [
+            "payment.form"
+          ]
+        }
+      ],
+      "mutations": [
+        {
+          "id": "MUTATION-T12-001",
+          "type": "WRONG_ACTION",
+          "target": "orders.cancelAction.destination",
+          "conditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/shoply/orders/order-1042"
+            },
+            {
+              "field": "test.viewport",
+              "operator": "EQ",
+              "value": "MOBILE"
+            }
+          ],
+          "payload": {
+            "value": "/shoply/payment"
+          },
+          "trace": {
+            "text": "router: mobile cancel route restored from snapshot SNAP-0905",
+            "terms": [
+              "SNAP-0905"
+            ]
+          }
+        }
+      ],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH4",
+        "time": "next Mon 08:20",
+        "briefing": [
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Last pass before 09:00: every fix from last week, on RC5. If something came back, report it. If not, say so."
+          },
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "If RC5 fails, there is no RC6 before the review."
+          },
+          {
+            "from": "Priya Nair",
+            "role": "Shoply Support Lead",
+            "text": "One more from support, word for word: \"your app took me in circles on my phone.\""
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Daniel Reyes",
+            "role": "Shoply Release Manager",
+            "text": "...Cancel on mobile, again. Same snapshot."
+          },
+          {
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Then RC5 needs a rollback point no one touched. Find the snapshot index."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-SNAP-INDEX",
+          "title": "SNAP-0901 · Sunday 21:00",
+          "text": "The snapshot index lists SNAP-0901, taken Sunday 21:00 by the platform team, the day before anyone touched the archive. It is the last clean rollback point."
+        },
+        "discovery": {
+          "documentId": "DOC-SNAPSHOT-INDEX",
+          "hint": "The rollback plan says where every rollback point is listed. Search for it.",
+          "searchTerms": [
+            "rc5-rollback",
+            "snapshot index"
+          ]
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Order #1042 has been a problem before. Try cancelling it on each device."
+          },
+          {
+            "after": 3,
+            "from": "Maya Kim",
+            "role": "QA Lead",
+            "text": "Here's the answer: on Mobile, Cancel order on #1042 opens the payment page again. Note that screen and report it with REQ-T12-03."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T12",
+          "askedBy": {
+            "from": "Maya Kim",
+            "role": "QA Lead"
+          },
+          "mode": "board",
+          "prompt": "Case file: what does RC5 need before leadership signs off? Open the Case File, read your clues, and fill in the conclusion.",
+          "sentence": "RC5 rolled back to {bad}, which ops-temp took before opening the archive. It must roll back to {good}, taken {when}, before anyone touched the archive.",
+          "blanks": {
+            "bad": {
+              "options": [
+                "SNAP-0905",
+                "SNAP-0901",
+                "SNAP-1101"
+              ],
+              "answer": "SNAP-0905"
+            },
+            "good": {
+              "options": [
+                "SNAP-0901",
+                "SNAP-0905",
+                "SNAP-1101"
+              ],
+              "answer": "SNAP-0901"
+            },
+            "when": {
+              "options": [
+                "on Sunday at 21:00",
+                "on Monday at 23:05",
+                "on Tuesday at 02:20"
+              ],
+              "answer": "on Sunday at 21:00"
+            }
+          },
+          "success": "That's the fix. RC6 builds from SNAP-0901 now, and I'll take the whole chain to leadership."
         }
       }
     }
@@ -1628,6 +2788,27 @@
           "from": "Maya Kim",
           "role": "QA Lead",
           "text": "That's a root cause, not four separate bugs. RC3 is pulled, the rule is fixed, and Friday's release is safe. Good work."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "Before Friday, I want one more pass on RC4. Then we talk about how a bot got write access to a read-only archive."
+        }
+      ],
+      "deadline": {
+        "label": "Code freeze",
+        "at": "Thu 18:00"
+      },
+      "lateEpilogue": [
+        {
+          "from": "Daniel Reyes",
+          "role": "Shoply Release Manager",
+          "text": "...That was me. I widened the merge rule so new promo branches would ship on their own. I didn't know the archived branches still matched."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "That's a root cause, not four separate bugs. But we missed code freeze, so RC3 went out to the partner preview before we pulled it. Friday is still safe, barely."
         },
         {
           "from": "Maya Kim",
@@ -1656,6 +2837,155 @@
           "from": "Maya Kim",
           "role": "QA Lead",
           "text": "RC4 ships without retention-push, and the keys are revoked. Friday 10:00, and this time we can prove there's nothing wrong."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "One thing still bothers me. Temporary accounts need an approver. Who signed for ops-temp?"
+        }
+      ],
+      "deadline": {
+        "label": "Autumn Release",
+        "at": "Fri 10:00"
+      },
+      "lateEpilogue": [
+        {
+          "from": "Sam Ortiz",
+          "role": "Shoply Engineer",
+          "text": "Growth shelved my experiment in March, and it cut cancellations by forty percent. When Daniel widened the rule, I just made sure the archive was open."
+        },
+        {
+          "from": "Daniel Reyes",
+          "role": "Shoply Release Manager",
+          "text": "You let me take the blame for RC3."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "The release went out at 10:00 with release/mobile-fees still in it. We are rolling it back now, and the keys are revoked. It should never have shipped."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "One thing still bothers me. Temporary accounts need an approver. Who signed for ops-temp?"
+        }
+      ]
+    },
+    {
+      "id": "CH3",
+      "title": "Chapter 3 · Holdout",
+      "synopsis": "The Autumn Release shipped clean. Over the weekend, Gold members start paying more than they should, and someone wants the numbers kept that way until Monday.",
+      "finaleDeductionId": "DED-T09",
+      "deadline": {
+        "label": "Billing run",
+        "at": "Sun 18:00"
+      },
+      "epilogue": [
+        {
+          "from": "Elena Park",
+          "role": "VP Growth",
+          "text": "The numbers were real. Cancellations fell and revenue rose. I needed them on Monday."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "They were real because customers couldn't cancel and Gold members paid full price. AR-4471 is revoked, the job is off, and refunds go out tomorrow."
+        },
+        {
+          "from": "Priya Nair",
+          "role": "Shoply Support Lead",
+          "text": "I'll write to every customer we overcharged tonight."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "\"Nothing wrong\" was never the goal. Being able to prove it is."
+        },
+        {
+          "from": "Daniel Reyes",
+          "role": "Shoply Release Manager",
+          "text": "Platform is rolling everything back tonight. RC5 lands Monday morning, before leadership meets at 09:00."
+        }
+      ],
+      "lateEpilogue": [
+        {
+          "from": "Elena Park",
+          "role": "VP Growth",
+          "text": "The numbers were real. Cancellations fell and revenue rose. I needed them on Monday."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "They were real because customers couldn't cancel and Gold members paid full price. The 18:00 billing run already charged them. AR-4471 is revoked, and the refunds will take a week."
+        },
+        {
+          "from": "Priya Nair",
+          "role": "Shoply Support Lead",
+          "text": "I'll write to every customer we overcharged tonight."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "\"Nothing wrong\" was never the goal. Being able to prove it is."
+        },
+        {
+          "from": "Daniel Reyes",
+          "role": "Shoply Release Manager",
+          "text": "Platform is rolling everything back tonight. RC5 lands Monday morning, before leadership meets at 09:00."
+        }
+      ]
+    },
+    {
+      "id": "CH4",
+      "title": "Chapter 4 · Rollback",
+      "synopsis": "A week later, Platform rolls everything back. Leadership meets at 09:00 to hear whether Shoply is finally clean.",
+      "finaleDeductionId": "DED-T12",
+      "deadline": {
+        "label": "Leadership review",
+        "at": "next Mon 09:00"
+      },
+      "epilogue": [
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "RC6 is built from SNAP-0901 and passes every check from last week. I showed leadership the whole chain, one log line at a time."
+        },
+        {
+          "from": "Daniel Reyes",
+          "role": "Shoply Release Manager",
+          "text": "The merge rule now needs two approvals. Mine isn't enough on its own anymore."
+        },
+        {
+          "from": "Priya Nair",
+          "role": "Shoply Support Lead",
+          "text": "Refunds are out, and the support queue is quiet for the first time in a week."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "Nothing wrong. And this time, we can prove it."
+        }
+      ],
+      "lateEpilogue": [
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "We missed 09:00. Leadership heard about RC5 from customers before they heard it from us. RC6 is built from SNAP-0901 now, and it passes every check."
+        },
+        {
+          "from": "Daniel Reyes",
+          "role": "Shoply Release Manager",
+          "text": "The merge rule now needs two approvals. Mine isn't enough on its own anymore."
+        },
+        {
+          "from": "Priya Nair",
+          "role": "Shoply Support Lead",
+          "text": "Refunds are out, and the support queue is quiet for the first time in a week."
+        },
+        {
+          "from": "Maya Kim",
+          "role": "QA Lead",
+          "text": "Nothing wrong. And this time, we can prove it."
         }
       ]
     }

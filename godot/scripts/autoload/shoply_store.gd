@@ -149,6 +149,9 @@ func place_order() -> Variant:
 		"status": "PROCESSING",
 		"productId": current_items[0]["productId"],
 		"quantity": item_count(),
+		"subtotal": summary["subtotal"],
+		"discount": summary["discount"],
+		"shipping": summary["shipping"],
 		"total": summary["total"],
 	}
 	orders.push_front(order)

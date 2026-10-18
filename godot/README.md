@@ -52,12 +52,26 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
   (`discovery.searchTerms`). Opening that record reveals the clue.
 - **Deductions:** a conclusion with blanks (`deduction.sentence`, `blanks`). The player
   fills each blank from a drop-down and sends it; the lead answers with how many parts
-  hold up, or `success`. Board deductions (the chapter finales, `mode = "board"`) also
-  need the clues that prove it (`requiredClues`).
-- **Release week:** each Ticket happens at a set time (`story.time`, e.g. `Thu 15:30`);
-  the taskbar shows that clock and the hours left until the Autumn Release (Fri 10:00).
+  hold up, or `success`. Chapter finales (`mode = "board"`) are answered on the Case File,
+  with the clues found so far listed above the sentence.
+- **Story clock:** each Ticket starts at a set time (`story.time`, e.g. `Thu 15:30`); chat
+  messages are stamped from it (two minutes per message) with a divider for each day,
+  and the taskbar clock follows the chat. A wrong report or a wrong conclusion costs 20
+  minutes (`PENALTY` in `messenger_log.gd`). Each chapter counts down to its deadline
+  (`chapter.deadline`): code freeze, the release, the billing run, the leadership review.
+  Nothing blocks play, but a finale answered after the deadline closes the chapter with
+  its `lateEpilogue`.
+- **Chat delivery** is saved as the last delivered entry's id, so messages added to the
+  story later never replay the conversation.
+- **Text input:** the window's IME is switched on whenever a text field takes focus
+  (`scripts/ui/main.gd`), for Korean input in search and notes.
 - **Chapters:** Chapter 1 (T01–T04) finds why RC3 broke; Chapter 2 (T05–T07) finds who
-  opened the archive, through device-specific defects and a chain of records.
+  opened the archive, through device-specific defects and a chain of records; Chapter 3
+  (T08–T09, the weekend after release) finds who approved it, through a real order and a
+  Gold-only coupon holdout; Chapter 4 (T10–T12, the Monday after) checks the rollback with
+  the plan's remaining Ticket types: a cross-screen comparison (T10), a Ticket with two
+  defects that both have to be reported (T11), and a regression pass over last week's
+  fixes (T12). The story ends there.
 - **No tutorial overlay:** the team's messages are the guide. Maya's T01 briefing
   explains noting and reporting; each Ticket keeps an optional "Need a hint?" in QA Notes.
 - **Notifications** rise from behind the taskbar in the bottom-right corner.
