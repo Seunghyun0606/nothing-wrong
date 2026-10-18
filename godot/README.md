@@ -73,10 +73,11 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
   defects that both have to be reported (T11), and a regression pass over last week's
   fixes (T12). Chapters 1–4 are a prologue: the master synopsis
   (`docs/NOTHING_WRONG_ALL_IN_ONE.md`) continues from Chapter 5 (ONE HORIZON, ACT 2,
-  T13–T16 = NW-006–009) and Chapter 6 (ACT 3, T17–T21 = NW-010–014) and Chapter 7 (ACT 4, T22–T26 = NW-015–019,
-  where the Case File opens), Chapter 8 (ACT 5, T27–T33 = NW-020–026), Chapter 9 (ACT 6,
-  T34–T38), and the Final (T39, NW-FINAL): a release check, then a choice on the Case File
-  that decides the ending (`deduction.mode = "choice"`, `chapter.endings`). See
+  T13–T15 = NW-003–005, T16–T19 = NW-006–009) and Chapter 6 (ACT 3, T20–T24 = NW-010–014) and Chapter 7 (ACT 4, T25–T29 = NW-015–019,
+  where the Case File opens), Chapter 8 (ACT 5, T30–T36 = NW-020–026), Chapter 9 (ACT 6,
+  T37–T41), and the Final (T42, NW-FINAL): a release check with a three-inspection coverage
+  budget (`view.inspect`), then a choice on the Case File that decides the ending
+  (`deduction.mode = "choice"`, `chapter.endings`, `optionRequires`). See
   `docs/story/CANON-MAP.md` and DEC-013.
 - **ONE HORIZON QA portal:** `qa.onehorizon.local` shows read-only UAT snapshots of Horizon
   systems as record tables or Source/Target compares (`data/horizon.json`, one generic

@@ -63,7 +63,7 @@ func _render() -> void:
 	var signature := "|".join([DesktopSession.notes_view, ticket_id, ",".join(statuses), Settings.language,
 		str(WorkspaceSession.evidence_for(ticket_id).size()), str(WorkspaceSession.references_for(ticket_id)),
 		str(state["story"].get("leads", [])), str(state["story"].get("foundDocuments", [])),
-		str(state["story"]["deductions"]), str(log["delivered"] >= log["entries"].size())])
+		str(state["story"]["deductions"]), str(log["delivered"] >= log["entries"].size()), str(state["story"].get("inspected", {}))])
 	if signature == _signature:
 		return
 	_signature = signature

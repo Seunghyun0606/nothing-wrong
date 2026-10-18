@@ -112,6 +112,10 @@ func submit_report(input: Dictionary) -> Dictionary:
 	return review
 
 
+func inspect(view_id: String, key: String, budget: int) -> void:
+	commit(GameState.inspect(state, view_id, key, budget))
+
+
 ## A search that missed the record the team is waiting for; enough of them bring help.
 func note_search_miss(document_id: String) -> void:
 	commit(GameState.note_search_miss(state, document_id))

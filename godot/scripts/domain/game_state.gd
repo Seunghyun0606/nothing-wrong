@@ -149,6 +149,23 @@ static func answer_deduction(state: Dictionary, deduction: Dictionary, filled: D
 	return next
 
 
+## Spends one inspection of a view's budget on a row (the Final's coverage budget).
+## Rows already inspected, and inspections past the budget, change nothing.
+static func inspect(state: Dictionary, view_id: String, key: String, budget: int) -> Dictionary:
+	var done := inspected(state, view_id)
+	if done.has(key) or done.size() >= budget:
+		return state
+	var next := state.duplicate(true)
+	var all: Dictionary = next["story"].get("inspected", {})
+	all[view_id] = done + [key]
+	next["story"]["inspected"] = all
+	return next
+
+
+static func inspected(state: Dictionary, view_id: String) -> Array:
+	return state["story"].get("inspected", {}).get(view_id, [])
+
+
 ## Counts a search that did not turn up the record the team is waiting for.
 static func note_search_miss(state: Dictionary, document_id: String) -> Dictionary:
 	var next := state.duplicate(true)

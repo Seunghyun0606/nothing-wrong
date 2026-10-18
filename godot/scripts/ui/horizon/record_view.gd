@@ -7,6 +7,7 @@ const Kit := preload("res://scripts/ui/kit.gd")
 const P := preload("res://scripts/ui/palette.gd")
 const Addresses := preload("res://scripts/domain/addresses.gd")
 const HorizonData := preload("res://scripts/domain/horizon_data.gd")
+const GameState := preload("res://scripts/domain/game_state.gd")
 
 const MISSING := "(not in target)"
 const SOURCE_BG := Color("#f4f6f9")
@@ -95,9 +96,11 @@ func _grid(view: Dictionary) -> Control:
 	var columns: Array = view["columns"]
 	# A compare shows each record on two lines, Source above Target, so wide records still
 	# fit the Browser.
+	# A view with an inspection budget hides some columns until the row is inspected.
+	var inspect: Dictionary = view.get("inspect", {})
 	var grid := GridContainer.new()
 	grid.name = "Records"
-	grid.columns = columns.size() + (2 if compare else 1)
+	grid.columns = columns.size() + (2 if compare else 1) + (1 if not inspect.is_empty() else 0)
 	grid.add_theme_constant_override("h_separation", 2)
 	grid.add_theme_constant_override("v_separation", 2)
 	grid.add_child(_cell(view.get("keyLabel", "Record"), P.SUBTLE, true))
@@ -105,6 +108,8 @@ func _grid(view: Dictionary) -> Control:
 		grid.add_child(_cell("Side", P.SUBTLE, true))
 	for column in columns:
 		grid.add_child(_cell(column["label"], P.SUBTLE, true))
+	if not inspect.is_empty():
+		grid.add_child(_cell(Kit.t("Inspect"), P.SUBTLE, true))
 	for row in HorizonData.filtered_rows(view, _filters.get(view["id"], "")):
 		var key: String = row["key"]
 		if compare:
@@ -116,7 +121,14 @@ func _grid(view: Dictionary) -> Control:
 			_values(grid, view, key, "target", row.get("target", null), columns, TARGET_BG)
 		else:
 			grid.add_child(_cell(key, P.SURFACE, true))
-			_values(grid, view, key, "", HorizonData.values_on(row, DesktopSession.viewport), columns, P.SURFACE)
+			var values := HorizonData.values_on(row, DesktopSession.viewport)
+			if not inspect.is_empty() and not GameState.inspected(GameSession.state, view["id"]).has(key):
+				values = values.duplicate()
+				for hidden in inspect.get("hides", []):
+					values[hidden] = Kit.t("Not inspected")
+			_values(grid, view, key, "", values, columns, P.SURFACE)
+			if not inspect.is_empty():
+				grid.add_child(_inspect_cell(view, key, inspect))
 	return grid
 
 
@@ -132,6 +144,23 @@ func _values(grid: GridContainer, view: Dictionary, key: String, side: String, v
 		var name := "%s · %s · %s" % [key, side.capitalize(), column["label"]] if side != "" else "%s · %s" % [key, column["label"]]
 		Kit.evidence(value_label, HorizonData.cell_target(view, key, side, column["id"]), name, text)
 		grid.add_child(cell)
+
+
+func _inspect_cell(view: Dictionary, key: String, inspect: Dictionary) -> Control:
+	var done := GameState.inspected(GameSession.state, view["id"])
+	var budget := int(inspect.get("budget", 0))
+	if done.has(key):
+		return _cell(Kit.t("Inspected"), P.SUCCESS_SOFT, false)
+	if done.size() >= budget:
+		return _cell(Kit.t("No budget left"), P.SURFACE, false)
+	var cell := Kit.panel(P.SURFACE, Color.TRANSPARENT, 0, 4)
+	var button := Kit.button(Kit.tf("Inspect (%d left)", budget - done.size()), func():
+		GameSession.inspect(view["id"], key, budget)
+		rerender.call())
+	button.name = "Inspect%s" % key
+	button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	cell.add_child(button)
+	return cell
 
 
 static func _cell(text: String, background: Color, strong: bool) -> PanelContainer:

@@ -63,7 +63,12 @@ func _sentence() -> Control:
 		pick.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 		pick.add_item("…  %s  …" % Kit.t("Pick"))
 		for option in options:
-			pick.add_item(Kit.t(option))
+			if _allowed(option):
+				pick.add_item(Kit.t(option))
+			else:
+				# Some answers need groundwork first (the Final's inspections).
+				pick.add_item("%s %s" % [Kit.t(option), Kit.t("(inspect first)")])
+				pick.set_item_disabled(pick.item_count - 1, true)
 		pick.item_selected.connect(func(index):
 			if index == 0:
 				_filled.erase(key)
@@ -83,11 +88,19 @@ static func _add_words(flow: Control, text: String) -> void:
 		flow.add_child(label)
 
 
+func _allowed(option: String) -> bool:
+	var needs: Dictionary = deduction.get("optionRequires", {}).get(option, {})
+	if needs.is_empty():
+		return true
+	var done: Array = GameSession.state["story"].get("inspected", {}).get(needs["view"], [])
+	return needs["keys"].all(func(key): return done.has(key))
+
+
 ## Chooses an option for a blank, as picking it from the drop-down does.
 func fill(key: String, option: String) -> void:
 	var pick := find_child("Blank_%s" % key, true, false) as OptionButton
 	for index in pick.item_count:
-		if pick.get_item_text(index) == Kit.t(option):
+		if pick.get_item_text(index) == Kit.t(option) and not pick.is_item_disabled(index):
 			pick.select(index)
 			pick.item_selected.emit(index)
 			return

@@ -2776,27 +2776,26 @@
       "ticket": {
         "id": "T13",
         "projectId": "one-horizon",
-        "canonId": "NW-006",
-        "title": "Shoply order history migration",
+        "canonId": "NW-003",
+        "title": "Account tier sync",
         "sender": {
           "id": "mina-seo",
           "name": "Mina Seo",
           "role": "QA Lead"
         },
-        "priority": "HIGH",
-        "request": "Compare 15 historical Shoply orders in Legacy with their migrated records in Next.",
+        "priority": "MEDIUM",
+        "request": "Check that each employee's tier syncs from PeopleCore through Horizon ID to their Shoply account.",
         "scope": [
-          "Order history",
-          "Data migration"
+          "Account tiers"
         ],
         "requirements": [
           {
             "id": "REQ-T13-01",
-            "description": "Every legacy order migrates with its original status."
+            "description": "Each employee's Shoply tier matches their PeopleCore tier."
           },
           {
             "id": "REQ-T13-02",
-            "description": "Order totals are the same in Legacy and Next."
+            "description": "Every synced account keeps its employee ID."
           }
         ],
         "attachments": [],
@@ -2804,12 +2803,12 @@
           "account": "BASIC",
           "viewport": "DESKTOP",
           "locale": "en-US",
-          "currentPath": "/horizon/shoply-orders"
+          "currentPath": "/horizon/tier-sync"
         },
         "hints": [
           {
             "id": "HINT-T13-01",
-            "text": "Use the date filter to compare one day at a time."
+            "text": "Source is PeopleCore; Target is the Shoply account."
           }
         ],
         "status": "NEW"
@@ -2827,10 +2826,410 @@
         {
           "id": "BUG-T13-001",
           "type": "DATA",
+          "title": "Tier upgraded in sync",
+          "target": "tier-sync.E-21017.target.tier",
+          "severity": "LOW",
+          "requirementId": "REQ-T13-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/tier-sync"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "STANDARD",
+          "actual": "PREMIUM",
+          "validEvidenceTargets": [
+            "tier-sync.E-21017.target.tier"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH5",
+        "time": "W3 Mon 09:30",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Week one on ONE HORIZON. Horizon is merging every company it owns into one identity and one record. We check that history survives the move."
+          },
+          {
+            "from": "Grace Yoon",
+            "role": "Horizon Program Manager",
+            "text": "You'll work on read-only UAT snapshots in the QA portal. Shoply's order history is first."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Easy ones first. Tier sync from PeopleCore to Shoply.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/tier-sync",
+                "url": "https://qa.onehorizon.local/tier-sync"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "One account upgraded itself in transit. Sync defect, logged. And yes, COMMUNITY is a real tier here. Horizon likes the word."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-COMMUNITY-TIER",
+          "title": "Community Tier",
+          "text": "Besides STANDARD and PREMIUM, Horizon employees can hold a COMMUNITY tier, with its own perks. Nobody explained what earns it."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare each employee's tier in Source and Target."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: E-21017 is STANDARD in PeopleCore but PREMIUM in Shoply. Note the Target tier and report it with REQ-T13-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T14",
+      "ticket": {
+        "id": "T14",
+        "projectId": "one-horizon",
+        "canonId": "NW-004",
+        "title": "Event photo thumbnails",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "MEDIUM",
+        "request": "Check that migrated event photo thumbnails keep everyone in the original.",
+        "scope": [
+          "Event photos",
+          "Data migration"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T14-01",
+            "description": "Thumbnails keep every face in the original photo."
+          },
+          {
+            "id": "REQ-T14-02",
+            "description": "Photo titles migrate unchanged."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/photo-thumbnails"
+        },
+        "hints": [
+          {
+            "id": "HINT-T14-01",
+            "text": "Read the original and the thumbnail descriptions side by side."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T14-001",
+          "type": "DATA",
+          "title": "Thumbnail crops a face",
+          "target": "photo-thumbnails.IMG001.target.visible",
+          "severity": "LOW",
+          "requirementId": "REQ-T14-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/photo-thumbnails"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Four people",
+          "actual": "Three, one cut off",
+          "validEvidenceTargets": [
+            "photo-thumbnails.IMG001.target.visible"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH5",
+        "time": "W3 Mon 13:30",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The corporate CMS makes new thumbnails for every event photo. Check nobody gets cut out.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/photo-thumbnails",
+                "url": "https://qa.onehorizon.local/photo-thumbnails"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The award photo loses the man on the right. Crop defect, logged."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-IMG001",
+          "title": "IMG001 · Leadership Awards 2021",
+          "text": "A 2021 Leadership Awards photo shows four people on stage: a woman in a grey suit, a tall man wearing a sun-in-a-ring pin, an executive, and a young man holding the award. Nobody is tagged."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Count the people in the original, then in the thumbnail."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: IMG001's thumbnail cuts the young man on the right. Note the Target description and report it with REQ-T14-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T15",
+      "ticket": {
+        "id": "T15",
+        "projectId": "one-horizon",
+        "canonId": "NW-005",
+        "title": "Payroll summary check",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "MEDIUM",
+        "request": "Check that the payroll summary matches the payslip details.",
+        "scope": [
+          "Payroll summary"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T15-01",
+            "description": "The summary lists every deduction the details list."
+          },
+          {
+            "id": "REQ-T15-02",
+            "description": "Net pay equals gross pay minus all deductions."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/payroll-summary"
+        },
+        "hints": [
+          {
+            "id": "HINT-T15-01",
+            "text": "Do the arithmetic before you judge the total."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T15-001",
+          "type": "DATA",
+          "title": "Summary hides a deduction",
+          "target": "payroll-summary.DED-COMMUNITY.target.amount",
+          "severity": "LOW",
+          "requirementId": "REQ-T15-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/payroll-summary"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Community Contribution −260",
+          "actual": "Missing",
+          "validEvidenceTargets": [
+            "payroll-summary.DED-COMMUNITY.target.amount",
+            "payroll-summary.DED-COMMUNITY.target.line"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH5",
+        "time": "W3 Mon 16:10",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Last easy one today: the PayFlow payslip summary against its details.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/payroll-summary",
+                "url": "https://qa.onehorizon.local/payroll-summary"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The total is right: 5,200 minus 410, 190, and 260 is 4,340. The summary just doesn't say what the 260 is. 'Community Contribution.'"
+          }
+        ],
+        "clue": {
+          "id": "CLUE-COMMUNITY-CONTRIBUTION",
+          "title": "Community Contribution · 260",
+          "text": "Horizon payslips deduct a monthly 'Community Contribution' alongside tax and pension. The summary screen leaves it out; the total still adds up."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare the deduction lines in the details and the summary."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: the summary is missing the Community Contribution line. Note its Target amount and report it with REQ-T15-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T16",
+      "ticket": {
+        "id": "T16",
+        "projectId": "one-horizon",
+        "canonId": "NW-006",
+        "title": "Shoply order history migration",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Compare 15 historical Shoply orders in Legacy with their migrated records in Next.",
+        "scope": [
+          "Order history",
+          "Data migration"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T16-01",
+            "description": "Every legacy order migrates with its original status."
+          },
+          {
+            "id": "REQ-T16-02",
+            "description": "Order totals are the same in Legacy and Next."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/shoply-orders"
+        },
+        "hints": [
+          {
+            "id": "HINT-T16-01",
+            "text": "Use the date filter to compare one day at a time."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T16-001",
+          "type": "DATA",
           "title": "Completed orders from one day lost their status",
           "target": "shoply-orders.status",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T13-01",
+          "requirementId": "REQ-T16-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -2863,17 +3262,12 @@
       },
       "story": {
         "chapterId": "CH5",
-        "time": "W3 Mon 09:30",
+        "time": "W3 Tue 09:30",
         "briefing": [
-          {
-            "from": "Mina Seo",
-            "role": "QA Lead",
-            "text": "Week one on ONE HORIZON. Horizon is merging every company it owns into one identity and one record. We check that history survives the move."
-          },
           {
             "from": "Grace Yoon",
             "role": "Horizon Program Manager",
-            "text": "You'll work on read-only UAT snapshots in the QA portal. Shoply's order history is first."
+            "text": "Now the legacy migration itself. Shoply's order history is first."
           },
           {
             "from": "Mina Seo",
@@ -2915,15 +3309,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: on 2021-10-17, SO-1017-01 is COMPLETED in Legacy but CANCELLED in Next. Note that Target status and report it with REQ-T13-01."
+            "text": "Here's the answer: on 2021-10-17, SO-1017-01 is COMPLETED in Legacy but CANCELLED in Next. Note that Target status and report it with REQ-T16-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T14",
+      "id": "SCENARIO-T17",
       "ticket": {
-        "id": "T14",
+        "id": "T17",
         "projectId": "one-horizon",
         "canonId": "NW-007",
         "title": "Triply trip segment mapping",
@@ -2940,11 +3334,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T14-01",
+            "id": "REQ-T17-01",
             "description": "Each migrated trip keeps the return segment it had in Legacy."
           },
           {
-            "id": "REQ-T14-02",
+            "id": "REQ-T17-02",
             "description": "Destination codes migrate unchanged."
           }
         ],
@@ -2957,7 +3351,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T14-01",
+            "id": "HINT-T17-01",
             "text": "Only flag a missing return if Legacy actually had one."
           }
         ],
@@ -2974,12 +3368,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T14-001",
+          "id": "BUG-T17-001",
           "type": "DATA",
           "title": "Return segments dropped in migration",
           "target": "triply-trips.return",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T14-01",
+          "requirementId": "REQ-T17-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -3010,7 +3404,7 @@
       },
       "story": {
         "chapterId": "CH5",
-        "time": "W3 Tue 10:10",
+        "time": "W3 Wed 10:10",
         "briefing": [
           {
             "from": "Mina Seo",
@@ -3052,15 +3446,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: TRV-1017-01 had a return in Legacy, but its Target return is blank. Note it and report it with REQ-T14-01."
+            "text": "Here's the answer: TRV-1017-01 had a return in Legacy, but its Target return is blank. Note it and report it with REQ-T17-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T15",
+      "id": "SCENARIO-T18",
       "ticket": {
-        "id": "T15",
+        "id": "T18",
         "projectId": "one-horizon",
         "canonId": "NW-008",
         "title": "PeopleCore leave history migration",
@@ -3078,11 +3472,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T15-01",
+            "id": "REQ-T18-01",
             "description": "Leave history keeps every valid past record."
           },
           {
-            "id": "REQ-T15-02",
+            "id": "REQ-T18-02",
             "description": "Employee IDs are unchanged by migration."
           }
         ],
@@ -3095,7 +3489,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T15-01",
+            "id": "HINT-T18-01",
             "text": "A record missing from Target is still a record."
           }
         ],
@@ -3112,12 +3506,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T15-001",
+          "id": "BUG-T18-001",
           "type": "DATA",
           "title": "Training leave records missing after migration",
           "target": "peoplecore-leave.record",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T15-01",
+          "requirementId": "REQ-T18-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -3153,7 +3547,7 @@
       },
       "story": {
         "chapterId": "CH5",
-        "time": "W3 Wed 09:40",
+        "time": "W3 Thu 09:40",
         "briefing": [
           {
             "from": "Mina Seo",
@@ -3190,15 +3584,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: LV-1017-01 is in Legacy but missing from Next. Note its Target cell and report it with REQ-T15-01."
+            "text": "Here's the answer: LV-1017-01 is in Legacy but missing from Next. Note its Target cell and report it with REQ-T18-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T16",
+      "id": "SCENARIO-T19",
       "ticket": {
-        "id": "T16",
+        "id": "T19",
         "projectId": "one-horizon",
         "canonId": "NW-009",
         "title": "PayFlow payments after exit",
@@ -3215,11 +3609,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T16-01",
+            "id": "REQ-T19-01",
             "description": "After an exit date, only settlement payments are made (FINAL_SETTLEMENT, ACCRUED_LEAVE_PAYOUT)."
           },
           {
-            "id": "REQ-T16-02",
+            "id": "REQ-T19-02",
             "description": "Every payment references an existing employee record."
           }
         ],
@@ -3232,7 +3626,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T16-01",
+            "id": "HINT-T19-01",
             "text": "A payment after leaving is not wrong by itself. Look at its type."
           }
         ],
@@ -3253,12 +3647,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T16-001",
+          "id": "BUG-T19-001",
           "type": "DATA",
           "title": "Regular salary paid after exit",
           "target": "payflow-after-exit.type",
           "severity": "HIGH",
-          "requirementId": "REQ-T16-01",
+          "requirementId": "REQ-T19-01",
           "outcome": "DATA_INTEGRITY",
           "reproductionConditions": [
             {
@@ -3289,7 +3683,7 @@
       },
       "story": {
         "chapterId": "CH5",
-        "time": "W3 Thu 14:00",
+        "time": "W3 Fri 11:00",
         "briefing": [
           {
             "from": "Mina Seo",
@@ -3336,11 +3730,11 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: PF-2111-25 is a REGULAR_SALARY after E-18419's exit. Note its type, report it with REQ-T16-01, and call it a data integrity problem."
+            "text": "Here's the answer: PF-2111-25 is a REGULAR_SALARY after E-18419's exit. Note its type, report it with REQ-T19-01, and call it a data integrity problem."
           }
         ],
         "deduction": {
-          "id": "DED-T16",
+          "id": "DED-T19",
           "askedBy": {
             "from": "Mina Seo",
             "role": "QA Lead"
@@ -3378,9 +3772,9 @@
       }
     },
     {
-      "id": "SCENARIO-T17",
+      "id": "SCENARIO-T20",
       "ticket": {
-        "id": "T17",
+        "id": "T20",
         "projectId": "one-horizon",
         "canonId": "NW-010",
         "title": "Global identity matching review",
@@ -3396,11 +3790,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T17-01",
+            "id": "REQ-T20-01",
             "description": "Records merge only when name, birth hash, and email all match."
           },
           {
-            "id": "REQ-T17-02",
+            "id": "REQ-T20-02",
             "description": "Records that do not match stay separate."
           }
         ],
@@ -3413,7 +3807,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T17-01",
+            "id": "HINT-T20-01",
             "text": "If every proposal holds, report NO ISSUE FOUND."
           }
         ],
@@ -3494,9 +3888,9 @@
       }
     },
     {
-      "id": "SCENARIO-T18",
+      "id": "SCENARIO-T21",
       "ticket": {
-        "id": "T18",
+        "id": "T21",
         "projectId": "one-horizon",
         "canonId": "NW-011",
         "title": "Migration root cause review",
@@ -3512,11 +3906,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T18-01",
+            "id": "REQ-T21-01",
             "description": "The ONE HORIZON orchestrator copies each system's records exactly as its source holds them."
           },
           {
-            "id": "REQ-T18-02",
+            "id": "REQ-T21-02",
             "description": "Each legacy system was migrated once, in its own run."
           }
         ],
@@ -3529,7 +3923,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T18-01",
+            "id": "HINT-T21-01",
             "text": "Look at when each system moved, not only whether it moved."
           }
         ],
@@ -3603,7 +3997,7 @@
           }
         ],
         "deduction": {
-          "id": "DED-T18",
+          "id": "DED-T21",
           "askedBy": {
             "from": "Mina Seo",
             "role": "QA Lead"
@@ -3633,9 +4027,9 @@
       }
     },
     {
-      "id": "SCENARIO-T19",
+      "id": "SCENARIO-T22",
       "ticket": {
-        "id": "T19",
+        "id": "T22",
         "projectId": "one-horizon",
         "canonId": "NW-012",
         "title": "Audit metadata export check",
@@ -3651,11 +4045,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T19-01",
+            "id": "REQ-T22-01",
             "description": "Exported audit entries keep the original correction time."
           },
           {
-            "id": "REQ-T19-02",
+            "id": "REQ-T22-02",
             "description": "Every correction names the account that made it."
           }
         ],
@@ -3668,7 +4062,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T19-01",
+            "id": "HINT-T22-01",
             "text": "You can see that a correction happened, not what the record said."
           }
         ],
@@ -3685,12 +4079,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T19-001",
+          "id": "BUG-T22-001",
           "type": "DATA",
           "title": "Export replaces correction times with migration times",
           "target": "audit-corrections.AUD-HR.target.changedAt",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T19-01",
+          "requirementId": "REQ-T22-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -3768,15 +4162,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: AUD-HR was corrected on 2021-10-18, but the export says 2022-03-12, the migration date. Note that Target time and report it with REQ-T19-01."
+            "text": "Here's the answer: AUD-HR was corrected on 2021-10-18, but the export says 2022-03-12, the migration date. Note that Target time and report it with REQ-T22-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T20",
+      "id": "SCENARIO-T23",
       "ticket": {
-        "id": "T20",
+        "id": "T23",
         "projectId": "one-horizon",
         "canonId": "NW-013",
         "title": "Triply location name mapping",
@@ -3793,11 +4187,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T20-01",
+            "id": "REQ-T23-01",
             "description": "Every destination code shows its location name after migration."
           },
           {
-            "id": "REQ-T20-02",
+            "id": "REQ-T23-02",
             "description": "Destination codes migrate unchanged."
           }
         ],
@@ -3810,7 +4204,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T20-01",
+            "id": "HINT-T23-01",
             "text": "Compare the same code on different bookings."
           }
         ],
@@ -3827,12 +4221,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T20-001",
+          "id": "BUG-T23-001",
           "type": "DATA",
           "title": "Location name blank for some bookings",
           "target": "triply-locations.TRV-1017-01.target.name",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T20-01",
+          "requirementId": "REQ-T23-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -3899,15 +4293,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: on TRV-1017-01 the Target name is blank. Note it and report it with REQ-T20-01."
+            "text": "Here's the answer: on TRV-1017-01 the Target name is blank. Note it and report it with REQ-T23-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T21",
+      "id": "SCENARIO-T24",
       "ticket": {
-        "id": "T21",
+        "id": "T24",
         "projectId": "one-horizon",
         "canonId": "NW-014",
         "title": "CMS photo album migration",
@@ -3924,11 +4318,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T21-01",
+            "id": "REQ-T24-01",
             "description": "Photos keep the album category they had in Legacy."
           },
           {
-            "id": "REQ-T21-02",
+            "id": "REQ-T24-02",
             "description": "Photo metadata migrates unchanged."
           }
         ],
@@ -3941,7 +4335,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T21-01",
+            "id": "HINT-T24-01",
             "text": "Camera clock times are not verified."
           }
         ],
@@ -3958,12 +4352,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T21-001",
+          "id": "BUG-T24-001",
           "type": "DATA",
           "title": "Retreat photo filed under the wrong album",
           "target": "cms-albums.IMG002.target.album",
           "severity": "LOW",
-          "requirementId": "REQ-T21-01",
+          "requirementId": "REQ-T24-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -4034,11 +4428,11 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: IMG002 moved from Leadership Program to Community Event. Note the Target album and report it with REQ-T21-01."
+            "text": "Here's the answer: IMG002 moved from Leadership Program to Community Event. Note the Target album and report it with REQ-T24-01."
           }
         ],
         "deduction": {
-          "id": "DED-T21",
+          "id": "DED-T24",
           "askedBy": {
             "from": "Mina Seo",
             "role": "QA Lead"
@@ -4076,9 +4470,9 @@
       }
     },
     {
-      "id": "SCENARIO-T22",
+      "id": "SCENARIO-T25",
       "ticket": {
-        "id": "T22",
+        "id": "T25",
         "projectId": "one-horizon",
         "canonId": "NW-015",
         "title": "Benefit settlement reconciliation",
@@ -4094,11 +4488,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T22-01",
+            "id": "REQ-T25-01",
             "description": "A person's settlement total equals the sum of their transferred claim lines."
           },
           {
-            "id": "REQ-T22-02",
+            "id": "REQ-T25-02",
             "description": "Every transferred claim line has a claim code."
           }
         ],
@@ -4111,7 +4505,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T22-01",
+            "id": "HINT-T25-01",
             "text": "Add the lines up yourself."
           }
         ],
@@ -4128,12 +4522,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T22-001",
+          "id": "BUG-T25-001",
           "type": "DATA",
           "title": "Settlement total leaves out one claim code",
           "target": "benefit-settlement.TOTAL-P-004217.source.amount",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T22-01",
+          "requirementId": "REQ-T25-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -4209,15 +4603,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: the CareBridge total for P-004217 is $1,240.00, but the lines add up to $86,240.00. Note the Source amount on the total row and report it with REQ-T22-01."
+            "text": "Here's the answer: the CareBridge total for P-004217 is $1,240.00, but the lines add up to $86,240.00. Note the Source amount on the total row and report it with REQ-T25-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T23",
+      "id": "SCENARIO-T26",
       "ticket": {
-        "id": "T23",
+        "id": "T26",
         "projectId": "one-horizon",
         "canonId": "NW-016",
         "title": "Emergency purchase order mapping",
@@ -4234,11 +4628,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T23-01",
+            "id": "REQ-T26-01",
             "description": "Every purchase order shows its delivery destination."
           },
           {
-            "id": "REQ-T23-02",
+            "id": "REQ-T26-02",
             "description": "Emergency orders keep their creation time."
           }
         ],
@@ -4251,7 +4645,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T23-01",
+            "id": "HINT-T26-01",
             "text": "Read the times as well as the places."
           }
         ],
@@ -4268,12 +4662,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T23-001",
+          "id": "BUG-T26-001",
           "type": "DATA",
           "title": "Destination blank on an emergency order",
           "target": "emergency-orders.PO-1017-03.destination",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T23-01",
+          "requirementId": "REQ-T26-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -4339,15 +4733,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: PO-1017-03 has no destination. Note it and report it with REQ-T23-01."
+            "text": "Here's the answer: PO-1017-03 has no destination. Note it and report it with REQ-T26-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T24",
+      "id": "SCENARIO-T27",
       "ticket": {
-        "id": "T24",
+        "id": "T27",
         "projectId": "one-horizon",
         "canonId": "NW-017",
         "title": "Incident dashboard reconciliation",
@@ -4363,11 +4757,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T24-01",
+            "id": "REQ-T27-01",
             "description": "Every incident reference points to an original incident record."
           },
           {
-            "id": "REQ-T24-02",
+            "id": "REQ-T27-02",
             "description": "The dashboard counts MAJOR incidents at sites inside its scope."
           }
         ],
@@ -4380,7 +4774,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T24-01",
+            "id": "HINT-T27-01",
             "text": "A count can be right for its scope and still leave something out."
           }
         ],
@@ -4401,12 +4795,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T24-001",
+          "id": "BUG-T27-001",
           "type": "DATA",
           "title": "Incident reference without its original",
           "target": "incident-dashboard.INC-1017.status",
           "severity": "HIGH",
-          "requirementId": "REQ-T24-01",
+          "requirementId": "REQ-T27-01",
           "outcome": "DATA_INTEGRITY",
           "reproductionConditions": [
             {
@@ -4478,15 +4872,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: INC-1017 has no original record. Note its status, report it with REQ-T24-01, and call it a data integrity problem."
+            "text": "Here's the answer: INC-1017 has no original record. Note its status, report it with REQ-T27-01, and call it a data integrity problem."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T25",
+      "id": "SCENARIO-T28",
       "ticket": {
-        "id": "T25",
+        "id": "T28",
         "projectId": "one-horizon",
         "canonId": "NW-018",
         "title": "Benefit code mapping",
@@ -4502,11 +4896,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T25-01",
+            "id": "REQ-T28-01",
             "description": "Each benefit code keeps its legacy description."
           },
           {
-            "id": "REQ-T25-02",
+            "id": "REQ-T28-02",
             "description": "Every code in use has a description."
           }
         ],
@@ -4519,7 +4913,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T25-01",
+            "id": "HINT-T28-01",
             "text": "Compare each code with its own legacy description."
           }
         ],
@@ -4536,12 +4930,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T25-001",
+          "id": "BUG-T28-001",
           "type": "DATA",
           "title": "Two code descriptions swapped",
           "target": "benefit-codes.DB-01.target.description",
           "severity": "HIGH",
-          "requirementId": "REQ-T25-01",
+          "requirementId": "REQ-T28-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -4613,15 +5007,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: DB-01 and DB-02 swapped descriptions. Note DB-01's Target description and report it with REQ-T25-01."
+            "text": "Here's the answer: DB-01 and DB-02 swapped descriptions. Note DB-01's Target description and report it with REQ-T28-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T26",
+      "id": "SCENARIO-T29",
       "ticket": {
-        "id": "T26",
+        "id": "T29",
         "projectId": "one-horizon",
         "canonId": "NW-019",
         "title": "Cross-system data integrity report",
@@ -4637,11 +5031,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T26-01",
+            "id": "REQ-T29-01",
             "description": "A person's records across systems agree on their status and dates."
           },
           {
-            "id": "REQ-T26-02",
+            "id": "REQ-T29-02",
             "description": "Every record names its source system."
           }
         ],
@@ -4654,7 +5048,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T26-01",
+            "id": "HINT-T29-01",
             "text": "A corrected record can be an approved change. Report the conflict, not a culprit."
           }
         ],
@@ -4675,12 +5069,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T26-001",
+          "id": "BUG-T29-001",
           "type": "DATA",
           "title": "Records disagree on P-004217's status",
           "target": "person-summary.PEOPLECORE.status",
           "severity": "CRITICAL",
-          "requirementId": "REQ-T26-01",
+          "requirementId": "REQ-T29-01",
           "outcome": "DATA_INTEGRITY",
           "reproductionConditions": [
             {
@@ -4753,11 +5147,11 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: PeopleCore says he resigned on 16 October, CareBridge settled a death benefit after the 17th. Note the PeopleCore status, report it with REQ-T26-01 as a data integrity problem."
+            "text": "Here's the answer: PeopleCore says he resigned on 16 October, CareBridge settled a death benefit after the 17th. Note the PeopleCore status, report it with REQ-T29-01 as a data integrity problem."
           }
         ],
         "deduction": {
-          "id": "DED-T26",
+          "id": "DED-T29",
           "askedBy": {
             "from": "Mina Seo",
             "role": "QA Lead"
@@ -4804,9 +5198,9 @@
       }
     },
     {
-      "id": "SCENARIO-T27",
+      "id": "SCENARIO-T30",
       "ticket": {
-        "id": "T27",
+        "id": "T30",
         "projectId": "one-horizon",
         "canonId": "NW-020",
         "title": "Vendor auto-merge review",
@@ -4822,11 +5216,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T27-01",
+            "id": "REQ-T30-01",
             "description": "Vendors cluster only when at least two of agent, address block, and phone match."
           },
           {
-            "id": "REQ-T27-02",
+            "id": "REQ-T30-02",
             "description": "A cluster never merges separate legal entities."
           }
         ],
@@ -4839,7 +5233,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T27-01",
+            "id": "HINT-T30-01",
             "text": "A cluster is a match on registration details, not a finding about the companies."
           }
         ],
@@ -4915,9 +5309,9 @@
       }
     },
     {
-      "id": "SCENARIO-T28",
+      "id": "SCENARIO-T31",
       "ticket": {
-        "id": "T28",
+        "id": "T31",
         "projectId": "one-horizon",
         "canonId": "NW-021",
         "title": "Vendor discount rules check",
@@ -4933,11 +5327,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T28-01",
+            "id": "REQ-T31-01",
             "description": "Discounts follow the approved Procura ruleset."
           },
           {
-            "id": "REQ-T28-02",
+            "id": "REQ-T31-02",
             "description": "Every applied discount names the rule that set it."
           }
         ],
@@ -4950,7 +5344,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T28-01",
+            "id": "HINT-T31-01",
             "text": "Read the ruleset before judging a number."
           }
         ],
@@ -5026,9 +5420,9 @@
       }
     },
     {
-      "id": "SCENARIO-T29",
+      "id": "SCENARIO-T32",
       "ticket": {
-        "id": "T29",
+        "id": "T32",
         "projectId": "one-horizon",
         "canonId": "NW-022",
         "title": "Foundation Portal gallery layout",
@@ -5045,11 +5439,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T29-01",
+            "id": "REQ-T32-01",
             "description": "The gallery shows every photo whole on desktop, tablet, and mobile."
           },
           {
-            "id": "REQ-T29-02",
+            "id": "REQ-T32-02",
             "description": "Photo metadata matches the CMS."
           }
         ],
@@ -5062,7 +5456,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T29-01",
+            "id": "HINT-T32-01",
             "text": "Switch devices in the QA bar."
           }
         ],
@@ -5079,12 +5473,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T29-001",
+          "id": "BUG-T32-001",
           "type": "DATA",
           "title": "Gallery photos cropped on tablets",
           "target": "foundation-gallery.IMG003.layout",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T29-01",
+          "requirementId": "REQ-T32-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -5161,15 +5555,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: on Tablet, IMG003 is cropped. Note its Layout and report it with REQ-T29-01."
+            "text": "Here's the answer: on Tablet, IMG003 is cropped. Note its Layout and report it with REQ-T32-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T30",
+      "id": "SCENARIO-T33",
       "ticket": {
-        "id": "T30",
+        "id": "T33",
         "projectId": "one-horizon",
         "canonId": "NW-023",
         "title": "Promotion eligibility check",
@@ -5185,11 +5579,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T30-01",
+            "id": "REQ-T33-01",
             "description": "Candidates who meet the published criteria (grade A, four or more years) are promoted."
           },
           {
-            "id": "REQ-T30-02",
+            "id": "REQ-T33-02",
             "description": "Every promotion decision follows the approved ruleset."
           }
         ],
@@ -5202,7 +5596,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T30-01",
+            "id": "HINT-T33-01",
             "text": "If the system follows a rule nobody published, what kind of problem is that?"
           }
         ],
@@ -5224,12 +5618,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T30-001",
+          "id": "BUG-T33-001",
           "type": "DATA",
           "title": "An approved rule is missing from the published criteria",
           "target": "promotion-check.E-20187.decision",
           "severity": "HIGH",
-          "requirementId": "REQ-T30-01",
+          "requirementId": "REQ-T33-01",
           "outcome": "DOC_GAP",
           "reproductionConditions": [
             {
@@ -5301,15 +5695,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: E-20187 meets the published criteria but was not promoted because of rule CA-70. Note the decision, report it with REQ-T30-01, and call it a documentation gap."
+            "text": "Here's the answer: E-20187 meets the published criteria but was not promoted because of rule CA-70. Note the decision, report it with REQ-T33-01, and call it a documentation gap."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T31",
+      "id": "SCENARIO-T34",
       "ticket": {
-        "id": "T31",
+        "id": "T34",
         "projectId": "one-horizon",
         "canonId": "NW-024",
         "title": "Medical inventory balance check",
@@ -5325,11 +5719,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T31-01",
+            "id": "REQ-T34-01",
             "description": "The balance screen shows every movement it subtracts."
           },
           {
-            "id": "REQ-T31-02",
+            "id": "REQ-T34-02",
             "description": "The balance equals received minus used, disposed, and transferred."
           }
         ],
@@ -5342,7 +5736,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T31-01",
+            "id": "HINT-T34-01",
             "text": "Do the arithmetic the screen shows, then the ledger."
           }
         ],
@@ -5359,12 +5753,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T31-001",
+          "id": "BUG-T34-001",
           "type": "DATA",
           "title": "Balance screen leaves a transfer out of its calculation",
           "target": "medical-inventory.BALANCE.movement",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T31-01",
+          "requirementId": "REQ-T34-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -5435,15 +5829,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: 1200 − 380 − 24 is 796, not 121. The screen leaves out the 675 transfer. Note the balance calculation and report it with REQ-T31-01."
+            "text": "Here's the answer: 1200 − 380 − 24 is 796, not 121. The screen leaves out the 675 transfer. Note the balance calculation and report it with REQ-T34-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T32",
+      "id": "SCENARIO-T35",
       "ticket": {
-        "id": "T32",
+        "id": "T35",
         "projectId": "one-horizon",
         "canonId": "NW-025",
         "title": "RouteOne shipment region mapping",
@@ -5460,11 +5854,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T32-01",
+            "id": "REQ-T35-01",
             "description": "Recipient region codes migrate unchanged."
           },
           {
-            "id": "REQ-T32-02",
+            "id": "REQ-T35-02",
             "description": "Restricted medical shipments keep their category."
           }
         ],
@@ -5477,7 +5871,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T32-01",
+            "id": "HINT-T35-01",
             "text": "Compare each shipment line by line."
           }
         ],
@@ -5494,12 +5888,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T32-001",
+          "id": "BUG-T35-001",
           "type": "DATA",
           "title": "Region code changed in migration",
           "target": "routeone-shipments.SH-1020-01.target.region",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T32-01",
+          "requirementId": "REQ-T35-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -5565,15 +5959,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: SH-1020-01's region changed from R-07 to R-70. Note the Target region and report it with REQ-T32-01."
+            "text": "Here's the answer: SH-1020-01's region changed from R-07 to R-70. Note the Target region and report it with REQ-T35-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T33",
+      "id": "SCENARIO-T36",
       "ticket": {
-        "id": "T33",
+        "id": "T36",
         "projectId": "one-horizon",
         "canonId": "NW-026",
         "title": "Overseas staff record sync",
@@ -5590,11 +5984,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T33-01",
+            "id": "REQ-T36-01",
             "description": "Each employee's payroll entity is in their work country."
           },
           {
-            "id": "REQ-T33-02",
+            "id": "REQ-T36-02",
             "description": "Every account shows its last login."
           }
         ],
@@ -5607,7 +6001,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T33-01",
+            "id": "HINT-T36-01",
             "text": "Some of what you see is not a defect. Report the defect; keep the rest in your notes."
           }
         ],
@@ -5624,12 +6018,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T33-001",
+          "id": "BUG-T36-001",
           "type": "DATA",
           "title": "Payroll entity in the wrong country",
           "target": "opportunity-program.OP-0112.entity",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T33-01",
+          "requirementId": "REQ-T36-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -5700,11 +6094,11 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: OP-0112 works in PH but is paid by Horizon Living US. Note the payroll entity and report it with REQ-T33-01."
+            "text": "Here's the answer: OP-0112 works in PH but is paid by Horizon Living US. Note the payroll entity and report it with REQ-T36-01."
           }
         ],
         "deduction": {
-          "id": "DED-T33",
+          "id": "DED-T36",
           "askedBy": {
             "from": "Mina Seo",
             "role": "QA Lead"
@@ -5751,9 +6145,9 @@
       }
     },
     {
-      "id": "SCENARIO-T34",
+      "id": "SCENARIO-T37",
       "ticket": {
-        "id": "T34",
+        "id": "T37",
         "projectId": "one-horizon",
         "canonId": "NW-027",
         "title": "Archive preview permission check",
@@ -5769,11 +6163,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T34-01",
+            "id": "REQ-T37-01",
             "description": "ARCHIVE_VIEWER can preview attachments of every case in migration scope."
           },
           {
-            "id": "REQ-T34-02",
+            "id": "REQ-T37-02",
             "description": "Case bodies stay hidden from QA roles."
           }
         ],
@@ -5786,7 +6180,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T34-01",
+            "id": "HINT-T37-01",
             "text": "Every 2021 internal-control case is in migration scope."
           }
         ],
@@ -5803,12 +6197,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T34-001",
+          "id": "BUG-T37-001",
           "type": "DATA",
           "title": "Preview denied for an in-scope case",
           "target": "archive-cases.CASE-2021-1012.preview",
           "severity": "HIGH",
-          "requirementId": "REQ-T34-01",
+          "requirementId": "REQ-T37-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -5879,15 +6273,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: CASE-2021-1012's preview is DENIED although it is in scope. Note it and report it with REQ-T34-01."
+            "text": "Here's the answer: CASE-2021-1012's preview is DENIED although it is in scope. Note it and report it with REQ-T37-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T35",
+      "id": "SCENARIO-T38",
       "ticket": {
-        "id": "T35",
+        "id": "T38",
         "projectId": "one-horizon",
         "canonId": "NW-028",
         "title": "Attachment preview orientation",
@@ -5903,11 +6297,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T35-01",
+            "id": "REQ-T38-01",
             "description": "Previews honour the image's EXIF orientation."
           },
           {
-            "id": "REQ-T35-02",
+            "id": "REQ-T38-02",
             "description": "Every preview shows its capture time from the file."
           }
         ],
@@ -5920,7 +6314,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T35-01",
+            "id": "HINT-T38-01",
             "text": "Camera clocks can be wrong. The orientation flag is not a clock."
           }
         ],
@@ -5937,12 +6331,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T35-001",
+          "id": "BUG-T38-001",
           "type": "DATA",
           "title": "Preview ignores EXIF orientation",
           "target": "archive-attachments.ATT-1012-02.orientation",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T35-01",
+          "requirementId": "REQ-T38-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -6008,15 +6402,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: ATT-1012-02 is shown rotated 90° although EXIF says upright. Note the orientation and report it with REQ-T35-01."
+            "text": "Here's the answer: ATT-1012-02 is shown rotated 90° although EXIF says upright. Note the orientation and report it with REQ-T38-01."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T36",
+      "id": "SCENARIO-T39",
       "ticket": {
-        "id": "T36",
+        "id": "T39",
         "projectId": "one-horizon",
         "canonId": "NW-028B",
         "title": "Access timeline time zones",
@@ -6032,11 +6426,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T36-01",
+            "id": "REQ-T39-01",
             "description": "Every log time is shown in site local time (UTC−7)."
           },
           {
-            "id": "REQ-T36-02",
+            "id": "REQ-T39-02",
             "description": "Each event keeps the location its log recorded."
           }
         ],
@@ -6049,7 +6443,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T36-01",
+            "id": "HINT-T39-01",
             "text": "Convert one time by hand to check the display."
           }
         ],
@@ -6066,12 +6460,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T36-001",
+          "id": "BUG-T39-001",
           "type": "DATA",
           "title": "One log is shown in UTC",
           "target": "access-timeline.VEH-FS01.target.time",
           "severity": "MEDIUM",
-          "requirementId": "REQ-T36-01",
+          "requirementId": "REQ-T39-01",
           "outcome": "BUG",
           "reproductionConditions": [
             {
@@ -6142,11 +6536,11 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: the vehicle log VEH-FS01 is shown in UTC, 06:18, instead of 23:18 local. Note its Target time and report it with REQ-T36-01."
+            "text": "Here's the answer: the vehicle log VEH-FS01 is shown in UTC, 06:18, instead of 23:18 local. Note its Target time and report it with REQ-T39-01."
           }
         ],
         "deduction": {
-          "id": "DED-T36",
+          "id": "DED-T39",
           "askedBy": {
             "from": "Mina Seo",
             "role": "QA Lead"
@@ -6176,9 +6570,9 @@
       }
     },
     {
-      "id": "SCENARIO-T37",
+      "id": "SCENARIO-T40",
       "ticket": {
-        "id": "T37",
+        "id": "T40",
         "projectId": "one-horizon",
         "canonId": "NW-029",
         "title": "Organization master consolidation",
@@ -6194,11 +6588,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T37-01",
+            "id": "REQ-T40-01",
             "description": "The org tree shows each company's control chain as recorded in the Organization Master."
           },
           {
-            "id": "REQ-T37-02",
+            "id": "REQ-T40-02",
             "description": "Every company in the tree has a legal parent."
           }
         ],
@@ -6211,7 +6605,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T37-01",
+            "id": "HINT-T40-01",
             "text": "A display limit can be a choice. Is the choice written down anywhere?"
           }
         ],
@@ -6233,12 +6627,12 @@
       },
       "expectedBugs": [
         {
-          "id": "BUG-T37-001",
+          "id": "BUG-T40-001",
           "type": "DATA",
           "title": "Public tree stops at Holdings, by an unwritten setting",
           "target": "org-master.HG-RETAIL.target.chain",
           "severity": "HIGH",
-          "requirementId": "REQ-T37-01",
+          "requirementId": "REQ-T40-01",
           "outcome": "DOC_GAP",
           "reproductionConditions": [
             {
@@ -6311,15 +6705,15 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: the public tree stops every chain at Horizon Holdings by design, and that limit is undocumented. Note HG-RETAIL's Target chain, report it with REQ-T37-01 as a documentation gap."
+            "text": "Here's the answer: the public tree stops every chain at Horizon Holdings by design, and that limit is undocumented. Note HG-RETAIL's Target chain, report it with REQ-T40-01 as a documentation gap."
           }
         ]
       }
     },
     {
-      "id": "SCENARIO-T38",
+      "id": "SCENARIO-T41",
       "ticket": {
-        "id": "T38",
+        "id": "T41",
         "projectId": "one-horizon",
         "canonId": "NW-030",
         "title": "Vendor parent chain validation",
@@ -6336,11 +6730,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T38-01",
+            "id": "REQ-T41-01",
             "description": "Every vendor record names its legal parent and its controlling interest."
           },
           {
-            "id": "REQ-T38-02",
+            "id": "REQ-T41-02",
             "description": "Control types use the codebook: INDEPENDENT, INFLUENCE, PARTNER."
           }
         ],
@@ -6353,7 +6747,7 @@
         },
         "hints": [
           {
-            "id": "HINT-T38-01",
+            "id": "HINT-T41-01",
             "text": "Read every row, including the one you know best."
           }
         ],
@@ -6427,7 +6821,7 @@
           }
         ],
         "deduction": {
-          "id": "DED-T38",
+          "id": "DED-T41",
           "askedBy": {
             "from": "Mina Seo",
             "role": "QA Lead"
@@ -6466,9 +6860,9 @@
       }
     },
     {
-      "id": "SCENARIO-T39",
+      "id": "SCENARIO-T42",
       "ticket": {
-        "id": "T39",
+        "id": "T42",
         "projectId": "one-horizon",
         "canonId": "NW-FINAL",
         "title": "ONE HORIZON release validation",
@@ -6484,11 +6878,11 @@
         ],
         "requirements": [
           {
-            "id": "REQ-T39-01",
+            "id": "REQ-T42-01",
             "description": "Every area passes with zero blocking defects."
           },
           {
-            "id": "REQ-T39-02",
+            "id": "REQ-T42-02",
             "description": "Every open finding has an owner and a status."
           }
         ],
@@ -6501,8 +6895,8 @@
         },
         "hints": [
           {
-            "id": "HINT-T39-01",
-            "text": "Zero blocking defects is not zero risk."
+            "id": "HINT-T42-01",
+            "text": "You can inspect three areas. What you inspect is what you can attach."
           }
         ],
         "status": "NEW"
@@ -6553,6 +6947,11 @@
             "from": "Mina Seo",
             "role": "QA Lead",
             "text": "The criteria pass. Every one of them. Now the part no test covers."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "You have three area inspections left in the validation budget. Whatever you didn't inspect, you can't attach."
           }
         ],
         "clue": {
@@ -6608,7 +7007,16 @@
               "answer": "the full record chain, October 17 to the Org Master"
             }
           },
-          "success": "Decision recorded."
+          "success": "Decision recorded.",
+          "optionRequires": {
+            "the full record chain, October 17 to the Org Master": {
+              "view": "release-validation",
+              "keys": [
+                "Identity",
+                "Organization"
+              ]
+            }
+          }
         }
       }
     }
@@ -6871,7 +7279,7 @@
       "synopsis": "Shoply joins ONE HORIZON. Northstar checks that every company's history survives the move to one system. One date keeps breaking.",
       "quiet": true,
       "channel": "# one-horizon-migration",
-      "finaleDeductionId": "DED-T16",
+      "finaleDeductionId": "DED-T19",
       "deadline": {
         "label": "Migration sign-off",
         "at": "W3 Fri 17:00"
@@ -6888,7 +7296,7 @@
           "text": "Noted. We test the hypothesis, not the conclusion."
         }
       ],
-      "caseFileAfter": "T25"
+      "caseFileAfter": "T28"
     },
     {
       "id": "CH6",
@@ -6897,7 +7305,7 @@
       "synopsis": "The batch theory falls apart. Four systems moved in different years, yet they all break on the same weekend. The conflict was in the source all along.",
       "quiet": true,
       "channel": "# one-horizon-migration",
-      "finaleDeductionId": "DED-T21",
+      "finaleDeductionId": "DED-T24",
       "deadline": {
         "label": "Phase review",
         "at": "W4 Fri 16:00"
@@ -6914,7 +7322,7 @@
           "text": "The exceptions board. That's where things go to be forgotten. Next week we're on benefits settlement."
         }
       ],
-      "caseFileAfter": "T25"
+      "caseFileAfter": "T28"
     },
     {
       "id": "CH7",
@@ -6922,9 +7330,9 @@
       "title": "Chapter 7 · Zero Incident",
       "synopsis": "The dashboard says nothing happened in October 2021. The benefits ledger says someone died. The records of one employee cannot all be true at once.",
       "quiet": true,
-      "caseFileAfter": "T25",
+      "caseFileAfter": "T28",
       "channel": "# one-horizon-migration",
-      "finaleDeductionId": "DED-T26",
+      "finaleDeductionId": "DED-T29",
       "deadline": {
         "label": "Quality board",
         "at": "W5 Fri 12:00"
@@ -6948,9 +7356,9 @@
       "title": "Chapter 8 · The Foundation",
       "synopsis": "Nothing in this chapter is broken. Discounts, promotions, and transfers all follow approved rules, and the rules all lead to Horizon Foundation.",
       "quiet": true,
-      "caseFileAfter": "T25",
+      "caseFileAfter": "T28",
       "channel": "# one-horizon-migration",
-      "finaleDeductionId": "DED-T33",
+      "finaleDeductionId": "DED-T36",
       "deadline": {
         "label": "Policy review",
         "at": "W6 Fri 15:00"
@@ -6979,9 +7387,9 @@
       "title": "Chapter 9 · Daniel's Last Case",
       "synopsis": "Daniel Park was investigating the Foundation's vendors when he died. His case was closed the next day. The chain of control reaches further than anyone wrote down, including to Northstar.",
       "quiet": true,
-      "caseFileAfter": "T25",
+      "caseFileAfter": "T28",
       "channel": "# one-horizon-migration",
-      "finaleDeductionId": "DED-T38",
+      "finaleDeductionId": "DED-T41",
       "deadline": {
         "label": "Release sign-off",
         "at": "W8 Mon 18:00"

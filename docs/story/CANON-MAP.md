@@ -13,15 +13,18 @@ canon leaves open, using `godot/data/canon.json`.
 | 2 · Write Access | Prologue | T05–T07 | Built |
 | 3 · Holdout | Prologue | T08–T09 | Built |
 | 4 · Rollback | Prologue; its epilogue hands Northstar to ONE HORIZON | T10–T12 | Built |
-| 5 · October 17 | ACT 2 | T13–T16 = NW-006–009 | Built |
-| 6 · Source Data | ACT 3 | T17–T21 = NW-010–014 | Built |
-| 7 · Zero Incident | ACT 4 (Case Notes open) | T22–T26 = NW-015–019 | Built |
-| 8 · The Foundation | ACT 5 | T27–T33 = NW-020–026 | Built |
-| 9 · Daniel's Last Case | ACT 6 | T34–T38 = NW-027, 028, 028B, 029, 030 | Built |
-| Final | NW-FINAL (SHIP / HOLD, endings) | T39 | Built |
+| 5 · October 17 | ACT 1 rest + ACT 2 | T13–T15 = NW-003–005, T16–T19 = NW-006–009 | Built |
+| 6 · Source Data | ACT 3 | T20–T24 = NW-010–014 | Built |
+| 7 · Zero Incident | ACT 4 (Case Notes open) | T25–T29 = NW-015–019 | Built |
+| 8 · The Foundation | ACT 5 | T30–T36 = NW-020–026 | Built |
+| 9 · Daniel's Last Case | ACT 6 | T37–T41 = NW-027, 028, 028B, 029, 030 | Built |
+| Final | NW-FINAL (SHIP / HOLD, endings) | T42 | Built |
 
-NW-003–005 (Tier sync, photo crop, payroll deductions) are not built; NW-005's net pay
-($4,340) appears as the salary in NW-009's data.
+NW-003–005 (tier sync, photo crop, payroll deductions) open Chapter 5 as the routine first
+day on ONE HORIZON, before October 17 appears. They plant what later chapters pay off: the
+COMMUNITY tier and the "Community Contribution" deduction (Community Alignment, Chapter 8),
+and the untagged award photo with a sun-in-a-ring pin (IMG001; the same people return in
+Chapters 8 and 9). NW-005's net pay ($4,340) is the salary in NW-009's data.
 
 ## Reveal order (canon principle 5)
 
@@ -63,7 +66,7 @@ The player works for Northstar Quality Services (`northstar.local`), as in the c
   migration batch); Alex disproves it in Chapter 6 (NW-011), and the Chapter 6 conclusion
   stays at what the records prove ("the conflict was already in the source"), not why.
 - NW-010 and NW-011 are NO_BUG Tickets: the right report is NO ISSUE FOUND.
-- The Case File opens after NW-018 (T25, `caseFileAfter`) and then shows the clues of
+- The Case File opens after NW-018 (T28, `caseFileAfter`) and then shows the clues of
   Chapters 5–7 at once; chapters the story has not reached never appear in it.
 - Chapter 7 keeps the canon's evidence levels: the death is a fact of the records (DB-01
   Death Benefit, the official accidental-incident summary, investigated by the
@@ -90,8 +93,12 @@ The player works for Northstar Quality Services (`northstar.local`), as in the c
 
 ## Endings (D-18, as decided)
 
-The Final (T39) is a release check (NO ISSUE FOUND: every area passes), then a choice on
-the Case File with no wrong answer (`deduction.mode = "choice"`, `chapter.endings`):
+The Final (T42) is a release check (NO ISSUE FOUND: every area passes) with a coverage
+budget: three area inspections (`view.inspect`), and a finding stays hidden until its area
+is inspected. Then a choice on the Case File with no wrong answer (`deduction.mode =
+"choice"`, `chapter.endings`). The full record chain can only be attached after inspecting
+Identity and Organization (`deduction.optionRequires`), so the truth ending depends on where
+the budget went:
 
 | Ending | Choice |
 |---|---|
@@ -106,4 +113,4 @@ each chapter's closing line (DEC-012).
 ## Open decisions carried from the canon
 
 D-01 (year: 2021 used as proposed), D-19 (photo assets for NW-004/014/022/028; photos are
-metadata and alt text until then), D-20 (playtime, to be measured), NW-003–005 not built.
+metadata and alt text until then), D-20 (playtime, to be measured).

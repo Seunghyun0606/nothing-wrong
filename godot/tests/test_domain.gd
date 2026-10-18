@@ -71,10 +71,17 @@ func test_a_late_finale_changes_how_the_chapter_ends() -> void:
 	check(str(lines[1]["text"]).contains("missed code freeze"), "Mina says what it cost")
 
 
+func test_inspections_spend_a_budget() -> void:
+	var state := GameState.create_initial(_catalog().ticket_ids())
+	for key in ["Identity", "Identity", "Payroll", "Travel", "Organization"]:
+		state = GameState.inspect(state, "release-validation", key, 3)
+	check_eq(GameState.inspected(state, "release-validation"), ["Identity", "Payroll", "Travel"], "three inspections, no repeats")
+
+
 func test_the_final_choice_decides_the_ending() -> void:
 	var catalog := _catalog()
 	var final_chapter: Dictionary = catalog.get_chapter("FINAL")
-	var deduction: Dictionary = catalog.get_scenario("T39")["story"]["deduction"]
+	var deduction: Dictionary = catalog.get_scenario("T42")["story"]["deduction"]
 	var ending := func(filled: Dictionary) -> String:
 		var state := GameState.answer_deduction(GameState.create_initial(catalog.ticket_ids()), deduction, filled)
 		return str(MessengerLog.ending_for(final_chapter, state["story"]["deductions"][deduction["id"]]).get("id", "default"))

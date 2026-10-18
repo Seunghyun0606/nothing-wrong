@@ -6,7 +6,7 @@
   "views": [
     {
       "id": "shoply-orders",
-      "ticket": "T13",
+      "ticket": "T16",
       "system": "Shoply Legacy → Shoply Next",
       "title": "Historical orders · migration compare",
       "mode": "compare",
@@ -227,7 +227,7 @@
     },
     {
       "id": "triply-trips",
-      "ticket": "T14",
+      "ticket": "T17",
       "system": "Triply Legacy → Triply Next",
       "title": "Trip segments · outbound and return mapping",
       "mode": "compare",
@@ -381,7 +381,7 @@
     },
     {
       "id": "peoplecore-leave",
-      "ticket": "T15",
+      "ticket": "T18",
       "system": "PeopleCore Legacy → PeopleCore Next",
       "title": "Leave and exit history · migration compare",
       "mode": "compare",
@@ -524,7 +524,7 @@
     },
     {
       "id": "payflow-after-exit",
-      "ticket": "T16",
+      "ticket": "T19",
       "system": "PeopleCore → PayFlow (restricted QA view)",
       "title": "Payments after exit",
       "mode": "table",
@@ -631,7 +631,7 @@
     },
     {
       "id": "identity-matching",
-      "ticket": "T17",
+      "ticket": "T20",
       "system": "Horizon ID · Global Identity Matching",
       "title": "Merge proposals · Daniel Park",
       "mode": "table",
@@ -727,7 +727,7 @@
     },
     {
       "id": "migration-history",
-      "ticket": "T18",
+      "ticket": "T21",
       "system": "Integration Tool · migration history",
       "title": "Migration runs",
       "mode": "table",
@@ -823,7 +823,7 @@
     },
     {
       "id": "audit-corrections",
-      "ticket": "T19",
+      "ticket": "T22",
       "system": "QA Audit Metadata · correction log vs export",
       "title": "Corrections on P-004217 and a control record",
       "mode": "compare",
@@ -930,7 +930,7 @@
     },
     {
       "id": "triply-locations",
-      "ticket": "T20",
+      "ticket": "T23",
       "system": "Triply Legacy → Triply Next",
       "title": "Destination codes · location names",
       "mode": "compare",
@@ -1020,7 +1020,7 @@
     },
     {
       "id": "cms-albums",
-      "ticket": "T21",
+      "ticket": "T24",
       "system": "Corporate CMS Legacy → CMS Next",
       "title": "Event photos · album categories",
       "mode": "compare",
@@ -1113,7 +1113,7 @@
     },
     {
       "id": "benefit-settlement",
-      "ticket": "T22",
+      "ticket": "T25",
       "system": "CareBridge → PayFlow · Benefit Settlement section (restricted)",
       "title": "Benefit settlement · summary vs transfers",
       "mode": "compare",
@@ -1206,7 +1206,7 @@
     },
     {
       "id": "emergency-orders",
-      "ticket": "T23",
+      "ticket": "T26",
       "system": "Procura · emergency purchase orders",
       "title": "Emergency orders · 15–18 October 2021",
       "mode": "table",
@@ -1293,7 +1293,7 @@
     },
     {
       "id": "incident-dashboard",
-      "ticket": "T24",
+      "ticket": "T27",
       "system": "Compliance · monthly incident dashboard",
       "title": "Incidents · September–November 2021",
       "mode": "table",
@@ -1400,7 +1400,7 @@
     },
     {
       "id": "benefit-codes",
-      "ticket": "T25",
+      "ticket": "T28",
       "system": "Insurance codebook · legacy → new",
       "title": "Benefit codes · descriptions",
       "mode": "compare",
@@ -1479,7 +1479,7 @@
     },
     {
       "id": "person-summary",
-      "ticket": "T26",
+      "ticket": "T29",
       "system": "Horizon ID · cross-system view (QA)",
       "title": "P-004217 · Daniel Park · records by system",
       "mode": "table",
@@ -1557,7 +1557,7 @@
     },
     {
       "id": "vendor-matching",
-      "ticket": "T27",
+      "ticket": "T30",
       "system": "Procura · global vendor matching",
       "title": "Vendor clusters",
       "mode": "table",
@@ -1654,7 +1654,7 @@
     },
     {
       "id": "vendor-discounts",
-      "ticket": "T28",
+      "ticket": "T31",
       "system": "Procura · pricing rules",
       "title": "Vendor discounts",
       "mode": "table",
@@ -1740,7 +1740,7 @@
     },
     {
       "id": "foundation-gallery",
-      "ticket": "T29",
+      "ticket": "T32",
       "system": "Foundation Portal · gallery (staging)",
       "title": "Horizon Foundation · photo gallery",
       "mode": "table",
@@ -1810,7 +1810,7 @@
     },
     {
       "id": "promotion-check",
-      "ticket": "T30",
+      "ticket": "T33",
       "system": "PeopleCore · promotion cycle 2026",
       "title": "Promotion decisions",
       "mode": "table",
@@ -1879,7 +1879,7 @@
     },
     {
       "id": "medical-inventory",
-      "ticket": "T31",
+      "ticket": "T34",
       "system": "CareBridge · inventory (restricted, QA view)",
       "title": "SKU-MD204 · Horizon Ridge · 2021",
       "mode": "table",
@@ -1957,7 +1957,7 @@
     },
     {
       "id": "routeone-shipments",
-      "ticket": "T32",
+      "ticket": "T35",
       "system": "RouteOne Legacy → RouteOne Next",
       "title": "Shipments · October 2021",
       "mode": "compare",
@@ -2034,7 +2034,7 @@
     },
     {
       "id": "opportunity-program",
-      "ticket": "T33",
+      "ticket": "T36",
       "system": "PeopleCore + Triply + Horizon ID + PayFlow · joined QA view",
       "title": "Overseas staff · record sync",
       "mode": "table",
@@ -2126,7 +2126,7 @@
     },
     {
       "id": "archive-cases",
-      "ticket": "T34",
+      "ticket": "T37",
       "system": "Document Archive · migration (QA role ARCHIVE_VIEWER)",
       "title": "Internal-control cases · 2021",
       "mode": "table",
@@ -2200,7 +2200,7 @@
     },
     {
       "id": "archive-attachments",
-      "ticket": "T35",
+      "ticket": "T38",
       "system": "Document Archive · attachment previews",
       "title": "CASE-2021-1012 · attachments",
       "mode": "table",
@@ -2257,7 +2257,7 @@
     },
     {
       "id": "access-timeline",
-      "ticket": "T36",
+      "ticket": "T39",
       "system": "Horizon Ridge · joined access timeline",
       "title": "Timeline · 17–18 October 2021",
       "mode": "compare",
@@ -2337,7 +2337,7 @@
     },
     {
       "id": "org-master",
-      "ticket": "T37",
+      "ticket": "T40",
       "system": "Organization Master → public org tree",
       "title": "Control chains",
       "mode": "compare",
@@ -2395,7 +2395,7 @@
     },
     {
       "id": "vendor-parents",
-      "ticket": "T38",
+      "ticket": "T41",
       "system": "Organization Master · vendor and customer records",
       "title": "Vendor parent chains",
       "mode": "table",
@@ -2463,7 +2463,7 @@
     },
     {
       "id": "release-validation",
-      "ticket": "T39",
+      "ticket": "T42",
       "system": "ONE HORIZON · release validation",
       "title": "Release criteria",
       "mode": "table",
@@ -2483,7 +2483,7 @@
           "wide": true
         }
       ],
-      "note": "Release criteria: every area PASS with zero blocking defects. Non-blocking findings are tracked by their owners.",
+      "note": "Release criteria: every area PASS with zero blocking defects. Non-blocking findings are tracked by their owners. Your validation budget allows three area inspections.",
       "console": [
         "info: validation suite 6/6 PASS"
       ],
@@ -2534,6 +2534,226 @@
             "result": "PASS",
             "blocking": "0",
             "open": "DOC_GAP · CA-70, org tree depth (PeopleCore, Org Master)"
+          }
+        }
+      ],
+      "inspect": {
+        "budget": 3,
+        "hides": [
+          "open"
+        ]
+      }
+    },
+    {
+      "id": "tier-sync",
+      "ticket": "T13",
+      "system": "PeopleCore → Horizon ID → Shoply",
+      "title": "Account tiers · sync check",
+      "mode": "compare",
+      "keyLabel": "Account",
+      "columns": [
+        {
+          "id": "employee",
+          "label": "Employee"
+        },
+        {
+          "id": "tier",
+          "label": "Tier"
+        },
+        {
+          "id": "perk",
+          "label": "Perk"
+        }
+      ],
+      "note": "Source: PeopleCore. Target: the Shoply employee account after sync.",
+      "console": [
+        "info: tier sync compared 4 accounts"
+      ],
+      "rows": [
+        {
+          "key": "E-21003",
+          "source": {
+            "employee": "E-21003",
+            "tier": "STANDARD",
+            "perk": "Staff price"
+          },
+          "target": {
+            "employee": "E-21003",
+            "tier": "STANDARD",
+            "perk": "Staff price"
+          }
+        },
+        {
+          "key": "E-21017",
+          "source": {
+            "employee": "E-21017",
+            "tier": "STANDARD",
+            "perk": "Staff price"
+          },
+          "target": {
+            "employee": "E-21017",
+            "tier": "PREMIUM",
+            "perk": "Staff price + free delivery"
+          }
+        },
+        {
+          "key": "E-21022",
+          "source": {
+            "employee": "E-21022",
+            "tier": "COMMUNITY",
+            "perk": "Staff price + community events"
+          },
+          "target": {
+            "employee": "E-21022",
+            "tier": "COMMUNITY",
+            "perk": "Staff price + community events"
+          }
+        },
+        {
+          "key": "E-21040",
+          "source": {
+            "employee": "E-21040",
+            "tier": "PREMIUM",
+            "perk": "Staff price + free delivery"
+          },
+          "target": {
+            "employee": "E-21040",
+            "tier": "PREMIUM",
+            "perk": "Staff price + free delivery"
+          }
+        }
+      ]
+    },
+    {
+      "id": "photo-thumbnails",
+      "ticket": "T14",
+      "system": "Corporate CMS → Portal thumbnails",
+      "title": "Event photos · thumbnails",
+      "mode": "compare",
+      "keyLabel": "Asset",
+      "columns": [
+        {
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "id": "visible",
+          "label": "Visible (alt text)",
+          "wide": true
+        }
+      ],
+      "note": "Source: the original photo. Target: the generated thumbnail. Images load from the media store; descriptions are shown here.",
+      "console": [
+        "info: thumbnail job cropped 3 photos to 4:3"
+      ],
+      "rows": [
+        {
+          "key": "IMG-0390",
+          "source": {
+            "title": "Q3 Town Hall",
+            "visible": "Stage, keynote slide, full hall"
+          },
+          "target": {
+            "title": "Q3 Town Hall",
+            "visible": "Stage, keynote slide, full hall"
+          }
+        },
+        {
+          "key": "IMG001",
+          "source": {
+            "title": "Horizon Leadership Awards 2021",
+            "visible": "Four people on stage: a woman in a grey suit, a tall man with a sun-in-a-ring pin, an executive, and a young man holding the award."
+          },
+          "target": {
+            "title": "Horizon Leadership Awards 2021",
+            "visible": "Three people visible: a woman in a grey suit, a tall man with a sun-in-a-ring pin, an executive. The young man on the right is cut off at the face."
+          }
+        },
+        {
+          "key": "IMG-0401",
+          "source": {
+            "title": "Volunteer Day",
+            "visible": "Twelve staff planting trees"
+          },
+          "target": {
+            "title": "Volunteer Day",
+            "visible": "Twelve staff planting trees"
+          }
+        }
+      ]
+    },
+    {
+      "id": "payroll-summary",
+      "ticket": "T15",
+      "system": "PeopleCore / PayFlow · payslip (restricted QA view)",
+      "title": "Payslip · E-20455 · September 2021",
+      "mode": "compare",
+      "keyLabel": "Line",
+      "columns": [
+        {
+          "id": "line",
+          "label": "Line"
+        },
+        {
+          "id": "amount",
+          "label": "Amount"
+        }
+      ],
+      "note": "Source: payslip details. Target: the summary screen.",
+      "console": [
+        "info: payslip summary rendered 4 lines"
+      ],
+      "rows": [
+        {
+          "key": "GROSS",
+          "source": {
+            "line": "Gross pay",
+            "amount": "5,200.00"
+          },
+          "target": {
+            "line": "Gross pay",
+            "amount": "5,200.00"
+          }
+        },
+        {
+          "key": "DED-TAX",
+          "source": {
+            "line": "Income tax",
+            "amount": "−410.00"
+          },
+          "target": {
+            "line": "Income tax",
+            "amount": "−410.00"
+          }
+        },
+        {
+          "key": "DED-PENSION",
+          "source": {
+            "line": "Pension",
+            "amount": "−190.00"
+          },
+          "target": {
+            "line": "Pension",
+            "amount": "−190.00"
+          }
+        },
+        {
+          "key": "DED-COMMUNITY",
+          "source": {
+            "line": "Community Contribution",
+            "amount": "−260.00"
+          },
+          "target": null
+        },
+        {
+          "key": "NET",
+          "source": {
+            "line": "Net pay",
+            "amount": "4,340.00"
+          },
+          "target": {
+            "line": "Net pay",
+            "amount": "4,340.00"
           }
         }
       ]
