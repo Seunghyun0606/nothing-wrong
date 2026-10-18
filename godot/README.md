@@ -73,7 +73,8 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
   defects that both have to be reported (T11), and a regression pass over last week's
   fixes (T12). Chapters 1–4 are a prologue: the master synopsis
   (`docs/NOTHING_WRONG_ALL_IN_ONE.md`) continues from Chapter 5 (ONE HORIZON, ACT 2,
-  T13–T16 = NW-006–009). See `docs/story/CANON-MAP.md` and DEC-013.
+  T13–T16 = NW-006–009) and Chapter 6 (ACT 3, T17–T21 = NW-010–014). See
+  `docs/story/CANON-MAP.md` and DEC-013.
 - **ONE HORIZON QA portal:** `qa.onehorizon.local` shows read-only UAT snapshots of Horizon
   systems as record tables or Source/Target compares (`data/horizon.json`, one generic
   screen in `scripts/ui/horizon/record_view.gd`). Cells can be noted and reported like

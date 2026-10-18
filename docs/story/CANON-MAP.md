@@ -14,8 +14,8 @@ canon leaves open, using `godot/data/canon.json`.
 | 3 · Holdout | Prologue | T08–T09 | Built |
 | 4 · Rollback | Prologue; its epilogue hands Northstar to ONE HORIZON | T10–T12 | Built |
 | 5 · October 17 | ACT 2 | T13–T16 = NW-006–009 | Built |
-| 6 · Source Data | ACT 3 | NW-010–014 | Next |
-| 7 · Zero Incident | ACT 4 (Case Notes open) | NW-015–019 | Planned |
+| 6 · Source Data | ACT 3 | T17–T21 = NW-010–014 | Built |
+| 7 · Zero Incident | ACT 4 (Case Notes open) | NW-015–019 | Next |
 | 8 · The Foundation | ACT 5 | NW-020–026 | Planned |
 | 9 · Daniel's Last Case | ACT 6 | NW-027–030 (+028B) | Planned |
 | Final | NW-FINAL (SHIP / HOLD, endings) | — | Planned |
@@ -60,7 +60,12 @@ The player works for Northstar Quality Services (`northstar.local`), as in the c
 - Reports can claim BUG, DATA_INTEGRITY, or DOC_GAP (`ticket.outcomes`); NW-009 is
   DATA_INTEGRITY, and Horizon closes it as KNOWN ISSUE / LEGACY EXCEPTION.
 - The Chapter 5 conclusion is the canon's reasonable wrong hypothesis (one shared
-  migration batch); Alex disproves it in Chapter 6.
+  migration batch); Alex disproves it in Chapter 6 (NW-011), and the Chapter 6 conclusion
+  stays at what the records prove ("the conflict was already in the source"), not why.
+- NW-010 and NW-011 are NO_BUG Tickets: the right report is NO ISSUE FOUND.
+- NW-014's photo is shown as metadata and alt text until the photo assets exist (D-19):
+  a sun-in-a-ring emblem stands in for the Foundation symbol, which is not named before
+  Chapter 8.
 
 ## Open decisions carried from the canon
 

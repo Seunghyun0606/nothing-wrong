@@ -628,6 +628,488 @@
           "key": "PF-2202-25"
         }
       ]
+    },
+    {
+      "id": "identity-matching",
+      "ticket": "T17",
+      "system": "Horizon ID · Global Identity Matching",
+      "title": "Merge proposals · Daniel Park",
+      "mode": "table",
+      "keyLabel": "Candidate",
+      "columns": [
+        {
+          "id": "system",
+          "label": "System"
+        },
+        {
+          "id": "legacy",
+          "label": "Legacy ID"
+        },
+        {
+          "id": "name",
+          "label": "Name"
+        },
+        {
+          "id": "birth",
+          "label": "Birth hash"
+        },
+        {
+          "id": "email",
+          "label": "Email (masked)"
+        },
+        {
+          "id": "proposal",
+          "label": "Proposal"
+        }
+      ],
+      "note": "Hashes and emails are masked. A merge is proposed only when all three keys match.",
+      "console": [
+        "info: matcher v3 scored 5 candidates",
+        "info: 4 proposed MERGE, 1 proposed KEEP SEPARATE"
+      ],
+      "rows": [
+        {
+          "key": "CAND-1",
+          "values": {
+            "system": "PeopleCore",
+            "legacy": "E-18419",
+            "name": "Daniel Park",
+            "birth": "b7f3…21",
+            "email": "d.park@…horizon.com",
+            "proposal": "MERGE → P-004217"
+          }
+        },
+        {
+          "key": "CAND-2",
+          "values": {
+            "system": "Triply",
+            "legacy": "T-55291",
+            "name": "D. Park",
+            "birth": "b7f3…21",
+            "email": "d.park@…horizon.com",
+            "proposal": "MERGE → P-004217"
+          }
+        },
+        {
+          "key": "CAND-3",
+          "values": {
+            "system": "CareBridge",
+            "legacy": "P-88114",
+            "name": "Park, Daniel",
+            "birth": "b7f3…21",
+            "email": "d.park@…horizon.com",
+            "proposal": "MERGE → P-004217"
+          }
+        },
+        {
+          "key": "CAND-4",
+          "values": {
+            "system": "PayFlow",
+            "legacy": "B-44210",
+            "name": "DANIEL PARK",
+            "birth": "b7f3…21",
+            "email": "d.park@…horizon.com",
+            "proposal": "MERGE → P-004217"
+          }
+        },
+        {
+          "key": "CAND-5",
+          "values": {
+            "system": "PeopleCore",
+            "legacy": "E-20931",
+            "name": "Daniel Park",
+            "birth": "4a90…c8",
+            "email": "daniel.park2@…horizon.com",
+            "proposal": "KEEP SEPARATE → P-006611"
+          }
+        }
+      ]
+    },
+    {
+      "id": "migration-history",
+      "ticket": "T18",
+      "system": "Integration Tool · migration history",
+      "title": "Migration runs",
+      "mode": "table",
+      "keyLabel": "Run",
+      "columns": [
+        {
+          "id": "system",
+          "label": "System"
+        },
+        {
+          "id": "scope",
+          "label": "Scope"
+        },
+        {
+          "id": "run",
+          "label": "Run date"
+        },
+        {
+          "id": "environment",
+          "label": "Environment"
+        },
+        {
+          "id": "result",
+          "label": "Result"
+        }
+      ],
+      "note": "Each legacy system was moved by its own team. ONE HORIZON reads the migrated systems as its source.",
+      "console": [
+        "info: orchestrator OH-26-10 copy mode: as-is, no transforms"
+      ],
+      "rows": [
+        {
+          "key": "PC-22-03",
+          "values": {
+            "system": "PeopleCore",
+            "scope": "HR records → PeopleCore v2",
+            "run": "2022-03-12",
+            "environment": "LEGACY-DC1",
+            "result": "COMPLETED"
+          }
+        },
+        {
+          "key": "PF-23-06",
+          "values": {
+            "system": "PayFlow",
+            "scope": "Payroll → PayFlow cloud",
+            "run": "2023-06-03",
+            "environment": "CLOUD-EU",
+            "result": "COMPLETED"
+          }
+        },
+        {
+          "key": "CB-23-11",
+          "values": {
+            "system": "CareBridge",
+            "scope": "Benefits → CareBridge",
+            "run": "2023-11-18",
+            "environment": "CLOUD-EU",
+            "result": "COMPLETED"
+          }
+        },
+        {
+          "key": "TR-24-01",
+          "values": {
+            "system": "Triply",
+            "scope": "Travel → Triply Next",
+            "run": "2024-01-20",
+            "environment": "CLOUD-US",
+            "result": "COMPLETED"
+          }
+        },
+        {
+          "key": "SH-24-09",
+          "values": {
+            "system": "Shoply",
+            "scope": "Orders → Shoply Next",
+            "run": "2024-09-14",
+            "environment": "CLOUD-US",
+            "result": "COMPLETED"
+          }
+        },
+        {
+          "key": "OH-26-10",
+          "values": {
+            "system": "ONE HORIZON",
+            "scope": "All systems → Global Identity (copy as-is)",
+            "run": "2026-10-26",
+            "environment": "ONE-HORIZON",
+            "result": "COMPLETED"
+          }
+        }
+      ]
+    },
+    {
+      "id": "audit-corrections",
+      "ticket": "T19",
+      "system": "QA Audit Metadata · correction log vs export",
+      "title": "Corrections on P-004217 and a control record",
+      "mode": "compare",
+      "keyLabel": "Entry",
+      "columns": [
+        {
+          "id": "record",
+          "label": "Record"
+        },
+        {
+          "id": "change",
+          "label": "Change type"
+        },
+        {
+          "id": "changedAt",
+          "label": "Changed at"
+        },
+        {
+          "id": "account",
+          "label": "Account"
+        }
+      ],
+      "note": "Metadata only: the corrected values are not shown. Source is the audit log; Target is the ONE HORIZON export.",
+      "console": [
+        "info: audit export job mapped 5 entries"
+      ],
+      "rows": [
+        {
+          "key": "AUD-X1",
+          "source": {
+            "record": "PeopleCore E-17702",
+            "change": "ADDRESS_UPDATE",
+            "changedAt": "2021-09-02 10:14",
+            "account": "hr.ops.ac"
+          },
+          "target": {
+            "record": "PeopleCore E-17702",
+            "change": "ADDRESS_UPDATE",
+            "changedAt": "2021-09-02 10:14",
+            "account": "hr.ops.ac"
+          }
+        },
+        {
+          "key": "AUD-HR",
+          "source": {
+            "record": "PeopleCore E-18419",
+            "change": "DATA_CORRECTION · exit status",
+            "changedAt": "2021-10-18 09:12",
+            "account": "hr.ops.ac"
+          },
+          "target": {
+            "record": "PeopleCore E-18419",
+            "change": "DATA_CORRECTION · exit status",
+            "changedAt": "2022-03-12 02:00",
+            "account": "hr.ops.ac"
+          }
+        },
+        {
+          "key": "AUD-TR",
+          "source": {
+            "record": "Triply T-55291",
+            "change": "DATA_CORRECTION · return segment",
+            "changedAt": "2021-10-19 16:40",
+            "account": "trv.admin.ka"
+          },
+          "target": {
+            "record": "Triply T-55291",
+            "change": "DATA_CORRECTION · return segment",
+            "changedAt": "2024-01-20 01:30",
+            "account": "trv.admin.ka"
+          }
+        },
+        {
+          "key": "AUD-FN",
+          "source": {
+            "record": "PayFlow B-44210",
+            "change": "DATA_CORRECTION · payment class",
+            "changedAt": "2021-10-21 11:05",
+            "account": "fin.ctrl.mj"
+          },
+          "target": {
+            "record": "PayFlow B-44210",
+            "change": "DATA_CORRECTION · payment class",
+            "changedAt": "2021-10-21 11:05",
+            "account": "fin.ctrl.mj"
+          }
+        },
+        {
+          "key": "AUD-MD",
+          "source": {
+            "record": "CareBridge P-88114",
+            "change": "DATA_CORRECTION · benefit claim type",
+            "changedAt": "2021-10-24 08:30",
+            "account": "care.ops.ls"
+          },
+          "target": {
+            "record": "CareBridge P-88114",
+            "change": "DATA_CORRECTION · benefit claim type",
+            "changedAt": "2023-11-18 03:15",
+            "account": "care.ops.ls"
+          }
+        }
+      ]
+    },
+    {
+      "id": "triply-locations",
+      "ticket": "T20",
+      "system": "Triply Legacy → Triply Next",
+      "title": "Destination codes · location names",
+      "mode": "compare",
+      "keyLabel": "Booking",
+      "columns": [
+        {
+          "id": "code",
+          "label": "Code"
+        },
+        {
+          "id": "name",
+          "label": "Location name"
+        }
+      ],
+      "note": "Location names come from the Triply site register.",
+      "console": [
+        "info: site register lookup for 6 bookings"
+      ],
+      "rows": [
+        {
+          "key": "TRV-0921",
+          "source": {
+            "code": "SEA-02",
+            "name": "Seattle Office"
+          },
+          "target": {
+            "code": "SEA-02",
+            "name": "Seattle Office"
+          }
+        },
+        {
+          "key": "TRV-1012",
+          "source": {
+            "code": "NYC-01",
+            "name": "New York Office"
+          },
+          "target": {
+            "code": "NYC-01",
+            "name": "New York Office"
+          }
+        },
+        {
+          "key": "TRV-1017-01",
+          "source": {
+            "code": "HRDG-01",
+            "name": "Horizon Ridge — Leadership & Wellness Center"
+          },
+          "target": {
+            "code": "HRDG-01",
+            "name": ""
+          }
+        },
+        {
+          "key": "TRV-1017-02",
+          "source": {
+            "code": "HRDG-01",
+            "name": "Horizon Ridge — Leadership & Wellness Center"
+          },
+          "target": {
+            "code": "HRDG-01",
+            "name": ""
+          }
+        },
+        {
+          "key": "TRV-1102-01",
+          "source": {
+            "code": "HRDG-01",
+            "name": "Horizon Ridge — Leadership & Wellness Center"
+          },
+          "target": {
+            "code": "HRDG-01",
+            "name": "Horizon Ridge — Leadership & Wellness Center"
+          }
+        },
+        {
+          "key": "TRV-1024",
+          "source": {
+            "code": "LAX-03",
+            "name": "Los Angeles Office"
+          },
+          "target": {
+            "code": "LAX-03",
+            "name": "Los Angeles Office"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cms-albums",
+      "ticket": "T21",
+      "system": "Corporate CMS Legacy → CMS Next",
+      "title": "Event photos · album categories",
+      "mode": "compare",
+      "keyLabel": "Asset",
+      "columns": [
+        {
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "id": "taken",
+          "label": "Taken (camera clock)"
+        },
+        {
+          "id": "album",
+          "label": "Album"
+        },
+        {
+          "id": "visible",
+          "label": "Visible in photo (alt text)",
+          "wide": true
+        }
+      ],
+      "note": "Images load from the media store; alt text and metadata are shown here. Camera clock times are not verified.",
+      "console": [
+        "info: album mapping v2 applied to 4 assets"
+      ],
+      "rows": [
+        {
+          "key": "IMG-0367",
+          "source": {
+            "title": "Seattle Office Opening",
+            "taken": "2021-08-05",
+            "album": "Company Events",
+            "visible": "Ribbon cutting, office lobby, 30 staff"
+          },
+          "target": {
+            "title": "Seattle Office Opening",
+            "taken": "2021-08-05",
+            "album": "Company Events",
+            "visible": "Ribbon cutting, office lobby, 30 staff"
+          }
+        },
+        {
+          "key": "IMG-0388",
+          "source": {
+            "title": "Q3 Town Hall",
+            "taken": "2021-09-14",
+            "album": "Company Events",
+            "visible": "Stage, keynote slide, full hall"
+          },
+          "target": {
+            "title": "Q3 Town Hall",
+            "taken": "2021-09-14",
+            "album": "Company Events",
+            "visible": "Stage, keynote slide, full hall"
+          }
+        },
+        {
+          "key": "IMG002",
+          "source": {
+            "title": "Horizon Ridge Leadership Retreat",
+            "taken": "2021-10-17",
+            "album": "Leadership Program",
+            "visible": "Banner: Horizon Ridge Leadership Retreat. Lectern emblem: a sun rising inside a ring. Tagged: G. Yoon; 11 people untagged."
+          },
+          "target": {
+            "title": "Horizon Ridge Leadership Retreat",
+            "taken": "2021-10-17",
+            "album": "Community Event",
+            "visible": "Banner: Horizon Ridge Leadership Retreat. Lectern emblem: a sun rising inside a ring. Tagged: G. Yoon; 11 people untagged."
+          }
+        },
+        {
+          "key": "IMG-0402",
+          "source": {
+            "title": "Shoply Holiday Launch",
+            "taken": "2021-11-20",
+            "album": "Marketing",
+            "visible": "Product table, launch banner"
+          },
+          "target": {
+            "title": "Shoply Holiday Launch",
+            "taken": "2021-11-20",
+            "album": "Marketing",
+            "visible": "Product table, launch banner"
+          }
+        }
+      ]
     }
   ]
 }

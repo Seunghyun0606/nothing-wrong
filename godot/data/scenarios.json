@@ -3376,6 +3376,704 @@
           "success": "That's the sensible reading for now. One batch, one bad night of data. Let's see if Integration agrees."
         }
       }
+    },
+    {
+      "id": "SCENARIO-T17",
+      "ticket": {
+        "id": "T17",
+        "projectId": "one-horizon",
+        "canonId": "NW-010",
+        "title": "Global identity matching review",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check Horizon ID's merge proposals for one name that appears in several systems.",
+        "scope": [
+          "Identity matching"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T17-01",
+            "description": "Records merge only when name, birth hash, and email all match."
+          },
+          {
+            "id": "REQ-T17-02",
+            "description": "Records that do not match stay separate."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/identity-matching"
+        },
+        "hints": [
+          {
+            "id": "HINT-T17-01",
+            "text": "If every proposal holds, report NO ISSUE FOUND."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH6",
+        "time": "W4 Mon 09:20",
+        "briefing": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "Global identity matching. Horizon ID proposes which legacy records are the same person. Check its proposals before they merge for good."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "You know this name from last week. If every proposal holds, say so.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/identity-matching",
+                "url": "https://qa.onehorizon.local/identity-matching"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "So the matcher was right: four systems, four IDs, one person. P-004217, Daniel Park."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Before ONE HORIZON, no single team could have seen that. Each one only had its own ID."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-P-004217",
+          "title": "P-004217 · one person, four IDs",
+          "text": "E-18419 (PeopleCore), T-55291 (Triply), P-88114 (CareBridge), and B-44210 (PayFlow) are one person: P-004217, Daniel Park. Before integration, each team saw only its own ID."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare the birth hash and email on each candidate with the proposal it got."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: the four matching records merge, and the fifth, with a different birth hash, stays separate. Every proposal holds: report NO ISSUE FOUND."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T18",
+      "ticket": {
+        "id": "T18",
+        "projectId": "one-horizon",
+        "canonId": "NW-011",
+        "title": "Migration root cause review",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Review the migration history behind last week's defects and check the ONE HORIZON orchestrator.",
+        "scope": [
+          "Migration history"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T18-01",
+            "description": "The ONE HORIZON orchestrator copies each system's records exactly as its source holds them."
+          },
+          {
+            "id": "REQ-T18-02",
+            "description": "Each legacy system was migrated once, in its own run."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/migration-history"
+        },
+        "hints": [
+          {
+            "id": "HINT-T18-01",
+            "text": "Look at when each system moved, not only whether it moved."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH6",
+        "time": "W4 Mon 14:30",
+        "briefing": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "Here's what I promised. Last week's theory was one bad batch. Check the migration history yourself.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/migration-history",
+                "url": "https://qa.onehorizon.local/migration-history"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "Different systems, different years. One batch can't break them all the same way."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Then we were wrong last week, and that's fine. We change the hypothesis."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-SEPARATE-RUNS",
+          "title": "Migrated in different years",
+          "text": "PeopleCore moved in 2022, PayFlow and CareBridge in 2023, Triply and Shoply in 2024, each in its own run. ONE HORIZON copies them as they are. The 17 October gaps were already in the source."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare the run dates. Could one batch have touched all of them?"
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: each system moved in its own year, and the orchestrator copies as-is. Nothing here is broken: report NO ISSUE FOUND."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T18",
+          "askedBy": {
+            "from": "Mina Seo",
+            "role": "QA Lead"
+          },
+          "prompt": "If it was not one batch, then what?",
+          "sentence": "The systems moved in {when}, so the 17 October gaps were already in the {where} before ONE HORIZON touched them.",
+          "blanks": {
+            "when": {
+              "options": [
+                "three different years",
+                "one night",
+                "the same week"
+              ],
+              "answer": "three different years"
+            },
+            "where": {
+              "options": [
+                "source data",
+                "migration batch",
+                "new platform"
+              ],
+              "answer": "source data"
+            }
+          },
+          "success": "That is the turn. Not a migration bug: the original records already disagreed."
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-T19",
+      "ticket": {
+        "id": "T19",
+        "projectId": "one-horizon",
+        "canonId": "NW-012",
+        "title": "Audit metadata export check",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that the audit metadata export keeps when, and by whom, each correction was made.",
+        "scope": [
+          "Audit metadata"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T19-01",
+            "description": "Exported audit entries keep the original correction time."
+          },
+          {
+            "id": "REQ-T19-02",
+            "description": "Every correction names the account that made it."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/audit-corrections"
+        },
+        "hints": [
+          {
+            "id": "HINT-T19-01",
+            "text": "You can see that a correction happened, not what the record said."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T19-001",
+          "type": "DATA",
+          "title": "Export replaces correction times with migration times",
+          "target": "audit-corrections.AUD-HR.target.changedAt",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T19-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/audit-corrections"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Original correction time",
+          "actual": "Migration run time",
+          "validEvidenceTargets": [
+            "audit-corrections.AUD-HR.target.changedAt",
+            "audit-corrections.AUD-TR.target.changedAt",
+            "audit-corrections.AUD-MD.target.changedAt"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH6",
+        "time": "W4 Tue 10:00",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Integration gave us read access to audit metadata for these records: who corrected them, when, and the change type. Not the records themselves.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/audit-corrections",
+                "url": "https://qa.onehorizon.local/audit-corrections"
+              }
+            ]
+          },
+          {
+            "from": "Grace Yoon",
+            "role": "Horizon Program Manager",
+            "text": "Please keep to the metadata in your scope."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Four teams, four accounts, four ordinary corrections in one week. Nobody deleted anything. Together they cut the record apart."
+          },
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "Every one of those is a valid change type. The systems did what they were told."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-CORRECTIONS",
+          "title": "DATA_CORRECTION · 18–24 October",
+          "text": "Between 18 and 24 October 2021, four different teams each filed a routine DATA_CORRECTION on Daniel Park's records, under four different accounts. Each change was valid on its own."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare the Changed at times between the audit log and the export."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: AUD-HR was corrected on 2021-10-18, but the export says 2022-03-12, the migration date. Note that Target time and report it with REQ-T19-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T20",
+      "ticket": {
+        "id": "T20",
+        "projectId": "one-horizon",
+        "canonId": "NW-013",
+        "title": "Triply location name mapping",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that every legacy destination code shows its location name in Triply Next.",
+        "scope": [
+          "Location names",
+          "Trip segments"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T20-01",
+            "description": "Every destination code shows its location name after migration."
+          },
+          {
+            "id": "REQ-T20-02",
+            "description": "Destination codes migrate unchanged."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/triply-locations"
+        },
+        "hints": [
+          {
+            "id": "HINT-T20-01",
+            "text": "Compare the same code on different bookings."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T20-001",
+          "type": "DATA",
+          "title": "Location name blank for some bookings",
+          "target": "triply-locations.TRV-1017-01.target.name",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T20-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/triply-locations"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Location name",
+          "actual": "Blank",
+          "validEvidenceTargets": [
+            "triply-locations.TRV-1017-01.target.name",
+            "triply-locations.TRV-1017-02.target.name"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH6",
+        "time": "W4 Wed 11:10",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Back to Triply. Codes like HRDG-01 should map to a place name in the new system. Check that they do.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/triply-locations",
+                "url": "https://qa.onehorizon.local/triply-locations"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "HRDG-01 has a name now: Horizon Ridge, a leadership and wellness centre. And it is blank on exactly the 17 October bookings."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-HORIZON-RIDGE",
+          "title": "HRDG-01 = Horizon Ridge",
+          "text": "HRDG-01 is Horizon Ridge, a residential Leadership & Wellness Center. Its name is blank on the 17 October bookings and present on later ones."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Find a booking where HRDG-01 has a name, then one where it does not."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: on TRV-1017-01 the Target name is blank. Note it and report it with REQ-T20-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T21",
+      "ticket": {
+        "id": "T21",
+        "projectId": "one-horizon",
+        "canonId": "NW-014",
+        "title": "CMS photo album migration",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that event photos keep their album category after migration.",
+        "scope": [
+          "Photo albums",
+          "Data migration"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T21-01",
+            "description": "Photos keep the album category they had in Legacy."
+          },
+          {
+            "id": "REQ-T21-02",
+            "description": "Photo metadata migrates unchanged."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/cms-albums"
+        },
+        "hints": [
+          {
+            "id": "HINT-T21-01",
+            "text": "Camera clock times are not verified."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T21-001",
+          "type": "DATA",
+          "title": "Retreat photo filed under the wrong album",
+          "target": "cms-albums.IMG002.target.album",
+          "severity": "LOW",
+          "requirementId": "REQ-T21-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/cms-albums"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Leadership Program",
+          "actual": "Community Event",
+          "validEvidenceTargets": [
+            "cms-albums.IMG002.target.album"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH6",
+        "time": "W4 Thu 15:00",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Last check this phase: the corporate photo library. Album categories should survive the move.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/cms-albums",
+                "url": "https://qa.onehorizon.local/cms-albums"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "A leadership retreat at Horizon Ridge, filed as a community event. Grace is tagged in it. The emblem on the lectern means nothing to me yet."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Before Grace closes the phase, let's write down what the records prove, and only that."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-IMG002",
+          "title": "IMG002 · the retreat photo",
+          "text": "A photo of the Horizon Ridge Leadership Retreat, camera clock 17 October 2021 (unverified), was refiled from Leadership Program to Community Event. G. Yoon is tagged; a sun-in-a-ring emblem is on the lectern."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compare the Album column for each photo."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: IMG002 moved from Leadership Program to Community Event. Note the Target album and report it with REQ-T21-01."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T21",
+          "askedBy": {
+            "from": "Mina Seo",
+            "role": "QA Lead"
+          },
+          "prompt": "Ridge, the corrections, the same weekend. What do the records actually prove?",
+          "sentence": "On 17 October, {count} people went to {place}. Within a week, {who} corrected Daniel Park's records, so the conflict was already in the source.",
+          "blanks": {
+            "count": {
+              "options": [
+                "38",
+                "12",
+                "9"
+              ],
+              "answer": "38"
+            },
+            "place": {
+              "options": [
+                "Horizon Ridge",
+                "the Seattle Office",
+                "LAX-03"
+              ],
+              "answer": "Horizon Ridge"
+            },
+            "who": {
+              "options": [
+                "four separate teams",
+                "one administrator",
+                "the migration batch"
+              ],
+              "answer": "four separate teams"
+            }
+          },
+          "success": "That's what the records prove. Not why. Let's keep it there until something proves more."
+        }
+      }
     }
   ],
   "chapters": [
@@ -3651,6 +4349,31 @@
           "from": "Mina Seo",
           "role": "QA Lead",
           "text": "Noted. We test the hypothesis, not the conclusion."
+        }
+      ]
+    },
+    {
+      "id": "CH6",
+      "canonAct": "ACT 3",
+      "title": "Chapter 6 · Source Data",
+      "synopsis": "The batch theory falls apart. Four systems moved in different years, yet they all break on the same weekend. The conflict was in the source all along.",
+      "quiet": true,
+      "channel": "# one-horizon-migration",
+      "finaleDeductionId": "DED-T21",
+      "deadline": {
+        "label": "Phase review",
+        "at": "W4 Fri 16:00"
+      },
+      "epilogue": [
+        {
+          "from": "Grace Yoon",
+          "role": "Horizon Program Manager",
+          "text": "Thank you, this phase is complete. Remaining legacy items will go through the exceptions board."
+        },
+        {
+          "from": "Mina Seo",
+          "role": "QA Lead",
+          "text": "The exceptions board. That's where things go to be forgotten. Next week we're on benefits settlement."
         }
       ]
     }

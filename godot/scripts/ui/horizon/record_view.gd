@@ -93,22 +93,29 @@ func _filter_row(view: Dictionary) -> Control:
 func _grid(view: Dictionary) -> Control:
 	var compare: bool = view.get("mode", "table") == "compare"
 	var columns: Array = view["columns"]
+	# A compare shows each record on two lines, Source above Target, so wide records still
+	# fit the Browser.
 	var grid := GridContainer.new()
 	grid.name = "Records"
-	grid.columns = 1 + columns.size() * (2 if compare else 1)
+	grid.columns = columns.size() + (2 if compare else 1)
 	grid.add_theme_constant_override("h_separation", 2)
 	grid.add_theme_constant_override("v_separation", 2)
 	grid.add_child(_cell(view.get("keyLabel", "Record"), P.SUBTLE, true))
-	for side in (["Source", "Target"] if compare else [""]):
-		for column in columns:
-			grid.add_child(_cell(("%s · %s" % [side, column["label"]]) if side != "" else column["label"], P.SUBTLE, true))
+	if compare:
+		grid.add_child(_cell("Side", P.SUBTLE, true))
+	for column in columns:
+		grid.add_child(_cell(column["label"], P.SUBTLE, true))
 	for row in HorizonData.filtered_rows(view, _filters.get(view["id"], "")):
 		var key: String = row["key"]
-		grid.add_child(_cell(key, P.SURFACE, true))
 		if compare:
+			grid.add_child(_cell(key, P.SURFACE, true))
+			grid.add_child(_cell("Source", SOURCE_BG, false))
 			_values(grid, view, key, "source", row.get("source", null), columns, SOURCE_BG)
+			grid.add_child(_cell("", TARGET_BG, false))
+			grid.add_child(_cell("Target", TARGET_BG, false))
 			_values(grid, view, key, "target", row.get("target", null), columns, TARGET_BG)
 		else:
+			grid.add_child(_cell(key, P.SURFACE, true))
 			_values(grid, view, key, "", row.get("values", {}), columns, P.SURFACE)
 	return grid
 
@@ -117,9 +124,13 @@ func _values(grid: GridContainer, view: Dictionary, key: String, side: String, v
 	for column in columns:
 		var text: String = MISSING if values == null else str(values.get(column["id"], ""))
 		var cell := _cell("—" if values == null else text, background, false)
-		var side_label := side.capitalize()
-		var label := "%s · %s · %s" % [key, side_label, column["label"]] if side != "" else "%s · %s" % [key, column["label"]]
-		Kit.evidence(cell.get_child(0), HorizonData.cell_target(view, key, side, column["id"]), label, text)
+		var value_label: Label = cell.get_child(0)
+		# Long descriptions (a photo's visible details) wrap in a wide column.
+		if column.get("wide", false):
+			value_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			value_label.custom_minimum_size = Vector2(260, 0)
+		var name := "%s · %s · %s" % [key, side.capitalize(), column["label"]] if side != "" else "%s · %s" % [key, column["label"]]
+		Kit.evidence(value_label, HorizonData.cell_target(view, key, side, column["id"]), name, text)
 		grid.add_child(cell)
 
 
