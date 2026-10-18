@@ -11,6 +11,7 @@ const Observations := preload("res://scripts/domain/observations.gd")
 const DeductionForm := preload("res://scripts/ui/apps/deduction_form.gd")
 
 var _files: VBoxContainer
+var _files_scroll: ScrollContainer
 var _document: VBoxContainer
 var _scroll: ScrollContainer
 var _references: VBoxContainer
@@ -26,7 +27,9 @@ func _ready() -> void:
 	files_panel.custom_minimum_size = Vector2(150, 0)
 	_files = Kit.vbox(4)
 	_files.name = "TicketFiles"
-	files_panel.add_child(_files)
+	# The list grows with every chapter; it scrolls, and keeps the open Ticket in view.
+	_files_scroll = Kit.scroll(_files)
+	files_panel.add_child(_files_scroll)
 	add_child(files_panel)
 	_document = Kit.vbox(18)
 	_scroll = Kit.scroll(Kit.margin(_document, 18, 16, 18, 16))
@@ -86,12 +89,19 @@ func _render_files(ticket_id: String) -> void:
 		file.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		_highlight(file, DesktopSession.notes_view == "ticket" and id == ticket_id)
 		_files.add_child(file)
+		if DesktopSession.notes_view == "ticket" and id == ticket_id:
+			_reveal_file.call_deferred(file)
 	_files.add_child(Kit.kicker("Story"))
 	var case_file := Kit.button("🗂 %s" % Kit.t("Case File"), DesktopSession.show_case_file, "ChoiceButton")
 	case_file.name = "CaseFileTab"
 	case_file.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_highlight(case_file, DesktopSession.notes_view == "casefile")
 	_files.add_child(case_file)
+
+
+func _reveal_file(file: Control) -> void:
+	if is_instance_valid(file) and file.is_inside_tree():
+		_files_scroll.ensure_control_visible(file)
 
 
 static func _highlight(button: Button, on: bool) -> void:
@@ -255,12 +265,16 @@ func _case_file() -> Control:
 	var pending: Variant = log["pendingDeduction"]
 	if pending != null and pending.get("mode", "") == "board" and log["delivered"] >= log["entries"].size():
 		column.add_child(_clue_board(pending))
-	for chapter in GameSession.catalog.chapters:
-		if chapter.get("quiet", false):
+	# The newest chapter first: that is where the open questions are.
+	var chapters: Array = GameSession.catalog.chapters.duplicate()
+	chapters.reverse()
+	for chapter in chapters:
+		if not GameSession.catalog.is_case_file_open(state, chapter):
 			continue
 		var beats: Array = GameSession.catalog.scenarios.filter(func(scenario):
 			return scenario.get("story", null) != null and scenario["story"]["chapterId"] == chapter["id"])
-		if beats.is_empty():
+		# A chapter the story has not reached stays hidden: its title would give it away.
+		if beats.is_empty() or not GameSession.catalog.is_ticket_unlocked(state, beats[0]["ticket"]["id"]):
 			continue
 		var found: int = GameSession.catalog.found_clues(state, chapter["id"]).size()
 		var closed: bool = state["story"]["deductions"].get(chapter["finaleDeductionId"], {}).get("solved", false)

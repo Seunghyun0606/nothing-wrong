@@ -15,8 +15,8 @@ canon leaves open, using `godot/data/canon.json`.
 | 4 · Rollback | Prologue; its epilogue hands Northstar to ONE HORIZON | T10–T12 | Built |
 | 5 · October 17 | ACT 2 | T13–T16 = NW-006–009 | Built |
 | 6 · Source Data | ACT 3 | T17–T21 = NW-010–014 | Built |
-| 7 · Zero Incident | ACT 4 (Case Notes open) | NW-015–019 | Next |
-| 8 · The Foundation | ACT 5 | NW-020–026 | Planned |
+| 7 · Zero Incident | ACT 4 (Case Notes open) | T22–T26 = NW-015–019 | Built |
+| 8 · The Foundation | ACT 5 | NW-020–026 | Next |
 | 9 · Daniel's Last Case | ACT 6 | NW-027–030 (+028B) | Planned |
 | Final | NW-FINAL (SHIP / HOLD, endings) | — | Planned |
 
@@ -63,6 +63,14 @@ The player works for Northstar Quality Services (`northstar.local`), as in the c
   migration batch); Alex disproves it in Chapter 6 (NW-011), and the Chapter 6 conclusion
   stays at what the records prove ("the conflict was already in the source"), not why.
 - NW-010 and NW-011 are NO_BUG Tickets: the right report is NO ISSUE FOUND.
+- The Case File opens after NW-018 (T25, `caseFileAfter`) and then shows the clues of
+  Chapters 5–7 at once; chapters the story has not reached never appear in it.
+- Chapter 7 keeps the canon's evidence levels: the death is a fact of the records (DB-01
+  Death Benefit, the official accidental-incident summary, investigated by the
+  authorities); how it happened and why the exit date moved stay open questions.
+  "Major incidents: 0" is the dashboard's scope (sites under partner agreements report
+  separately), not an erased public record. Grace closes NW-019 as a Historical
+  Exception; the report stays on file.
 - NW-014's photo is shown as metadata and alt text until the photo assets exist (D-19):
   a sun-in-a-ring emblem stands in for the Foundation symbol, which is not named before
   Chapter 8.

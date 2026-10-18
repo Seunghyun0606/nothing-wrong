@@ -449,6 +449,55 @@ func test_full_story() -> void:
 	log = DesktopSession.messenger_log()
 	check(log["entries"].any(func(entry): return entry.get("text", "") == "Chapter 6 · Source Data complete."), "chapter 6 finale")
 
+	_accept(desktop, "T22")
+	_address(desktop, "qa.onehorizon.local/benefit-settlement")
+	_note(desktop, "benefit-settlement.TOTAL-P-004217.source.amount")
+	_report(desktop, "TOTAL-P-004217 · Source · Amount", "sum of their transferred claim lines")
+	check_eq(GameSession.ticket_status("T22"), "RESOLVED", "T22 resolved")
+
+	_accept(desktop, "T23")
+	_address(desktop, "qa.onehorizon.local/emergency-orders")
+	_note(desktop, "emergency-orders.PO-1017-03.destination")
+	_report(desktop, "PO-1017-03 · Destination", "delivery destination")
+	check_eq(GameSession.ticket_status("T23"), "RESOLVED", "T23 resolved")
+
+	_accept(desktop, "T24")
+	_address(desktop, "qa.onehorizon.local/incident-dashboard")
+	_note(desktop, "incident-dashboard.2021-10.status")
+	_report(desktop, "2021-10 · Status: Count: 0", "counts MAJOR incidents", "BUG")
+	check_eq(GameSession.ticket_status("T24"), "TESTING", "zero is right for the dashboard's scope")
+	_note(desktop, "incident-dashboard.INC-1017.status")
+	_report(desktop, "INC-1017 · Status: DUPLICATE", "original incident record", "DATA_INTEGRITY")
+	check_eq(GameSession.ticket_status("T24"), "RESOLVED", "T24 resolved")
+	DesktopSession.show_case_file()
+	check(not _case_file_shows(desktop, "Chapter 5 · October 17"), "the Case File is not open for the ONE HORIZON story yet")
+
+	_accept(desktop, "T25")
+	_address(desktop, "qa.onehorizon.local/benefit-codes")
+	_note(desktop, "benefit-codes.DB-01.target.description")
+	_report(desktop, "DB-01 · Target · Description", "keeps its legacy description")
+	check_eq(GameSession.ticket_status("T25"), "RESOLVED", "T25 resolved")
+	DesktopSession.show_case_file()
+	check(_case_file_shows(desktop, "Chapter 5 · October 17") and _case_file_shows(desktop, "Chapter 7 · Zero Incident"), "the Case File opens after NW-018 with the earlier clues")
+
+	_accept(desktop, "T26")
+	_address(desktop, "qa.onehorizon.local/person-summary")
+	_note(desktop, "person-summary.PEOPLECORE.status")
+	_report(desktop, "PEOPLECORE · Says", "agree on their status", "DATA_INTEGRITY")
+	check_eq(GameSession.ticket_status("T26"), "RESOLVED", "T26 resolved")
+	DesktopSession.open_app("messenger")
+	check(press(desktop, "Open Case File and connect the clues"), "the chapter 7 board")
+	_deduce(desktop, { "fate": "died", "event": "facility incident", "place": "Horizon Ridge", "exit": "16 October" })
+	log = DesktopSession.messenger_log()
+	check(log["entries"].any(func(entry): return entry.get("text", "") == "Chapter 7 · Zero Incident complete."), "chapter 7 finale")
+
 	DesktopSession.show_case_file()
 	check(find_named(desktop, "CaseFile") != null, "case file renders")
 	_finish()
+
+
+func _case_file_shows(desktop: Control, text: String) -> bool:
+	var case_file: Node = find_named(desktop, "CaseFile")
+	if case_file == null:
+		return false
+	return case_file.find_children("*", "Label", true, false).any(func(label): return label.text == text)

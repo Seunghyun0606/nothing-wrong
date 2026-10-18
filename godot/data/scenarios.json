@@ -4074,6 +4074,734 @@
           "success": "That's what the records prove. Not why. Let's keep it there until something proves more."
         }
       }
+    },
+    {
+      "id": "SCENARIO-T22",
+      "ticket": {
+        "id": "T22",
+        "projectId": "one-horizon",
+        "canonId": "NW-015",
+        "title": "Benefit settlement reconciliation",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that CareBridge's settlement summaries match what PayFlow transferred.",
+        "scope": [
+          "Benefit settlement"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T22-01",
+            "description": "A person's settlement total equals the sum of their transferred claim lines."
+          },
+          {
+            "id": "REQ-T22-02",
+            "description": "Every transferred claim line has a claim code."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/benefit-settlement"
+        },
+        "hints": [
+          {
+            "id": "HINT-T22-01",
+            "text": "Add the lines up yourself."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T22-001",
+          "type": "DATA",
+          "title": "Settlement total leaves out one claim code",
+          "target": "benefit-settlement.TOTAL-P-004217.source.amount",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T22-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/benefit-settlement"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "$86,240.00",
+          "actual": "$1,240.00",
+          "validEvidenceTargets": [
+            "benefit-settlement.TOTAL-P-004217.source.amount"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH7",
+        "time": "W5 Mon 09:15",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Benefits settlement this week. CareBridge summarises each claim; PayFlow pays it. The two should agree to the cent.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/benefit-settlement",
+                "url": "https://qa.onehorizon.local/benefit-settlement"
+              }
+            ]
+          },
+          {
+            "from": "Grace Yoon",
+            "role": "Horizon Program Manager",
+            "text": "Benefit data is restricted. You will only see the settlement section."
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The summary drops one claim code entirely: DB-01. It was paid, but the summary does not count it."
+          },
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "DB-01 isn't in the summary's codebook. Legacy code. I'll find what it maps to."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-DB-01",
+          "title": "DB-01 on P-004217",
+          "text": "Two claims were settled on Daniel Park's global ID around 17 October: an emergency medical line and a DB-01 benefits claim. The summary leaves DB-01 out."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Add up P-004217's claim lines and compare with the settlement total."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: the CareBridge total for P-004217 is $1,240.00, but the lines add up to $86,240.00. Note the Source amount on the total row and report it with REQ-T22-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T23",
+      "ticket": {
+        "id": "T23",
+        "projectId": "one-horizon",
+        "canonId": "NW-016",
+        "title": "Emergency purchase order mapping",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that migrated emergency purchase orders keep their delivery destination.",
+        "scope": [
+          "Purchase orders",
+          "Data migration"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T23-01",
+            "description": "Every purchase order shows its delivery destination."
+          },
+          {
+            "id": "REQ-T23-02",
+            "description": "Emergency orders keep their creation time."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/emergency-orders"
+        },
+        "hints": [
+          {
+            "id": "HINT-T23-01",
+            "text": "Read the times as well as the places."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T23-001",
+          "type": "DATA",
+          "title": "Destination blank on an emergency order",
+          "target": "emergency-orders.PO-1017-03.destination",
+          "severity": "MEDIUM",
+          "requirementId": "REQ-T23-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/emergency-orders"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "HRDG-01",
+          "actual": "Blank",
+          "validEvidenceTargets": [
+            "emergency-orders.PO-1017-03.destination"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH7",
+        "time": "W5 Mon 15:40",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Procura next: the emergency purchase orders from the same weekend. Check each one still says where it went.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/emergency-orders",
+                "url": "https://qa.onehorizon.local/emergency-orders"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Medical supplies, patient transport, fire safety equipment, all to Horizon Ridge, all in the small hours of 17 October. That was not a training weekend any more."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-EMERGENCY-POS",
+          "title": "Emergency orders · 17 October, 23:20",
+          "text": "From 23:20 on 17 October 2021, Horizon raised emergency orders for medical supplies, patient transport, and fire safety equipment, all for HRDG-01."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Look for the order with nothing in Destination."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: PO-1017-03 has no destination. Note it and report it with REQ-T23-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T24",
+      "ticket": {
+        "id": "T24",
+        "projectId": "one-horizon",
+        "canonId": "NW-017",
+        "title": "Incident dashboard reconciliation",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that the monthly incident dashboard and its incident references agree.",
+        "scope": [
+          "Incident reporting"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T24-01",
+            "description": "Every incident reference points to an original incident record."
+          },
+          {
+            "id": "REQ-T24-02",
+            "description": "The dashboard counts MAJOR incidents at sites inside its scope."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/incident-dashboard"
+        },
+        "hints": [
+          {
+            "id": "HINT-T24-01",
+            "text": "A count can be right for its scope and still leave something out."
+          }
+        ],
+        "status": "NEW",
+        "outcomes": [
+          "BUG",
+          "DATA_INTEGRITY"
+        ]
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T24-001",
+          "type": "DATA",
+          "title": "Incident reference without its original",
+          "target": "incident-dashboard.INC-1017.status",
+          "severity": "HIGH",
+          "requirementId": "REQ-T24-01",
+          "outcome": "DATA_INTEGRITY",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/incident-dashboard"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Original record",
+          "actual": "Original unavailable",
+          "validEvidenceTargets": [
+            "incident-dashboard.INC-1017.status",
+            "incident-dashboard.INC-1017.original"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH7",
+        "time": "W5 Tue 10:30",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Compliance dashboard. October 2021 shows zero major incidents. Check that its numbers and its references agree.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/incident-dashboard",
+                "url": "https://qa.onehorizon.local/incident-dashboard"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The dashboard isn't wrong: it only counts sites inside its scope. But INC-1017 points to an original nobody can open, filed as a duplicate."
+          },
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "And Horizon Ridge reports outside that scope. Zero, by definition."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-INC-1017",
+          "title": "INC-1017 · duplicate, original unavailable",
+          "text": "The October 2021 dashboard shows zero major incidents because Horizon Ridge reports outside its scope. Reference INC-1017 is filed as a duplicate, and its original is unavailable."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "The count follows its definition. Look at the references instead."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: INC-1017 has no original record. Note its status, report it with REQ-T24-01, and call it a data integrity problem."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T25",
+      "ticket": {
+        "id": "T25",
+        "projectId": "one-horizon",
+        "canonId": "NW-018",
+        "title": "Benefit code mapping",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Check that legacy benefit codes keep their descriptions in the new codebook.",
+        "scope": [
+          "Benefit codes"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T25-01",
+            "description": "Each benefit code keeps its legacy description."
+          },
+          {
+            "id": "REQ-T25-02",
+            "description": "Every code in use has a description."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/benefit-codes"
+        },
+        "hints": [
+          {
+            "id": "HINT-T25-01",
+            "text": "Compare each code with its own legacy description."
+          }
+        ],
+        "status": "NEW"
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T25-001",
+          "type": "DATA",
+          "title": "Two code descriptions swapped",
+          "target": "benefit-codes.DB-01.target.description",
+          "severity": "HIGH",
+          "requirementId": "REQ-T25-01",
+          "outcome": "BUG",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/benefit-codes"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "Death Benefit",
+          "actual": "Disability Benefit",
+          "validEvidenceTargets": [
+            "benefit-codes.DB-01.target.description",
+            "benefit-codes.DB-02.target.description"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH7",
+        "time": "W5 Wed 09:50",
+        "briefing": [
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "I found the codebook. Legacy benefit codes and the descriptions the new system shows for them. DB-01 is in there.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/benefit-codes",
+                "url": "https://qa.onehorizon.local/benefit-codes"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "DB-01 is a death benefit. The benefit paid on Daniel Park's ID on 18 October was a death benefit."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "His HR record says he resigned on 16 October. His travel says he never came back. His benefits say he died. I'm opening a Case File: from here we keep what we find in one place."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-DEATH-BENEFIT",
+          "title": "DB-01 = Death Benefit",
+          "text": "In the legacy codebook DB-01 is Death Benefit. The new system had swapped it with DB-02, Disability Benefit. A death benefit was settled on Daniel Park's ID on 18 October 2021."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Read the Source and Target descriptions for each code, slowly."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: DB-01 and DB-02 swapped descriptions. Note DB-01's Target description and report it with REQ-T25-01."
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCENARIO-T26",
+      "ticket": {
+        "id": "T26",
+        "projectId": "one-horizon",
+        "canonId": "NW-019",
+        "title": "Cross-system data integrity report",
+        "sender": {
+          "id": "mina-seo",
+          "name": "Mina Seo",
+          "role": "QA Lead"
+        },
+        "priority": "HIGH",
+        "request": "Bring P-004217's records together and report what they say about his status.",
+        "scope": [
+          "Cross-system records"
+        ],
+        "requirements": [
+          {
+            "id": "REQ-T26-01",
+            "description": "A person's records across systems agree on their status and dates."
+          },
+          {
+            "id": "REQ-T26-02",
+            "description": "Every record names its source system."
+          }
+        ],
+        "attachments": [],
+        "startingContext": {
+          "account": "BASIC",
+          "viewport": "DESKTOP",
+          "locale": "en-US",
+          "currentPath": "/horizon/person-summary"
+        },
+        "hints": [
+          {
+            "id": "HINT-T26-01",
+            "text": "A corrected record can be an approved change. Report the conflict, not a culprit."
+          }
+        ],
+        "status": "NEW",
+        "outcomes": [
+          "BUG",
+          "DATA_INTEGRITY"
+        ]
+      },
+      "seed": {
+        "productState": {
+          "cart": [],
+          "coupon": ""
+        }
+      },
+      "accountSwitchPolicy": {
+        "resetProductState": false
+      },
+      "expectedBugs": [
+        {
+          "id": "BUG-T26-001",
+          "type": "DATA",
+          "title": "Records disagree on P-004217's status",
+          "target": "person-summary.PEOPLECORE.status",
+          "severity": "CRITICAL",
+          "requirementId": "REQ-T26-01",
+          "outcome": "DATA_INTEGRITY",
+          "reproductionConditions": [
+            {
+              "field": "test.currentPath",
+              "operator": "EQ",
+              "value": "/horizon/person-summary"
+            }
+          ],
+          "reproductionActions": [],
+          "expected": "One consistent status",
+          "actual": "Resigned 16 Oct vs death benefit 18 Oct",
+          "validEvidenceTargets": [
+            "person-summary.PEOPLECORE.status",
+            "person-summary.CAREBRIDGE.status",
+            "person-summary.INCIDENT.status"
+          ]
+        }
+      ],
+      "mutations": [],
+      "scoring": {
+        "detection": 40,
+        "reproduction": 25,
+        "evidence": 20,
+        "severity": 15
+      },
+      "progression": {
+        "unlockedTools": []
+      },
+      "story": {
+        "chapterId": "CH7",
+        "time": "W5 Thu 14:20",
+        "briefing": [
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Integration built a cross-system view for P-004217. Put it in a quality report. Facts only: what each record says, and where they disagree.",
+            "links": [
+              {
+                "label": "qa.onehorizon.local/person-summary",
+                "url": "https://qa.onehorizon.local/person-summary"
+              }
+            ]
+          }
+        ],
+        "debrief": [
+          {
+            "from": "Grace Yoon",
+            "role": "Horizon Program Manager",
+            "text": "Thank you. This concerns a closed historical incident. I am applying Historical Exception: no action required."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "She is allowed to close it. She can't make it not have happened. Our report stays on file."
+          }
+        ],
+        "clue": {
+          "id": "CLUE-CONFLICT",
+          "title": "Resigned on the 16th, died after the 17th",
+          "text": "PeopleCore: resigned 16 October (corrected 18 October). Triply: outbound to Horizon Ridge on 17 October, no return. CareBridge: emergency record, then a death benefit. The official summary: an accidental facility incident at Horizon Ridge, one fatality, investigated by the authorities. Grace Yoon closed the report as a Historical Exception."
+        },
+        "assist": [
+          {
+            "after": 2,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Find two records that cannot both be true of the same person on the same days."
+          },
+          {
+            "after": 3,
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Here's the answer: PeopleCore says he resigned on 16 October, CareBridge settled a death benefit after the 17th. Note the PeopleCore status, report it with REQ-T26-01 as a data integrity problem."
+          }
+        ],
+        "deduction": {
+          "id": "DED-T26",
+          "askedBy": {
+            "from": "Mina Seo",
+            "role": "QA Lead"
+          },
+          "mode": "board",
+          "prompt": "Case file: what do the records prove about Daniel Park? Open the Case File, read your clues, and fill in what they prove. Only that.",
+          "sentence": "The records prove Daniel Park {fate} after the {event} at {place} on 17 October, while his HR record says he resigned on {exit}.",
+          "blanks": {
+            "fate": {
+              "options": [
+                "died",
+                "was injured",
+                "left the company"
+              ],
+              "answer": "died"
+            },
+            "event": {
+              "options": [
+                "facility incident",
+                "migration batch",
+                "retreat dinner"
+              ],
+              "answer": "facility incident"
+            },
+            "place": {
+              "options": [
+                "Horizon Ridge",
+                "the Seattle Office",
+                "LAX-03"
+              ],
+              "answer": "Horizon Ridge"
+            },
+            "exit": {
+              "options": [
+                "16 October",
+                "18 October",
+                "24 October"
+              ],
+              "answer": "16 October"
+            }
+          },
+          "success": "That's what the records prove. Not how he died, and not why his exit date moved. Those are questions, not findings."
+        }
+      }
     }
   ],
   "chapters": [
@@ -4350,7 +5078,8 @@
           "role": "QA Lead",
           "text": "Noted. We test the hypothesis, not the conclusion."
         }
-      ]
+      ],
+      "caseFileAfter": "T25"
     },
     {
       "id": "CH6",
@@ -4374,6 +5103,33 @@
           "from": "Mina Seo",
           "role": "QA Lead",
           "text": "The exceptions board. That's where things go to be forgotten. Next week we're on benefits settlement."
+        }
+      ],
+      "caseFileAfter": "T25"
+    },
+    {
+      "id": "CH7",
+      "canonAct": "ACT 4",
+      "title": "Chapter 7 · Zero Incident",
+      "synopsis": "The dashboard says nothing happened in October 2021. The benefits ledger says someone died. The records of one employee cannot all be true at once.",
+      "quiet": true,
+      "caseFileAfter": "T25",
+      "channel": "# one-horizon-migration",
+      "finaleDeductionId": "DED-T26",
+      "deadline": {
+        "label": "Quality board",
+        "at": "W5 Fri 12:00"
+      },
+      "epilogue": [
+        {
+          "from": "Alex Han",
+          "role": "Integration Developer",
+          "text": "For what it's worth: every rule in that chain was approved. I checked them one by one."
+        },
+        {
+          "from": "Mina Seo",
+          "role": "QA Lead",
+          "text": "Then next week we look at the rules."
         }
       ]
     }

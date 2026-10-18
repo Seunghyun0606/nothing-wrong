@@ -93,6 +93,15 @@ func is_clue_found(state: Dictionary, scenario: Dictionary) -> bool:
 	return discovery == null or state["story"].get("foundDocuments", []).has(discovery["documentId"])
 
 
+## A quiet chapter's clues stay out of the Case File until the Ticket named by
+## `caseFileAfter` is resolved (canon: the Case Notes open after NW-018).
+func is_case_file_open(state: Dictionary, chapter: Dictionary) -> bool:
+	if not chapter.get("quiet", false):
+		return true
+	var after: String = chapter.get("caseFileAfter", "")
+	return after != "" and state["tickets"].get(after, {}).get("status", "") == "RESOLVED"
+
+
 func all_attachments() -> Array:
 	var result: Array = []
 	for scenario in scenarios:

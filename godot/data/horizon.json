@@ -1110,6 +1110,450 @@
           }
         }
       ]
+    },
+    {
+      "id": "benefit-settlement",
+      "ticket": "T22",
+      "system": "CareBridge → PayFlow · Benefit Settlement section (restricted)",
+      "title": "Benefit settlement · summary vs transfers",
+      "mode": "compare",
+      "keyLabel": "Line",
+      "columns": [
+        {
+          "id": "person",
+          "label": "Person"
+        },
+        {
+          "id": "claim",
+          "label": "Claim code"
+        },
+        {
+          "id": "date",
+          "label": "Settled"
+        },
+        {
+          "id": "amount",
+          "label": "Amount"
+        }
+      ],
+      "note": "Source: CareBridge settlement summary. Target: PayFlow transfers. Clinical details are not shown.",
+      "console": [
+        "info: reconciliation loaded 4 lines",
+        "warn: summary codebook has no entry for 1 claim code"
+      ],
+      "rows": [
+        {
+          "key": "CL-2109-14",
+          "source": {
+            "person": "P-37120",
+            "claim": "MED-OUT",
+            "date": "2021-09-14",
+            "amount": "$180.00"
+          },
+          "target": {
+            "person": "P-37120",
+            "claim": "MED-OUT",
+            "date": "2021-09-14",
+            "amount": "$180.00"
+          }
+        },
+        {
+          "key": "CL-2110-17",
+          "source": {
+            "person": "P-004217",
+            "claim": "MED-ER",
+            "date": "2021-10-17",
+            "amount": "$1,240.00"
+          },
+          "target": {
+            "person": "P-004217",
+            "claim": "MED-ER",
+            "date": "2021-10-17",
+            "amount": "$1,240.00"
+          }
+        },
+        {
+          "key": "CL-2110-18",
+          "source": {
+            "person": "P-004217",
+            "claim": "DB-01",
+            "date": "2021-10-18",
+            "amount": "$85,000.00"
+          },
+          "target": {
+            "person": "P-004217",
+            "claim": "DB-01",
+            "date": "2021-10-18",
+            "amount": "$85,000.00"
+          }
+        },
+        {
+          "key": "TOTAL-P-004217",
+          "source": {
+            "person": "P-004217",
+            "claim": "TOTAL",
+            "date": "2021-10",
+            "amount": "$1,240.00"
+          },
+          "target": {
+            "person": "P-004217",
+            "claim": "TOTAL",
+            "date": "2021-10",
+            "amount": "$86,240.00"
+          }
+        }
+      ]
+    },
+    {
+      "id": "emergency-orders",
+      "ticket": "T23",
+      "system": "Procura · emergency purchase orders",
+      "title": "Emergency orders · 15–18 October 2021",
+      "mode": "table",
+      "keyLabel": "PO",
+      "filter": "destination",
+      "columns": [
+        {
+          "id": "created",
+          "label": "Created"
+        },
+        {
+          "id": "item",
+          "label": "Item"
+        },
+        {
+          "id": "vendor",
+          "label": "Vendor"
+        },
+        {
+          "id": "destination",
+          "label": "Destination"
+        }
+      ],
+      "note": "Vendor names as registered in Procura.",
+      "console": [
+        "info: 6 emergency purchase orders in range"
+      ],
+      "rows": [
+        {
+          "key": "PO-1015-01",
+          "values": {
+            "created": "2021-10-15 14:10",
+            "item": "Printer toner",
+            "vendor": "OfficeLine",
+            "destination": "SEA-02"
+          }
+        },
+        {
+          "key": "PO-1017-01",
+          "values": {
+            "created": "2021-10-17 23:20",
+            "item": "Emergency medical supplies",
+            "vendor": "MedSupply North",
+            "destination": "HRDG-01"
+          }
+        },
+        {
+          "key": "PO-1017-02",
+          "values": {
+            "created": "2021-10-17 23:34",
+            "item": "Patient transport, standby",
+            "vendor": "Northline Ambulance",
+            "destination": "HRDG-01"
+          }
+        },
+        {
+          "key": "PO-1017-03",
+          "values": {
+            "created": "2021-10-17 23:51",
+            "item": "Fire safety equipment",
+            "vendor": "SafeGuard Supply",
+            "destination": ""
+          }
+        },
+        {
+          "key": "PO-1018-01",
+          "values": {
+            "created": "2021-10-18 06:05",
+            "item": "Temporary lodging, 26 rooms",
+            "vendor": "Ridgeview Inn",
+            "destination": "HRDG-01"
+          }
+        },
+        {
+          "key": "PO-1018-02",
+          "values": {
+            "created": "2021-10-18 09:40",
+            "item": "Coffee machine repair",
+            "vendor": "OfficeLine",
+            "destination": "NYC-01"
+          }
+        }
+      ]
+    },
+    {
+      "id": "incident-dashboard",
+      "ticket": "T24",
+      "system": "Compliance · monthly incident dashboard",
+      "title": "Incidents · September–November 2021",
+      "mode": "table",
+      "keyLabel": "Row",
+      "columns": [
+        {
+          "id": "month",
+          "label": "Month"
+        },
+        {
+          "id": "site",
+          "label": "Site"
+        },
+        {
+          "id": "class",
+          "label": "Class"
+        },
+        {
+          "id": "status",
+          "label": "Status"
+        },
+        {
+          "id": "original",
+          "label": "Original record"
+        }
+      ],
+      "note": "Dashboard scope: Horizon-operated offices. Facilities run under partner agreements report separately and are not counted here.",
+      "console": [
+        "info: dashboard query MAJOR where site in scope",
+        "info: 4 incident references loaded"
+      ],
+      "rows": [
+        {
+          "key": "2021-09",
+          "values": {
+            "month": "2021-09",
+            "site": "All in scope",
+            "class": "MAJOR",
+            "status": "Count: 0",
+            "original": "—"
+          }
+        },
+        {
+          "key": "2021-10",
+          "values": {
+            "month": "2021-10",
+            "site": "All in scope",
+            "class": "MAJOR",
+            "status": "Count: 0",
+            "original": "—"
+          }
+        },
+        {
+          "key": "2021-11",
+          "values": {
+            "month": "2021-11",
+            "site": "All in scope",
+            "class": "MAJOR",
+            "status": "Count: 0",
+            "original": "—"
+          }
+        },
+        {
+          "key": "INC-0921",
+          "values": {
+            "month": "2021-09",
+            "site": "SEA-02",
+            "class": "MINOR",
+            "status": "CLOSED",
+            "original": "INC-0921"
+          }
+        },
+        {
+          "key": "INC-1009",
+          "values": {
+            "month": "2021-10",
+            "site": "NYC-01",
+            "class": "MINOR",
+            "status": "CLOSED",
+            "original": "INC-1009"
+          }
+        },
+        {
+          "key": "INC-1017",
+          "values": {
+            "month": "2021-10",
+            "site": "HRDG-01",
+            "class": "—",
+            "status": "DUPLICATE",
+            "original": "Original unavailable"
+          }
+        },
+        {
+          "key": "INC-1104",
+          "values": {
+            "month": "2021-11",
+            "site": "LAX-03",
+            "class": "MINOR",
+            "status": "CLOSED",
+            "original": "INC-1104"
+          }
+        }
+      ]
+    },
+    {
+      "id": "benefit-codes",
+      "ticket": "T25",
+      "system": "Insurance codebook · legacy → new",
+      "title": "Benefit codes · descriptions",
+      "mode": "compare",
+      "keyLabel": "Code",
+      "columns": [
+        {
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "id": "section",
+          "label": "Section"
+        }
+      ],
+      "note": "Benefit codes appear in the Benefit Settlement section of CareBridge.",
+      "console": [
+        "info: codebook compare loaded 5 codes"
+      ],
+      "rows": [
+        {
+          "key": "MED-OUT",
+          "source": {
+            "description": "Outpatient care",
+            "section": "Medical"
+          },
+          "target": {
+            "description": "Outpatient care",
+            "section": "Medical"
+          }
+        },
+        {
+          "key": "MED-ER",
+          "source": {
+            "description": "Emergency care",
+            "section": "Medical"
+          },
+          "target": {
+            "description": "Emergency care",
+            "section": "Medical"
+          }
+        },
+        {
+          "key": "DB-01",
+          "source": {
+            "description": "Death Benefit",
+            "section": "Benefit Settlement"
+          },
+          "target": {
+            "description": "Disability Benefit",
+            "section": "Benefit Settlement"
+          }
+        },
+        {
+          "key": "DB-02",
+          "source": {
+            "description": "Disability Benefit",
+            "section": "Benefit Settlement"
+          },
+          "target": {
+            "description": "Death Benefit",
+            "section": "Benefit Settlement"
+          }
+        },
+        {
+          "key": "RL-01",
+          "source": {
+            "description": "Relocation allowance",
+            "section": "Benefit Settlement"
+          },
+          "target": {
+            "description": "Relocation allowance",
+            "section": "Benefit Settlement"
+          }
+        }
+      ]
+    },
+    {
+      "id": "person-summary",
+      "ticket": "T26",
+      "system": "Horizon ID · cross-system view (QA)",
+      "title": "P-004217 · Daniel Park · records by system",
+      "mode": "table",
+      "keyLabel": "System",
+      "columns": [
+        {
+          "id": "record",
+          "label": "Record"
+        },
+        {
+          "id": "status",
+          "label": "Says"
+        },
+        {
+          "id": "date",
+          "label": "Date"
+        },
+        {
+          "id": "note",
+          "label": "Note",
+          "wide": true
+        }
+      ],
+      "note": "Built for this Ticket from records already in scope. The official incident summary is attached by the program office.",
+      "console": [
+        "info: 5 sources joined on P-004217"
+      ],
+      "rows": [
+        {
+          "key": "PEOPLECORE",
+          "values": {
+            "record": "E-18419",
+            "status": "VOLUNTARY_RESIGNATION",
+            "date": "2021-10-16",
+            "note": "Exit status corrected on 2021-10-18 (hr.ops.ac)."
+          }
+        },
+        {
+          "key": "TRIPLY",
+          "values": {
+            "record": "T-55291",
+            "status": "OUTBOUND · NO RETURN",
+            "date": "2021-10-17",
+            "note": "Destination HRDG-01, Horizon Ridge."
+          }
+        },
+        {
+          "key": "CAREBRIDGE",
+          "values": {
+            "record": "P-88114",
+            "status": "MED-ER, then DB-01 Death Benefit",
+            "date": "2021-10-17 / 18",
+            "note": "Benefit Settlement section."
+          }
+        },
+        {
+          "key": "PAYFLOW",
+          "values": {
+            "record": "B-44210",
+            "status": "REGULAR_SALARY until 2022-01",
+            "date": "2021-11 to 2022-01",
+            "note": "Closed earlier as KNOWN ISSUE / LEGACY EXCEPTION."
+          }
+        },
+        {
+          "key": "INCIDENT",
+          "values": {
+            "record": "Official summary",
+            "status": "Horizon Ridge facility incident · accidental · one fatality, several injured",
+            "date": "2021-10-17",
+            "note": "Investigated by the county fire service and police at the time."
+          }
+        }
+      ]
     }
   ]
 }
