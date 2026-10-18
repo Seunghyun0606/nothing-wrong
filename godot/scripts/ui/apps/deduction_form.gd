@@ -31,7 +31,7 @@ func _ready() -> void:
 			card.name = "Clue%s" % clue["id"]
 			var body := Kit.vbox(2)
 			body.add_child(Kit.heading("📌 %s" % Kit.t(clue["title"]), 14))
-			body.add_child(Kit.label(clue["text"], 13, P.TEXT))
+			body.add_child(Kit.rich(Kit.t(clue["text"]), 13, P.TEXT))
 			card.add_child(body)
 			add_child(card)
 	add_child(Kit.label(Kit.tf("Fill in the blanks and send it to %s.", asked_by), 14, P.MUTED))

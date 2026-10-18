@@ -11,6 +11,7 @@ const Intranet := preload("res://scripts/domain/intranet.gd")
 const Draft := preload("res://scripts/domain/report_draft.gd")
 const StoryClock := preload("res://scripts/domain/story_clock.gd")
 const HorizonData := preload("res://scripts/domain/horizon_data.gd")
+const KeyTerms := preload("res://scripts/domain/key_terms.gd")
 
 
 func _catalog() -> RefCounted:
@@ -28,6 +29,29 @@ func _context(path: String, quantity: int, account := "BASIC", coupon := "", cap
 func test_catalog_loads_the_chapters_in_order() -> void:
 	check_eq(_catalog().ticket_ids().slice(0, 13), ["T01", "T02", "T03", "T04", "T05", "T06", "T07", "T08", "T09", "T10", "T11", "T12", "T13"], "ticket ids")
 	check_eq(_catalog().chapters.map(func(chapter): return chapter["id"]).slice(0, 5), ["CH1", "CH2", "CH3", "CH4", "CH5"], "chapters")
+
+
+func test_each_chapter_talks_in_its_own_conversation() -> void:
+	var catalog := _catalog()
+	var channels: Array = catalog.chapters.map(func(chapter): return MessengerLog.conversation_of(catalog, { "story": { "chapterId": chapter["id"] } }))
+	check_eq(channels.slice(0, 5), ["# shoply-autumn-release", "# shoply-autumn-release", "# shoply-weekend-support", "# shoply-rc5-rollback", "# one-horizon-migration"], "prologue and Chapter 5 channels")
+	check_eq(channels[-1], "# one-horizon-release", "the Final has its own channel")
+	check(MessengerLog.is_direct("@Mina Seo") and not MessengerLog.is_direct("# oh-source-data"), "direct messages start with @")
+	check_eq(MessengerLog.conversation_name("@Alex Han"), "Alex Han", "a direct message is named after the person")
+	var state := _chapter_one_done(0)
+	var log := MessengerLog.build(catalog, state)
+	check(log["entries"].all(func(entry): return entry["in"] == "# shoply-autumn-release"), "Chapter 1 is all in its channel")
+	var private: Array = catalog.scenarios.filter(func(scenario): return scenario["story"].get("deduction", {}).get("channel", "") == "@Mina Seo")
+	check(private.map(func(scenario): return scenario["ticket"]["id"]).has("T07"), "the conclusion about Leo is asked for in private")
+
+
+func test_key_terms_are_marked_bold() -> void:
+	check_eq(KeyTerms.find("E-18419, Daniel Park, left on 16 October 2021, yet PayFlow paid him."), ["E-18419", "Daniel Park", "16 October 2021"], "an ID, a name, and a date")
+	check_eq(KeyTerms.find("2021년 10월 17일, 38명이 HRDG-01로 이동했다."), ["2021년 10월 17일", "HRDG-01"], "Korean dates and IDs")
+	check_eq(KeyTerms.find("COMMUNITY_PARTNER_OVERRIDE and the COMMUNITY tier"), ["COMMUNITY_PARTNER_OVERRIDE", "COMMUNITY"], "a constant is one term")
+	check_eq(KeyTerms.find("from \"release/*\" to \"release/*, exp/*, promo/*\" at 02:14"), ["release/*", "release/*", "exp/*", "promo/*", "02:14"], "branch patterns and times")
+	check_eq(KeyTerms.find("Check the read-only cross-system view"), [], "ordinary words stay plain")
+	check_eq(KeyTerms.mark("RC3 [draft]"), "[b]RC3[/b] [lb]draft]", "BBCode in the text is escaped")
 
 
 func test_horizon_views_are_generic_records() -> void:

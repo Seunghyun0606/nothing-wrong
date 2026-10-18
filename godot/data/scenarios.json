@@ -1596,7 +1596,8 @@
               "answer": "exp/retention-push"
             }
           },
-          "success": "Every clue points to the same desk."
+          "success": "Every clue points to the same desk.",
+          "channel": "@Mina Seo"
         }
       }
     },
@@ -2077,7 +2078,8 @@
               "answer": "QA"
             }
           },
-          "success": "That's the whole chain: an approval, a request, a temporary account, and a bot that merged whatever matched."
+          "success": "That's the whole chain: an approval, a request, a temporary account, and a bot that merged whatever matched.",
+          "channel": "@Mina Seo"
         }
       }
     },
@@ -3711,7 +3713,8 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Then it's on record, and it's their call. Before we move on, let's write down what we think connects the four."
+            "text": "Then it's on record, and it's their call. Before we move on, let's write down what we think connects the four.",
+            "channel": "@Mina Seo"
           }
         ],
         "clue": {
@@ -3767,7 +3770,8 @@
               "answer": "one shared migration batch"
             }
           },
-          "success": "That's the sensible reading for now. One batch, one bad night of data. Let's see if Integration agrees."
+          "success": "That's the sensible reading for now. One batch, one bad night of data. Let's see if Integration agrees.",
+          "channel": "@Mina Seo"
         }
       }
     },
@@ -4022,7 +4026,8 @@
               "answer": "source data"
             }
           },
-          "success": "That is the turn. Not a migration bug: the original records already disagreed."
+          "success": "That is the turn. Not a migration bug: the original records already disagreed.",
+          "channel": "@Mina Seo"
         }
       }
     },
@@ -4404,12 +4409,14 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "A leadership retreat at Horizon Ridge, filed as a community event. Grace is tagged in it. The emblem on the lectern means nothing to me yet."
+            "text": "A leadership retreat at Horizon Ridge, filed as a community event. Grace is tagged in it. The emblem on the lectern means nothing to me yet.",
+            "channel": "@Mina Seo"
           },
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Before Grace closes the phase, let's write down what the records prove, and only that."
+            "text": "Before Grace closes the phase, let's write down what the records prove, and only that.",
+            "channel": "@Mina Seo"
           }
         ],
         "clue": {
@@ -4465,7 +4472,8 @@
               "answer": "four separate teams"
             }
           },
-          "success": "That's what the records prove. Not why. Let's keep it there until something proves more."
+          "success": "That's what the records prove. Not why. Let's keep it there until something proves more.",
+          "channel": "@Mina Seo"
         }
       }
     },
@@ -4976,19 +4984,22 @@
                 "label": "qa.onehorizon.local/benefit-codes",
                 "url": "https://qa.onehorizon.local/benefit-codes"
               }
-            ]
+            ],
+            "channel": "@Alex Han"
           }
         ],
         "debrief": [
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "DB-01 is a death benefit. The benefit paid on Daniel Park's ID on 18 October was a death benefit."
+            "text": "DB-01 is a death benefit. The benefit paid on Daniel Park's ID on 18 October was a death benefit.",
+            "channel": "@Mina Seo"
           },
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "His HR record says he resigned on 16 October. His travel says he never came back. His benefits say he died. I'm opening a Case File: from here we keep what we find in one place."
+            "text": "His HR record says he resigned on 16 October. His travel says he never came back. His benefits say he died. I'm opening a Case File: from here we keep what we find in one place.",
+            "channel": "@Mina Seo"
           }
         ],
         "clue": {
@@ -5128,7 +5139,8 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "She is allowed to close it. She can't make it not have happened. Our report stays on file."
+            "text": "She is allowed to close it. She can't make it not have happened. Our report stays on file.",
+            "channel": "@Mina Seo"
           }
         ],
         "clue": {
@@ -5193,7 +5205,8 @@
               "answer": "16 October"
             }
           },
-          "success": "That's what the records prove. Not how he died, and not why his exit date moved. Those are questions, not findings."
+          "success": "That's what the records prove. Not how he died, and not why his exit date moved. Those are questions, not findings.",
+          "channel": "@Mina Seo"
         }
       }
     },
@@ -6140,7 +6153,8 @@
               "answer": "Daniel Park"
             }
           },
-          "success": "Working as designed. That's what frightens me. And Daniel saw it before we did."
+          "success": "Working as designed. That's what frightens me. And Daniel saw it before we did.",
+          "channel": "@Mina Seo"
         }
       }
     },
@@ -6517,7 +6531,8 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Write down what the timeline shows. Then stop there."
+            "text": "Write down what the timeline shows. Then stop there.",
+            "channel": "@Mina Seo"
           }
         ],
         "clue": {
@@ -6565,7 +6580,8 @@
               "answer": "twelve minutes after the alarm"
             }
           },
-          "success": "That's what the timeline shows. Whether anyone meant it, these records can't say, and we won't pretend they do."
+          "success": "That's what the timeline shows. Whether anyone meant it, these records can't say, and we won't pretend they do.",
+          "channel": "@Mina Seo"
         }
       }
     },
@@ -6793,12 +6809,14 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Northstar. Our own company sits under the same Trust, through board seats."
+            "text": "Northstar. Our own company sits under the same Trust, through board seats.",
+            "channel": "@Mina Seo"
           },
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Two QA engineers before you touched these legacy records. Both were moved off the project. That is why I kept telling you to stay in scope. Not to stop you. To keep you here."
+            "text": "Two QA engineers before you touched these legacy records. Both were moved off the project. That is why I kept telling you to stay in scope. Not to stop you. To keep you here.",
+            "channel": "@Mina Seo"
           }
         ],
         "clue": {
@@ -6855,7 +6873,8 @@
               "answer": "Horizon Community Trust"
             }
           },
-          "success": "That's the chain. What happened to Daniel on the 17th is still a question. What happened to his case on the 18th isn't."
+          "success": "That's the chain. What happened to Daniel on the 17th is still a question. What happened to his case on the 18th isn't.",
+          "channel": "@Mina Seo"
         }
       }
     },
@@ -6946,12 +6965,14 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "The criteria pass. Every one of them. Now the part no test covers."
+            "text": "The criteria pass. Every one of them. Now the part no test covers.",
+            "channel": "@Mina Seo"
           },
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "You have three area inspections left in the validation budget. Whatever you didn't inspect, you can't attach."
+            "text": "You have three area inspections left in the validation budget. Whatever you didn't inspect, you can't attach.",
+            "channel": "@Mina Seo"
           }
         ],
         "clue": {
@@ -7016,7 +7037,8 @@
                 "Organization"
               ]
             }
-          }
+          },
+          "channel": "@Mina Seo"
         }
       }
     }
@@ -7185,7 +7207,7 @@
           "text": "Platform is rolling everything back tonight. RC5 lands Monday morning, before leadership meets at 09:00."
         }
       ],
-      "channel": "# shoply-autumn-release"
+      "channel": "# shoply-weekend-support"
     },
     {
       "id": "CH4",
@@ -7270,7 +7292,7 @@
           "text": "Different client, bigger systems. Same job: trust what you can prove."
         }
       ],
-      "channel": "# shoply-autumn-release"
+      "channel": "# shoply-rc5-rollback"
     },
     {
       "id": "CH5",
@@ -7304,7 +7326,7 @@
       "title": "Chapter 6 · Source Data",
       "synopsis": "The batch theory falls apart. Four systems moved in different years, yet they all break on the same weekend. The conflict was in the source all along.",
       "quiet": true,
-      "channel": "# one-horizon-migration",
+      "channel": "# oh-source-data",
       "finaleDeductionId": "DED-T24",
       "deadline": {
         "label": "Phase review",
@@ -7331,7 +7353,7 @@
       "synopsis": "The dashboard says nothing happened in October 2021. The benefits ledger says someone died. The records of one employee cannot all be true at once.",
       "quiet": true,
       "caseFileAfter": "T28",
-      "channel": "# one-horizon-migration",
+      "channel": "# oh-benefits-settlement",
       "finaleDeductionId": "DED-T29",
       "deadline": {
         "label": "Quality board",
@@ -7357,7 +7379,7 @@
       "synopsis": "Nothing in this chapter is broken. Discounts, promotions, and transfers all follow approved rules, and the rules all lead to Horizon Foundation.",
       "quiet": true,
       "caseFileAfter": "T28",
-      "channel": "# one-horizon-migration",
+      "channel": "# oh-business-rules",
       "finaleDeductionId": "DED-T36",
       "deadline": {
         "label": "Policy review",
@@ -7377,7 +7399,8 @@
         {
           "from": "Alex Han",
           "role": "Integration Developer",
-          "text": "Next phase is the document archive migration. Daniel's old internal-control cases are in it."
+          "text": "Next phase is the document archive migration. Daniel's old internal-control cases are in it.",
+          "channel": "@Alex Han"
         }
       ]
     },
@@ -7388,7 +7411,7 @@
       "synopsis": "Daniel Park was investigating the Foundation's vendors when he died. His case was closed the next day. The chain of control reaches further than anyone wrote down, including to Northstar.",
       "quiet": true,
       "caseFileAfter": "T28",
-      "channel": "# one-horizon-migration",
+      "channel": "# oh-document-archive",
       "finaleDeductionId": "DED-T41",
       "deadline": {
         "label": "Release sign-off",

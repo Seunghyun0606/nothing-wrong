@@ -4,6 +4,9 @@
 ## hint, and enough misses bring the team's help (story.assist).
 ## After a debrief the chat pauses until the player finds the record it points to,
 ## then pauses again on the deduction.
+## Every entry is "in" a conversation: a channel ("# name") or a direct message
+## ("@Name"). A Ticket's chat happens in its chapter's channel unless its story, a
+## message, or its deduction names another one.
 extends RefCounted
 
 const StoryClock := preload("res://scripts/domain/story_clock.gd")
@@ -11,6 +14,7 @@ const StoryClock := preload("res://scripts/domain/story_clock.gd")
 ## Minutes a wrong report or a wrong conclusion costs on the story's clock.
 const PENALTY := 20
 const PARTIAL_REPLY := "Good, that's one. This Ticket has more; keep going."
+const DEFAULT_CHANNEL := "# northstar-qa"
 
 
 ## The chat, with a story time on every entry ("time", minutes; see story_clock.gd).
@@ -54,6 +58,26 @@ static func _stamp(catalog: RefCounted, entries: Array) -> void:
 			lines[index]["late"] = true
 
 
+## The conversation a Ticket's chat happens in.
+static func conversation_of(catalog: RefCounted, scenario: Dictionary) -> String:
+	var story: Variant = scenario.get("story", null)
+	if story == null:
+		return DEFAULT_CHANNEL
+	if story.has("channel"):
+		return story["channel"]
+	var chapter: Variant = catalog.get_chapter(story.get("chapterId", ""))
+	return str(chapter.get("channel", DEFAULT_CHANNEL)) if chapter != null else DEFAULT_CHANNEL
+
+
+static func is_direct(conversation: String) -> bool:
+	return conversation.begins_with("@")
+
+
+## How a conversation is named in the chat list: the channel, or the person.
+static func conversation_name(conversation: String) -> String:
+	return conversation.substr(1) if is_direct(conversation) else conversation
+
+
 static func _build(catalog: RefCounted, state: Dictionary) -> Dictionary:
 	var entries: Array = []
 	for scenario in catalog.scenarios:
@@ -63,11 +87,12 @@ static func _build(catalog: RefCounted, state: Dictionary) -> Dictionary:
 			break
 		var story: Variant = scenario.get("story", null)
 		var scenario_id: String = scenario["id"]
+		var conversation := conversation_of(catalog, scenario)
 		if story != null:
 			for index in story["briefing"].size():
-				entries.append(_message("%s:briefing:%d" % [scenario_id, index], story["briefing"][index]))
-		entries.append({ "id": "%s:ticket" % scenario_id, "kind": "ticket", "ticketId": ticket_id, "title": ticket["title"] })
-		_append_reports(entries, scenario, state)
+				entries.append(_message("%s:briefing:%d" % [scenario_id, index], story["briefing"][index], conversation))
+		entries.append({ "id": "%s:ticket" % scenario_id, "kind": "ticket", "ticketId": ticket_id, "title": ticket["title"], "in": conversation })
+		_append_reports(entries, scenario, state, conversation)
 
 		if state["tickets"].get(ticket_id, {}).get("status", "") != "RESOLVED":
 			break
@@ -75,59 +100,61 @@ static func _build(catalog: RefCounted, state: Dictionary) -> Dictionary:
 			continue
 
 		for index in story["debrief"].size():
-			entries.append(_message("%s:debrief:%d" % [scenario_id, index], story["debrief"][index]))
+			entries.append(_message("%s:debrief:%d" % [scenario_id, index], story["debrief"][index], conversation))
 		var chapter_of_story: Variant = catalog.get_chapter(story["chapterId"])
 		var quiet: bool = chapter_of_story != null and chapter_of_story.get("quiet", false)
 		var discovery: Variant = story.get("discovery", null)
 		if discovery != null:
 			if not state["story"].get("foundDocuments", []).has(discovery["documentId"]):
-				return { "entries": entries, "pendingDeduction": null, "pendingDiscovery": discovery }
+				return { "entries": entries, "pendingDeduction": null, "pendingDiscovery": discovery, "pendingIn": entries[-1]["in"] }
 			if not quiet:
-				entries.append({ "id": "%s:found" % scenario_id, "kind": "found", "documentId": discovery["documentId"] })
+				entries.append({ "id": "%s:found" % scenario_id, "kind": "found", "documentId": discovery["documentId"], "in": conversation })
 		if not quiet:
-			entries.append({ "id": "%s:clue" % scenario_id, "kind": "clue", "title": story["clue"]["title"], "text": story["clue"]["text"] })
+			entries.append({ "id": "%s:clue" % scenario_id, "kind": "clue", "title": story["clue"]["title"], "text": story["clue"]["text"], "in": conversation })
 
 		var deduction: Variant = story.get("deduction", null)
 		if deduction == null:
 			continue
 		var asked_by: Dictionary = deduction["askedBy"]
+		# A conclusion can be asked for in private, away from the people it is about.
+		var asked_in: String = deduction.get("channel", conversation)
 		entries.append(_message("%s:deduction" % scenario_id, {
 			"from": asked_by["from"], "role": asked_by["role"], "text": deduction["prompt"],
-		}))
+		}, asked_in))
 		var progress: Dictionary = state["story"]["deductions"].get(deduction["id"], { "attempts": [], "solved": false })
 		var answered := 0
 		for attempt in progress["attempts"]:
 			if typeof(attempt) != TYPE_DICTIONARY:
 				continue
 			entries.append({ "id": "%s:answer:%d" % [scenario_id, answered], "kind": "player", "text": "",
-				"sentence": deduction["sentence"], "filled": attempt["filled"] })
+				"sentence": deduction["sentence"], "filled": attempt["filled"], "in": asked_in })
 			var reply := { "from": asked_by["from"], "role": asked_by["role"] }
 			if attempt["correct"]:
 				reply["text"] = deduction["success"]
 			else:
 				reply["text"] = "%d of %d parts hold up. Look at your clues again."
 				reply["args"] = [int(attempt["right"]), int(attempt["total"])]
-			var answer_reply := _message("%s:answerReply:%d" % [scenario_id, answered], reply)
+			var answer_reply := _message("%s:answerReply:%d" % [scenario_id, answered], reply, asked_in)
 			answer_reply["penalty"] = not attempt["correct"]
 			entries.append(answer_reply)
 			answered += 1
 		if not progress["solved"]:
-			return { "entries": entries, "pendingDeduction": deduction, "pendingDiscovery": null }
+			return { "entries": entries, "pendingDeduction": deduction, "pendingDiscovery": null, "pendingIn": asked_in }
 
 		var chapter: Variant = catalog.get_chapter(story["chapterId"])
 		if chapter != null and chapter["finaleDeductionId"] == deduction["id"]:
 			var ending := ending_for(chapter, progress)
 			var lines: Array = ending.get("epilogue", chapter["epilogue"])
 			for index in lines.size():
-				var line := _message("%s:epilogue:%d" % [chapter["id"], index], lines[index])
+				var line := _message("%s:epilogue:%d" % [chapter["id"], index], lines[index], conversation)
 				line["epilogueOf"] = chapter["id"]
 				entries.append(line)
-			entries.append({ "id": "%s:complete" % chapter["id"], "kind": "system", "text": "%s complete." % chapter["title"], "chapterTitle": chapter["title"] })
+			entries.append({ "id": "%s:complete" % chapter["id"], "kind": "system", "text": "%s complete." % chapter["title"], "chapterTitle": chapter["title"], "in": conversation })
 			if chapter.has("finalCard"):
 				entries.append({ "id": "%s:ending" % chapter["id"], "kind": "ending", "lines": chapter["finalCard"],
-					"ending": ending.get("id", "default"), "title": ending.get("title", chapter.get("defaultEnding", "")) })
+					"ending": ending.get("id", "default"), "title": ending.get("title", chapter.get("defaultEnding", "")), "in": conversation })
 
-	return { "entries": entries, "pendingDeduction": null, "pendingDiscovery": null }
+	return { "entries": entries, "pendingDeduction": null, "pendingDiscovery": null, "pendingIn": "" }
 
 
 ## The ending a chapter's final choice leads to: the first of `chapter.endings` whose
@@ -144,7 +171,7 @@ static func ending_for(chapter: Dictionary, progress: Dictionary) -> Dictionary:
 	return {}
 
 
-static func _append_reports(entries: Array, scenario: Dictionary, state: Dictionary) -> void:
+static func _append_reports(entries: Array, scenario: Dictionary, state: Dictionary, conversation: String) -> void:
 	var ticket: Dictionary = scenario["ticket"]
 	var story: Variant = scenario.get("story", null)
 	var assist: Array = story.get("assist", []) if story != null else []
@@ -154,12 +181,14 @@ static func _append_reports(entries: Array, scenario: Dictionary, state: Diction
 		if report["ticketId"] != ticket["id"]:
 			continue
 		var review: Dictionary = state["reviewHistory"][index]
-		entries.append(report_entry(report))
+		var sent := report_entry(report)
+		sent["in"] = conversation
+		entries.append(sent)
 		if review["valid"]:
 			if review.get("partial", false):
 				entries.append(_message("%s:partial:%s" % [scenario["id"], report["id"]], {
 					"from": ticket["sender"]["name"], "role": ticket["sender"]["role"], "text": PARTIAL_REPLY,
-				}))
+				}, conversation))
 			continue
 		misses += 1
 		var feedback: Array = review.get("feedback", [])
@@ -168,13 +197,13 @@ static func _append_reports(entries: Array, scenario: Dictionary, state: Diction
 			text = feedback[-1]
 		var reply := _message("%s:reply:%s" % [scenario["id"], report["id"]], {
 			"from": ticket["sender"]["name"], "role": ticket["sender"]["role"], "text": text,
-		})
+		}, conversation)
 		reply["penalty"] = true
 		entries.append(reply)
 		# Missed reports bring the team in: first a nudge, then the answer.
 		for help in assist:
 			if int(help["after"]) == misses:
-				entries.append(_message("%s:assist:%d" % [scenario["id"], misses], help))
+				entries.append(_message("%s:assist:%d" % [scenario["id"], misses], help, conversation))
 
 
 static func report_entry(report: Dictionary) -> Dictionary:
@@ -193,10 +222,12 @@ static func report_entry(report: Dictionary) -> Dictionary:
 	}
 
 
-static func _message(id: String, message: Dictionary) -> Dictionary:
+## A message is in the given conversation unless it names its own `channel`.
+static func _message(id: String, message: Dictionary, conversation: String) -> Dictionary:
 	return {
 		"id": id,
 		"kind": "message",
+		"in": message.get("channel", conversation),
 		"from": message["from"],
 		"role": message["role"],
 		"text": message["text"],

@@ -7,18 +7,24 @@ canon leaves open, using `godot/data/canon.json`.
 
 ## Chapters
 
-| Chapter | Canon | Tickets | Status |
-|---|---|---|---|
-| 1 · Release Candidate 3 | Prologue (T01 = NW-001, T02 = NW-002) | T01–T04 | Built |
-| 2 · Write Access | Prologue | T05–T07 | Built |
-| 3 · Holdout | Prologue | T08–T09 | Built |
-| 4 · Rollback | Prologue; its epilogue hands Northstar to ONE HORIZON | T10–T12 | Built |
-| 5 · October 17 | ACT 1 rest + ACT 2 | T13–T15 = NW-003–005, T16–T19 = NW-006–009 | Built |
-| 6 · Source Data | ACT 3 | T20–T24 = NW-010–014 | Built |
-| 7 · Zero Incident | ACT 4 (Case Notes open) | T25–T29 = NW-015–019 | Built |
-| 8 · The Foundation | ACT 5 | T30–T36 = NW-020–026 | Built |
-| 9 · Daniel's Last Case | ACT 6 | T37–T41 = NW-027, 028, 028B, 029, 030 | Built |
-| Final | NW-FINAL (SHIP / HOLD, endings) | T42 | Built |
+| Chapter | Canon | Tickets | Channel | Status |
+|---|---|---|---|---|
+| 1 · Release Candidate 3 | Prologue (T01 = NW-001, T02 = NW-002) | T01–T04 | # shoply-autumn-release | Built |
+| 2 · Write Access | Prologue | T05–T07 | # shoply-autumn-release | Built |
+| 3 · Holdout | Prologue | T08–T09 | # shoply-weekend-support | Built |
+| 4 · Rollback | Prologue; its epilogue hands Northstar to ONE HORIZON | T10–T12 | # shoply-rc5-rollback | Built |
+| 5 · October 17 | ACT 1 rest + ACT 2 | T13–T15 = NW-003–005, T16–T19 = NW-006–009 | # one-horizon-migration | Built |
+| 6 · Source Data | ACT 3 | T20–T24 = NW-010–014 | # oh-source-data | Built |
+| 7 · Zero Incident | ACT 4 (Case Notes open) | T25–T29 = NW-015–019 | # oh-benefits-settlement | Built |
+| 8 · The Foundation | ACT 5 | T30–T36 = NW-020–026 | # oh-business-rules | Built |
+| 9 · Daniel's Last Case | ACT 6 | T37–T41 = NW-027, 028, 028B, 029, 030 | # oh-document-archive | Built |
+| Final | NW-FINAL (SHIP / HOLD, endings) | T42 | # one-horizon-release | Built |
+
+Private turns are direct messages (DEC-014). Mina Seo asks for the conclusions about people
+in the room (DED-T07 on Leo, DED-T09 on Elena) and for every conclusion from Chapter 5 on in
+a direct message, and talks there when what she says should not reach the client channel
+(the Case File opening in NW-018, Northstar's place in the chain in NW-030). Alex Han writes
+in private when he hands over the codebook (NW-018) and Daniel's archive (end of Chapter 8).
 
 NW-003–005 (tier sync, photo crop, payroll deductions) open Chapter 5 as the routine first
 day on ONE HORIZON, before October 17 appears. They plant what later chapters pay off: the

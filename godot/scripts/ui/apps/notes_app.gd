@@ -309,7 +309,7 @@ func _clue_card(scenario: Dictionary) -> Control:
 	body.add_child(Kit.kicker(ticket_id))
 	if clue_found:
 		body.add_child(Kit.heading(story["clue"]["title"], 16))
-		body.add_child(Kit.label(story["clue"]["text"], 14))
+		body.add_child(Kit.rich(Kit.t(story["clue"]["text"]), 14))
 		var connected: bool = state["story"]["deductions"].get(story["deduction"]["id"], {}).get("solved", false) if story.has("deduction") else true
 		body.add_child(Kit.kicker("Connected" if connected else "Not yet connected", P.SUCCESS if connected else P.MUTED))
 	elif resolved:

@@ -1,0 +1,29 @@
+id: DEC-014
+title: Messenger is split into conversations, and key terms are bold
+status: active
+decided_at: "2026-10-19"
+context: >-
+  Every chapter played out in one shared chat, which felt unlike a real workplace and
+  buried the private turns of the story. The project owner asked for separate
+  conversations that arrive as the story moves on, and for the important clues to be
+  bold so they are easy to spot.
+decision: >-
+  Every chat entry belongs to a conversation: a channel ("# name") or a direct message
+  ("@Name"). A Ticket's chat happens in its chapter's channel; a story, a message, or a
+  deduction can name another one (`channel` in data/scenarios.json). Conclusions about
+  people in the room, and the quiet chapters' conclusions, are asked for in a direct
+  message from Mina Seo; Alex Han writes in private when he passes on what he found.
+  Messenger lists the conversations the story has opened, follows the newest message
+  until the player picks another conversation, and keeps read state per conversation
+  (story.readIn). Story text in the chat and on clue cards marks record IDs, codes,
+  dates, times, and the names in data/key_terms.json in bold (scripts/domain/key_terms.gd).
+consequences:
+  - The composer points to the conversation where the team is waiting when another one is on screen.
+  - Notifications name the channel, and opening one shows its conversation.
+  - Older saves keep working; conversations they have not read fall back to story.readId.
+  - Portal records are never bolded, so finding the anomaly stays the player's job.
+applies_to:
+  - global
+references:
+  - .project-os/decisions/DEC-010-notes-and-messenger-reporting.yaml
+  - .project-os/decisions/DEC-013-one-horizon-canon.yaml

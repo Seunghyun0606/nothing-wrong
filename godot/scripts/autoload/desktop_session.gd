@@ -32,6 +32,8 @@ var notes_view := "ticket"
 var notes_ticket_id := ""
 ## Messenger opens its report form on the next render.
 var report_requested := false
+## The conversation the player picked in Messenger. Empty follows the newest message.
+var chat_pinned := ""
 var toasts: Array = []
 ## Messages are delivered only while the desktop is on screen.
 var delivery_enabled := false
@@ -64,6 +66,7 @@ func reset_layout() -> void:
 	notes_view = "ticket"
 	notes_ticket_id = ""
 	report_requested = false
+	chat_pinned = ""
 	toasts = []
 	changed.emit()
 	toasts_changed.emit()
@@ -351,18 +354,44 @@ func show_notes(ticket_id: String = "") -> void:
 	open_app("notes")
 
 
-## Opens Messenger with the report form for the Ticket under test.
+## Opens Messenger with the report form for the Ticket under test, in its conversation.
 func open_report() -> void:
 	report_requested = true
+	var active := GameSession.active_ticket_id()
+	if active != "":
+		_pin_chat(MessengerLog.conversation_of(GameSession.catalog, GameSession.scenario(active)), messenger_log())
 	open_app("messenger")
+
+
+## Opens Messenger on a conversation.
+func show_chat(conversation: String) -> void:
+	_pin_chat(conversation, messenger_log())
+	open_app("messenger")
+
+
+## Picking the conversation with the newest message goes back to following the chat.
+func _pin_chat(conversation: String, log: Dictionary) -> void:
+	chat_pinned = "" if conversation == latest_chat(log) else conversation
+
+
+## The conversation Messenger shows.
+func current_chat(log: Dictionary) -> String:
+	if chat_pinned != "" and log["conversations"].has(chat_pinned):
+		return chat_pinned
+	return latest_chat(log)
+
+
+static func latest_chat(log: Dictionary) -> String:
+	var delivered: int = log["delivered"]
+	return str(log["entries"][delivered - 1]["in"]) if delivered > 0 else ""
 
 
 # --- Notifications -------------------------------------------------------------
 
-func push_toast(title: String, text: String, app: String = "") -> void:
+func push_toast(title: String, text: String, app: String = "", chat: String = "") -> void:
 	_toast_counter += 1
 	var id := _toast_counter
-	toasts.append({ "id": id, "title": title, "text": text, "app": app })
+	toasts.append({ "id": id, "title": title, "text": text, "app": app, "chat": chat })
 	if toasts.size() > 3:
 		toasts = toasts.slice(toasts.size() - 3)
 	toasts_changed.emit()
@@ -381,14 +410,34 @@ func dismiss_toast(id: int) -> void:
 ## How far the chat has been delivered and read is kept as the last entry's id, so
 ## messages added to the story later never replay the conversation; the counts are the
 ## fallback for older saves.
+## "conversations" lists the ones with a delivered entry, in the order they started;
+## "unreadIn" counts what the player has not seen in each.
 func messenger_log() -> Dictionary:
 	var log := MessengerLog.build(GameSession.catalog, GameSession.state)
 	var entries: Array = log["entries"]
 	var story: Dictionary = GameSession.state["story"]
 	var delivered := _position_after(entries, str(story.get("deliveredId", "")), int(story["deliveredCount"]))
-	var read := mini(_position_after(entries, str(story.get("readId", "")), int(story["readCount"])), delivered)
+	var legacy_read := mini(_position_after(entries, str(story.get("readId", "")), int(story["readCount"])), delivered)
+	var read_in: Dictionary = story.get("readIn", {})
+	var read_until := {}
+	for conversation in read_in:
+		read_until[conversation] = _position_after(entries, str(read_in[conversation]), legacy_read)
+	var conversations: Array = []
+	var unread_in := {}
+	var unread := 0
+	for index in delivered:
+		var entry: Dictionary = entries[index]
+		var conversation: String = entry["in"]
+		if not conversations.has(conversation):
+			conversations.append(conversation)
+			unread_in[conversation] = 0
+		if index >= int(read_until.get(conversation, legacy_read)) and not entry["kind"] in ["player", "report"]:
+			unread_in[conversation] += 1
+			unread += 1
 	log["delivered"] = delivered
-	log["unread"] = maxi(0, delivered - read)
+	log["conversations"] = conversations
+	log["unreadIn"] = unread_in
+	log["unread"] = unread
 	return log
 
 
@@ -441,14 +490,21 @@ func _deliver_next() -> void:
 	GameSession.mark_messages_delivered(delivered + 1, entry["id"])
 	if entry["kind"] == "message":
 		Sfx.play("message")
-	if entry["kind"] == "message" and not is_visible_app("messenger"):
-		push_toast(entry["from"], entry["text"], "messenger")
+	if entry["kind"] == "message" and (not is_visible_app("messenger") or current_chat(messenger_log()) != entry["in"]):
+		var from: String = entry["from"]
+		if not MessengerLog.is_direct(entry["in"]):
+			from = "%s · %s" % [from, entry["in"]]
+		push_toast(from, entry["text"], "messenger", entry["in"])
 	_mark_read()
 
 
+## Only the conversation on screen is read.
 func _mark_read() -> void:
 	if is_visible_app("messenger"):
 		var log := messenger_log()
-		var delivered: int = log["delivered"]
-		if delivered > 0:
-			GameSession.mark_messages_read(delivered, log["entries"][delivered - 1]["id"])
+		var conversation := current_chat(log)
+		var entries: Array = log["entries"]
+		for index in range(int(log["delivered"]) - 1, -1, -1):
+			if entries[index]["in"] == conversation:
+				GameSession.mark_chat_read(conversation, entries[index]["id"])
+				return

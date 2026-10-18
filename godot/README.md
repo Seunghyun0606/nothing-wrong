@@ -63,6 +63,13 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
   its `lateEpilogue`.
 - **Chat delivery** is saved as the last delivered entry's id, so messages added to the
   story later never replay the conversation.
+- **Conversations (DEC-014):** each chapter talks in its own channel, and private turns
+  come as direct messages (`channel` on a chapter, story, message, or deduction in
+  `data/scenarios.json`). Messenger lists the conversations the story has opened with
+  unread badges, follows the newest message until the player picks another one, and
+  points the composer to the conversation where the team is waiting.
+- **Key terms:** chat messages and clue cards show record IDs, codes, dates, times, and
+  the names in `data/key_terms.json` in bold (`scripts/domain/key_terms.gd`).
 - **Text input:** the window's IME is switched on whenever a text field takes focus
   (`scripts/ui/main.gd`), for Korean input in search and notes.
 - **Chapters:** Chapter 1 (T01–T04) finds why RC3 broke; Chapter 2 (T05–T07) finds who

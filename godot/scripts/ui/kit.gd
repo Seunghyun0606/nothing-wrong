@@ -2,6 +2,7 @@
 extends RefCounted
 
 const P := preload("res://scripts/ui/palette.gd")
+const KeyTerms := preload("res://scripts/domain/key_terms.gd")
 
 const STATUS_LABELS := {
 	"NEW": "New", "ACCEPTED": "Accepted", "TESTING": "In testing", "REPORTED": "Reported",
@@ -134,6 +135,23 @@ static func label(text: String, size: int = 15, color: Color = P.TEXT, wrap: boo
 	if wrap:
 		node.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return node
+
+
+## Wrapped story text (already translated) with its key terms in bold.
+static func rich(text: String, size: int = 15, color: Color = P.TEXT) -> RichTextLabel:
+	var node := RichTextLabel.new()
+	node.bbcode_enabled = true
+	node.fit_content = true
+	node.scroll_active = false
+	node.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	node.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	node.add_theme_font_size_override("normal_font_size", size)
+	node.add_theme_font_size_override("bold_font_size", size)
+	node.add_theme_font_override("bold_font", bold_font())
+	node.add_theme_color_override("default_color", color)
+	node.text = KeyTerms.mark(text)
 	return node
 
 

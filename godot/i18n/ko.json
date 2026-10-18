@@ -1527,5 +1527,10 @@
   "Inspected": "점검함",
   "No budget left": "예산 소진",
   "Not inspected": "점검 안 함",
-  "(inspect first)": "(먼저 점검 필요)"
+  "(inspect first)": "(먼저 점검 필요)",
+  "Channels": "채널",
+  "Direct messages": "다이렉트 메시지",
+  "Direct message · %s": "다이렉트 메시지 · %s",
+  "The team is waiting for you in %s.": "%s에서 팀이 기다리고 있어요.",
+  "Go to %s": "%s 열기"
 }

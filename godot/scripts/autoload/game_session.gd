@@ -155,12 +155,16 @@ func mark_messages_delivered(count: int, last_id: String) -> void:
 	commit(next)
 
 
-func mark_messages_read(count: int, last_id: String) -> void:
-	if last_id == str(state["story"].get("readId", "")):
+## Each conversation is read separately, up to its newest entry `last_id`.
+## (story.readId and readCount are what older saves kept for the single chat.)
+func mark_chat_read(conversation: String, last_id: String) -> void:
+	var read_in: Dictionary = state["story"].get("readIn", {})
+	if str(read_in.get(conversation, "")) == last_id:
 		return
 	var next := state.duplicate(true)
-	next["story"]["readCount"] = count
-	next["story"]["readId"] = last_id
+	read_in = read_in.duplicate()
+	read_in[conversation] = last_id
+	next["story"]["readIn"] = read_in
 	commit(next)
 
 

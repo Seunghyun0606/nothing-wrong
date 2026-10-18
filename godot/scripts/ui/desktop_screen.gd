@@ -302,8 +302,11 @@ func _toast_card(toast: Dictionary) -> Control:
 	row.add_child(text_column)
 	var id: int = toast["id"]
 	var app: String = toast.get("app", "")
+	var chat: String = toast.get("chat", "")
 	row.add_child(Kit.link("Open", func():
-		if app != "":
+		if chat != "":
+			DesktopSession.show_chat(chat)
+		elif app != "":
 			DesktopSession.open_app(app)
 		DesktopSession.dismiss_toast(id)))
 	row.add_child(Kit.link("×", func(): DesktopSession.dismiss_toast(id)))
