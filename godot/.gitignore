@@ -1,5 +1,4 @@
 # Godot editor and import cache
 .godot/
 *.translation
-export_presets.cfg
 build/
