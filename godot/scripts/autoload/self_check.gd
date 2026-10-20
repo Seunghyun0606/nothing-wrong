@@ -1,8 +1,9 @@
-## The build gate: `NothingWrong.exe --headless --quit-after 2000 -- --self-check` parses
+## The build gate: `NothingWrong.exe --headless --quit-after 3000 -- --self-check` parses
 ## every content file, opens each screen of the game once on a throwaway session, and
 ## prints "Self-check passed" (exit 0) only when nothing is missing and the engine logged
 ## no error meanwhile. Anything else fails, including a build that never prints the line:
-## a script that does not parse stops the check before it can run.
+## a script that does not parse stops the check before it can run. Release templates do
+## not report GDScript runtime errors, so run it from the editor binary as well.
 extends Node
 
 const GameState := preload("res://scripts/domain/game_state.gd")

@@ -38,10 +38,11 @@ not reached as "not reached".
 | Title, lock screen, desktop, first notification opened |  |  |
 | T01: accepted, found the defect, noted it, reported it in Messenger |  |  |
 | T01 debrief: found the record, answered the question |  |  |
-| T02–T04: quantity, cancel flow, Gold + SAVE20 (Account Switcher) |  |  |
+| T02: quantity |  |  |
+| First clock-out, night screen, next-morning sign-in (after T02) |  |  |
+| T03–T04: cancel flow, Gold + SAVE20 (Account Switcher) |  |  |
 | Chapter 1 finale on the clue board |  |  |
 | T05 closed as NO ISSUE FOUND |  |  |
-| First clock-out, night screen, next-morning sign-in |  |  |
 | Device checks (T06, T07) and the Chapter 2 finale |  |  |
 | Chapters 3–4: Gold orders, cross-screen stock, two defects, RC5 regression |  |  |
 | Chapter 5 onward: ONE HORIZON records, directory, private messages |  |  |

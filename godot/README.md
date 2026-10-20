@@ -23,8 +23,13 @@ resets them.
 
 ```powershell
 & "<path>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --export-release "Windows Desktop" build/windows/NothingWrong.exe
-& godot\build\windows\NothingWrong.exe --headless --quit-after 3000 -- --self-check
+& godot\build\windows\NothingWrong.exe --headless --quit-after 3000 -- --self-check | Out-String
+& "<path>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --quit-after 3000 -- --self-check
 ```
+
+Run both. The exported build shows that the content was packed. Release templates do
+not report GDScript runtime errors, so the editor run is the one that catches those.
+`| Out-String` makes PowerShell wait for the game and set `$LASTEXITCODE`.
 
 The preset (`export_presets.cfg`) includes `data/*.json` and `i18n/*.json` and leaves
 out `tests/`. `--self-check` (`scripts/autoload/self_check.gd`) parses every content

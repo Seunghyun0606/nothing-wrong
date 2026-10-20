@@ -11,11 +11,12 @@ folder holding the Godot 4.7.2 executables.
 | Unit, UI, and full-story tests | `& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --script res://tests/run_tests.gd` | `Tests: N passed, 0 failed`, exit 0 |
 | Typecheck | the same run, or `& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --import` | no `SCRIPT ERROR` or parse error |
 | Build | `& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --export-release "Windows Desktop" build/windows/NothingWrong.exe` | the export finishes |
-| Build content | `godot\build\windows\NothingWrong.exe --headless --quit-after 3000 -- --self-check` | exit 0 and a `Self-check passed` line |
+| Build content | `godot\build\windows\NothingWrong.exe --headless --quit-after 3000 -- --self-check \| Out-String` | a `Self-check passed` line and exit 0 |
+| Runtime errors | `& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --quit-after 3000 -- --self-check` | a `Self-check passed` line and exit 0 |
 | Project OS | `projectctl doctor` | `PASS` |
 
 The suite takes a few minutes. `RID allocations ... leaked at exit` lines after the result
-are harmless, and one `Parse JSON failed` line comes from a test that loads a broken save
+are harmless, and two `Parse JSON failed` lines come from tests that load a broken save
 on purpose. What the suite covers:
 
 - `test_full_story` plays T01–T42 and the Final by pressing the real buttons, including
