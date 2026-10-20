@@ -11,39 +11,47 @@ fields blank rather than inventing results.
 - Tester ID (pseudonym):
 - Facilitator:
 - Tested commit:
-- Browser and device:
-- App URL or local setup:
-- Fresh browser save confirmed: yes / no / unknown
+- Build: exported `NothingWrong.exe` / editor run
+- Screen size and OS:
+- Language: 한국어 / English
+- Fresh save confirmed: yes / no / unknown
 - Recording or screenshots consented to: yes / no / not requested
 
-Run locally with `npm install` (if needed) and `npm run dev`; use the URL printed by
-Vite and start at `/start`. A local URL is usable only from the host machine unless
-separate network access has been arranged. Clear this app's browser storage before
-each participant's run. Give the participant only the
-[participant guide](TASK-010-participant-guide.md), not the spoiler-containing
-`docs/development/TESTING.md` checklist.
+## Setup
+
+1. Build the game (see `godot/README.md`, **Build**) and run its `--self-check`.
+2. Start from a fresh save: choose **New game** on the title screen, or delete
+   `save.json`, `workspace.json`, and `settings.json` from
+   `%APPDATA%\Godot\app_userdata\Nothing Wrong` (keep the `tests` folder).
+3. Give the participant only the [participant guide](TASK-010-participant-guide.md),
+   not `docs/development/TESTING.md`, the specs, or the story docs. They contain the answers.
 
 ## Journey and observations
 
-For each Ticket, note whether the participant reached Evidence, Report, Review, and
-the next Dashboard state without coaching. Capture the exact point of hesitation,
-hint given, unexpected behavior, and reproducible defect, if any.
+For each step, note whether the participant got through without coaching. Write down
+where they hesitated, any hint given (QA Notes' hint link or the facilitator), anything
+unexpected, and any defect that reproduces. Sessions may stop at any chapter; mark steps
+not reached as "not reached".
 
 | Step | Completed without hint? | Observation / hint / defect |
 | --- | --- | --- |
-| Start, lock screen, desktop, first briefing |  |  |
-| Found the T01 link or typed shoply.local |  |  |
-| T01 Evidence → Report → Review |  |  |
-| T01 debrief read, deduction answered |  |  |
-| T02 Evidence → Report → Review |  |  |
-| T03 Evidence → Report → Review |  |  |
-| Account Switcher and T04 Evidence → Report → Review |  |  |
-| T03 address typed without a link |  |  |
-| Chapter finale read, Case File checked, reload |  |  |
+| Title, lock screen, desktop, first notification opened |  |  |
+| T01: accepted, found the defect, noted it, reported it in Messenger |  |  |
+| T01 debrief: found the record, answered the question |  |  |
+| T02–T04: quantity, cancel flow, Gold + SAVE20 (Account Switcher) |  |  |
+| Chapter 1 finale on the clue board |  |  |
+| T05 closed as NO ISSUE FOUND |  |  |
+| First clock-out, night screen, next-morning sign-in |  |  |
+| Device checks (T06, T07) and the Chapter 2 finale |  |  |
+| Chapters 3–4: Gold orders, cross-screen stock, two defects, RC5 regression |  |  |
+| Chapter 5 onward: ONE HORIZON records, directory, private messages |  |  |
+| Asked for a hint in a direct message (if used) |  |  |
+| Final decision and ending |  |  |
+| Quit and reopen mid-chapter: picked up where they were |  |  |
 
-For a defect, include Ticket, starting state, actions, expected result, actual result,
-and whether it reproduced on a second attempt. Do not label a participant's
-uncertainty as a software defect without checking it.
+For a defect, record the Ticket, starting state, actions, expected result, actual result,
+and whether it reproduced on a second attempt. Check before you record a participant's
+uncertainty as a software defect.
 
 ## Six required human observations
 
@@ -66,17 +74,19 @@ uncertainty as a software defect without checking it.
    - Participant response:
    - Concrete moment or example:
 
+Optional: 추리 질문이 공정했는가? 하루가 넘어가는 흐름이 자연스러웠는가?
+
 ## Human decision after reviewing all sessions
 
-This section must be completed by the human product decision-maker, not by Codex or
-the playtest participant on their behalf.
+The human product decision-maker fills in this section. An agent or the playtest
+participant must not fill it in for them.
 
 - Decision-maker:
 - Decision date:
-- Begin broad T05–T08 content production? yes / no / defer
+- Is this build an MVP candidate? yes / no / defer
 - Reason tied to observations:
-- Follow-up defects or UX work required before scaling:
+- Defects or UX work required first:
 
-Do not mark TASK-010 or M2 complete while any required observation or the explicit
-human decision is missing. Record the completed evidence through the Project OS
-handoff and evaluation process once the Human Gate is actually satisfied.
+Do not mark TASK-010 or M4 complete while any required observation or the explicit human
+decision is missing. Once the Human Gate is actually satisfied, record the evidence
+through the Project OS handoff and evaluation process.

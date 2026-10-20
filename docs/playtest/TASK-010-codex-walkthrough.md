@@ -1,5 +1,8 @@
 # TASK-010 Codex walkthrough — functional evidence, not human playtest
 
+> Historical: this walkthrough covers the frozen web build at `6c3faa8`. The playtest now
+> runs the Godot build of the whole game (DEC-016); see the session template.
+
 This is an agent-led QA walkthrough of commit `6c3faa8` in a fresh local Chromium
 browser save. It is **not** a human participant session, does not answer the six
 subjective playtest questions, and does not authorize broad content production.

@@ -174,3 +174,20 @@ func _check_on_screen(desktop: Control, app: String) -> void:
 	var column: Control = window.get_children().filter(func(child): return child is VBoxContainer)[0]
 	check(column.get_combined_minimum_size().x <= window.size.x + 0.5,
 		"%s content needs %.0f px but the window is %.0f" % [app, column.get_combined_minimum_size().x, window.size.x])
+
+
+## Each key term reads the same in every Korean line: no English left in, no second wording.
+func test_key_terms_have_one_korean_wording() -> void:
+	var ko: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Settings.KO_PATH))
+	var others := {
+		"티켓": ["Ticket"],
+		"보고": ["리포트"],
+		"QA 노트": ["QA노트", "QA 트래커", "QA Tracker"],
+		"사건 파일": ["케이스 파일", "사건파일", "Case File"],
+		"조직도": ["디렉터리", "디렉토리"],
+		"추리": ["추론"],
+	}
+	for source in ko:
+		for canonical in others:
+			for other in others[canonical]:
+				check(not str(ko[source]).contains(other), "%s says %s, not %s: %s" % [source.left(50), other, canonical, ko[source]])

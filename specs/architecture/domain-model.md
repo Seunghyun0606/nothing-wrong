@@ -1,5 +1,8 @@
 # Domain Model
 
+> **현재 상태 (DEC-010, DEC-016):** 저장 Profile의 `career`는 호환을 위해 남아 있으나 바뀌지 않는다.
+> Level, XP, Reputation은 제거되었다. 구현은 `godot/scripts/domain/`에 있다. 아래 본문은 초기 설계 기록이다.
+
 ## Naming
 
 `Nothing Wrong`은 제품과 브랜드에만 사용한다. Domain type은 `Ticket`, `Scenario`, `BugReport`, `ExpectedBug`, `Mutation`, `Evidence`, `ReviewResult`, `GameState`처럼 QA와 Game 개념 자체의 이름을 사용한다.

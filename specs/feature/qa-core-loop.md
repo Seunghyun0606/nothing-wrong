@@ -1,5 +1,9 @@
 # QA Core Loop
 
+> **현재 상태 (DEC-009, DEC-010, DEC-015):** 업무는 Messenger로 도착하고, Browser의 📌 기록으로
+> 결함을 QA 노트에 남긴 뒤 Messenger에서 보낸 사람에게 보고한다. 점수 화면, XP, Reputation은 없고
+> 답장이 피드백이다. 보고 뒤에는 기록을 찾아 추리에 답해야 다음 Ticket이 온다. 아래 본문은 초기 설계 기록이다.
+
 ## Functional Loop
 
 ```text

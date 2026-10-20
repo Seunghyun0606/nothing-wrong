@@ -13,8 +13,23 @@ repository root:
 & "<path>\Godot_v4.7.2-stable_win64.exe" --path godot
 ```
 
-Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
-**New game** on the title screen resets them.
+Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`,
+`user://settings.json`). Each is written to a temporary file that then replaces the old
+one, so a save cut short leaves the previous one whole; an unreadable save is kept as
+`user://save.unreadable.json` and a new game starts. **New game** on the title screen
+resets them.
+
+## Build
+
+```powershell
+& "<path>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --export-release "Windows Desktop" build/windows/NothingWrong.exe
+& godot\build\windows\NothingWrong.exe --headless -- --self-check
+```
+
+The preset (`export_presets.cfg`) includes `data/*.json` and `i18n/*.json` and leaves
+out `tests/`. `--self-check` prints how many Tickets, chapters, records, record views,
+people, and translations the build loaded and exits 1 when any is missing. Export
+templates for 4.7.2 must be installed; the build goes to `godot/build/`, which is ignored.
 
 ## Playing
 
@@ -119,9 +134,11 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
 ## Content
 
 Edit content directly in `data/`: `scenarios.json` (tickets, story, chapters),
-`intranet.json` (searchable records), and `shoply.json` (products and orders). Add the
-Korean text for every new string to `i18n/ko.json`; `tests/test_workstation.gd` fails
-when a ticket, story, or record string has no Korean.
+`intranet.json` (searchable records), `horizon.json` (ONE HORIZON record views),
+`people.json` (the directory), and `shoply.json` (products and orders). Add the Korean
+text for every new string to `i18n/ko.json`; `tests/test_workstation.gd` fails when a
+ticket, story, or record string has no Korean, or when a key term (티켓, 보고, QA 노트,
+사건 파일, 조직도, 추리) is worded another way.
 
 ## Tests
 
@@ -129,20 +146,26 @@ when a ticket, story, or record string has no Korean.
 & "<path>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --script res://tests/run_tests.gd
 ```
 
-- `tests/test_domain.gd`, `tests/test_review.gd`: pure game logic (conditions, Mutations,
-  Review scoring, Game State, messenger log, addresses, pricing).
-- `tests/test_ui_flow.gd`: plays the real desktop scene by pressing its buttons,
-  including the whole of Chapter 1 (T01→T04).
-- `tests/test_workstation.gd`: Korean catalog coverage for every ticket, story, and record
-  string, spec pinning beside the Browser, window resizing, and title-bar dragging.
-- The full-chapter UI test also searches for every record, answers the clue board, and
-  closes T05 as NO ISSUE FOUND.
+- `tests/test_domain.gd`, `tests/test_review.gd`: pure game logic (conditions, every
+  Mutation active only under its conditions, Review scoring, Game State, messenger log,
+  addresses, pricing, the directory), and that Shoply never names a Ticket.
+- `tests/test_canon.gd`: no chapter reveals what the story has not reached.
+- `tests/test_ui_flow.gd`: plays the real desktop scene by pressing its buttons:
+  `test_full_story` plays T01–T42 and the Final; others cover notifications, the
+  workday, hints, Arrange, and the directory.
+- `tests/test_saves.gd`: saves cut short, unreadable saves, and a reload mid-chapter.
+- `tests/test_workstation.gd`: Korean coverage and terminology, spec pinning, window
+  resizing and dragging, and windows that fit 1280x720 and 1024x640.
+
+Tests (and the screenshot tour) save under `user://tests/`, never over the player's saves.
 
 Visual check (renders each screen to PNG; uses a throwaway session):
 
 ```powershell
-& "<path>\Godot_v4.7.2-stable_win64_console.exe" --path godot --resolution 1440x900 --script res://tests/screenshot_tour.gd -- <output-dir> [ko|en]
+& "<path>\Godot_v4.7.2-stable_win64_console.exe" --path godot --resolution 1280x720 --script res://tests/screenshot_tour.gd -- <output-dir> ko 1280x720
 ```
+
+The third argument sets the screen size (default 1440x900).
 
 ## Layout
 
@@ -153,4 +176,4 @@ Visual check (renders each screen to PNG; uses a throwaway session):
 | `scripts/ui/` | Title, lock screen, desktop, window frame, theme (`kit.gd`, `palette.gd`) |
 | `scripts/ui/apps/` | Messenger (+ report form), Browser (+ Console, Note), QA Notes (+ Case File) |
 | `scripts/ui/shoply/` | Shoply storefront pages; reads Mutations only through `mutate()` |
-| `data/` | Exported content (generated) |
+| `data/` | Content: scenarios, records, record views, directory, Shoply catalog |

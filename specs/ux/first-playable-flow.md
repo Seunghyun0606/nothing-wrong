@@ -1,5 +1,9 @@
 # First Playable UX
 
+> **현재 상태 (DEC-010, DEC-015):** QA Tracker와 Review 화면은 없다. 앱은 Messenger, Browser,
+> QA 노트 세 개이고, 다음 Ticket은 알림을 열어야 시작되며 하루는 퇴근과 출근으로 넘어간다.
+> 플레이테스트 질문 여섯 개는 그대로 쓰이며 [participant guide](../../docs/playtest/TASK-010-participant-guide.md)에 있다.
+
 ## Player Journey (DEC-006)
 
 ```text

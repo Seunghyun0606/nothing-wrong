@@ -1,5 +1,10 @@
 # MVP Scope
 
+> **현재 상태 (DEC-008, DEC-010, DEC-016):** MVP는 Godot 4.7 Windows 데스크톱 빌드다.
+> Level, XP, Reputation, Career 승급은 없고 진행은 새 Ticket과 도구로 표현한다. 콘텐츠는
+> T01–T42와 Final이며, 아래 T05–T08 학습 목표는 [Ticket catalog](../feature/ticket-catalog.md)에
+> 매핑되어 있다. 저장은 Godot user 폴더의 버전 있는 JSON이다. 아래 본문은 초기 계획 기록이다.
+
 ## Product Stage
 
 MVP는 Web Desktop에서 동작하는 단일 플레이어 QA Investigation Simulation이다. 첫 검증 단위는 T01 End-to-End Vertical Slice이며, 전체 MVP 범위는 Shoply와 T01~T08이다.

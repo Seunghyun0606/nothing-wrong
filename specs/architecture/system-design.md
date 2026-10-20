@@ -1,5 +1,9 @@
 # System Design
 
+> **현재 상태 (DEC-007, DEC-008):** 시스템은 Godot 4.7 클라이언트(`godot/`) 하나다. 아래의 React/Vite
+> 구조는 동결된 참고 빌드를 설명한다. Scenario·Mutation 경계 원칙은 그대로이며
+> `test_shoply_never_branches_on_a_ticket`가 검사한다.
+
 ## Runtime Boundaries
 
 ```text

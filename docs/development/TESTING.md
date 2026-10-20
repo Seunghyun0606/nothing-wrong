@@ -1,7 +1,58 @@
-# T01-T04 Verification
+# Verification
 
-This document records the reproducible verification procedure for the Nothing Wrong
-prototype through T04. Run commands from the repository root.
+How to verify Nothing Wrong. The Godot client in `godot/` is the only maintained and
+shipped build (DEC-007, DEC-008); run commands from the repository root. `<godot>` is the
+folder holding the Godot 4.7.2 executables.
+
+## Automated gates (Godot)
+
+| Gate | Command | Passes when |
+| --- | --- | --- |
+| Unit, UI, and full-story tests | `& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --script res://tests/run_tests.gd` | `Tests: N passed, 0 failed`, exit 0 |
+| Typecheck | the same run, or `& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --import` | no `SCRIPT ERROR` or parse error |
+| Build | `& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --export-release "Windows Desktop" build/windows/NothingWrong.exe` | the export finishes |
+| Build content | `godot\build\windows\NothingWrong.exe --headless -- --self-check` | exit 0 and a `Self-check:` line with no zero count |
+| Project OS | `projectctl doctor` | `PASS` |
+
+The suite takes a few minutes. `RID allocations ... leaked at exit` lines after the result
+are harmless, and one `Parse JSON failed` line comes from a test that loads a broken save
+on purpose. What the suite covers:
+
+- `test_full_story` plays T01–T42 and the Final by pressing the real buttons, including
+  every NO ISSUE FOUND Ticket, both T11 defects, the T12 regression, and an ending.
+- Every Mutation is checked active only when all of its conditions hold, against the
+  fields the game really provides; Shoply code never names a Ticket.
+- Notifications, the workday (clock out, night, sign in), hints in direct messages,
+  Arrange, the directory, and the canon gate (no chapter reveals what it has not reached).
+- Saves cut short, unreadable or outdated saves, and a reload in the middle of a chapter.
+- Windows and their content fit 1280x720 and 1024x640; Korean covers every story string
+  and each key term has one wording.
+
+Tests and the screenshot tour run their own main loop, so they save under
+`user://tests/` and never read or replace the player's saves.
+
+## Visual check
+
+Render each main screen to PNG at a screen size (default 1440x900):
+
+```powershell
+& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --path godot --resolution 1280x720 --script res://tests/screenshot_tour.gd -- <output-dir> ko 1280x720
+```
+
+Check 1280x720, 1440x900, and 1920x1080: no window past the taskbar or the screen edge,
+and every title bar shows its three buttons.
+
+## Human playtest
+
+The playtest kit in `docs/playtest/` runs the Godot build. Give participants only the
+participant guide. This guide names defects and answers, so keep it away from them.
+
+---
+
+# Frozen web build (reference only)
+
+Everything below describes the React/Vite build in the repository root. It is kept for
+reference and is no longer run or updated.
 
 ## Automated gates
 
@@ -32,20 +83,6 @@ resolved Tickets, deductions, and the Chapter 1 finale. It reloads mid-way and a
 end, then checks that 400 XP, 111 Reputation, and the closed Case File remain.
 (T01's deduction is answered wrong once on purpose, so it earns no first-try bonus;
 T02–T04 each earn +1.) Expect about a minute because messages arrive in real time.
-
-## Godot build (DEC-007, DEC-008)
-
-The Godot 4.7 client in `godot/` is the only maintained and shipped build. Its content
-lives in `godot/data` and `godot/i18n`. Run its headless suite (25 tests, including UI
-flows that play Chapter 1 and T05 by pressing real buttons, and a check that every
-ticket, story, and record string has a Korean translation):
-
-```powershell
-& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --script res://tests/run_tests.gd
-```
-
-See `godot/README.md` for running the game and rendering screenshots. Everything below
-this section describes the frozen web build and is kept only for reference.
 
 ## Manual journey
 
