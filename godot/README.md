@@ -23,12 +23,15 @@ resets them.
 
 ```powershell
 & "<path>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --export-release "Windows Desktop" build/windows/NothingWrong.exe
-& godot\build\windows\NothingWrong.exe --headless -- --self-check
+& godot\build\windows\NothingWrong.exe --headless --quit-after 3000 -- --self-check
 ```
 
 The preset (`export_presets.cfg`) includes `data/*.json` and `i18n/*.json` and leaves
-out `tests/`. `--self-check` prints how many Tickets, chapters, records, record views,
-people, and translations the build loaded and exits 1 when any is missing. Export
+out `tests/`. `--self-check` (`scripts/autoload/self_check.gd`) parses every content
+file, opens each screen once on a session that saves nothing, and prints `Self-check
+passed` with exit 0 only when nothing is missing and no error was logged. A build that
+prints anything else, or nothing (a script that does not parse), has failed;
+`--quit-after` keeps such a run from waiting forever. Export
 templates for 4.7.2 must be installed; the build goes to `godot/build/`, which is ignored.
 
 ## Playing

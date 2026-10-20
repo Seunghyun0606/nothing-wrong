@@ -11,7 +11,7 @@ folder holding the Godot 4.7.2 executables.
 | Unit, UI, and full-story tests | `& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --script res://tests/run_tests.gd` | `Tests: N passed, 0 failed`, exit 0 |
 | Typecheck | the same run, or `& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --import` | no `SCRIPT ERROR` or parse error |
 | Build | `& "<godot>\Godot_v4.7.2-stable_win64_console.exe" --headless --path godot --export-release "Windows Desktop" build/windows/NothingWrong.exe` | the export finishes |
-| Build content | `godot\build\windows\NothingWrong.exe --headless -- --self-check` | exit 0 and a `Self-check:` line with no zero count |
+| Build content | `godot\build\windows\NothingWrong.exe --headless --quit-after 3000 -- --self-check` | exit 0 and a `Self-check passed` line |
 | Project OS | `projectctl doctor` | `PASS` |
 
 The suite takes a few minutes. `RID allocations ... leaked at exit` lines after the result

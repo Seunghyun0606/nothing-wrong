@@ -11,29 +11,10 @@ var current: Control
 
 
 func _ready() -> void:
-	if OS.get_cmdline_user_args().has("--self-check"):
-		_self_check()
-		return
 	theme = Kit.build_theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	get_viewport().gui_focus_changed.connect(_on_focus_changed)
 	show_title()
-
-
-## `-- --self-check` (the build gate) reports the content the game loaded and quits,
-## failing when any of it is missing from the build.
-func _self_check() -> void:
-	var translations: Variant = JSON.parse_string(FileAccess.get_file_as_string(Settings.KO_PATH))
-	var counts := {
-		"tickets": GameSession.catalog.ticket_ids().size(),
-		"chapters": GameSession.catalog.chapters.size(),
-		"records": GameSession.intranet.documents.size(),
-		"views": GameSession.horizon.views.size(),
-		"people": GameSession.directory.people.size(),
-		"translations": (translations as Dictionary).size() if typeof(translations) == TYPE_DICTIONARY else 0,
-	}
-	print("Self-check: %s" % JSON.stringify(counts))
-	get_tree().quit(1 if counts.values().has(0) else 0)
 
 
 ## Korean and other IMEs compose text in the OS. Turn the window's IME on whenever a text

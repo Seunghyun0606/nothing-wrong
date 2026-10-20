@@ -23,6 +23,7 @@ WorkspaceSession="*res://scripts/autoload/workspace_session.gd"
 ShoplyStore="*res://scripts/autoload/shoply_store.gd"
 DesktopSession="*res://scripts/autoload/desktop_session.gd"
 Sfx="*res://scripts/autoload/sfx.gd"
+SelfCheck="*res://scripts/autoload/self_check.gd"
 
 [display]
 
