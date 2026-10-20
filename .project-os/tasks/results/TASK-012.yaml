@@ -1,0 +1,36 @@
+task: TASK-012
+status: pass
+summary: Saves, workspace notes, and settings are written through a temporary file
+  that replaces the previous one, so a write cut short never leaves a half save in
+  place. A finished temporary file left by a cut-short replace is read. Unreadable,
+  wrong-version, and malformed saves are kept aside and a new game starts. Under a
+  custom main loop (tests, the screenshot tour) every save path is under user://tests,
+  so the player's saves are never read or replaced. A UI test resolves T01, restarts
+  from the files, and plays on to T02.
+files_changed:
+- godot/scripts/domain/save_file.gd
+- godot/scripts/autoload/game_session.gd
+- godot/scripts/autoload/workspace_session.gd
+- godot/scripts/autoload/settings.gd
+- godot/tests/test_saves.gd
+- godot/tests/ui_test_base.gd
+evidence:
+- test_a_save_cut_short_keeps_the_previous_one covers replace, a partial temporary
+  file, and a finished temporary file without the target.
+- test_unreadable_and_outdated_saves_start_a_new_game covers invalid JSON, version
+  0, and a non-dictionary state.
+- test_a_game_reloaded_mid_chapter_picks_up_where_it_was reloads after T01 and checks
+  status, notes, chat, delivery marker, and T02 arrival.
+- After the suite, the player's save.json, workspace.json, and settings.json kept
+  their earlier timestamps.
+acceptance:
+  status: pass
+  notes:
+  - DirAccess.rename_absolute replaces an existing file on Windows (probed before
+    use).
+followups:
+- Independent review before evaluation.
+commit: 2fb3b39
+kind: implementation
+role: developer
+actor: claude-developer

@@ -1,0 +1,115 @@
+task: TASK-014
+status: pass
+verdict: pass
+summary: "Commit be378e8 makes three changes: - Each OS window fits itself inside\
+  \ the desktop when it is first set up and whenever its\n  parent is resized (fit_inside).\n\
+  - The title-bar subtitle clips with an ellipsis before the buttons do. - The long\
+  \ QA Notes links wrap (Kit.long_link), so the 3:1 Arrange layout fits at\n  1280x720.\n\
+  \nThe new test_windows_fit_small_screens covers every window and the Arrange and\
+  \ side-by-side layouts at 1280x720, then after shrinking to 1024x640. For each visible\
+  \ window it checks that the window is inside the desktop and that its content's\
+  \ minimum width fits.\nFault injection shows the test is real. Without the resize\
+  \ watch, windows stick out of the 1280x720 and 1024x640 desktops. Reverting long_link\
+  \ makes QA Notes need 360 px in a 320 px window, and dropping the subtitle clip\
+  \ needs 334 px.\nI ran the screenshot tour in Korean at 1280x720, 1440x900, and\
+  \ 1920x1080 (22 PNGs each, all at the requested size) and inspected the title, lock,\
+  \ desktop, Messenger, storefront, QA Notes, Arrange/spec, report form, console,\
+  \ record, and deduction screens. No window, title bar button, taskbar item, form,\
+  \ or drop-down is off screen or clipped at any of the three sizes. The 3:1 Arrange\
+  \ layout at 1280x720 keeps QA Notes readable, with wrapped links and a ticket picker.\
+  \ Toasts overlap the bottom of QA Notes while they rise, which is by design.\nThe\
+  \ suite on HEAD passes with 64 passed and 0 failed. The findings are minor test-coverage\
+  \ gaps."
+critical_issues: 0
+findings:
+- severity: minor
+  file: godot/tests/test_workstation.gd
+  summary: The fit-on-first-layout path is not covered by a test. When I replaced
+    the initial fit_inside() in os_window.setup with the old refresh(), the suite
+    still passed 64/64. The test builds the desktop at 1440x900 and then shrinks the
+    root, so only the resize path runs. A case that starts the desktop at 1280x720
+    (or 1024x640) before the windows are created would cover a game launched in a
+    small window.
+- severity: minor
+  file: godot/tests/test_workstation.gd
+  summary: _check_on_screen compares only the content's minimum width with the window
+    width, so vertical clipping of non-scrolling content is not checked. The automated
+    test covers only 1280x720 and 1024x640. The title screen, lock screen, and taskbar
+    at 1440x900 and 1920x1080 are checked only by the screenshot tour, by eye. That
+    is acceptable for these larger, centred screens, but an assertion that the taskbar
+    fits at 1280 would be cheap.
+- severity: minor
+  file: godot/scripts/ui/os_window.gd
+  summary: fit_inside shrinks windows when the game window shrinks but never grows
+    them back. After going from 1024x640 back to 1440x900 they stay small until the
+    player resizes them or uses Arrange. Windows stay reachable, so the acceptance
+    is still met.
+acceptance:
+  no_window_or_control_off_screen_at_three_resolutions:
+    status: pass
+    evidence:
+    - 'Screenshot tour (git archive e56131e, ko) at 1280x720, 1440x900, and 1920x1080:
+      22 PNGs each, sized exactly to the request. I inspected g0-title, g1-lock, g2-desktop,
+      g3-messenger, g4a-storefront, g4b-notes-testing, g4c-spec-side-by-side, g5b-report-form,
+      g6b-console, g7-notes, g12-record, and g13b-deduction-filled. Every window and
+      its title bar buttons are inside the screen, the taskbar fits, and the report
+      form and drop-downs are fully visible.'
+    - At 1280x720, Arrange is Browser 960 px plus QA Notes 320 px. The QA Notes start
+      link, the attachment link, and 'Stuck? Ask Mina Seo for a hint' wrap within
+      the column.
+    - The tour logged no SCRIPT ERROR at any size. The GLES3 shader-cache 'err !=
+      OK' lines and the RID or texture leak lines are engine noise.
+  resizing_keeps_windows_reachable:
+    status: pass
+    evidence:
+    - test_windows_fit_small_screens shrinks the root from 1280x720 to 1024x640 with
+      all three windows open and checks that each is inside the desktop and that its
+      content fits.
+    - 'Fault injection: with the parent.resized → fit_inside connection removed, messenger
+      at (132,28) 780x668 and browser at (0,0) 960x668 fall outside the 1024x588 desktop,
+      and notes falls outside the 1280x668 desktop, so the test fails.'
+  checks_automated:
+    status: pass
+    evidence:
+    - test_windows_fit_small_screens is in the headless suite (64 passed, 0 failed
+      on HEAD).
+    - 'Fault injection: reverting Kit.long_link fails it (notes needs 360 px vs 320),
+      and removing the subtitle clip and ellipsis fails it (334 px vs 320).'
+    - screenshot_tour.gd takes a WIDTHxHEIGHT argument and sets the root and window
+      size.
+    - 'Gap: the initial fit is not covered (minor finding).'
+verification:
+  headless_suite_head:
+    status: pass
+    command: Godot_v4.7.2-stable_win64_console.exe --headless --path <scratch>/h/godot
+      -s tests/run_tests.gd
+    result: 'Tests: 64 passed, 0 failed'
+  screenshot_tour_1280x720:
+    status: pass
+    command: Godot_v4.7.2-stable_win64_console.exe --path <scratch>/h/godot --resolution
+      1280x720 --script res://tests/screenshot_tour.gd -- <scratch>/shots/1280x720
+      ko 1280x720
+    result: exit 0, 22 PNGs at 1280x720, nothing off screen
+  screenshot_tour_1440x900:
+    status: pass
+    command: '... --resolution 1440x900 ... -- <scratch>/shots/1440x900 ko 1440x900'
+    result: exit 0, 22 PNGs at 1440x900, nothing off screen
+  screenshot_tour_1920x1080:
+    status: pass
+    command: '... --resolution 1920x1080 ... -- <scratch>/shots/1920x1080 ko 1920x1080'
+    result: exit 0, 22 PNGs at 1920x1080, nothing off screen
+  fault_injection:
+    status: pass
+    command: Suite with (R1) no resize watch, (R2) no initial fit, (R3) long_link
+      reverted to link, (R4) subtitle not clipped
+    result: R1, R3, and R4 fail test_windows_fit_small_screens. R2 still passes (test
+      gap).
+reviewed_commit: be378e8e9bbfd3468da28f893582865dac5e4633
+residual_risk: Sizes other than the three checked, other aspect ratios (ultrawide,
+  4:3), and display scaling above 100% were not checked. A game launched straight
+  into a small window depends on the untested initial fit_inside. The visual check
+  is by eye on one story path through T01; later screens (Horizon views, the board-mode
+  Case File, the Final choice) were not part of the tour.
+kind: review
+role: reviewer
+actor: claude-reviewer-m4

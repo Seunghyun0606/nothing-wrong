@@ -1,0 +1,21 @@
+task: TASK-012
+status: pass
+summary: The headless Godot suite passes with the save tests.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 60 passed, 0 failed.
+  integration_test:
+    status: pass
+    result: The mid-chapter reload UI test and test_full_story pass.
+  typecheck:
+    status: pass
+    result: All scripts parse.
+  build:
+    status: pass
+    command: Godot --headless --export-release "Windows Desktop"
+    result: Export succeeds (gate added in TASK-013).
+kind: test
+role: qa
+actor: claude-automated-tests

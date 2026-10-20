@@ -1,0 +1,22 @@
+task: TASK-013
+status: pass
+summary: Export and the exported self-check pass; the suite passes.
+verification:
+  build:
+    status: pass
+    command: Godot --headless --path godot --export-release "Windows Desktop" build/windows/NothingWrong.exe
+    result: Export completed.
+  integration_test:
+    status: pass
+    command: NothingWrong.exe --headless --quit-after 3000 -- --self-check
+    result: Self-check passed, exit 0.
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 64 passed, 0 failed.
+  typecheck:
+    status: pass
+    result: Headless import and suite load without parse errors.
+kind: test
+role: qa
+actor: claude-automated-tests

@@ -1,0 +1,41 @@
+task: TASK-014
+decision: PASS
+status: pass
+summary: Windows and QA Notes fit the desktop at 1280x720, 1440x900, and 1920x1080
+  and after the game window shrinks.
+critical_issues: 0
+evidence:
+- Implementation handoff and automated test evidence are stored for TASK-014.
+- Independent review (claude-reviewer-m4) passed with zero critical issues; review
+  fixes are in be378e8.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 64 passed, 0 failed at 113caf3.
+  integration_test:
+    status: pass
+    result: test_full_story and the UI tests pass.
+  typecheck:
+    status: pass
+    result: Headless import and suite load without parse errors.
+  build:
+    status: pass
+    result: Windows export succeeds; self-check passes on the exported build and from
+      the editor binary.
+  independent_review:
+    status: pass
+    actor: claude-reviewer-m4
+  project_os:
+    status: pass
+    command: projectctl doctor
+quality:
+  passed: true
+  missing: []
+  failed: []
+followups:
+- Windows do not grow back when the game window gets larger again.
+- The fit test checks content width, not height.
+kind: evaluation
+role: evaluator
+actor: claude-evaluator-m4

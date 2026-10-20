@@ -1,0 +1,174 @@
+task: TASK-015
+status: pass
+verdict: pass
+summary: 'Commit 7616050, checked against the tree at e56131e. It moves TESTING.md,
+  the README, and the playtest kit to the Godot build, adds spec notes that point
+  to the replacing decisions, fixes 3 Korean strings, removes 26 Korean strings, and
+  adds test_key_terms_have_one_korean_wording.
+
+  The 26 removed keys are unused. Not one appears in any .gd, .tscn, .json, or .cfg
+  under godot/scripts, scenes, data, or project.godot, either raw or JSON-escaped.
+  Their distinctive parts (Tracker, Create report, Report guide, Bug report, Test
+  Workspace) also appear nowhere. Kit.t and Kit.tf look up the English template before
+  formatting, and the dynamic label sources (APP_TITLES, Kit.STATUS_LABELS, the "📝
+  Report to %s" and "📌 Note" templates) never build a removed key. The 3 changed values
+  are in use and match the rest of the file: Ticket is 티켓 and report is 보고.
+
+  The commands, file names, test names, controls, and save paths in TESTING.md, the
+  README, the participant guide, and the session template match the code. Web-build
+  commands appear only under "Frozen web build (reference only)". Every spec note
+  cites a decision file that exists and actually replaced the rule named. projectctl
+  doctor passes. The suite on HEAD passes with 64 passed and 0 failed.
+
+  The acceptance criteria are met. One wording problem sits outside the test''s reach:
+  "📌 Note" and story "record" are both 기록 in Korean ("📌 기록" / "QA 노트에 기록됨" next to
+  "기록 발견" / "기록 찾기"), in a game whose loop depends on telling a note from a record.
+  I saw both on screen in the 1280x720 tour. The test is a short deny list, so it
+  cannot catch that kind of clash or new variants. The other findings are small doc
+  inaccuracies.'
+critical_issues: 0
+findings:
+- severity: major
+  file: godot/i18n/ko.json
+  summary: 'Two key terms share one Korean word. The player''s Note action and notes
+    use 기록: "📌 Note" → "📌 기록", "What I noted · %d" → "내가 기록한 것", the toast "QA 노트에
+    기록됨", about 62 values. Intranet records are also 기록: "Record found" → "기록 발견",
+    "Find the record" → "기록 찾기", "Record not found yet" → "아직 기록을 찾지 못함" on the Case
+    File, about 84 values. The screenshots g6b-console (Note toast) and g12-record
+    ("기록 발견" toast) show both on screen. Each English term has one Korean wording,
+    so the criterion holds literally. But the scope "keep player-facing terms the
+    same everywhere" aims at terms the player can tell apart, and the clue loop depends
+    on that. This needs a product or wording decision, for example 메모 or 표시 for Note,
+    or 문서 or 자료 for record. It is not a code defect.'
+- severity: minor
+  file: godot/tests/test_workstation.gd
+  summary: 'test_key_terms_have_one_korean_wording scans every ko.json value, but
+    only against a fixed deny list of six entries: Ticket, 리포트, QA노트/QA 트래커/QA Tracker,
+    케이스 파일/사건파일/Case File, 디렉터리/디렉토리, and 추론. The 추론 entry checks nothing today (0
+    hits). The test does not check that a value whose English key contains a term
+    uses the chosen word, so a new variant passes. Examples: 보고서 for report (4 values,
+    such as "Our report stays on file"), or leftover English "Evidence", "Messenger",
+    or "QA Notes". A positive check (key contains X → value contains Y) for the main
+    terms would close this. TESTING.md''s line "each key term has one wording" overstates
+    what the test proves.'
+- severity: minor
+  file: godot/i18n/ko.json
+  summary: The player's own notes have two wordings. "My notes" → "내 메모" and "keep
+    the rest in your notes" → "메모에", but "Erase all progress, Evidence, and notes?"
+    → "노트" and the new d297b8d notice "Your saved notes could not be read…" → "노트".
+- severity: minor
+  file: docs/playtest/TASK-010-session-template.md
+  summary: '"First clock-out" is placed after T05, but the first clock-out happens
+    after T02 (T02 is Tue 13:40, T03 is Wed 10:20). test_ui_flow.gd asserts "T03 is
+    tomorrow: the day is over".'
+- severity: minor
+  file: docs/development/TESTING.md
+  summary: It says one "Parse JSON failed" line comes from a test with a broken save.
+    At e56131e, two tests feed "{not json" (test_saves.gd:52 and :70), so there are
+    two lines. The sentence "Give participants only the participant guide. This guide
+    names defects and answers" reads as if the participant guide names the answers;
+    it means TESTING.md and the template.
+- severity: minor
+  file: specs/feature/qa-core-loop.md
+  summary: The note says that after a report the player must find a record and answer
+    a deduction before the next Ticket comes. That holds for the Chapter 1-4 pattern,
+    but 30 of 42 Tickets (T13-T42) have no story.discovery step, and 23 have no deduction
+    (for example T05 and T13-T18). specs/feature/foundation-task.md and specs/product/00-initial-plan.md
+    still describe QA Tracker, XP, Reputation, and React. They are labelled REFERENCE
+    but do not point to DEC-007, DEC-008, or DEC-010.
+- severity: minor
+  file: docs/playtest/TASK-010-codex-walkthrough.md
+  summary: The file still describes the web build at 6c3faa8. A "Historical" banner
+    now points to DEC-016 and the session template. That is acceptable for a historical
+    record, but the walkthrough itself does not cover the Godot build.
+acceptance:
+  testing_and_playtest_kit_run_godot_build:
+    status: pass
+    evidence:
+    - 'TESTING.md gate table (e56131e): suite `--headless --path godot --script res://tests/run_tests.gd`
+      (''Tests: N passed'', run_tests.gd:40), import typecheck, `--export-release
+      "Windows Desktop" build/windows/NothingWrong.exe` (export_presets.cfg:3,12),
+      `--headless --quit-after 3000 -- --self-check` (''Self-check passed'', self_check.gd:84),
+      and projectctl doctor.'
+    - Screenshot tour arguments `<out> [en|ko] [WxH]` match screenshot_tour.gd. Save
+      names, including save.unreadable.json, match game_session.gd, workspace_session.gd,
+      and settings.gd.
+    - 'The participant guide''s controls exist in the game: Start work, Sign in, Arrange
+      (화면 정렬), Start test, ''Stuck? Ask %s for a hint'', 📌 Note, Clock out, New game.
+      The full-story coverage claims (T01-T42, the 7 NO ISSUE FOUND Tickets, T11 two
+      defects, the ending) match test_full_story.'
+    - npm, Vite, localStorage, and port 4173 appear only under 'Frozen web build (reference
+      only)' (TESTING.md:52-55).
+  key_terms_one_korean_translation_tested:
+    status: pass
+    evidence:
+    - test_key_terms_have_one_korean_wording loops over all ko.json values (1578)
+      against the deny list, and it passes on HEAD.
+    - 'My scan, by key term: Messenger → 메신저 18/18, Browser → 브라우저 28/28, QA Notes
+      → QA 노트 21/21, Case File → 사건 파일 19/19, Evidence → 증거 23/24 (the last is a placeholder),
+      clue → 단서 26/26. No ko value still contains ''Ticket''.'
+    - 'Caveats: the test is a deny list only, and Note and record share 기록 (major
+      and minor findings).'
+  specs_point_to_replacing_decisions:
+    status: pass
+    evidence:
+    - The notes in domain-model.md (DEC-010, DEC-016), system-design.md (DEC-007,
+      DEC-008), qa-core-loop.md (DEC-009, DEC-010, DEC-015), mvp-scope.md (DEC-008,
+      DEC-010, DEC-016), and first-playable-flow.md (DEC-010, DEC-015) all cite decision
+      files that exist and that replaced the rule named. game_state.gd keeps career
+      with no xp or reputation fields, and test_shoply_never_branches_on_a_ticket
+      exists.
+    - 'Gaps: the qa-core-loop note overgeneralises, and foundation-task.md and 00-initial-plan.md
+      carry no pointer (minor finding).'
+  removed_strings_unused:
+    status: pass
+    evidence:
+    - 'git show 7616050 -- godot/i18n/ko.json: 26 keys removed and 3 values changed.
+      Searching every removed key, raw and JSON-escaped, across godot/scripts, scenes,
+      data, and project.godot at e56131e gives 0 hits each. Distinctive parts (''Tracker'',
+      ''Create report'', ''Report guide'', ''Bug report'', ''waiting in'', ''Test
+      Workspace'') also give 0 hits. The only ''QA Tracker'' left is the deny list
+      in test_workstation.gd.'
+    - Kit.t(text) is TranslationServer.translate(text), and Kit.tf translates the
+      template and then applies %, so runtime keys are literal templates. No dynamic
+      source (APP_TITLES, STATUS_LABELS, Report and Note templates) builds a removed
+      key.
+    - 'Note: about 292 other ko keys are also not referenced literally (old Capture,
+      Flag, XP, Reputation strings). They are harmless dead entries; the commit''s
+      cleanup is partial.'
+verification:
+  headless_suite_head:
+    status: pass
+    command: Godot_v4.7.2-stable_win64_console.exe --headless --path <scratch>/h/godot
+      -s tests/run_tests.gd (git archive e56131e)
+    result: 'Tests: 64 passed, 0 failed (test_key_terms_have_one_korean_wording passes)'
+  projectctl_doctor:
+    status: pass
+    command: projectctl doctor (repository root)
+    result: 'PASS: Project OS structure and backlog references are consistent. Exit
+      0, and git status was unchanged.'
+  removed_key_search:
+    status: pass
+    command: Python search of the 26 removed keys (raw and JSON-escaped) over the
+      e56131e godot tree
+    result: 0 references
+  terminology_scan:
+    status: pass
+    command: 'Python scan of ko.json: English key term → Korean wordings in values'
+    result: One wording per term for Ticket, Messenger, Browser, QA Notes, Case File,
+      Evidence, and clue. Note and record share 기록. Player notes are split between
+      메모 and 노트.
+  screenshot_terms:
+    status: pass
+    command: Visual check of the ko tour PNGs at 1280x720
+    result: Terms show consistently (티켓, QA 노트, 사건 파일, 메신저). '📌 기록' (Note) and '기록
+      발견' (record) both appear.
+reviewed_commit: 761605082466ccf5649d35bbdd83b59756897bed
+residual_risk: The term test only blocks known variants, so new strings can bring
+  in new wordings. The Note/record overlap may confuse playtest participants in Korean
+  and should be decided before the TASK-010 session. About 292 dead ko.json keys remain.
+  The playtest kit has not yet been run by a person against the Godot build, and the
+  session template's day boundaries (clock-out after T02) need correcting before use.
+kind: review
+role: reviewer
+actor: claude-reviewer-m4

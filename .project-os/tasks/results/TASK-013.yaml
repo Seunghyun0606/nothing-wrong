@@ -1,0 +1,32 @@
+task: TASK-013
+status: pass
+summary: A committed Windows Desktop export preset (no credentials; data and i18n
+  JSON included, tests excluded) exports headless. The SelfCheck autoload, run with
+  `--headless --quit-after 3000 -- --self-check`, parses every content file, opens
+  each screen once on a session that saves under user://tests, and prints "Self-check
+  passed" with exit 0 only when nothing is missing and no error was logged. The export
+  and check commands are in godot/README.md and docs/development/TESTING.md.
+files_changed:
+- godot/export_presets.cfg
+- godot/.gitignore
+- godot/project.godot
+- godot/scripts/autoload/self_check.gd
+- godot/scripts/domain/save_file.gd
+- godot/scripts/ui/main.gd
+- godot/README.md
+- docs/development/TESTING.md
+evidence:
+- Exported NothingWrong.exe self-check printed Self-check passed with tickets 42,
+  chapters 10, records 25, views 30, people 8; exit 0.
+- Fault injection in a copy (editor binary) - missing shoply.json exits 1; a runtime
+  error in lock_screen.gd exits 1 naming the error; a parse error in title_screen.gd
+  prints no passed line. Release templates do not report runtime errors (review),
+  so the gate also runs the check from the editor binary (113caf3).
+acceptance:
+  status: pass
+followups:
+- Code signing and installers stay out of scope.
+commit: 113caf3
+kind: implementation
+role: developer
+actor: claude-developer

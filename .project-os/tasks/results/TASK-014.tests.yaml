@@ -1,0 +1,20 @@
+task: TASK-014
+status: pass
+summary: The suite and the screenshot tours pass.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 64 passed, 0 failed.
+  integration_test:
+    status: pass
+    command: screenshot_tour.gd at 1280x720, 1440x900, 1920x1080
+    result: No window past the taskbar or screen edge.
+  typecheck:
+    status: pass
+  build:
+    status: pass
+    result: Windows export and self-check pass (TASK-013).
+kind: test
+role: qa
+actor: claude-automated-tests

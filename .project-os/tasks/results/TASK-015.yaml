@@ -1,0 +1,30 @@
+task: TASK-015
+status: pass
+summary: TESTING.md leads with the Godot gates, visual check, and export self-check
+  and keeps the web build as reference. The playtest participant guide and session
+  template run the Godot build of the whole game; the old walkthrough is marked historical.
+  Web-era specs carry status notes pointing to the decisions that replaced them. Korean
+  - three strings now use 티켓 and 보고, 26 unused QA Tracker strings are removed, and
+  a test keeps each key term to one Korean wording.
+files_changed:
+- docs/development/TESTING.md
+- docs/playtest/TASK-010-participant-guide.md
+- docs/playtest/TASK-010-session-template.md
+- docs/playtest/TASK-010-codex-walkthrough.md
+- specs/product/mvp-scope.md
+- specs/feature/qa-core-loop.md
+- specs/architecture/domain-model.md
+- specs/architecture/system-design.md
+- specs/ux/first-playable-flow.md
+- godot/README.md
+- godot/i18n/ko.json
+- godot/tests/test_workstation.gd
+evidence:
+- test_key_terms_have_one_korean_wording passes.
+- Removed strings were checked against every script, scene, data file, and test.
+acceptance:
+  status: pass
+commit: 7616050
+kind: implementation
+role: developer
+actor: claude-developer

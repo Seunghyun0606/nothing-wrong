@@ -1,0 +1,43 @@
+task: TASK-012
+decision: PASS
+status: pass
+summary: Saves survive interrupted writes, unreadable and outdated saves and notes
+  are set aside whole, tests never touch the player's saves, and a mid-chapter reload
+  plays on.
+critical_issues: 0
+evidence:
+- Implementation handoff and automated test evidence are stored for TASK-012.
+- Independent review (claude-reviewer-m4) passed with zero critical issues; review
+  fixes are in d297b8d.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 64 passed, 0 failed at 113caf3.
+  integration_test:
+    status: pass
+    result: test_full_story and the UI tests pass.
+  typecheck:
+    status: pass
+    result: Headless import and suite load without parse errors.
+  build:
+    status: pass
+    result: Windows export succeeds; self-check passes on the exported build and from
+      the editor binary.
+  independent_review:
+    status: pass
+    actor: claude-reviewer-m4
+  project_os:
+    status: pass
+    command: projectctl doctor
+quality:
+  passed: true
+  missing: []
+  failed: []
+followups:
+- A second recovery replaces the earlier backup file.
+- When only save.json is unreadable, the new game keeps the old notes (pre-existing
+  behaviour).
+kind: evaluation
+role: evaluator
+actor: claude-evaluator-m4

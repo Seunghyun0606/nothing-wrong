@@ -1,0 +1,160 @@
+task: TASK-013
+status: pass
+verdict: pass
+summary: "Re-review of fb85e6f, 7616050 (README export section), and e56131e (self_check.gd).\
+  \ The export from HEAD finishes headless with exit 0. It packs all 7 data files\
+  \ and ko.json plus self_check.gdc, and no tests/.\nThe documented check, `NothingWrong.exe\
+  \ --headless --quit-after 3000 -- --self-check`, prints \"Self-check passed: {chapters:10,\
+  \ people:8, records:25, tickets:42, views:30}\" and exits 0 in about 1.1 s. It used\
+  \ user://tests and nothing was written there, and a planted unreadable save.json\
+  \ in the user folder was left untouched.\nOn exported release builds, three faults\
+  \ fail as required: - A missing shoply.json gives exit 1 (\"missing res://data/shoply.json\"\
+  ). - A parse error in title_screen.gd gives exit 1 (\"the main scene has no script\"\
+  ). - A parse error in game_session.gd crashes the run with a nonzero exit.\nBoth\
+  \ earlier major findings are fixed. The export and check commands are documented\
+  \ in README and TESTING, and the check now opens every screen and fails on errors\
+  \ logged while it runs.\nTwo blind spots remain: - A GDScript runtime error is not\
+  \ reported by a release export. I added a null call to\n  lock_screen.gd's _ready.\
+  \ The editor run and a debug export both fail with exit 1 and name\n  the error,\
+  \ but the release build prints \"Self-check passed\" and exits 0. The coordinator's\n\
+  \  \"runtime error → exit 1\" result holds only for editor or debug runs.\n- Errors\
+  \ logged before the logger is installed (during autoload _ready) are not counted.\n\
+  Also, a parse error in self_check.gd itself leaves no check: the run ends at --quit-after\
+  \ with exit 0 and no \"Self-check\" line. The docs do say that a missing line means\
+  \ failure.\nThe documented PowerShell call `& NothingWrong.exe ...` does not wait\
+  \ for the GUI-subsystem release exe, so $LASTEXITCODE is not set. Piping it (`|\
+  \ Out-String`) or using Start-Process -Wait gives the real code.\nThe acceptance\
+  \ criteria are met. The remaining gaps are in how strong the gate is, and they are\
+  \ covered by the editor suite."
+critical_issues: 0
+findings:
+- severity: minor
+  file: godot/scripts/autoload/self_check.gd
+  summary: "Release export templates do not report GDScript runtime errors, so the\
+    \ release self-check cannot see them. Reproduced: I added `var _boom = null; _boom.explode()`\
+    \ in lock_screen.gd _ready. - Editor run (`--path <copy> --quit-after 3000 --\
+    \ --self-check`): exit 1, \"error: Invalid\n  call. Nonexistent function 'explode'\
+    \ in base 'Nil'. (lock_screen.gd:17)\".\n- Debug export: the same, exit 1. - Release\
+    \ export: \"Self-check passed\", exit 0. The commit message (\"a runtime error\
+    \ ... fails it\") is true only for editor or debug builds. To make runtime errors\
+    \ part of the gate, also run the check on an `--export-debug` build or in the\
+    \ editor (`--headless --path godot --quit-after 3000 -- --self-check`), and document\
+    \ that."
+- severity: minor
+  file: godot/scripts/autoload/self_check.gd
+  summary: The logger is added inside _run, which is deferred from SelfCheck._ready.
+    Errors raised earlier during startup (other autoloads' _ready, main.gd's first
+    show_title) are not counted. A push_error("boom at startup") in DesktopSession._ready
+    was printed, but the release check said "Self-check passed" with exit 0. Missing
+    or unreadable content is still caught by the CONTENT parse, and show_title is
+    opened again at the end.
+- severity: minor
+  file: godot/README.md
+  summary: 'The documented `& godot\build\windows\NothingWrong.exe --headless --quit-after
+    3000 -- --self-check` launches a GUI-subsystem exe (export_console_wrapper=1 builds
+    a console wrapper only for debug exports). PowerShell does not wait for it and
+    does not set $LASTEXITCODE: after a failing build it stayed at the sentinel 12345.
+    Appending `| Out-String` (it then returned 1 and 0 correctly), using Start-Process
+    -Wait -PassThru, or exporting a console wrapper makes the exit code usable. A
+    parse error in self_check.gd itself exits 0 at --quit-after (about 21 s) with
+    no Self-check line, so a gate that reads only the exit code would pass it. The
+    docs do say a missing line is a failure. TESTING.md has the same command.'
+- severity: minor
+  file: godot/scripts/autoload/self_check.gd
+  summary: The header comment says `--quit-after 2000`, while README and TESTING say
+    3000.
+acceptance:
+  export_completes_from_command_line:
+    status: pass
+    evidence:
+    - 'Export of HEAD (git archive e56131e, templates copied into a redirected APPDATA):
+      exit 0, NothingWrong.exe 110,065,256 bytes. The savepack includes data/canon,
+      horizon, intranet, key_terms, people, scenarios, and shoply .json, i18n/ko.json,
+      and scripts/autoload/self_check.gdc, with no tests/.'
+    - 'Preset unchanged since the first review: no credentials, codesign off, and
+      build/ and .godot/ ignored.'
+  exported_game_loads_all_content_without_script_error:
+    status: pass
+    evidence:
+    - 'Clean release build: ''Self-check passed: {chapters:10, people:8, records:25,
+      tickets:42, views:30}'', exit 0, 1.1 s, empty stderr.'
+    - 'shoply.json excluded: exit 1, ''- missing res://data/shoply.json''.'
+    - 'Parse error in title_screen.gd: exit 1, ''- the main scene has no script''.'
+    - 'Parse error in game_session.gd: crash, exit -1073741819 (nonzero).'
+    - 'Gaps (minor findings): a runtime error in lock_screen.gd passes on the release
+      build (exit 0) but fails in the editor and on a debug export (exit 1). A push_error
+      during startup passes. A parse error in self_check.gd exits 0 with no Self-check
+      line.'
+  export_command_documented:
+    status: pass
+    evidence:
+    - godot/README.md '## Build' gives the --export-release command and `--headless
+      --quit-after 3000 -- --self-check`, and explains that only a 'Self-check passed'
+      line with exit 0 is a pass.
+    - docs/development/TESTING.md gate table has the Build and Build content rows
+      with the same commands.
+    - 'Caveat: the PowerShell `&` form does not give an exit code for the GUI exe
+      (minor finding).'
+verification:
+  export_release_headless:
+    status: pass
+    command: Godot_v4.7.2-stable_win64_console.exe --headless --path <scratch>/h/godot
+      --export-release "Windows Desktop" <scratch>\exh\NothingWrong.exe
+    result: exit 0
+  exported_self_check:
+    status: pass
+    command: Start-Process exh\NothingWrong.exe -ArgumentList '--headless','--quit-after','3000','--','--self-check'
+      -Wait -PassThru (APPDATA with planted saves)
+    result: exit 0, 'Self-check passed', planted saves untouched (mtime 2020-01-01),
+      no user://tests files left
+  fault_missing_shoply:
+    status: pass
+    command: exclude_filter="tests/*, data/shoply.json", release export, self-check
+    result: exit 1
+  fault_parse_error_title_screen:
+    status: pass
+    command: '''func broken(:'' appended to scripts/ui/title_screen.gd, release export,
+      self-check'
+    result: exit 1, 'the main scene has no script'
+  fault_parse_error_autoload:
+    status: pass
+    command: '''func broken(:'' appended to scripts/autoload/game_session.gd, release
+      export, self-check'
+    result: crash, exit -1073741819, no passed line
+  fault_parse_error_self_check:
+    status: fail
+    command: '''func broken(:'' appended to scripts/autoload/self_check.gd, release
+      export, self-check'
+    result: exit 0 after about 21 s (--quit-after), no Self-check line. Only the documented
+      'no line means failure' rule catches it.
+  fault_runtime_error_release:
+    status: fail
+    command: null call added in lock_screen.gd _ready, release export, self-check
+    result: '''Self-check passed'', exit 0'
+  fault_runtime_error_editor_and_debug:
+    status: pass
+    command: 'Same copy: editor `--headless --path <copy> --quit-after 3000 -- --self-check`,
+      and an --export-debug build'
+    result: exit 1 in both runs, with the error named
+  fault_startup_push_error:
+    status: fail
+    command: push_error('boom at startup') in DesktopSession._ready, release export,
+      self-check
+    result: ERROR printed, but 'Self-check passed', exit 0
+  documented_powershell_invocation:
+    status: fail
+    command: '& NothingWrong.exe --headless --quit-after 3000 -- --self-check; $LASTEXITCODE'
+    result: $LASTEXITCODE unchanged (sentinel 12345) for a failing build. With `|
+      Out-String` it is 1 for a failing build and 0 for a good one.
+reviewed_commit: e56131e2aad24527b7de98f818615c0f4de5ed4b
+residual_risk: 'The release-build gate proves the packaging: content is present and
+  parseable, the main scene and its preload chain compile, and every screen opens.
+  It does not see GDScript runtime errors, which release templates do not report,
+  or errors logged before the check starts. Those rely on the editor suite and an
+  editor or debug self-check. A gate that reads only exit codes must also require
+  the ''Self-check passed'' line and capture the exit code correctly for the GUI-subsystem
+  exe. The exe has not been launched with a window (rendering and IME) as part of
+  the gate.'
+kind: review
+role: reviewer
+actor: claude-reviewer-m4

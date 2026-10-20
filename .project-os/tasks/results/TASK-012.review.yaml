@@ -1,0 +1,128 @@
+task: TASK-012
+status: pass
+verdict: pass
+summary: 'Re-review of 2fb3b39..d297b8d. Every earlier finding is fixed.
+
+  Workspace saves: an unreadable or wrong-version workspace.json is moved to workspace.unreadable.json,
+  and the title screen tells the player. I planted the same version-2 notes file that
+  lost data in the first review. In a normal run the file was kept word for word,
+  the new note went into a fresh workspace.json, and the title screen showed the notice
+  "saved notes could not be read".
+
+  Setting aside: SaveFile.set_aside moves the bad file and removes it only once the
+  backup exists, and GameSession uses it too.
+
+  Leftover temporary file: a lone .tmp is now moved into place before the next write.
+  The double-interruption case that lost the save in the first review now keeps it
+  in 11 of 11 runs, including runs killed during the next write. The single hard-kill
+  stress test still passes 5 of 5.
+
+  Tests: the new in-place test, which makes the .tmp path a directory, fails when
+  I fault-inject a direct in-place write. The new workspace test fails when the set-aside
+  is removed. The reload test now also compares the notes word for word and the leads.
+
+  Player saves: the suite on HEAD e56131e gives 64 passed and 0 failed. Planted player
+  saves were byte-identical afterwards, and the real player saves are unchanged.
+
+  What remains is minor.'
+critical_issues: 0
+findings:
+- severity: minor
+  file: godot/scripts/autoload/workspace_session.gd
+  summary: 'Some combinations are still not covered. (a) When save.json is unreadable
+    but workspace.json is fine, a new game starts that still carries the old game''s
+    notes and Evidence. This was already the case before the task. (b) A second recovery
+    overwrites the earlier *.unreadable.json, because rename_absolute replaces it,
+    so only the most recent bad file is kept. (c) A version-1 workspace whose fields
+    have the wrong type (for example "notes": []) still causes a typed-assignment
+    runtime error instead of being set aside.'
+- severity: minor
+  file: godot/i18n/ko.json
+  summary: The new notice "Your saved notes could not be read…" says 노트 ("저장된 노트를…").
+    Elsewhere the player's own notes are 메모 ("My notes" → "내 메모", "keep the rest in
+    your notes" → "메모에"), and 노트 otherwise appears only in the app name "QA 노트". Consider
+    "QA 노트 내용" or 메모 to match.
+- severity: minor
+  file: godot/scripts/ui/title_screen.gd
+  summary: When both saves are unreadable, only the game-save notice is shown (it
+    uses if/elif). The workspace backup is still made, so no data is lost; only the
+    second message is dropped.
+acceptance:
+  save_never_half_written:
+    status: pass
+    evidence:
+    - 'Hard kill during a 4 MB SaveFile.write loop (scratch copy of HEAD): 5 of 5
+      runs left a whole, valid save.'
+    - 'Double interruption, starting with only a good kill.json.tmp and no target,
+      killed after 5-40 ms: 11 of 11 runs left a whole save. The 15 ms run, which
+      left a 0-byte file before the fix, now keeps n=216. The 17 ms and 20 ms runs
+      show the copy was moved into place and the next temporary write was cut short,
+      with the old copy intact.'
+    - 'Fault injection: with write() writing straight to the target, test_a_save_is_never_written_in_place
+      fails (''the write fails'', ''the old save is whole expected old but got new'').'
+  unreadable_saves_kept_aside:
+    status: pass
+    evidence:
+    - 'Normal run, workspace.json = {version: 2, notes: {T01: ''my precious notes''},
+      evidence: [E1]}: ws_recovered=true, notes_notice=true, workspace.unreadable.json
+      kept the original byte for byte, and set_note wrote a new workspace.json.'
+    - 'Normal run with save.json and workspace.json both ''{bad'': both backups were
+      created, and the game-save notice was shown.'
+    - 'Fault injection: removing the workspace set_aside makes test_unreadable_notes_are_kept_aside
+      fail.'
+    - 'The game-save path is unchanged and still covered: version 0, invalid JSON,
+      and a non-dictionary state are set aside, as checked in the first review.'
+  mid_chapter_reload_restores_state:
+    status: pass
+    evidence:
+    - The test now compares WorkspaceSession.notes (a deep copy) and GameState.lead_terms
+      after the reload, in addition to status, Evidence, chat, pendingDiscovery, and
+      deliveredId.
+    - In the first review, making SaveFile.write a no-op made this test fail, so it
+      reads from disk.
+  tests_never_touch_player_saves:
+    status: pass
+    evidence:
+    - 'HEAD suite run with planted player-like save.json, settings.json, and workspace.json
+      (mtime 2020-01-01) in a redirected user folder: all three sha256 OK afterwards,
+      and user://tests was left empty.'
+    - SaveFile.path also uses user://tests under --self-check. The exported self-check
+      left a planted unreadable save.json in place (mtime 2020-01-01).
+    - The real %APPDATA%\Godot\app_userdata\Nothing Wrong save.json, settings.json,
+      and workspace.json still match their pre-review sha256.
+verification:
+  headless_suite_head:
+    status: pass
+    command: Godot_v4.7.2-stable_win64_console.exe --headless --path <scratch>/h/godot
+      -s tests/run_tests.gd (git archive e56131e, APPDATA redirected)
+    result: 'Tests: 64 passed, 0 failed. The expected ''Parse JSON failed'' lines
+      come from the bad-save tests.'
+  hard_kill_stress:
+    status: pass
+    command: 'killwrite.gd: OS.kill(self) after N ms while looping SaveFile.write
+      (N = 900..3600)'
+    result: 5 of 5 left a whole save.
+  double_interruption:
+    status: pass
+    command: Same script, starting with only kill.json.tmp, N = 5..40 ms
+    result: 11 of 11 left a whole save (the first review had 1 data loss in 11).
+  fault_injection:
+    status: pass
+    command: Suite with (1) write() going straight to the target, (2) workspace set_aside
+      removed
+    result: (1) test_a_save_is_never_written_in_place fails. (2) test_unreadable_notes_are_kept_aside
+      fails.
+  normal_run_workspace_recovery:
+    status: pass
+    command: Probe autoload, normal headless run, wrong-version workspace.json, then
+      set_note
+    result: Backup kept, notice shown, new notes saved, paths under user://.
+reviewed_commit: d297b8d983f84b4bb161919d25f4b1bab9e095db
+residual_risk: There is no fsync before the rename, so on power loss (not a process
+  kill) NTFS can still leave a stale or zero-length file. Only the latest unreadable
+  file of each kind is kept. When only the game save is unreadable, the new game keeps
+  the old notes. The test-path switch relies on test drivers using a scripted main
+  loop or --self-check.
+kind: review
+role: reviewer
+actor: claude-reviewer-m4

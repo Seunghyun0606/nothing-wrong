@@ -1,0 +1,26 @@
+task: TASK-014
+status: pass
+summary: Windows fit the desktop when they first open and whenever the game window
+  changes size (OsWindow.fit_inside); the title-bar subtitle shrinks before the buttons;
+  QA Notes links wrap and the window width is watched at once, so the 3:1 Arrange
+  layout fits at 1280x720. The screenshot tour takes a screen size, and a test checks
+  every window and its content at 1280x720 and 1024x640.
+files_changed:
+- godot/scripts/ui/os_window.gd
+- godot/scripts/ui/kit.gd
+- godot/scripts/ui/apps/notes_app.gd
+- godot/tests/test_workstation.gd
+- godot/tests/screenshot_tour.gd
+evidence:
+- Before - at 1280x720 Messenger ran under the taskbar and QA Notes at 320 px needed
+  360 to 433 px, hiding its close button.
+- After - screenshot tours at 1280x720, 1440x900, 1920x1080 show every window above
+  the taskbar with all three title-bar buttons.
+- test_windows_fit_small_screens checks each window rect and content minimum width
+  across Ticket, reference, and Case File views and after shrinking to 1024x640.
+acceptance:
+  status: pass
+commit: be378e8
+kind: implementation
+role: developer
+actor: claude-developer
