@@ -62,9 +62,12 @@ func setup(app_id: String, glyph: String, initial: Rect2, content: Control) -> v
 	var title := Kit.label(DesktopSession.APP_TITLES[app], 15, P.TEXT, false)
 	title.add_theme_font_override("font", Kit.bold_font())
 	bar.add_child(title)
+	# The subtitle gives way first on a narrow window, so the buttons always fit.
 	_subtitle = Kit.label("", 13, P.ACCENT, false)
+	_subtitle.clip_text = true
+	_subtitle.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_subtitle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bar.add_child(_subtitle)
-	bar.add_child(Kit.spacer())
 	for control in [["–", "Minimize", func(): DesktopSession.minimize_app(app)],
 			["□", "Maximize", func(): DesktopSession.toggle_maximize(app)],
 			["×", "Close", func(): DesktopSession.close_app(app)]]:
@@ -85,7 +88,10 @@ func setup(app_id: String, glyph: String, initial: Rect2, content: Control) -> v
 	_add_handles()
 	DesktopSession.changed.connect(refresh)
 	DesktopSession.layout_requested.connect(_on_layout_requested)
-	refresh()
+	var parent := get_parent() as Control
+	if parent:
+		parent.resized.connect(fit_inside)
+	fit_inside()
 
 
 func _ignore_mouse_except_buttons(node: Node) -> void:
@@ -140,6 +146,15 @@ func refresh() -> void:
 		size = _parent_rect().size
 	else:
 		_apply(rect)
+
+
+## Keeps the whole window on the desktop when the game window changes size, including
+## the first layout, where placements made for a larger screen are pulled in.
+func fit_inside() -> void:
+	var bounds := _parent_rect().size
+	var fitted_size := rect.size.min(bounds)
+	rect = Rect2(rect.position.clamp(Vector2.ZERO, (bounds - fitted_size).max(Vector2.ZERO)), fitted_size)
+	refresh()
 
 
 func _apply(next: Rect2) -> void:

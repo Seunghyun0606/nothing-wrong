@@ -187,6 +187,14 @@ static func link(text: String, on_press: Callable) -> Button:
 	return node
 
 
+## A link whose text wraps (an address, a sentence), so a narrow window stays narrow.
+static func long_link(text: String, on_press: Callable) -> Button:
+	var node := link(text, on_press)
+	node.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return node
+
+
 static func vbox(separation: int = 8) -> VBoxContainer:
 	var node := VBoxContainer.new()
 	node.add_theme_constant_override("separation", separation)

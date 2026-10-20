@@ -1,5 +1,5 @@
 ## Renders the main screens to PNG for visual review:
-##   godot --path godot --script res://tests/screenshot_tour.gd -- <output-dir>
+##   godot --path godot --script res://tests/screenshot_tour.gd -- <output-dir> [en|ko] [WIDTHxHEIGHT]
 ## Uses a throwaway session; the player's save is not touched.
 extends SceneTree
 
@@ -7,6 +7,7 @@ const GameState := preload("res://scripts/domain/game_state.gd")
 
 var out_dir := "user://screenshots"
 var language := "en"
+var screen := Vector2i(1440, 900)
 var main: Control
 
 
@@ -16,6 +17,8 @@ func _initialize() -> void:
 		out_dir = args[0]
 	if args.size() > 1:
 		language = args[1]
+	if args.size() > 2 and args[2].contains("x"):
+		screen = Vector2i(int(args[2].get_slice("x", 0)), int(args[2].get_slice("x", 1)))
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	_tour.call_deferred()
 
@@ -57,7 +60,8 @@ func _mark(target: String) -> void:
 
 
 func _tour() -> void:
-	root.size = Vector2i(1440, 900)
+	root.size = screen
+	DisplayServer.window_set_size(screen)
 	# Autoload names are not compile-time identifiers inside a SceneTree script.
 	var GameSession: Node = root.get_node("GameSession")
 	var WorkspaceSession: Node = root.get_node("WorkspaceSession")

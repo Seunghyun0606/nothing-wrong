@@ -58,6 +58,8 @@ func _ready() -> void:
 	_scroll = Kit.scroll(Kit.margin(_document, 18, 16, 18, 16))
 	column.add_child(_scroll)
 	resized.connect(_fit)
+	# The window is usually there already; if not, it is once the frame ends.
+	_watch_window()
 	_watch_window.call_deferred()
 	for source in [GameSession.changed, WorkspaceSession.changed, DesktopSession.changed, Settings.language_changed]:
 		source.connect(_render)
@@ -213,7 +215,7 @@ func _ticket_page(scenario: Dictionary) -> void:
 		var callout := Kit.panel(P.ACCENT_SOFT, Color.TRANSPARENT, 6, 12)
 		var callout_body := Kit.vbox(6)
 		callout_body.add_child(Kit.label(Kit.tf("Testing. Open Shoply, press 📌 Note on anything that looks wrong, then report it to %s in Messenger.", ticket["sender"]["name"]), 14))
-		callout_body.add_child(Kit.link(Addresses.display(start_url), DesktopSession.open_url.bind(start_url)))
+		callout_body.add_child(Kit.long_link(Addresses.display(start_url), DesktopSession.open_url.bind(start_url)))
 		var report := Kit.button(Kit.tf("📝 Report to %s", ticket["sender"]["name"]), DesktopSession.open_report)
 		report.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		callout_body.add_child(report)
@@ -221,7 +223,7 @@ func _ticket_page(scenario: Dictionary) -> void:
 		sheet_body.add_child(callout)
 	elif status == "RESOLVED":
 		var done := Kit.hbox(10)
-		done.add_child(Kit.label("Resolved. The team took it from here.", 14, P.SUCCESS, false))
+		done.add_child(Kit.label("Resolved. The team took it from here.", 14, P.SUCCESS))
 		done.add_child(Kit.link("Open Case File", DesktopSession.show_case_file))
 		sheet_body.add_child(done)
 	_document.add_child(sheet)
@@ -242,17 +244,17 @@ func _ticket_page(scenario: Dictionary) -> void:
 	var context: Dictionary = ticket["startingContext"]
 	brief.add_child(Kit.label(Kit.tf("Account %s · Viewport %s · Locale %s", [context["account"], context["viewport"], context["locale"]]), 13, P.MUTED))
 	for attachment in ticket.get("attachments", []):
-		brief.add_child(Kit.link("📎 %s" % Kit.t(attachment["name"]), DesktopSession.open_url.bind(Addresses.doc_url(attachment["name"]))))
+		brief.add_child(Kit.long_link("📎 %s" % Kit.t(attachment["name"]), DesktopSession.open_url.bind(Addresses.doc_url(attachment["name"]))))
 	# A hint is asked for in private, in a direct message to the Ticket's sender.
 	var sender: String = ticket["sender"]["name"]
 	if not ticket.get("hints", []).is_empty():
 		if GameState.hint_asked(GameSession.state, ticket_id):
 			var asked := Kit.hbox(8)
-			asked.add_child(Kit.label(Kit.tf("You asked %s for a hint.", sender), 14, P.MUTED, false))
+			asked.add_child(Kit.label(Kit.tf("You asked %s for a hint.", sender), 14, P.MUTED))
 			asked.add_child(Kit.link("Open the conversation", DesktopSession.show_chat.bind("@%s" % sender)))
 			brief.add_child(asked)
 		elif status != "RESOLVED":
-			var ask := Kit.link(Kit.tf("Stuck? Ask %s for a hint", sender), func():
+			var ask := Kit.long_link(Kit.tf("Stuck? Ask %s for a hint", sender), func():
 				GameSession.ask_hint(ticket_id)
 				DesktopSession.show_chat("@%s" % sender))
 			ask.name = "AskHint"

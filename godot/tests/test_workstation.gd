@@ -136,3 +136,41 @@ func test_delivered_chat_survives_story_changes() -> void:
 	var after := [{ "id": "a" }, { "id": "new" }, { "id": "b" }, { "id": "c" }]
 	check_eq(DesktopSession._position_after(after, "b", 2), 3, "a message added earlier does not replay b")
 	check_eq(DesktopSession._position_after(after, "gone", 2), 2, "older saves fall back to the count")
+
+
+## Every open window, and everything in it, stays on the desktop at a small screen and
+## after the game window shrinks.
+func test_windows_fit_small_screens() -> void:
+	var desktop := _start()
+	tree.root.size = Vector2i(1280, 720)
+	GameSession.start_ticket("T01")
+	for app in ["messenger", "browser", "notes"]:
+		DesktopSession.open_app(app)
+		_check_on_screen(desktop, app)
+	DesktopSession.open_url("https://shoply.local/product/everyday-pack")
+	DesktopSession.arrange_for_testing()
+	_check_on_screen(desktop, "browser")
+	_check_on_screen(desktop, "notes")
+	DesktopSession.open_url("https://docs.northstar.local/checkout-interaction-specification")
+	_check_on_screen(desktop, "notes")
+	DesktopSession.show_case_file()
+	DesktopSession.arrange_side_by_side("browser", "notes")
+	_check_on_screen(desktop, "notes")
+	DesktopSession.open_app("messenger")
+	tree.root.size = Vector2i(1024, 640)
+	for app in ["messenger", "browser", "notes"]:
+		_check_on_screen(desktop, app)
+	tree.root.size = Vector2i(1440, 900)
+	_finish()
+
+
+func _check_on_screen(desktop: Control, app: String) -> void:
+	var window: Control = desktop.windows[app]
+	if not window.visible:
+		return
+	var layer := (window.get_parent() as Control).get_global_rect()
+	var area := window.get_global_rect()
+	check(layer.grow(0.5).encloses(area), "%s at %s fits the desktop %s" % [app, area, layer])
+	var column: Control = window.get_children().filter(func(child): return child is VBoxContainer)[0]
+	check(column.get_combined_minimum_size().x <= window.size.x + 0.5,
+		"%s content needs %.0f px but the window is %.0f" % [app, column.get_combined_minimum_size().x, window.size.x])
