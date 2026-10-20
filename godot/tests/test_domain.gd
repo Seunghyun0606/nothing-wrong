@@ -167,6 +167,8 @@ func test_chapter_two_defects_depend_on_the_device() -> void:
 	mobile["test"]["viewport"] = "MOBILE"
 	check_eq(Mutations.resolve("cart.shipping", 0.0, mobile, t06), 5.0, "mobile carts pay shipping")
 	check_eq(Mutations.resolve("cart.shipping", 0.0, _context("/shoply/cart", 2), t06), 0.0, "desktop is free")
+	mobile["product"]["cart"]["quantity"] = 1
+	check_eq(Mutations.resolve("cart.shipping", 0.0, mobile, t06), 0.0, "one item is untouched; the defect starts at two")
 	var t07: Array = _catalog().get_scenario("T07")["mutations"]
 	var tablet := _context("/shoply/orders/order-1042", 0)
 	tablet["test"]["viewport"] = "TABLET"
@@ -202,6 +204,9 @@ func test_t04_mutation_requires_gold_save20_and_three_items() -> void:
 func test_every_mutation_is_active_only_under_its_conditions() -> void:
 	var catalog := _catalog()
 	var product := FileAccess.get_file_as_string("res://scripts/ui/shoply/shoply_view.gd")
+	check(not product.is_empty(), "the Shoply view is where the test looks")
+	# The fields the game puts in the QA context; a misspelled field would never match.
+	var real: Dictionary = DesktopSession.qa_context()
 	var count := 0
 	for ticket_id in catalog.ticket_ids():
 		for mutation in catalog.get_scenario(ticket_id)["mutations"]:
@@ -209,6 +214,8 @@ func test_every_mutation_is_active_only_under_its_conditions() -> void:
 			var id := str(mutation["id"])
 			check(product.contains('mutate.call("%s"' % mutation["target"]), "%s changes a target Shoply reads" % id)
 			var conditions: Array = mutation.get("conditions", [])
+			for condition in conditions:
+				check(not Conditions.is_missing(Conditions.read_value(condition["field"], real)), "%s reads %s, which the game provides" % [id, condition["field"]])
 			var context: Variant = _context_for(conditions)
 			check(context != null and Mutations.is_active(mutation, context), "%s is active under its conditions" % id)
 			for index in conditions.size():
@@ -221,8 +228,14 @@ func test_every_mutation_is_active_only_under_its_conditions() -> void:
 ## The product never knows which Ticket is being tested.
 func test_shoply_never_branches_on_a_ticket() -> void:
 	var ticket := RegEx.create_from_string("\\bT\\d{2}\\b|SCENARIO-|BUG-T|MUTATION-")
-	for path in ["res://scripts/ui/shoply/shoply_view.gd", "res://scripts/autoload/shoply_store.gd", "res://scripts/domain/shoply_rules.gd"]:
-		var found := ticket.search(FileAccess.get_file_as_string(path))
+	var paths: Array = ["res://scripts/autoload/shoply_store.gd", "res://scripts/domain/shoply_rules.gd"]
+	for file in DirAccess.get_files_at("res://scripts/ui/shoply"):
+		if file.ends_with(".gd"):
+			paths.append("res://scripts/ui/shoply/%s" % file)
+	for path in paths:
+		var source := FileAccess.get_file_as_string(path)
+		check(not source.is_empty(), "%s is read" % path)
+		var found := ticket.search(source)
 		check(found == null, "%s mentions %s" % [path, found.get_string() if found != null else ""])
 
 
