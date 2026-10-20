@@ -14,14 +14,14 @@ milestones:
 
   - id: M3
     name: Complete MVP Ticket Set
-    status: active
+    status: done
     depends_on:
       - M2
     definition: .project-os/milestones/M3.yaml
 
   - id: M4
     name: MVP Hardening and Polish
-    status: planned
+    status: active
     depends_on:
       - M3
     definition: .project-os/milestones/M4.yaml

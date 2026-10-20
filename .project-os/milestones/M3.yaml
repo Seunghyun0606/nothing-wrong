@@ -1,6 +1,6 @@
 id: M3
 name: Complete MVP Ticket Set
-status: active
+status: done
 objective: >-
   Verify the shipped Ticket set (T01–T42 and the Final) as the MVP content: every
   mechanic the plan asked for is covered, every Scenario and Mutation has automated

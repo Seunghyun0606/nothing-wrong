@@ -1,6 +1,6 @@
 id: M4
 name: MVP Hardening and Polish
-status: planned
+status: active
 objective: >-
   Turn the complete content set into a stable, coherent Godot desktop MVP candidate and
   have a human play it before it is called done.

@@ -1,0 +1,148 @@
+task: TASK-011
+status: pass
+verdict: pass
+summary: 'Commit b3a7bef meets all four acceptance criteria. The catalog''s mechanic-to-Ticket
+  map matches godot/data/scenarios.json. No Bug is exactly the seven Tickets with
+  no expectedBugs (T05, T20, T21, T30, T31, T41, T42). Cross Screen is T10 (BUG-T10-001
+  is CROSS_SCREEN, and the mutation on cart.stock sets 2 only on /shoply/cart). Multiple
+  Bugs is T11 (two expectedBugs and two Mutations). Mini Regression is T12 (the RC5
+  re-check, where cancel goes to /shoply/payment on MOBILE only). test_full_story
+  plays each of these, including NO ISSUE FOUND on all seven No Bug Tickets, the partial-then-resolved
+  T11, the T12 regression, the T10 two-screen stock comparison, and the Final ending.
+  Fault injection on a scratch copy showed the new Mutation test is not vacuous. It
+  fails when all_match skips a condition, when NEQ or STARTS_WITH is broken, and when
+  a Mutation target is not read by Shoply. The boundary test fails on a literal Ticket
+  or Mutation ID in Shoply code. The full suite passes on the exact commit (56 passed,
+  0 failed, clean import), and projectctl doctor passes. DEC-016 does not self-approve
+  the playtest: TASK-010 is still status ready with human_gate true, and M4 now requires
+  a human gate on completion. The findings are minor gaps in test strength and one
+  wrong count in the handoff.'
+critical_issues: 0
+findings:
+- severity: minor
+  file: .project-os/tasks/results/TASK-011.yaml
+  summary: The evidence says the test covers "all 13 Mutations (T01-T12)", but scenarios.json
+    has 12. That is one each for T01-T04 and T06-T10, two for T11, and one for T12;
+    T05 has none. The handoff count should be corrected.
+- severity: minor
+  file: godot/tests/test_domain.gd
+  summary: The test picks the first value that passes or fails each condition, not
+    the boundary value. When I changed GTE to behave as GT in a scratch copy, test_every_mutation_is_active_only_under_its_conditions
+    still passed, because it chose quantity 4 for "active" and 2 for "broken". The
+    off-by-one is covered for T04 by test_t04_mutation_requires_gold_save20_and_three_items,
+    but the generic test does not cover boundary values for other GTE conditions,
+    such as T06 quantity >= 2.
+- severity: minor
+  file: godot/tests/test_domain.gd
+  summary: _set_field creates any condition field path, so the test never checks that
+    a condition's field exists in the runtime context (DesktopSession.qa_context).
+    I renamed T04's condition field to product.cart.qty in a scratch copy and the
+    test still passed. In the game, that Mutation would never activate. test_full_story
+    only partly covers this, and only for Tickets whose scripted flow depends on the
+    defect showing.
+- severity: minor
+  file: godot/tests/test_domain.gd
+  summary: test_shoply_never_branches_on_a_ticket scans a hard-coded list of three
+    files and does not check that each read returned content. If a file is renamed
+    or moved, FileAccess.get_file_as_string returns "" and the test passes vacuously.
+    A new Shoply script would not be scanned. The test also detects only literal IDs
+    (Tnn, SCENARIO-, BUG-T, MUTATION-), not branching on a computed Ticket ID. Today,
+    the Mutation test's shoply_view.gd contains-check guards only the first path.
+- severity: minor
+  file: .project-os/milestones/M2.yaml
+  summary: M2's Human Gate is marked resolved_by DEC-016, which an agent wrote from
+    the owner's directions. This matches how DEC-005 and DEC-009 to DEC-015 record
+    owner direction, and the playtest is kept as TASK-010 under M4's gate. Still,
+    closing a milestone Human Gate this way should be confirmed by the owner, since
+    DEC-016 has no explicit approver field.
+acceptance:
+  mechanics_named_and_tested:
+    status: pass
+    evidence:
+    - specs/feature/ticket-catalog.md Mechanics table names No Bug, Cross Screen,
+      Multiple Bugs, and Mini Regression with their Tickets.
+    - 'scenarios.json: T05, T20, T21, T30, T31, T41, and T42 are exactly the Tickets
+      with empty expectedBugs and mutations (No Bug).'
+    - 'scenarios.json: T10 has BUG-T10-001 of type CROSS_SCREEN on cart.stock. MUTATION-T10-001
+      sets cart.stock to 2 when currentPath is /shoply/cart.'
+    - 'scenarios.json: T11 has BUG-T11-001 (VISUAL, product.price) and BUG-T11-002
+      (BEHAVIOR, cart.removeAction). Its two Mutations are product.priceText = $24,
+      and cart.removeAction.visible = false on MOBILE. The request says it may hide
+      more than one defect.'
+    - 'scenarios.json: T12 is the RC5 regression pass (re-check every fix from last
+      week). MUTATION-T12-001 sends orders.cancelAction.destination to /shoply/payment
+      on MOBILE.'
+    - 'test_ui_flow.gd test_full_story: _no_issue on T05, T20, T21, T30, T31, T41,
+      and T42.'
+    - 'test_ui_flow.gd test_full_story: T10 checks product.stock is ''12 in stock''
+      and cart.stock is ''2 available''.'
+    - 'test_ui_flow.gd test_full_story: T11 is TESTING after one report and RESOLVED
+      after both.'
+    - 'test_ui_flow.gd test_full_story: T12 cancel lands on /shoply/payment, then
+      the Ticket is RESOLVED.'
+    - 'test_ui_flow.gd test_full_story: the Final hold-and-escalate ending card is
+      shown.'
+    - 'test_domain.gd lines 127-132: T11 stays partial with one of two bugs and resolves
+      with both. test_review.gd line 59 covers the T05 clean build.'
+    - The secondary catalog rows (Data, Behavior, Conditional, Device, Records) are
+      also consistent with each Ticket's expectedBugs type, target, and conditions.
+  every_mutation_active_and_inactive:
+    status: pass
+    evidence:
+    - test_every_mutation_is_active_only_under_its_conditions iterates catalog.ticket_ids(),
+      which maps every scenario, and so covers all 12 Mutations. It also asserts count
+      > 0.
+    - A null context (no value satisfies or breaks a condition) fails the check instead
+      of being skipped, so the test cannot pass by skipping a Mutation.
+    - 'Fault injection on a scratch copy: when all_match skipped the last condition,
+      7 Mutations failed the ''hides when ... fails'' check.'
+    - 'Fault injection: NEQ always true made T08 fail; STARTS_WITH always true made
+      T08 fail; an unknown target (cart.stockz) failed the ''changes a target Shoply
+      reads'' check.'
+    - MUTATION-T01-001 has no conditions, so only its active half applies. It is limited
+      to its Ticket at runtime by browser_app._mutate, which reads only the active
+      scenario's mutations.
+    - 'Limits: GTE changed to GT, and condition fields missing from the runtime context,
+      are not caught (see findings).'
+  shoply_has_no_scenario_identifiers:
+    status: pass
+    evidence:
+    - Grepping shoply_view.gd, shoply_store.gd, and shoply_rules.gd for Tnn, SCENARIO-,
+      BUG-T, and MUTATION- finds nothing.
+    - shoply_store.gd reads the active scenario's seed and startingContext generically
+      and never branches on a Ticket ID.
+    - 'Fault injection: adding a literal ''T10'' branch to shoply_view.gd, or a ''MUTATION-T04-001''
+      comment to shoply_rules.gd, made test_shoply_never_branches_on_a_ticket fail.'
+  full_suite_passes:
+    status: pass
+    evidence:
+    - 'On a clean git archive of b3a7bef, headless import had exit 0 and no SCRIPT
+      ERROR, and the suite printed ''Tests: 56 passed, 0 failed'' with exit 0.'
+    - In the working tree, which has uncommitted changes to game_session.gd, settings.gd,
+      workspace_session.gd, main.gd and a new save_file.gd, the suite also passed
+      56/0 with exit 0.
+    - projectctl doctor reports that Project OS structure and backlog references are
+      consistent.
+verification:
+  unit_test:
+    status: pass
+    command: Godot_v4.7.2-stable_win64_console.exe --headless --path godot -s tests/run_tests.gd
+      (run on git archive of b3a7bef and on the working tree)
+    result: 56 passed, 0 failed, exit 0. The only warnings were RID and ObjectDB leaks
+      at exit.
+  project_os:
+    status: pass
+    command: projectctl doctor
+reviewed_commit: b3a7bef
+residual_risk: The generic Mutation test proves each Mutation's condition logic, but
+  not boundary values or that each condition field is ever filled by the real qa_context.
+  A typo'd field or an off-by-one comparison could make a Mutation dead or wrong in
+  the game while the test passes; test_full_story only partly covers this. The boundary
+  test depends on a hard-coded file list and could pass vacuously if a file is moved.
+  The working tree holds uncommitted TASK-012-style changes, so later verification
+  should pin to a commit. The M2 Human Gate closure relies on owner direction recorded
+  by an agent (DEC-016). The owner should confirm it, though TASK-010 correctly stays
+  an unapproved Human Gate in M4.
+kind: review
+role: reviewer
+actor: claude-reviewer-task11

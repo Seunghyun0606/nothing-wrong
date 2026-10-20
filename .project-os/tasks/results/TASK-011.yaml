@@ -1,0 +1,41 @@
+task: TASK-011
+status: pass
+summary: The shipped T01-T42 Ticket set is verified as the MVP content. A generic
+  test checks every Mutation active under its conditions and inactive when each condition
+  fails, and that Shoply reads every Mutation target; a boundary test keeps Ticket,
+  Scenario, Bug, and Mutation identifiers out of Shoply code. T10 now compares the
+  product page and bag stock. The catalog maps No Bug, Cross Screen, Multiple Bugs,
+  and Mini Regression to the Tickets that carry them.
+files_changed:
+- specs/feature/ticket-catalog.md
+- godot/tests/test_domain.gd
+- godot/tests/test_ui_flow.gd
+- .project-os/decisions/DEC-016-milestone-rebaseline.yaml
+- .project-os/milestones/M2.yaml
+- .project-os/milestones/M3.yaml
+- .project-os/milestones/M4.yaml
+- .project-os/state/roadmap.yaml
+- .project-os/state/backlog.yaml
+- .project-os/tasks/ready/TASK-010.yaml
+- .project-os/tasks/ready/TASK-011.yaml
+- .project-os/tasks/ready/TASK-012.yaml
+- .project-os/tasks/ready/TASK-013.yaml
+- .project-os/tasks/ready/TASK-014.yaml
+- .project-os/tasks/ready/TASK-015.yaml
+evidence:
+- test_every_mutation_is_active_only_under_its_conditions covers all 13 Mutations
+  (T01-T12).
+- test_shoply_never_branches_on_a_ticket scans shoply_view.gd, shoply_store.gd, shoply_rules.gd.
+- test_full_story plays T01-T42 and the Final through real buttons, including NO ISSUE
+  FOUND on T05, T20, T21, T30, T31, T41, T42, both T11 defects, the T12 regression,
+  and the T10 cross-screen stock comparison.
+acceptance:
+  status: pass
+  notes:
+  - Career promotion is out of scope per DEC-010 and DEC-016.
+followups:
+- Independent review before evaluation.
+commit: b3a7bef
+kind: implementation
+role: developer
+actor: claude-developer

@@ -1,0 +1,26 @@
+task: TASK-011
+status: pass
+summary: The headless Godot suite passes with the new Mutation and boundary checks.
+verification:
+  unit_test:
+    status: pass
+    command: Godot_v4.7.2-stable_win64_console.exe --headless --path godot -s tests/run_tests.gd
+    result: 56 passed, 0 failed.
+  integration_test:
+    status: pass
+    command: test_full_story in the same suite
+    result: T01-T42 and the Final played through the UI.
+  typecheck:
+    status: pass
+    command: Godot headless import and suite load
+    result: Every script parsed; no SCRIPT ERROR.
+  build:
+    status: pass
+    command: Godot --headless --import
+    result: Import completed. The Windows export gate is added in TASK-013.
+  project_os:
+    status: pass
+    command: projectctl doctor
+kind: test
+role: qa
+actor: claude-automated-tests
