@@ -1596,8 +1596,7 @@
               "answer": "exp/retention-push"
             }
           },
-          "success": "Every clue points to the same desk.",
-          "channel": "@Mina Seo"
+          "success": "Every clue points to the same desk."
         }
       }
     },
@@ -2078,8 +2077,7 @@
               "answer": "QA"
             }
           },
-          "success": "That's the whole chain: an approval, a request, a temporary account, and a bot that merged whatever matched.",
-          "channel": "@Mina Seo"
+          "success": "That's the whole chain: an approval, a request, a temporary account, and a bot that merged whatever matched."
         }
       }
     },
@@ -3713,8 +3711,7 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Then it's on record, and it's their call. Before we move on, let's write down what we think connects the four.",
-            "channel": "@Mina Seo"
+            "text": "Then it's on record, and it's their call. Before we move on, let's write down what we think connects the four."
           }
         ],
         "clue": {
@@ -3770,8 +3767,7 @@
               "answer": "one shared migration batch"
             }
           },
-          "success": "That's the sensible reading for now. One batch, one bad night of data. Let's see if Integration agrees.",
-          "channel": "@Mina Seo"
+          "success": "That's the sensible reading for now. One batch, one bad night of data. Let's see if Integration agrees."
         }
       }
     },
@@ -4026,8 +4022,7 @@
               "answer": "source data"
             }
           },
-          "success": "That is the turn. Not a migration bug: the original records already disagreed.",
-          "channel": "@Mina Seo"
+          "success": "That is the turn. Not a migration bug: the original records already disagreed."
         }
       }
     },
@@ -4409,7 +4404,7 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "A leadership retreat at Horizon Ridge, filed as a community event. Grace is tagged in it. The emblem on the lectern means nothing to me yet.",
+            "text": "Not in the channel for this one; Grace reads everything there. A leadership retreat at Horizon Ridge, filed as a community event, and she is tagged in it. The emblem on the lectern means nothing to me yet.",
             "channel": "@Mina Seo"
           },
           {
@@ -4985,6 +4980,12 @@
                 "url": "https://qa.onehorizon.local/benefit-codes"
               }
             ],
+            "channel": "@Alex Han"
+          },
+          {
+            "from": "Alex Han",
+            "role": "Integration Developer",
+            "text": "I'm sending this to you, not the channel. The codebook is outside the scope Grace signed off.",
             "channel": "@Alex Han"
           }
         ],

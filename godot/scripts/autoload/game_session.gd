@@ -9,6 +9,7 @@ const GameState := preload("res://scripts/domain/game_state.gd")
 const Intranet := preload("res://scripts/domain/intranet.gd")
 const Review := preload("res://scripts/domain/review.gd")
 const HorizonData := preload("res://scripts/domain/horizon_data.gd")
+const Directory := preload("res://scripts/domain/directory.gd")
 
 const SAVE_PATH := "user://save.json"
 const BACKUP_PATH := "user://save.unreadable.json"
@@ -17,6 +18,8 @@ var catalog: RefCounted
 var intranet: RefCounted
 ## Record views of the ONE HORIZON QA portal (data/horizon.json).
 var horizon: RefCounted
+## The Northstar directory: people and the client contacts (data/people.json).
+var directory: RefCounted
 var state: Dictionary = {}
 ## True when an unreadable save was set aside and a fresh game started.
 var recovered_from_unreadable_save := false
@@ -28,6 +31,7 @@ func _ready() -> void:
 	catalog = Catalog.load_from()
 	intranet = Intranet.load_from()
 	horizon = HorizonData.load_from()
+	directory = Directory.load_from()
 	load_state()
 
 
@@ -117,6 +121,10 @@ func inspect(view_id: String, key: String, budget: int) -> void:
 
 
 ## A search that missed the record the team is waiting for; enough of them bring help.
+func ask_hint(ticket_id: String) -> void:
+	commit(GameState.ask_hint(state, ticket_id))
+
+
 func note_search_miss(document_id: String) -> void:
 	commit(GameState.note_search_miss(state, document_id))
 

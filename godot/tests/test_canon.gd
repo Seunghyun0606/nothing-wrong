@@ -54,6 +54,24 @@ func _texts_by_chapter() -> Dictionary:
 		add.call(chapter_of_ticket.get(view["ticket"], "CH1"), view)
 	for document in intranet["documents"]:
 		add.call(chapter_of_ticket.get(document.get("availableAfter", ""), "CH1"), document)
+	# The directory shows each entry from its Ticket on.
+	var people: Dictionary = _json("res://data/people.json")
+	var dated: Array = []
+	for org in people["orgs"]:
+		dated.append(org)
+		dated.append_array(org.get("notes", []))
+		for team in org["teams"]:
+			dated.append(team)
+			dated.append_array(team.get("notes", []))
+	for person in people["people"]:
+		dated.append(person)
+		dated.append_array(person["facts"])
+	for item in dated:
+		var shown := {}
+		for key in item:
+			if not key in ["facts", "notes", "teams", "since"]:
+				shown[key] = item[key]
+		add.call(chapter_of_ticket[item["since"]], shown)
 	return texts
 
 

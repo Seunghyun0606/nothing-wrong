@@ -168,6 +168,139 @@ func _conversations(desktop: Control) -> Array:
 	return names
 
 
+## The next Ticket waits for the player: the clock runs forward, its first message comes
+## up as a notification, and the chat goes on when the player opens it.
+func test_the_next_ticket_arrives_as_a_notification() -> void:
+	var desktop := _start()
+	DesktopSession.instant_messages = false
+	GameSession.state = GameState.create_initial(GameSession.catalog.ticket_ids())
+	GameSession.changed.emit()
+	var gate: Dictionary = DesktopSession.gate
+	check_eq(gate.get("id", ""), "SCENARIO-T01:briefing:0", "T01 waits for the player")
+	check_eq(gate.get("step", ""), "wait", "the clock runs to the first message")
+	check_eq(DesktopSession.clock_override, StoryClock.parse("Tue 09:10") - DesktopSession.LOGIN_LEAD, "from the sign-in time")
+	check(not DesktopSession.has_arrived("T01"), "QA Notes has no Ticket yet")
+	check((find_named(desktop, "TimePasses") as Control).visible, "the desktop shows the time passing")
+	check_eq((find_named(desktop, "TimePassesText") as Label).text, "20 minutes later", "how much time passes")
+	DesktopSession.skip_wait()
+	check_eq(DesktopSession.gate.get("step", ""), "notify", "the first message is a notification")
+	var toasts: Node = find_named(desktop, "Toasts")
+	check(toasts.get_child_count() == 1 and find_named(toasts, "OpenToast") != null, "one notification to open")
+	check(find_button(toasts, "×") == null, "it stays until it is opened")
+	check_eq(DesktopSession.messenger_log()["delivered"], 0, "nothing is delivered before it is opened")
+	(find_named(toasts, "OpenToast") as Button).pressed.emit()
+	check(DesktopSession.gate.is_empty() and DesktopSession.is_visible_app("messenger"), "opening it opens Messenger")
+	DesktopSession._deliver_next()
+	check_eq(DesktopSession.messenger_log()["delivered"], 1, "the chat goes on")
+	check(DesktopSession.has_arrived("T01"), "T01 arrives with its first message")
+	DesktopSession.instant_messages = true
+	GameSession.changed.emit()
+	_finish()
+
+
+## A Ticket on another day ends the day: clock out, the night passes, sign in again, and
+## the morning's first message comes up as a notification.
+func test_a_new_day_starts_with_clocking_out_and_signing_in() -> void:
+	var desktop := _start()
+	DesktopSession.instant_messages = false
+	var state := GameState.create_initial(GameSession.catalog.ticket_ids())
+	for id in ["T01", "T02"]:
+		state = GameState.start_ticket(state, id, 1)
+		state = GameState.apply_review(state, { "id": "R-%s" % id, "ticketId": id, "kind": "BUG" }, { "valid": true }, {}, 2)
+		var story: Dictionary = GameSession.catalog.get_scenario(id)["story"]
+		state = GameState.find_document(state, story["discovery"]["documentId"])
+		if id == "T02":
+			state = GameState.find_document(state, "DOC-PROMO-ARCHIVE")
+		var answers := {}
+		for key in story["deduction"]["blanks"]:
+			answers[key] = story["deduction"]["blanks"][key]["answer"]
+		state = GameState.answer_deduction(state, story["deduction"], answers)
+	var entries: Array = MessengerLog.build(GameSession.catalog, state)["entries"]
+	var t03 := entries.map(func(entry): return entry["id"]).find("SCENARIO-T03:briefing:0")
+	state["story"]["deliveredId"] = entries[t03 - 1]["id"]
+	state["story"]["deliveredCount"] = t03
+	GameSession.state = state
+	GameSession.changed.emit()
+	check_eq(DesktopSession.gate.get("step", ""), "clock_out", "T03 is tomorrow: the day is over")
+	check(DesktopSession.gate.get("running", false), "the afternoon passes first")
+	check_eq(DesktopSession.gate.get("left", 0), StoryClock.parse("Tue 18:00"), "until the end of the working day")
+	DesktopSession.skip_wait()
+	var leave := find_named(desktop, "ClockOut") as Button
+	check(leave != null, "a card offers to clock out")
+	leave.pressed.emit()
+	var night: Control = main.current
+	check_eq(str(night.name), "DayScreen", "the night passes")
+	check_eq(StoryClock.day_name(night.next), "Wednesday", "to Wednesday morning")
+	check_eq(night.left, StoryClock.parse("Tue 18:00"), "having left at 18:00")
+	night.finish()
+	var lock: Control = main.current
+	check_eq(DesktopSession.login_time(), StoryClock.parse("Wed 10:20") - DesktopSession.LOGIN_LEAD, "the lock screen shows the morning")
+	lock.signed_in.emit()
+	desktop = main.current
+	check_eq(DesktopSession.gate.get("step", ""), "wait", "signed in: time passes to the first message")
+	DesktopSession.skip_wait()
+	check(find_named(find_named(desktop, "Toasts"), "OpenToast") != null, "the morning's notification")
+	DesktopSession.open_app("messenger")
+	check(DesktopSession.gate.is_empty(), "opening Messenger opens it too")
+	DesktopSession.instant_messages = true
+	GameSession.changed.emit()
+	check(DesktopSession.has_arrived("T03"), "T03 arrives")
+	_finish()
+
+
+## The taskbar's Arrange: Browser on the left three quarters, QA Notes on the right.
+func test_arrange_puts_the_browser_and_qa_notes_side_by_side() -> void:
+	var desktop := _start()
+	var placed := {}
+	DesktopSession.layout_requested.connect(func(app, fraction): placed[app] = fraction)
+	DesktopSession.open_app("messenger")
+	check(press(desktop, "▦  Arrange"), "the taskbar button")
+	check_eq(placed.get("browser"), Rect2(0, 0, 0.75, 1), "Browser on the left, full height")
+	check_eq(placed.get("notes"), Rect2(0.75, 0, 0.25, 1), "QA Notes on the right, a quarter wide")
+	check(not DesktopSession.is_visible_app("messenger"), "Messenger steps aside")
+	var notes := find_named(desktop, "NotesApp") as Control
+	notes.size = Vector2(340, 700)
+	check((find_named(desktop, "TicketPicker") as Control).is_visible_in_tree(), "narrow QA Notes picks Tickets from a list")
+	check(not (find_named(desktop, "TicketFiles") as Control).is_visible_in_tree(), "instead of the sidebar")
+	_finish()
+
+
+## Hints are asked for in private; the team's help after missed reports comes there too.
+func test_a_hint_is_asked_for_in_a_direct_message() -> void:
+	var desktop := _start()
+	_accept(desktop, "T01")
+	check(press(desktop, "Stuck? Ask Mina Seo for a hint"), "QA Notes offers to ask")
+	var hint: Array = DesktopSession.messenger_log()["entries"].slice(-2)
+	check_eq([hint[0]["kind"], hint[0]["in"]], ["player", "@Mina Seo"], "the player asks Mina directly")
+	check_eq([hint[1]["from"], hint[1]["in"]], ["Mina Seo", "@Mina Seo"], "and she answers there")
+	check_eq((find_named(desktop, "ChannelName") as Label).text, "Mina Seo", "Messenger shows the conversation")
+	DesktopSession.show_ticket("T01")
+	check(find_named(desktop, "AskHint") == null and find_button(desktop, "Open the conversation") != null, "asked once")
+	_finish()
+
+
+## The directory: people and client contacts, as far as the story has introduced them.
+func test_the_directory_grows_with_the_story() -> void:
+	var desktop := _start()
+	DesktopSession.open_app("messenger")
+	var author := find_named(find_named(desktop, "TeamChat"), "Author") as Button
+	check(author != null and author.text == "Mina Seo", "a sender's name links to the directory")
+	author.pressed.emit()
+	check_eq(DesktopSession.location(), { "kind": "people", "id": "mina-seo" }, "her page")
+	check(find_named(desktop, "PersonPage") != null, "the page shows")
+	DesktopSession.navigate(Addresses.parse("people.northstar.local"))
+	var directory: Node = find_named(desktop, "Directory")
+	check(find_named(directory, "Person_leo-ortiz") != null, "Shoply contacts from the start")
+	check(find_named(directory, "Person_elena-brooks") == null and find_named(directory, "Org_horizon") == null, "nobody the story has not introduced")
+	DesktopSession.navigate(Addresses.people("leo-ortiz"))
+	var page: Node = find_named(desktop, "PersonPage")
+	var texts: Array = page.find_children("*", "Label", true, false).map(func(label): return label.text)
+	check(texts.has("VP Growth") and not texts.has("Elena Brooks"), "his manager shows as a title until she is introduced")
+	DesktopSession.navigate(Addresses.people("elena-brooks"))
+	check(find_named(desktop, "PersonPage") == null, "her page is not there yet")
+	_finish()
+
+
 func test_full_story() -> void:
 	var desktop := _start()
 	_accept(desktop, "T01")
@@ -278,8 +411,7 @@ func test_full_story() -> void:
 	_find_record(desktop, "ak-7731", "DOC-API-KEYS")
 	_find_record(desktop, "WS-14", "DOC-ASSET-REGISTER")
 	DesktopSession.open_app("messenger")
-	check_eq((find_named(desktop, "ChannelName") as Label).text, "Mina Seo", "Mina asks about Leo in a direct message")
-	check(_conversations(desktop).has("# shoply-autumn-release"), "the channel stays in the list")
+	check_eq((find_named(desktop, "ChannelName") as Label).text, "# shoply-autumn-release", "Mina asks about Leo in front of the team")
 	check(press(desktop, "Open Case File and connect the clues"), "the finale is on the board")
 	_deduce(desktop, { "who": "Leo Ortiz", "where": "WS-14", "what": "exp/retention-push" })
 	DesktopSession.open_app("messenger")
@@ -486,6 +618,8 @@ func test_full_story() -> void:
 	_report(desktop, "IMG002 · Target · Album", "album category they had")
 	check_eq(GameSession.ticket_status("T24"), "RESOLVED", "T24 resolved")
 	DesktopSession.open_app("messenger")
+	check_eq((find_named(desktop, "ChannelName") as Label).text, "Mina Seo", "Mina takes Grace's photo out of the channel")
+	check(str(DesktopSession.messenger_log()["entries"].filter(func(entry): return entry["in"] == "@Mina Seo" and entry["kind"] == "message")[0]["text"]).begins_with("Not in the channel"), "and says why")
 	_deduce(desktop, { "count": "38", "place": "Horizon Ridge", "who": "four separate teams" })
 	log = DesktopSession.messenger_log()
 	check(log["entries"].any(func(entry): return entry.get("text", "") == "Chapter 6 · Source Data complete."), "chapter 6 finale")

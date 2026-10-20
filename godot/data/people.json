@@ -1,0 +1,149 @@
+{
+  "orgs": [
+    {
+      "id": "northstar",
+      "name": "Northstar Quality Services",
+      "kind": "Our company",
+      "since": "T01",
+      "notes": [
+        { "text": "A Northstar Services Holdings company.", "since": "T37" }
+      ],
+      "teams": [
+        { "name": "QA Delivery", "since": "T01", "people": ["mina-seo", "you"] },
+        {
+          "name": "ONE HORIZON QA",
+          "since": "T13",
+          "people": ["mina-seo", "you"],
+          "notes": [{ "text": "Open seats: 2", "since": "T13" }]
+        }
+      ]
+    },
+    {
+      "id": "shoply",
+      "name": "Shoply",
+      "kind": "Client",
+      "since": "T01",
+      "notes": [
+        { "text": "Autumn Release: QA by Northstar.", "since": "T01" },
+        { "text": "A Horizon Group company.", "since": "T13" }
+      ],
+      "teams": [
+        { "name": "Platform Engineering", "since": "T01", "people": ["marcus-reyes"] },
+        { "name": "Growth", "since": "T01", "people": ["elena-brooks", "leo-ortiz"] },
+        { "name": "Customer Support", "since": "T02", "people": ["priya-nair"] }
+      ]
+    },
+    {
+      "id": "horizon",
+      "name": "Horizon Group",
+      "kind": "Client",
+      "since": "T13",
+      "notes": [
+        { "text": "ONE HORIZON legacy migration checks: QA by Northstar.", "since": "T13" }
+      ],
+      "teams": [
+        { "name": "Group Transformation Office", "since": "T13", "people": ["grace-yoon"] },
+        { "name": "Horizon IT · Integration Platform", "since": "T20", "people": ["alex-han"] }
+      ]
+    }
+  ],
+  "people": [
+    {
+      "id": "mina-seo",
+      "name": "Mina Seo",
+      "title": "QA Lead",
+      "manager": "Head of Delivery",
+      "email": "m.seo@northstar.qa",
+      "location": "Northstar office · QA floor",
+      "since": "T01",
+      "facts": [
+        { "text": "Leads Northstar's QA on the Shoply Autumn Release.", "since": "T01" },
+        { "text": "Leads Northstar's QA on the ONE HORIZON legacy migration.", "since": "T13" }
+      ]
+    },
+    {
+      "id": "you",
+      "title": "QA Engineer",
+      "reportsTo": "mina-seo",
+      "email": "j.park@northstar.qa",
+      "location": "Northstar office · QA floor, workstation 0142",
+      "since": "T01",
+      "facts": []
+    },
+    {
+      "id": "marcus-reyes",
+      "name": "Marcus Reyes",
+      "title": "Release Manager",
+      "manager": "VP Engineering",
+      "email": "m.reyes@shoply.com",
+      "location": "Shoply HQ",
+      "since": "T01",
+      "facts": [
+        { "text": "Runs the release pipeline and release-bot, including its merge rule.", "since": "T01" }
+      ]
+    },
+    {
+      "id": "leo-ortiz",
+      "name": "Leo Ortiz",
+      "title": "Software Engineer",
+      "reportsTo": "elena-brooks",
+      "email": "l.ortiz@shoply.com",
+      "location": "Shoply HQ",
+      "since": "T01",
+      "facts": [
+        { "text": "Builds Growth's checkout and retention experiments.", "since": "T01" }
+      ]
+    },
+    {
+      "id": "priya-nair",
+      "name": "Priya Nair",
+      "title": "Support Lead",
+      "manager": "Director, Customer Experience",
+      "email": "p.nair@shoply.com",
+      "location": "Shoply HQ",
+      "since": "T02",
+      "facts": [
+        { "text": "Owns the support queue, customer emails, and refunds.", "since": "T02" }
+      ]
+    },
+    {
+      "id": "elena-brooks",
+      "name": "Elena Brooks",
+      "title": "VP Growth",
+      "manager": "Chief Executive Officer",
+      "email": "e.brooks@shoply.com",
+      "location": "Shoply HQ",
+      "since": "T08",
+      "facts": [
+        { "text": "Owns the Q4 retention targets and presents them at the Q4 business review.", "since": "T08" },
+        { "text": "Approves access requests for the Growth team.", "since": "T08" }
+      ]
+    },
+    {
+      "id": "grace-yoon",
+      "name": "Grace Yoon",
+      "title": "Program Manager, ONE HORIZON",
+      "manager": "Chief Transformation Officer",
+      "email": "g.yoon@horizon-group.com",
+      "location": "Horizon Tower, Seattle",
+      "since": "T13",
+      "facts": [
+        { "text": "Signs off UAT scope and legacy exceptions for the migration.", "since": "T13" },
+        { "text": "Horizon Leadership Program, 2018 cohort.", "since": "T24" }
+      ]
+    },
+    {
+      "id": "alex-han",
+      "name": "Alex Han",
+      "title": "Integration Developer",
+      "manager": "Integration Platform Lead",
+      "email": "a.han@horizon-group.com",
+      "location": "Horizon Tower, Seattle",
+      "since": "T20",
+      "facts": [
+        { "text": "Maintains Horizon ID matching and the cross-system views.", "since": "T20" },
+        { "text": "Holds read access to correction audit metadata for UAT.", "since": "T22" }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ extends Control
 const Kit := preload("res://scripts/ui/kit.gd")
 const P := preload("res://scripts/ui/palette.gd")
 
-const MIN_SIZE := Vector2(380, 260)
+const MIN_SIZE := Vector2(320, 260)
 const HANDLE := 6.0
 const SNAP_MARGIN := 6.0
 const TITLE_HEIGHT := 40.0

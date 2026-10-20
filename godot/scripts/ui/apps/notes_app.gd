@@ -1,6 +1,8 @@
 ## QA Notes: the QA workbook. A page per Ticket (request, requirements, the spec, what you
 ## noted in the Browser, console leads, and your own notes) and the Case File, where the
 ## clues are connected. Reports go to the team in Messenger.
+## A Ticket shows up once the team has assigned it in the chat. A narrow window folds the
+## Ticket list into a picker above the page.
 extends HBoxContainer
 
 const Kit := preload("res://scripts/ui/kit.gd")
@@ -17,23 +19,46 @@ var _scroll: ScrollContainer
 var _references: VBoxContainer
 var _note_editor: TextEdit
 var _signature := ""
+var _files_panel: Control
+var _picker: OptionButton
+## What each picker item opens: a Ticket id, or "casefile".
+var _picker_ids: Array = []
+
+## Narrower than this, the Ticket list folds into a picker.
+const COMPACT_WIDTH := 560
 
 
 func _ready() -> void:
 	name = "NotesApp"
 	size_flags_vertical = Control.SIZE_EXPAND_FILL
 	add_theme_constant_override("separation", 0)
-	var files_panel := Kit.panel(P.SUBTLE, Color.TRANSPARENT, 0, 8)
-	files_panel.custom_minimum_size = Vector2(150, 0)
+	_files_panel = Kit.panel(P.SUBTLE, Color.TRANSPARENT, 0, 8)
+	_files_panel.custom_minimum_size = Vector2(150, 0)
 	_files = Kit.vbox(4)
 	_files.name = "TicketFiles"
 	# The list grows with every chapter; it scrolls, and keeps the open Ticket in view.
 	_files_scroll = Kit.scroll(_files)
-	files_panel.add_child(_files_scroll)
-	add_child(files_panel)
+	_files_panel.add_child(_files_scroll)
+	add_child(_files_panel)
+	var column := Kit.vbox(0)
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	add_child(column)
+	_picker = OptionButton.new()
+	_picker.name = "TicketPicker"
+	_picker.item_selected.connect(func(index):
+		if _picker_ids[index] == "casefile":
+			DesktopSession.show_case_file()
+		else:
+			DesktopSession.show_ticket(_picker_ids[index]))
+	var picker_row := Kit.margin(_picker, 10, 8, 10, 0)
+	picker_row.visible = false
+	column.add_child(picker_row)
 	_document = Kit.vbox(18)
 	_scroll = Kit.scroll(Kit.margin(_document, 18, 16, 18, 16))
-	add_child(_scroll)
+	column.add_child(_scroll)
+	resized.connect(_fit)
+	_watch_window.call_deferred()
 	for source in [GameSession.changed, WorkspaceSession.changed, DesktopSession.changed, Settings.language_changed]:
 		source.connect(_render)
 	DesktopSession.reference_pinned.connect(func(_ticket, _attachment): _show_references.call_deferred())
@@ -50,7 +75,38 @@ func _ticket_id() -> String:
 	if DesktopSession.notes_ticket_id != "":
 		return DesktopSession.notes_ticket_id
 	var focus := GameSession.focus_ticket_id()
-	return focus if focus != "" else "T01"
+	var arrived: Array = DesktopSession.messenger_log()["arrived"]
+	if arrived.has(focus):
+		return focus
+	return arrived[-1] if not arrived.is_empty() else ""
+
+
+## The app window this page is in, or this page outside one (tests).
+func _window() -> Control:
+	var node: Node = get_parent()
+	while node != null and not (node is Control and node.get("rect") != null):
+		node = node.get_parent()
+	return node as Control if node != null else self
+
+
+func _window_width() -> float:
+	return _window().size.x
+
+
+func _watch_window() -> void:
+	var window := _window()
+	if window != self and not window.resized.is_connected(_fit):
+		window.resized.connect(_fit)
+	_fit()
+
+
+func _fit() -> void:
+	# The window clips what does not fit, so its width (not the page's) decides. Before
+	# the first layout the width is still 0; keep the list until it is known.
+	var width := _window_width()
+	var compact := width > 0 and width < COMPACT_WIDTH
+	_files_panel.visible = not compact
+	_picker.get_parent().visible = compact
 
 
 func _render() -> void:
@@ -63,7 +119,8 @@ func _render() -> void:
 	var signature := "|".join([DesktopSession.notes_view, ticket_id, ",".join(statuses), Settings.language,
 		str(WorkspaceSession.evidence_for(ticket_id).size()), str(WorkspaceSession.references_for(ticket_id)),
 		str(state["story"].get("leads", [])), str(state["story"].get("foundDocuments", [])),
-		str(state["story"]["deductions"]), str(log["delivered"] >= log["entries"].size()), str(state["story"].get("inspected", {}))])
+		str(state["story"]["deductions"]), str(log["delivered"] >= log["entries"].size()), str(state["story"].get("inspected", {})),
+		str(log["arrived"]), str(state["story"].get("hintsAsked", {}))])
 	if signature == _signature:
 		return
 	_signature = signature
@@ -71,6 +128,9 @@ func _render() -> void:
 	Kit.clear(_document)
 	if DesktopSession.notes_view == "casefile":
 		_document.add_child(_case_file())
+		return
+	if ticket_id == "" or not log["arrived"].has(ticket_id):
+		_document.add_child(Kit.label("No Ticket yet. The team assigns Tickets in Messenger.", 15, P.MUTED))
 		return
 	if not GameSession.catalog.is_ticket_unlocked(state, ticket_id):
 		_document.add_child(Kit.label("Resolve the previous Ticket to unlock this one.", 15, P.MUTED))
@@ -80,10 +140,17 @@ func _render() -> void:
 
 func _render_files(ticket_id: String) -> void:
 	Kit.clear(_files)
+	_picker.clear()
+	_picker_ids = []
+	var arrived: Array = DesktopSession.messenger_log()["arrived"]
 	_files.add_child(Kit.kicker("Tickets"))
 	for id in GameSession.catalog.ticket_ids():
-		if not GameSession.catalog.is_ticket_unlocked(GameSession.state, id):
+		if not GameSession.catalog.is_ticket_unlocked(GameSession.state, id) or not arrived.has(id):
 			continue
+		_picker.add_item("📝 %s · %s" % [id, Kit.status_label(GameSession.ticket_status(id))])
+		_picker_ids.append(id)
+		if DesktopSession.notes_view == "ticket" and id == ticket_id:
+			_picker.select(_picker.item_count - 1)
 		var file := Kit.button("📝 %s\n%s" % [id, Kit.status_label(GameSession.ticket_status(id))], DesktopSession.show_ticket.bind(id), "ChoiceButton")
 		file.name = "File%s" % id
 		file.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -97,6 +164,13 @@ func _render_files(ticket_id: String) -> void:
 	case_file.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_highlight(case_file, DesktopSession.notes_view == "casefile")
 	_files.add_child(case_file)
+	_picker.add_item("🗂 %s" % Kit.t("Case File"))
+	_picker_ids.append("casefile")
+	if DesktopSession.notes_view == "casefile":
+		_picker.select(_picker.item_count - 1)
+	elif not _picker_ids.has(ticket_id):
+		_picker.select(-1)
+	_fit()
 
 
 func _reveal_file(file: Control) -> void:
@@ -169,12 +243,20 @@ func _ticket_page(scenario: Dictionary) -> void:
 	brief.add_child(Kit.label(Kit.tf("Account %s · Viewport %s · Locale %s", [context["account"], context["viewport"], context["locale"]]), 13, P.MUTED))
 	for attachment in ticket.get("attachments", []):
 		brief.add_child(Kit.link("📎 %s" % Kit.t(attachment["name"]), DesktopSession.open_url.bind(Addresses.doc_url(attachment["name"]))))
-	var hints: Array = ticket.get("hints", [])
-	if not hints.is_empty():
-		var hint_text := Kit.label("\n".join(hints.map(func(hint): return "• %s" % Kit.t(hint["text"]))), 14)
-		hint_text.visible = false
-		brief.add_child(Kit.link("Need a hint?", func(): hint_text.visible = not hint_text.visible))
-		brief.add_child(hint_text)
+	# A hint is asked for in private, in a direct message to the Ticket's sender.
+	var sender: String = ticket["sender"]["name"]
+	if not ticket.get("hints", []).is_empty():
+		if GameState.hint_asked(GameSession.state, ticket_id):
+			var asked := Kit.hbox(8)
+			asked.add_child(Kit.label(Kit.tf("You asked %s for a hint.", sender), 14, P.MUTED, false))
+			asked.add_child(Kit.link("Open the conversation", DesktopSession.show_chat.bind("@%s" % sender)))
+			brief.add_child(asked)
+		elif status != "RESOLVED":
+			var ask := Kit.link(Kit.tf("Stuck? Ask %s for a hint", sender), func():
+				GameSession.ask_hint(ticket_id)
+				DesktopSession.show_chat("@%s" % sender))
+			ask.name = "AskHint"
+			brief.add_child(ask)
 	_document.add_child(brief)
 
 	var pinned := WorkspaceSession.references_for(ticket_id)
@@ -221,7 +303,9 @@ func _reference_card(ticket_id: String, attachment: Dictionary) -> Control:
 		body.add_child(Kit.label(attachment["reference"], 13, P.MUTED))
 	for line in attachment.get("content", []):
 		body.add_child(Kit.label("•  %s" % Kit.t(line), 15))
-	var actions := Kit.hbox(12)
+	# Wraps, so the card fits a narrow QA Notes.
+	var actions := HFlowContainer.new()
+	actions.add_theme_constant_override("h_separation", 12)
 	actions.add_child(Kit.link("Place beside Browser", DesktopSession.arrange_side_by_side.bind("browser", "notes")))
 	var url := Addresses.doc_url(attachment["name"])
 	actions.add_child(Kit.link("Open in Browser", DesktopSession.open_in_browser.bind(Addresses.parse(url))))
@@ -274,7 +358,7 @@ func _case_file() -> Control:
 		var beats: Array = GameSession.catalog.scenarios.filter(func(scenario):
 			return scenario.get("story", null) != null and scenario["story"]["chapterId"] == chapter["id"])
 		# A chapter the story has not reached stays hidden: its title would give it away.
-		if beats.is_empty() or not GameSession.catalog.is_ticket_unlocked(state, beats[0]["ticket"]["id"]):
+		if beats.is_empty() or not log["arrived"].has(beats[0]["ticket"]["id"]):
 			continue
 		var found: int = GameSession.catalog.found_clues(state, chapter["id"]).size()
 		var closed: bool = state["story"]["deductions"].get(chapter["finaleDeductionId"], {}).get("solved", false)

@@ -166,6 +166,22 @@ static func inspected(state: Dictionary, view_id: String) -> Array:
 	return state["story"].get("inspected", {}).get(view_id, [])
 
 
+## Asking the Ticket's sender for its hint. Kept with the number of reports sent so far,
+## so the chat shows the question where it was asked.
+static func ask_hint(state: Dictionary, ticket_id: String) -> Dictionary:
+	if hint_asked(state, ticket_id):
+		return state
+	var next := state.duplicate(true)
+	var asked: Dictionary = next["story"].get("hintsAsked", {})
+	asked[ticket_id] = state["reportHistory"].filter(func(report): return report["ticketId"] == ticket_id).size()
+	next["story"]["hintsAsked"] = asked
+	return next
+
+
+static func hint_asked(state: Dictionary, ticket_id: String) -> bool:
+	return state["story"].get("hintsAsked", {}).has(ticket_id)
+
+
 ## Counts a search that did not turn up the record the team is waiting for.
 static func note_search_miss(state: Dictionary, document_id: String) -> Dictionary:
 	var next := state.duplicate(true)

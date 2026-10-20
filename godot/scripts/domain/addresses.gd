@@ -1,7 +1,7 @@
 ## In-game browser addresses. Port of browserAddress.ts.
 ## Locations: { kind: newtab } | { kind: shoply, path } | { kind: horizon, path }
 ## | { kind: docs, slug } | { kind: search, query } | { kind: record, id }
-## | { kind: unreachable, address }. Shoply and the ONE HORIZON QA portal are the sites
+## | { kind: people, id } | { kind: unreachable, address }. Shoply and the ONE HORIZON QA portal are the sites
 ## under test ("workspace" sites): they can be noted, logged, and reported.
 extends RefCounted
 
@@ -9,6 +9,7 @@ const SHOPLY_HOST := "shoply.local"
 const HORIZON_HOST := "qa.onehorizon.local"
 const DOCS_HOST := "docs.northstar.local"
 const SEARCH_HOST := "search.northstar.local"
+const PEOPLE_HOST := "people.northstar.local"
 
 
 static func new_tab() -> Dictionary:
@@ -62,6 +63,8 @@ static func parse(input: String) -> Dictionary:
 		return horizon("/horizon/%s" % rest if rest != "" else "/horizon")
 	if host == DOCS_HOST:
 		return { "kind": "docs", "slug": rest.split("/")[0].to_lower() if rest != "" else "" }
+	if host == PEOPLE_HOST:
+		return people(rest.split("/")[0].to_lower() if rest != "" else "")
 	return { "kind": "unreachable", "address": trimmed }
 
 
@@ -80,9 +83,16 @@ static func format(location: Dictionary) -> String:
 			return "https://%s/%s" % [SEARCH_HOST, ("?q=%s" % query.uri_encode()) if query != "" else ""]
 		"record":
 			return "https://%s/record/%s" % [SEARCH_HOST, str(location["id"]).to_lower()]
+		"people":
+			return "https://%s/%s" % [PEOPLE_HOST, location.get("id", "")]
 		"unreachable":
 			return str(location["address"])
 	return ""
+
+
+## The directory, or one person's page in it.
+static func people(id: String = "") -> Dictionary:
+	return { "kind": "people", "id": id }
 
 
 static func search(query: String) -> Dictionary:

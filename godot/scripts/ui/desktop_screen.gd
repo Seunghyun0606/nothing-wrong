@@ -1,8 +1,12 @@
 ## The QA workstation desktop: icons, app windows, taskbar, and notifications.
 ## The team's messages are the guide; there is no separate tutorial.
+## Between Tickets the clock runs forward on screen ("2 hours later"); at the end of a
+## day a card offers to clock out.
 extends Control
 
 signal signed_out
+## The player clocked out: { left, next } story times for the day screen.
+signal clocked_out(day: Dictionary)
 
 const Kit := preload("res://scripts/ui/kit.gd")
 const P := preload("res://scripts/ui/palette.gd")
@@ -27,6 +31,9 @@ var _sound_button: Button
 var _clock: Label
 var _deadline: Label
 var _start_menu: PopupMenu
+## "2 hours later": shown while the clock runs forward to the next Ticket.
+var _wait_caption: PanelContainer
+var _wait_label: Label
 
 
 func _ready() -> void:
@@ -89,9 +96,21 @@ func _ready() -> void:
 	_toast_box.alignment = BoxContainer.ALIGNMENT_END
 	add_child(_toast_box)
 
+	_wait_caption = Kit.panel(Color(0.06, 0.09, 0.13, 0.82), Color.TRANSPARENT, 22, 0)
+	_wait_caption.name = "TimePasses"
+	_wait_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_wait_label = Kit.heading("", 22, Color.WHITE)
+	_wait_label.name = "TimePassesText"
+	_wait_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	_wait_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_wait_caption.add_child(Kit.margin(_wait_label, 28, 14, 28, 14))
+	_wait_caption.visible = false
+	add_child(_wait_caption)
+
 	_build_taskbar()
 
 	DesktopSession.changed.connect(_sync)
+	DesktopSession.gate_changed.connect(_on_gate_changed)
 	DesktopSession.toasts_changed.connect(_render_toasts)
 	GameSession.changed.connect(_sync)
 	resized.connect(_layout_overlays)
@@ -99,6 +118,7 @@ func _ready() -> void:
 	Sfx.start_ambience()
 	_sync()
 	_render_toasts()
+	_on_gate_changed()
 	_layout_overlays.call_deferred()
 
 
@@ -155,7 +175,11 @@ func _build_taskbar() -> void:
 	_start_menu.add_item("⏻  %s" % Kit.t("Sign out"), 99)
 	_start_menu.id_pressed.connect(func(id):
 		if id == 99:
-			signed_out.emit()
+			# At the end of the day, signing out is clocking out.
+			if DesktopSession.gate.get("step", "") == "clock_out":
+				_clock_out()
+			else:
+				signed_out.emit()
 		else:
 			DesktopSession.open_app(DesktopSession.APPS[id]))
 	add_child(_start_menu)
@@ -167,6 +191,11 @@ func _build_taskbar() -> void:
 		button.custom_minimum_size = Vector2(0, 38)
 		row.add_child(button)
 		_taskbar_buttons[app] = button
+	var arrange := Kit.button("▦  %s" % Kit.t("Arrange"), DesktopSession.arrange_for_testing, "ChoiceButton")
+	arrange.name = "ArrangeWindows"
+	arrange.tooltip_text = "Browser on the left, QA Notes on the right"
+	arrange.custom_minimum_size = Vector2(0, 38)
+	row.add_child(arrange)
 
 	row.add_child(Kit.spacer())
 	_deadline = Kit.label("", 13, P.MUTED, false)
@@ -200,23 +229,23 @@ func _open_start_menu() -> void:
 ## The story's clock: each Ticket happens at a set time ("Thu 15:30"), and each chapter
 ## counts down to its deadline (`chapter.deadline`). The countdown sets the mood only.
 func _tick() -> void:
-	var focus := GameSession.focus_ticket_id()
-	var scenario: Variant = GameSession.scenario(focus) if focus != "" else GameSession.catalog.scenarios[-1]
-	var story: Dictionary = scenario.get("story", {})
-	var now := StoryClock.parse(str(story.get("time", "")))
-	# The clock moves on with the chat.
+	# The clock moves on with the chat, and runs forward while the next Ticket waits.
 	var log := DesktopSession.messenger_log()
-	if now >= 0 and int(log["delivered"]) > 0:
-		now = maxi(now, int(log["entries"][int(log["delivered"]) - 1].get("time", 0)))
+	var now := DesktopSession.story_now(log)
 	if now < 0:
 		_clock.text = ""
 		_deadline.text = ""
 		return
 	_clock.text = "%s %s" % [Kit.t(StoryClock.day_of(now)), StoryClock.hhmm(now)]
+	# The deadline is the chapter of the newest Ticket the team has assigned.
+	var arrived: Array = log["arrived"]
+	var scenario: Variant = GameSession.scenario(arrived[-1]) if not arrived.is_empty() else null
+	var story: Dictionary = scenario.get("story", {}) if scenario != null else {}
 	var chapter: Variant = GameSession.catalog.get_chapter(str(story.get("chapterId", "")))
 	var deadline: Dictionary = chapter.get("deadline", {}) if chapter != null else {}
 	var at := StoryClock.parse(str(deadline.get("at", "")))
-	if at < 0:
+	# A closed chapter has no deadline left.
+	if at < 0 or GameSession.state["story"]["deductions"].get(chapter["finaleDeductionId"], {}).get("solved", false):
 		_deadline.text = ""
 		return
 	var when := "%s %s" % [Kit.t(StoryClock.day_of(at)), StoryClock.hhmm(at)]
@@ -245,6 +274,8 @@ func _sync() -> void:
 	for app in order:
 		windows_layer.move_child(windows[app], -1)
 	var unread: int = DesktopSession.messenger_log()["unread"]
+	if DesktopSession.gate.get("step", "") == "notify":
+		unread += 1
 	_icon_badge.text = str(unread)
 	_icon_badge.visible = unread > 0
 	for app in DesktopSession.APPS:
@@ -260,7 +291,38 @@ func _sync() -> void:
 	_tick()
 
 
+## While time passes, the caption says how much; the clock in the taskbar runs with it.
+func _on_gate_changed() -> void:
+	var gate: Dictionary = DesktopSession.gate
+	var minutes := int(gate.get("run_to", 0)) - int(gate.get("run_from", 0))
+	var waiting: bool = gate.get("running", false)
+	if waiting:
+		var hours := int(round(minutes / 60.0))
+		_wait_label.text = Kit.tf("%d minutes later", minutes) if minutes < 60 else (Kit.t("1 hour later") if hours == 1 else Kit.tf("%d hours later", hours))
+	var changed := waiting != _wait_caption.visible
+	if changed:
+		_wait_caption.visible = true
+		_wait_caption.modulate.a = 0.0 if waiting else 1.0
+		var fade := create_tween()
+		fade.tween_property(_wait_caption, "modulate:a", 1.0 if waiting else 0.0, 0.35)
+		if not waiting:
+			fade.tween_callback(func(): _wait_caption.visible = false)
+		_layout_overlays()
+	# While the clock runs, only the clock moves.
+	if waiting and not changed and DesktopSession.clock_override >= 0:
+		var now: int = DesktopSession.clock_override
+		_clock.text = "%s %s" % [Kit.t(StoryClock.day_of(now)), StoryClock.hhmm(now)]
+		return
+	_sync()
+
+
+func _clock_out() -> void:
+	clocked_out.emit(DesktopSession.clock_out())
+
+
 func _layout_overlays() -> void:
+	_wait_caption.reset_size()
+	_wait_caption.position = Vector2((size.x - _wait_caption.size.x) / 2.0, (size.y - TASKBAR_HEIGHT) * 0.38)
 	if _toast_tween != null and _toast_tween.is_running():
 		return
 	_toast_box.reset_size()
@@ -309,13 +371,26 @@ func _toast_card(toast: Dictionary) -> Control:
 	var id: int = toast["id"]
 	var app: String = toast.get("app", "")
 	var chat: String = toast.get("chat", "")
-	row.add_child(Kit.link("Open", func():
-		if chat != "":
+	# The end of the day: the card is the way out.
+	if toast.get("kind", "") == "clock_out":
+		var leave := Kit.primary("Clock out", _clock_out)
+		leave.name = "ClockOut"
+		leave.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(leave)
+		return card
+	var open := Kit.link("Open", func():
+		if toast.has("gate"):
+			DesktopSession.open_gate()
+		elif chat != "":
 			DesktopSession.show_chat(chat)
 		elif app != "":
 			DesktopSession.open_app(app)
-		DesktopSession.dismiss_toast(id)))
-	row.add_child(Kit.link("×", func(): DesktopSession.dismiss_toast(id)))
+		DesktopSession.dismiss_toast(id))
+	open.name = "OpenToast"
+	row.add_child(open)
+	# A waiting Ticket's notification stays until it is opened.
+	if not toast.get("sticky", false):
+		row.add_child(Kit.link("×", func(): DesktopSession.dismiss_toast(id)))
 	return card
 
 

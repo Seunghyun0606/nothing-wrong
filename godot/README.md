@@ -63,12 +63,25 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
   its `lateEpilogue`.
 - **Chat delivery** is saved as the last delivered entry's id, so messages added to the
   story later never replay the conversation.
-- **Conversations (DEC-014):** each chapter talks in its own channel, and private turns
-  come as direct messages (`channel` on a chapter, story, message, or deduction in
-  `data/scenarios.json`). Messenger lists the conversations the story has opened with
-  unread badges, follows the newest message until the player picks another one, and
-  points the composer to the conversation where the team is waiting. A narrow window
-  folds the list into a picker above the chat.
+- **Conversations (DEC-014, DEC-015):** each chapter talks in its own channel (`channel`
+  on a chapter, story, message, or deduction in `data/scenarios.json`). Direct messages
+  are for what someone keeps from the channel and for help: "Stuck? Ask Mina for a hint"
+  in QA Notes, and the team's nudges after missed reports. Messenger lists the
+  conversations the story has opened with unread badges, follows the newest message until
+  the player picks another one, and points the composer to the conversation where the
+  team is waiting. A narrow window folds the list into a picker above the chat.
+- **Workday (DEC-015):** each Ticket's chat waits at its first message: the taskbar clock
+  runs forward ("2 hours later"), the message comes up as a notification, and the chat goes
+  on when the player opens it. A Ticket on another story day ends the day first: the
+  afternoon runs to 18:00, **Clock out**, a night screen, and the lock screen the next
+  morning. A Ticket appears in QA Notes once its first message arrives.
+- **Arrange:** the taskbar button puts the Browser on the left three quarters and QA Notes
+  on the right, both full height (spec links use the same split). A narrow QA Notes picks
+  Tickets from a drop-down.
+- **Directory:** `people.northstar.local` (linked from the new tab page and from names in
+  Messenger) lists our team and the client contacts: title, team, manager, address, and
+  what each person looks after (`data/people.json`). Each entry shows from the Ticket that
+  introduces it (`since`), so it never runs ahead of the story.
 - **Key terms:** chat messages and clue cards show record IDs, codes, dates, times, and
   the names in `data/key_terms.json` in bold (`scripts/domain/key_terms.gd`).
 - **Text input:** the window's IME is switched on whenever a text field takes focus
@@ -95,7 +108,8 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`).
 - **Canon gate:** `tests/test_canon.gd` fails if a chapter mentions something the story has
   not reached yet, or states what the canon leaves open (`data/canon.json`).
 - **No tutorial overlay:** the team's messages are the guide. Mina's T01 briefing
-  explains noting and reporting; each Ticket keeps an optional "Need a hint?" in QA Notes.
+  explains noting and reporting; each Ticket offers "Stuck? Ask Mina for a hint" in QA
+  Notes, answered in a direct message.
 - **Notifications** rise from behind the taskbar in the bottom-right corner.
 - **Browser tabs:** links and lead searches from other apps open in a new tab (up to six),
   so the page under test stays open; each tab keeps its own Back/Forward history.

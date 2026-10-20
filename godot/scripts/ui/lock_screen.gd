@@ -5,9 +5,11 @@ signal signed_in
 
 const Kit := preload("res://scripts/ui/kit.gd")
 const P := preload("res://scripts/ui/palette.gd")
+const StoryClock := preload("res://scripts/domain/story_clock.gd")
 
 var _clock: Label
 var _date: Label
+var _signed := false
 
 
 func _ready() -> void:
@@ -49,9 +51,9 @@ func _ready() -> void:
 	var code := LineEdit.new()
 	code.secret = true
 	code.text = "first-shift"
-	code.text_submitted.connect(func(_text): signed_in.emit())
+	code.text_submitted.connect(func(_text): _sign_in())
 	body.add_child(code)
-	var sign_in := Kit.primary("Sign in", func(): signed_in.emit())
+	var sign_in := Kit.primary("Sign in", _sign_in)
 	sign_in.custom_minimum_size = Vector2(0, 46)
 	body.add_child(sign_in)
 	var note := Kit.label("Training environment · Local session", 13, P.MUTED)
@@ -67,7 +69,21 @@ func _ready() -> void:
 	_tick()
 
 
+## The story's clock: the time the player signs in (the next morning after clocking out).
+## Enter and a click in the same frame sign in once.
+func _sign_in() -> void:
+	if _signed:
+		return
+	_signed = true
+	signed_in.emit()
+
+
 func _tick() -> void:
+	var at := DesktopSession.login_time()
+	if at >= 0:
+		_clock.text = Kit.clock_text((at % 1440) / 60, at % 60)
+		_date.text = Kit.t(StoryClock.day_name(at))
+		return
 	var now := Time.get_datetime_dict_from_system()
 	var hour: int = now["hour"]
 	_clock.text = Kit.clock_text(hour, now["minute"])

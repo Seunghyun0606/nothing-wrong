@@ -2,6 +2,9 @@
 extends "res://tests/test_case.gd"
 
 const GameState := preload("res://scripts/domain/game_state.gd")
+const StoryClock := preload("res://scripts/domain/story_clock.gd")
+const MessengerLog := preload("res://scripts/domain/messenger_log.gd")
+const Addresses := preload("res://scripts/domain/addresses.gd")
 
 var main: Control
 

@@ -12,6 +12,7 @@ const Draft := preload("res://scripts/domain/report_draft.gd")
 const StoryClock := preload("res://scripts/domain/story_clock.gd")
 const HorizonData := preload("res://scripts/domain/horizon_data.gd")
 const KeyTerms := preload("res://scripts/domain/key_terms.gd")
+const Directory := preload("res://scripts/domain/directory.gd")
 
 
 func _catalog() -> RefCounted:
@@ -41,8 +42,11 @@ func test_each_chapter_talks_in_its_own_conversation() -> void:
 	var state := _chapter_one_done(0)
 	var log := MessengerLog.build(catalog, state)
 	check(log["entries"].all(func(entry): return entry["in"] == "# shoply-autumn-release"), "Chapter 1 is all in its channel")
+	# Working conclusions are the team's; only what someone keeps from the channel is private.
 	var private: Array = catalog.scenarios.filter(func(scenario): return scenario["story"].get("deduction", {}).get("channel", "") == "@Mina Seo")
-	check(private.map(func(scenario): return scenario["ticket"]["id"]).has("T07"), "the conclusion about Leo is asked for in private")
+	check_eq(private.map(func(scenario): return scenario["ticket"]["id"]), ["T24", "T29", "T36", "T39", "T41", "T42"], "private from Grace's photo on")
+	var first_private: Dictionary = catalog.get_scenario("T24")["story"]["debrief"][0]
+	check(first_private["channel"] == "@Mina Seo" and str(first_private["text"]).begins_with("Not in the channel"), "the first private word says why")
 
 
 func test_key_terms_are_marked_bold() -> void:
@@ -280,6 +284,43 @@ func test_missed_flags_bring_a_nudge_then_the_answer() -> void:
 	check_eq(_assists(log).size(), 2, "help stays in the chat after the Ticket is resolved")
 	var ids: Array = log["entries"].map(func(entry): return entry["id"])
 	check(ids.find("SCENARIO-T01:assist:2") < ids.find("SCENARIO-T01:debrief:0"), "help comes before the debrief")
+
+
+func test_help_comes_in_private() -> void:
+	var catalog := _catalog()
+	var state := GameState.start_ticket(GameState.create_initial(catalog.ticket_ids()), "T01", 1)
+	state = GameState.apply_review(state, { "id": "R1", "ticketId": "T01", "kind": "BUG" }, { "valid": false, "hint": "Look again." }, {}, 2)
+	var log := MessengerLog.build(catalog, state)
+	check_eq(log["entries"][-2]["in"], "# shoply-autumn-release", "the sender replies to the report in the channel")
+	check_eq(_assists(log)[0]["in"], "@Mina Seo", "the tip comes as a direct message")
+	state = GameState.ask_hint(state, "T01")
+	check(GameState.ask_hint(state, "T01") == state, "a hint is asked once")
+	state = GameState.apply_review(state, { "id": "R2", "ticketId": "T01", "kind": "BUG" }, { "valid": false, "hint": "Look again." }, {}, 3)
+	var ids: Array = MessengerLog.build(catalog, state)["entries"].map(func(entry): return entry["id"])
+	check(ids.find("SCENARIO-T01:hintAsked") > ids.find("report:R1") and ids.find("SCENARIO-T01:hintAsked") < ids.find("report:R2"), "the hint sits where it was asked")
+	check_eq(ids[ids.find("SCENARIO-T01:hintAsked") + 1], "SCENARIO-T01:hint:0", "and the answer follows")
+
+
+func test_tickets_wait_at_their_first_message() -> void:
+	var catalog := _catalog()
+	var entries: Array = MessengerLog.build(catalog, _chapter_one_done(0))["entries"]
+	var ids: Array = entries.map(func(entry): return entry["id"])
+	var first := MessengerLog.next_gate(entries, 0)
+	check(first["id"] == "SCENARIO-T01:briefing:0" and first["day"], "the first Ticket starts a day")
+	var t02 := MessengerLog.next_gate(entries, ids.find("SCENARIO-T02:briefing:0"))
+	check(not t02["day"] and t02["since"] < t02["time"], "T02 is later the same day")
+	check(MessengerLog.next_gate(entries, ids.find("SCENARIO-T03:briefing:0"))["day"], "T03 is the next day")
+	check(MessengerLog.next_gate(entries, ids.find("SCENARIO-T02:briefing:1")).is_empty(), "only a Ticket's first message waits")
+
+
+func test_directory_shows_people_from_their_ticket() -> void:
+	var directory: RefCounted = Directory.load_from()
+	var before: Array = directory.visible_orgs(["T01"])
+	check_eq(before.map(func(org): return org["id"]), ["northstar", "shoply"], "our company and the first client")
+	check(directory.find("elena-brooks", ["T01"]) == null and directory.find("elena-brooks", ["T01", "T08"]) != null, "Elena from T08")
+	check_eq(directory.direct_reports("elena-brooks", ["T01", "T08"]), ["leo-ortiz"], "Leo reports to her")
+	check(not directory.facts("grace-yoon", ["T13"]).any(func(fact): return "Leadership Program" in fact), "a line shows from its own Ticket")
+	check_eq(Directory.id_of("Mina Seo"), "mina-seo", "chat names map to directory ids")
 
 
 func _assists(log: Dictionary) -> Array:

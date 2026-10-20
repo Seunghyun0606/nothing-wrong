@@ -13,6 +13,7 @@ const ReportComposer := preload("res://scripts/ui/apps/report_composer.gd")
 const DeductionForm := preload("res://scripts/ui/apps/deduction_form.gd")
 const StoryClock := preload("res://scripts/domain/story_clock.gd")
 const MessengerLog := preload("res://scripts/domain/messenger_log.gd")
+const Directory := preload("res://scripts/domain/directory.gd")
 
 const LIST_WIDTH := 240
 ## Narrower than this, the conversation list folds into a picker above the chat.
@@ -37,6 +38,8 @@ var _shown := ""
 var _typing: Label
 ## Keep the newest message in view until the player scrolls back.
 var _follow := true
+## The Tickets the chat has reached; senders they introduced link to the directory.
+var _arrived: Array = []
 
 
 func _ready() -> void:
@@ -115,11 +118,13 @@ func _render() -> void:
 	var active := GameSession.active_ticket_id()
 	var current := DesktopSession.current_chat(log)
 	var discovery_id: String = log["pendingDiscovery"]["documentId"] if log["pendingDiscovery"] != null else ""
-	var signature := "%d|%d|%s|%s|%d|%s|%s|%s|%s" % [log["delivered"], log["entries"].size(), str(log["pendingDeduction"] != null), discovery_id,
-		GameState.search_misses(GameSession.state, discovery_id), active, str(DesktopSession.report_requested), current, str(log["unreadIn"])]
+	var signature := "%d|%d|%s|%s|%d|%s|%s|%s|%s|%s" % [log["delivered"], log["entries"].size(), str(log["pendingDeduction"] != null), discovery_id,
+		GameState.search_misses(GameSession.state, discovery_id), active, str(DesktopSession.report_requested), current, str(log["unreadIn"]),
+		str(DesktopSession.gate.get("step", ""))]
 	if signature == _signature:
 		return
 	_signature = signature
+	_arrived = log["arrived"]
 	_render_list(log, current)
 	_render_channel(log, current)
 	_render_chats(log, current)
@@ -244,7 +249,8 @@ func _render_chats(log: Dictionary, current: String) -> void:
 	elif not by_conversation.is_empty() and empty != null:
 		_chats_box.remove_child(empty)
 		empty.queue_free()
-	if delivered < entries.size() and entries[delivered]["kind"] == "message" and entries[delivered]["in"] == current and _chats.has(current):
+	# A Ticket that waits for the player is not being typed yet.
+	if delivered < entries.size() and DesktopSession.gate.is_empty() and entries[delivered]["kind"] == "message" and entries[delivered]["in"] == current and _chats.has(current):
 		_typing = Kit.label(Kit.tf("%s is typing…", entries[delivered]["from"]), 13, P.MUTED)
 		_chats[current]["box"].add_child(_typing)
 
@@ -320,7 +326,8 @@ func _render_composer(log: Dictionary, current: String, active: String) -> void:
 		_composer.add_child(_report_form)
 		_report_form.refresh()
 	else:
-		_composer.add_child(Kit.label("The team is typing…" if delivered < entries.size() else "No reply needed right now.", 13, P.MUTED))
+		var typing := delivered < entries.size() and DesktopSession.gate.is_empty()
+		_composer.add_child(Kit.label("The team is typing…" if typing else "No reply needed right now.", 13, P.MUTED))
 	if _report_form != null and _report_form.get_parent() != _composer and (active == "" or _report_form.ticket_id != active):
 		_drop_report_form()
 
@@ -382,6 +389,26 @@ static func _you(entry: Dictionary) -> Control:
 	return row
 
 
+## A sender's name; someone in the directory opens their page there.
+func _author(name: String) -> Control:
+	var id := Directory.id_of(name)
+	if GameSession.directory.find(id, _arrived) == null:
+		var plain := Kit.heading(name, 14)
+		plain.autowrap_mode = TextServer.AUTOWRAP_OFF
+		plain.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		return plain
+	var link := Kit.button(name, DesktopSession.show_person.bind(id), "FlatLink")
+	link.name = "Author"
+	link.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	link.tooltip_text = Kit.t("Open in Directory")
+	link.add_theme_font_override("font", Kit.bold_font())
+	link.add_theme_font_size_override("font_size", 14)
+	link.add_theme_color_override("font_color", P.TEXT)
+	link.add_theme_color_override("font_hover_color", P.ACCENT)
+	link.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	return link
+
+
 func _entry(entry: Dictionary) -> Control:
 	match entry["kind"]:
 		"message":
@@ -390,10 +417,7 @@ func _entry(entry: Dictionary) -> Control:
 			var column := Kit.vbox(3)
 			column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			var author := Kit.hbox(6)
-			var from := Kit.heading(entry["from"], 14)
-			from.autowrap_mode = TextServer.AUTOWRAP_OFF
-			from.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-			author.add_child(from)
+			author.add_child(_author(entry["from"]))
 			author.add_child(Kit.label("· %s" % Kit.t(entry["role"]), 13, P.MUTED, false))
 			author.add_child(_time(entry))
 			column.add_child(author)
@@ -454,7 +478,9 @@ func _entry(entry: Dictionary) -> Control:
 			var card := Kit.panel(P.ACCENT, Color.TRANSPARENT, 10, 12)
 			var body := Kit.vbox(2)
 			body.add_child(_you(entry))
-			var said: String = DeductionForm.filled_text(entry["sentence"], entry["filled"]) if entry.has("sentence") else entry["text"]
+			var args: Array = entry.get("args", [])
+			var said: String = DeductionForm.filled_text(entry["sentence"], entry["filled"]) if entry.has("sentence") \
+				else (Kit.tf(entry["text"], args) if not args.is_empty() else Kit.t(entry["text"]))
 			body.add_child(Kit.label(said, 15, Color.WHITE))
 			if not entry.get("clues", []).is_empty():
 				var clue_names: Array = entry["clues"].map(func(title): return Kit.t(title))

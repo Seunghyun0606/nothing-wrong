@@ -1,0 +1,38 @@
+id: DEC-015
+title: Tickets arrive as notifications, days end with clocking out, and direct messages are for secrets and help
+status: active
+decided_at: "2026-10-20"
+context: >-
+  Playtesting showed the chat rolling straight into the next Ticket, days changing without
+  the player noticing, and case-file conclusions sent to Mina Seo in private for no reason
+  the story gives. The project owner asked for the next task to arrive as a notification
+  the player opens, for days to end and start like a working day, for direct messages to
+  be used only when someone keeps something from the channel or when the player asks for
+  a hint, for a one-click Browser and QA Notes layout, and for an org chart that shows what
+  an org chart would and helps the story along.
+decision: >-
+  A Ticket's chat waits at its first message (MessengerLog.next_gate). The taskbar clock
+  runs forward with a caption ("2 hours later"), the message comes up as a notification,
+  and the chat goes on when the player opens it (or opens Messenger). A Ticket on another
+  story day first ends the day: the afternoon runs to 18:00, a card offers to clock out,
+  a day screen passes the night, and the lock screen shows the next morning; signing in
+  starts the day's wait. A Ticket appears in QA Notes once its first message arrives.
+  Working conclusions are asked for in the chapter's channel. Direct messages carry what
+  someone keeps from the channel (from Grace's photo in T24 on, each first private line says
+  why) and help: a hint the player asks for from QA Notes, and the team's nudges after
+  missed reports. The taskbar's Arrange puts the Browser on the left three quarters and QA
+  Notes on the right, both full height; spec links use the same split, and a narrow QA
+  Notes folds its Ticket list into a picker. The Northstar directory
+  (people.northstar.local, data/people.json) lists our team and the client contacts with
+  titles, teams, managers, addresses, and what each person looks after; every entry and
+  line shows from the Ticket that introduces it, and chat names link to it.
+consequences:
+  - Waiting state lives in DesktopSession and is not saved; a reloaded game waits again at the same Ticket.
+  - Tests deliver instantly and skip the waits; the waits have their own UI tests.
+  - The directory is checked by the canon gate like story text, and its strings need Korean.
+  - Supersedes DEC-014's rule that conclusions about people in the room are asked for in private.
+applies_to:
+  - global
+references:
+  - .project-os/decisions/DEC-012-deadlines-and-final-chapter.yaml
+  - .project-os/decisions/DEC-014-conversations-and-key-terms.yaml

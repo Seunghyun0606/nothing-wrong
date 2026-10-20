@@ -20,11 +20,14 @@ canon leaves open, using `godot/data/canon.json`.
 | 9 · Daniel's Last Case | ACT 6 | T37–T41 = NW-027, 028, 028B, 029, 030 | # oh-document-archive | Built |
 | Final | NW-FINAL (SHIP / HOLD, endings) | T42 | # one-horizon-release | Built |
 
-Private turns are direct messages (DEC-014). Mina Seo asks for the conclusions about people
-in the room (DED-T07 on Leo, DED-T09 on Elena) and for every conclusion from Chapter 5 on in
-a direct message, and talks there when what she says should not reach the client channel
-(the Case File opening in NW-018, Northstar's place in the chain in NW-030). Alex Han writes
-in private when he hands over the codebook (NW-018) and Daniel's archive (end of Chapter 8).
+Working conclusions are asked for in the chapter's channel. Direct messages are for what
+someone keeps from the channel, and for help (DEC-015): Mina Seo first takes a conversation
+private when Grace Yoon turns up in the retreat photo (NW-014, "Grace reads everything
+there"), and from then on the Case File conclusions stay between her and the player (the
+Case File opening in NW-018, the timeline in NW-028B, Northstar's place in the chain in
+NW-030, the release decision). Alex Han writes in private when he hands over the codebook
+outside Grace's scope (NW-018) and Daniel's archive (end of Chapter 8). Hints the player
+asks for, and the team's nudges after missed reports, come from Mina in a direct message.
 
 NW-003–005 (tier sync, photo crop, payroll deductions) open Chapter 5 as the routine first
 day on ONE HORIZON, before October 17 appears. They plant what later chapters pay off: the

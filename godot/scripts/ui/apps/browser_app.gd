@@ -14,6 +14,7 @@ const GameState := preload("res://scripts/domain/game_state.gd")
 const ShoplyView := preload("res://scripts/ui/shoply/shoply_view.gd")
 const RecordView := preload("res://scripts/ui/horizon/record_view.gd")
 const Observations := preload("res://scripts/domain/observations.gd")
+const Directory := preload("res://scripts/domain/directory.gd")
 
 const VIEWPORT_WIDTHS := { "DESKTOP": 0.0, "TABLET": 768.0, "MOBILE": 390.0 }
 ## Everyday log lines, so a defect's trace has to be read rather than spotted.
@@ -218,7 +219,9 @@ func _render() -> void:
 	if _note.disabled and _noting:
 		stop_noting()
 
-	var signature := "%s|%s|%d|%s|%s|%s|%s" % [location_key, DesktopSession.viewport, DesktopSession.reload_key,
+	# The directory grows as Tickets arrive.
+	var arrived := str(DesktopSession.messenger_log()["arrived"]) if location["kind"] == "people" else ""
+	var signature := "%s|%s|%s|%d|%s|%s|%s|%s" % [location_key, arrived, DesktopSession.viewport, DesktopSession.reload_key,
 		JSON.stringify([ShoplyStore.cart, ShoplyStore.coupon, ShoplyStore.account, ShoplyStore.orders]), active,
 		str(view.product_added), str(view.confirmed_order != null)]
 	if signature == _signature:
@@ -268,6 +271,8 @@ func _fill_page(location: Dictionary) -> void:
 			_page.add_child(_search_page(location.get("query", "")))
 		"record":
 			_page.add_child(_record_page(location["id"]))
+		"people":
+			_page.add_child(_directory(location.get("id", "")))
 		"unreachable":
 			var column := Kit.vbox(10)
 			var host: String = Addresses.display(location["address"]).split("/")[0]
@@ -381,6 +386,9 @@ func _new_tab() -> Control:
 	column.add_child(Kit.label("Type an address in the bar above. Work sites end in .local.", 16, P.MUTED))
 	column.add_child(Kit.kicker("NS Search · Intranet"))
 	column.add_child(_search_box(""))
+	var directory := Kit.link("👥 %s · people.northstar.local" % Kit.t("Directory"), DesktopSession.open_url.bind("https://people.northstar.local"))
+	directory.name = "OpenDirectory"
+	column.add_child(directory)
 	var seen := {}
 	var recent: Array = []
 	for location in DesktopSession.visited():
@@ -393,6 +401,142 @@ func _new_tab() -> Control:
 		for address in recent.slice(maxi(0, recent.size() - 5)):
 			column.add_child(Kit.link(Addresses.display(address), DesktopSession.open_url.bind(address)))
 	return Kit.margin(column, 56, 56, 56, 56)
+
+
+# --- Directory -----------------------------------------------------------------
+
+## The Northstar directory: our team and the client contacts on the player's projects,
+## as far as the story has introduced them. A person's page says what a directory would.
+func _directory(id: String) -> Control:
+	var column := Kit.vbox(14)
+	column.name = "Directory"
+	column.add_child(Kit.kicker("Northstar · Intranet", P.MUTED))
+	var arrived: Array = DesktopSession.messenger_log()["arrived"]
+	if id != "":
+		var person: Variant = GameSession.directory.find(id, arrived)
+		if person != null:
+			column.add_child(_person_page(person, arrived))
+			column.add_child(Kit.link("← Directory", DesktopSession.navigate.bind(Addresses.people())))
+			return Kit.margin(column, 48, 36, 48, 36)
+		column.add_child(Kit.heading("Person not found", 28))
+	else:
+		column.add_child(Kit.heading("Directory", 28))
+		column.add_child(Kit.label("Your team and the client contacts on your projects.", 15, P.MUTED))
+	for org in GameSession.directory.visible_orgs(arrived):
+		var block := Kit.panel(P.SURFACE, P.BORDER, 8, 16)
+		block.name = "Org_%s" % org["id"]
+		var body := Kit.vbox(10)
+		block.add_child(body)
+		var header := Kit.hbox(10)
+		var org_name := Kit.heading(org["name"], 20)
+		org_name.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		header.add_child(org_name)
+		header.add_child(Kit.kicker(org["kind"], P.MUTED))
+		body.add_child(header)
+		for note in org["notes"]:
+			body.add_child(Kit.label(note, 13, P.MUTED))
+		for team in org["teams"]:
+			var team_head := Kit.hbox(8)
+			team_head.add_child(Kit.kicker(team["name"]))
+			for note in team["notes"]:
+				team_head.add_child(Kit.label("· %s" % Kit.t(note), 12, P.MUTED, false))
+			body.add_child(team_head)
+			var members := HFlowContainer.new()
+			members.add_theme_constant_override("h_separation", 10)
+			members.add_theme_constant_override("v_separation", 10)
+			for member in team["people"]:
+				members.add_child(_person_chip(member, arrived))
+			body.add_child(members)
+		column.add_child(block)
+	return Kit.margin(column, 48, 36, 48, 36)
+
+
+## How the directory names someone; the player's own entry carries the profile's name.
+static func person_name(person: Dictionary) -> String:
+	if person["id"] != Directory.YOU:
+		return person["name"]
+	var profile: String = GameSession.state["profile"]["name"]
+	return "%s (%s)" % [_title_case(profile), Kit.t("you")]
+
+
+static func _title_case(text: String) -> String:
+	return " ".join(Array(text.split(" ")).map(func(word: String): return word.left(1).to_upper() + word.substr(1).to_lower()))
+
+
+func _person_chip(id: String, arrived: Array) -> Control:
+	var person: Dictionary = GameSession.directory.find(id, arrived)
+	var chip := Kit.panel(P.SUBTLE, P.BORDER, 8, 10)
+	chip.custom_minimum_size = Vector2(230, 0)
+	var row := Kit.hbox(10)
+	chip.add_child(row)
+	row.add_child(Kit.avatar(Kit.initials(person_name(person)), 36))
+	var text := Kit.vbox(0)
+	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var name := Kit.link(person_name(person), DesktopSession.navigate.bind(Addresses.people(id)))
+	name.name = "Person_%s" % id
+	name.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	text.add_child(name)
+	text.add_child(Kit.label(person["title"], 13, P.MUTED))
+	row.add_child(text)
+	return chip
+
+
+func _person_page(person: Dictionary, arrived: Array) -> Control:
+	var directory: RefCounted = GameSession.directory
+	var page := Kit.vbox(16)
+	page.name = "PersonPage"
+	var top := Kit.hbox(16)
+	top.add_child(Kit.avatar(Kit.initials(person_name(person)), 64))
+	var who := Kit.vbox(2)
+	who.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var name := Kit.heading(person_name(person), 26)
+	name.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	who.add_child(name)
+	who.add_child(Kit.label(person["title"], 16))
+	var placement: Dictionary = directory.placement(person["id"], arrived)
+	if not placement.is_empty():
+		who.add_child(Kit.label("%s · %s" % [Kit.t(placement["team"]), placement["org"]], 14, P.MUTED))
+	top.add_child(who)
+	page.add_child(top)
+
+	var fields := GridContainer.new()
+	fields.name = "PersonFields"
+	fields.columns = 2
+	fields.add_theme_constant_override("h_separation", 18)
+	fields.add_theme_constant_override("v_separation", 8)
+	var manager: Variant = directory.find(str(person.get("reportsTo", "")), arrived)
+	if manager != null:
+		_field(fields, "Reports to", Kit.link(person_name(manager), DesktopSession.navigate.bind(Addresses.people(manager["id"]))))
+	elif person.has("reportsTo"):
+		# A manager the story has not introduced yet shows as their title.
+		_field(fields, "Reports to", Kit.label(directory.get_person(person["reportsTo"])["title"], 15))
+	elif person.has("manager"):
+		_field(fields, "Reports to", Kit.label(person["manager"], 15))
+	var reports: Array = directory.direct_reports(person["id"], arrived)
+	if not reports.is_empty():
+		var links := Kit.vbox(2)
+		for report in reports:
+			links.add_child(Kit.link(person_name(directory.get_person(report)), DesktopSession.navigate.bind(Addresses.people(report))))
+		_field(fields, "Direct reports", links)
+	var email := Kit.label(person["email"], 15, P.TEXT, false)
+	email.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	_field(fields, "Email", email)
+	_field(fields, "Location", Kit.label(person["location"], 15))
+	page.add_child(fields)
+
+	var facts: Array = directory.facts(person["id"], arrived)
+	if not facts.is_empty():
+		page.add_child(Kit.kicker("Responsibilities"))
+		for fact in facts:
+			page.add_child(Kit.rich("•  %s" % Kit.t(fact), 15))
+	return page
+
+
+static func _field(grid: GridContainer, label: String, value: Control) -> void:
+	var key := Kit.label(label, 14, P.MUTED, false)
+	grid.add_child(key)
+	value.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(value)
 
 
 ## A search that misses the record the team is waiting for counts toward their help.
@@ -459,6 +603,9 @@ static func tab_title(location: Dictionary) -> String:
 		"record":
 			var document: Variant = GameSession.intranet.get_document(location["id"])
 			title = Kit.t(document["title"]) if document != null else Kit.t("NS Search")
+		"people":
+			var person: Variant = GameSession.directory.find(str(location.get("id", "")), DesktopSession.messenger_log()["arrived"])
+			title = person_name(person) if person != null else Kit.t("Directory")
 		"unreachable":
 			title = Addresses.display(location["address"]).split("/")[0]
 		_:

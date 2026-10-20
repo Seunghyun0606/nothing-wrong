@@ -49,6 +49,19 @@ func _content_strings() -> Array:
 		add.call(document["source"])
 		for line in document["lines"]:
 			add.call(line)
+	for person in GameSession.directory.people:
+		for key in ["title", "manager", "location"]:
+			add.call(person.get(key))
+		for fact in person["facts"]:
+			add.call(fact["text"])
+	for org in GameSession.directory.orgs:
+		add.call(org["kind"])
+		for note in org.get("notes", []):
+			add.call(note["text"])
+		for team in org["teams"]:
+			add.call(team["name"])
+			for note in team.get("notes", []):
+				add.call(note["text"])
 	for chapter in GameSession.catalog.chapters:
 		add.call(chapter["title"])
 		add.call(chapter["synopsis"])
@@ -89,8 +102,8 @@ func test_spec_links_pin_into_qa_notes_beside_the_browser() -> void:
 	check(WorkspaceSession.references_for("T01").has("ATT-T01-01"), "spec pinned to T01")
 	check_eq(DesktopSession.location()["kind"], "shoply", "browser keeps the shop open")
 	check(DesktopSession.is_visible_app("notes"), "notes opened")
-	check_eq(placed.get("browser"), Rect2(0, 0, 0.6, 1), "browser on the left")
-	check_eq(placed.get("notes"), Rect2(0.6, 0, 0.4, 1), "notes on the right")
+	check_eq(placed.get("browser"), Rect2(0, 0, 0.75, 1), "browser on the left")
+	check_eq(placed.get("notes"), Rect2(0.75, 0, 0.25, 1), "notes on the right")
 	var references: Node = find_named(desktop, "References")
 	check(references != null and references.find_child("ReferenceATT-T01-01", true, false) != null, "reference card shown")
 	check(find_button(desktop, "Place beside Browser") != null, "re-arrange action")

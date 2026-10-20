@@ -5,6 +5,7 @@ const Kit := preload("res://scripts/ui/kit.gd")
 const TitleScreen := preload("res://scripts/ui/title_screen.gd")
 const LockScreen := preload("res://scripts/ui/lock_screen.gd")
 const DesktopScreen := preload("res://scripts/ui/desktop_screen.gd")
+const DayScreen := preload("res://scripts/ui/day_screen.gd")
 
 var current: Control
 
@@ -49,11 +50,25 @@ func show_title() -> void:
 
 func show_lock() -> void:
 	var screen: Control = LockScreen.new()
-	screen.signed_in.connect(show_desktop)
+	screen.signed_in.connect(func():
+		DesktopSession.sign_in()
+		show_desktop())
 	_swap(screen)
 
 
 func show_desktop() -> void:
 	var screen: Control = DesktopScreen.new()
 	screen.signed_out.connect(show_title)
+	screen.clocked_out.connect(show_day_change)
+	_swap(screen)
+
+
+## The end of a day: the night passes, and the player signs in the next morning to a
+## fresh desktop.
+func show_day_change(day: Dictionary) -> void:
+	DesktopSession.set_delivery_enabled(false)
+	DesktopSession.reset_layout()
+	var screen: Control = DayScreen.new()
+	screen.setup(day)
+	screen.finished.connect(show_lock)
 	_swap(screen)

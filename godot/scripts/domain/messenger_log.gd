@@ -6,7 +6,8 @@
 ## then pauses again on the deduction.
 ## Every entry is "in" a conversation: a channel ("# name") or a direct message
 ## ("@Name"). A Ticket's chat happens in its chapter's channel unless its story, a
-## message, or its deduction names another one.
+## message, or its deduction names another one. Help is private: a hint the player asks
+## for, and the team's nudges after missed reports, come as direct messages.
 extends RefCounted
 
 const StoryClock := preload("res://scripts/domain/story_clock.gd")
@@ -15,6 +16,7 @@ const StoryClock := preload("res://scripts/domain/story_clock.gd")
 const PENALTY := 20
 const PARTIAL_REPLY := "Good, that's one. This Ticket has more; keep going."
 const DEFAULT_CHANNEL := "# northstar-qa"
+const HINT_QUESTION := "Do you have a minute? I'm stuck on %s. Any pointers?"
 
 
 ## The chat, with a story time on every entry ("time", minutes; see story_clock.gd).
@@ -90,7 +92,9 @@ static func _build(catalog: RefCounted, state: Dictionary) -> Dictionary:
 		var conversation := conversation_of(catalog, scenario)
 		if story != null:
 			for index in story["briefing"].size():
-				entries.append(_message("%s:briefing:%d" % [scenario_id, index], story["briefing"][index], conversation))
+				var line := _message("%s:briefing:%d" % [scenario_id, index], story["briefing"][index], conversation)
+				line["ticketId"] = ticket_id
+				entries.append(line)
 		entries.append({ "id": "%s:ticket" % scenario_id, "kind": "ticket", "ticketId": ticket_id, "title": ticket["title"], "in": conversation })
 		_append_reports(entries, scenario, state, conversation)
 
@@ -175,15 +179,21 @@ static func _append_reports(entries: Array, scenario: Dictionary, state: Diction
 	var ticket: Dictionary = scenario["ticket"]
 	var story: Variant = scenario.get("story", null)
 	var assist: Array = story.get("assist", []) if story != null else []
+	# The hint comes where it was asked: after that many reports.
+	var hint_after := int(state["story"].get("hintsAsked", {}).get(ticket["id"], -1))
+	var sent := 0
 	var misses := 0
 	for index in state["reportHistory"].size():
 		var report: Dictionary = state["reportHistory"][index]
 		if report["ticketId"] != ticket["id"]:
 			continue
+		if sent == hint_after:
+			_append_hint(entries, scenario)
+		sent += 1
 		var review: Dictionary = state["reviewHistory"][index]
-		var sent := report_entry(report)
-		sent["in"] = conversation
-		entries.append(sent)
+		var report_message := report_entry(report)
+		report_message["in"] = conversation
+		entries.append(report_message)
 		if review["valid"]:
 			if review.get("partial", false):
 				entries.append(_message("%s:partial:%s" % [scenario["id"], report["id"]], {
@@ -203,7 +213,38 @@ static func _append_reports(entries: Array, scenario: Dictionary, state: Diction
 		# Missed reports bring the team in: first a nudge, then the answer.
 		for help in assist:
 			if int(help["after"]) == misses:
-				entries.append(_message("%s:assist:%d" % [scenario["id"], misses], help, conversation))
+				entries.append(_message("%s:assist:%d" % [scenario["id"], misses], help, "@%s" % help["from"]))
+	if sent == hint_after:
+		_append_hint(entries, scenario)
+
+
+## The player asks the Ticket's sender for a hint in private; the sender answers there.
+static func _append_hint(entries: Array, scenario: Dictionary) -> void:
+	var ticket: Dictionary = scenario["ticket"]
+	var sender: Dictionary = ticket["sender"]
+	var direct := "@%s" % sender["name"]
+	entries.append({ "id": "%s:hintAsked" % scenario["id"], "kind": "player", "text": HINT_QUESTION, "args": [ticket["id"]], "in": direct })
+	var hints: Array = ticket.get("hints", [])
+	for index in hints.size():
+		entries.append(_message("%s:hint:%d" % [scenario["id"], index], {
+			"from": sender["name"], "role": sender["role"], "text": hints[index]["text"],
+		}, direct))
+
+
+## The next Ticket's chat waits for the player when its first message is next: it
+## arrives as a notification, and the chat goes on once the player opens it. `since` is
+## the story time of the last message before it; `day` is true when the Ticket starts on
+## another day (or is the first one), so the player clocks out and signs in again first.
+static func next_gate(entries: Array, delivered: int) -> Dictionary:
+	if delivered >= entries.size() or not str(entries[delivered]["id"]).ends_with(":briefing:0"):
+		return {}
+	var first: Dictionary = entries[delivered]
+	var at := int(first.get("time", 0))
+	var since := int(entries[delivered - 1].get("time", 0)) if delivered > 0 else -1
+	return {
+		"id": first["id"], "in": first["in"], "from": first["from"], "text": first["text"], "args": first.get("args", []),
+		"time": at, "since": since, "day": delivered == 0 or since / 1440 != at / 1440,
+	}
 
 
 static func report_entry(report: Dictionary) -> Dictionary:
