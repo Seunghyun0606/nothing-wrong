@@ -7,14 +7,14 @@ milestones:
 
   - id: M2
     name: Core Prototype and Playtest
-    status: active
+    status: done
     depends_on:
       - M1
     definition: .project-os/milestones/M2.yaml
 
   - id: M3
     name: Complete MVP Ticket Set
-    status: planned
+    status: active
     depends_on:
       - M2
     definition: .project-os/milestones/M3.yaml

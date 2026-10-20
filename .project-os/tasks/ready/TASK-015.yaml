@@ -1,0 +1,49 @@
+id: TASK-015
+title: Bring docs, terminology, and the playtest kit to the Godot build
+role: developer
+milestone: M4
+priority: P1
+status: ready
+
+objective: >-
+  Make the testing guide, specs, and playtest kit describe the Godot game that ships,
+  and keep player-facing terms the same everywhere.
+why: >-
+  The testing guide and playtest kit still describe the frozen web build, so a playtest
+  run from them would test the wrong game.
+
+scope:
+  include:
+    - docs/development/TESTING.md for the Godot suite, screenshot tour, and export.
+    - The TASK-010 participant guide, session template, and walkthrough for the Godot game.
+    - A check that key UI terms are translated the same way in every string.
+    - Spec notes that point to the decisions which replaced web-era rules.
+  exclude:
+    - Rewriting PROJECT.md product vision.
+    - Recording playtest observations.
+
+depends_on:
+  - TASK-013
+  - TASK-014
+specs:
+  - specs/product/mvp-scope.md
+relevant_files:
+  - docs
+  - specs
+  - godot/README.md
+  - godot/i18n/ko.json
+active_decisions:
+  - .project-os/decisions/DEC-008-godot-only-development.yaml
+  - .project-os/decisions/DEC-016-milestone-rebaseline.yaml
+
+acceptance:
+  - TESTING.md and the playtest kit run the Godot build.
+  - Key UI terms have one Korean translation each, checked by a test.
+  - Specs that describe removed rules point to the decisions that replaced them.
+
+verification:
+  - Run the headless Godot suite.
+  - Run projectctl doctor.
+
+human_gate: false
+risk: low

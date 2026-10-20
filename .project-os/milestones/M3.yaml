@@ -1,16 +1,19 @@
 id: M3
 name: Complete MVP Ticket Set
-status: planned
+status: active
 objective: >-
-  Complete T05 through T08 and the supporting Product surfaces so the MVP covers
-  no-bug judgment, cross-screen checks, multiple bugs, and mini regression work.
+  Verify the shipped Ticket set (T01–T42 and the Final) as the MVP content: every
+  mechanic the plan asked for is covered, every Scenario and Mutation has automated
+  reproduction coverage, and the catalog describes what ships.
 entry_criteria:
-  - M2 Human Gate approves continued content production.
+  - M2 content-scaling decision is recorded (DEC-016).
 exit_criteria:
-  - T01 through T08 are playable in the defined unlock order.
+  - T01 through T42 and the Final are playable in story order by an automated UI flow.
   - No Issue, Cross Screen, Multiple Bugs, and Mini Regression mechanics are covered.
-  - Junior QA can progress to QA Engineer through tested rules.
+  - Progression follows DEC-010 (new Tickets and tools); no career title is required.
   - Every Mutation and Scenario has the required automated reproduction coverage.
-tasks: []
+rebaseline: DEC-016 replaced the web-era T05–T08 plan with the shipped story Tickets.
+tasks:
+  - TASK-011
 human_gate:
   required_on_completion: false

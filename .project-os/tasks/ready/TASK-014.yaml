@@ -1,0 +1,43 @@
+id: TASK-014
+title: Check layouts at common desktop resolutions
+role: developer
+milestone: M4
+priority: P1
+status: ready
+
+objective: >-
+  Make the lock screen, desktop, apps, and Arrange layout hold at 1280x720, 1440x900,
+  and 1920x1080, including when the game window is resized.
+why: >-
+  Players run the game at many window sizes; a window outside the screen or a clipped
+  control blocks progress.
+
+scope:
+  include:
+    - Screenshot the main screens at each resolution and fix what is clipped or misplaced.
+    - Keep open windows inside the screen when the game window shrinks.
+    - Automate the window checks.
+  exclude:
+    - Mobile or touch layouts, new UI themes.
+
+depends_on:
+  - TASK-012
+specs: []
+relevant_files:
+  - godot/scripts/ui
+  - godot/scripts/autoload/desktop_session.gd
+  - godot/tests/screenshot_tour.gd
+active_decisions:
+  - .project-os/decisions/DEC-006-qa-workstation-desktop.yaml
+  - .project-os/decisions/DEC-015-workday-directory-and-private-help.yaml
+
+acceptance:
+  - No window or control is out of the screen at the three resolutions.
+  - Resizing the game window keeps every open window reachable.
+  - The checks are automated.
+
+verification:
+  - Run the headless Godot suite and the screenshot tour at each resolution.
+
+human_gate: false
+risk: low

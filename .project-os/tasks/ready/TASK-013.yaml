@@ -1,0 +1,43 @@
+id: TASK-013
+title: Add a Windows export build gate
+role: developer
+milestone: M4
+priority: P0
+status: ready
+
+objective: >-
+  Export a Windows build that carries its data and translations and starts without
+  script errors, and make that the configured build gate.
+why: >-
+  The quality gates require a build, and JSON content is not exported unless the preset
+  includes it; a build that loads no Tickets would pass every editor test.
+
+scope:
+  include:
+    - A committed Windows Desktop export preset with no credentials.
+    - A documented export command and a startup check of the exported game.
+  exclude:
+    - Code signing, installers, store builds, or publishing a release.
+
+depends_on:
+  - TASK-012
+specs:
+  - .project-os/decisions/DEC-008-godot-only-development.yaml
+relevant_files:
+  - godot/export_presets.cfg
+  - godot/.gitignore
+  - godot/README.md
+active_decisions:
+  - .project-os/decisions/DEC-008-godot-only-development.yaml
+  - .project-os/decisions/DEC-016-milestone-rebaseline.yaml
+
+acceptance:
+  - The Windows export completes from the command line.
+  - The exported game loads every Ticket, record, and translation and reports no script error.
+  - The export command is documented.
+
+verification:
+  - Export the Windows build headless and run its startup check.
+
+human_gate: false
+risk: medium

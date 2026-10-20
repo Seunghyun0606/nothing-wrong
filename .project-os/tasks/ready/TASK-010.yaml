@@ -1,53 +1,46 @@
 id: TASK-010
-title: Verify the T01-T04 prototype and run the playtest gate
+title: Run the full-game human playtest gate
 role: developer
-milestone: M2
+milestone: M4
 priority: P0
 status: ready
 
 objective: >-
-  Harden the complete T01 through T04 prototype, gather reproducible automated evidence,
-  and conduct the documented human playtest before the M2 completion decision.
+  Conduct the documented human playtest on the Godot build of the whole game and record
+  a human decision on whether it is an MVP candidate.
 why: >-
-  Broad content production is intentionally blocked until both functional coverage and
-  subjective validation of the QA gameplay loop are available.
+  Enjoyment, believability, and whether the deductions feel fair are subjective; DEC-016
+  moved this gate from M2 to the end of M4 so it tests the game that ships.
 
 scope:
   include:
-    - Verify fresh-save progression through T01, T02, T03, Account Switcher, and T04.
-    - Verify active, inactive, positive, and negative Mutation cases required by the catalog.
-    - Prepare and execute the six documented prototype playtest questions.
-    - Record defects, observations, and an explicit human recommendation on content scaling.
+    - Prepare the session from the updated playtest kit (TASK-015).
+    - Run at least one session from a fresh save and answer the six playtest questions.
+    - Record defects, observations, and an explicit human recommendation.
   exclude:
-    - T05 through T08 content production.
     - Implicit product-direction or architecture changes based on playtest findings.
-    - Production release or native packaging.
+    - Production release or publishing a build.
 
 depends_on:
-  - TASK-009
+  - TASK-012
+  - TASK-013
+  - TASK-014
+  - TASK-015
 specs:
-  - specs/feature/ticket-catalog.md
   - specs/ux/first-playable-flow.md
-  - specs/architecture/system-design.md
+  - docs/playtest/TASK-010-participant-guide.md
+  - docs/playtest/TASK-010-session-template.md
 relevant_files:
-  - src
-  - tests
-  - docs
+  - docs/playtest
 active_decisions:
-  - .project-os/decisions/DEC-001-scenario-driven-architecture.yaml
-  - .project-os/decisions/DEC-002-react-fake-browser.yaml
-  - .project-os/decisions/DEC-003-versioned-local-persistence.yaml
-  - .project-os/decisions/DEC-004-deterministic-review.yaml
+  - .project-os/decisions/DEC-016-milestone-rebaseline.yaml
 
 acceptance:
-  - T01 through T04 pass the full QA loop in documented unlock order.
-  - All required automated quality and Mutation coverage passes.
   - The six playtest questions have recorded human observations.
-  - A human explicitly decides whether to begin broad content production.
+  - Defects found are filed or fixed through their own tasks.
+  - A human explicitly decides whether the build is an MVP candidate.
 
 verification:
-  - Run the full unit/component suite, typecheck, build, and prototype browser flows.
-  - Run Project OS validation and architecture boundary searches.
   - Record the human playtest session and final decision without self-approval.
 
 human_gate: true

@@ -1,0 +1,45 @@
+id: TASK-012
+title: Harden saves against interrupted writes, bad files, and mid-story reloads
+role: developer
+milestone: M4
+priority: P0
+status: ready
+
+objective: >-
+  Make the save survive a write that stops halfway, recover from unreadable or outdated
+  files, and resume a story reloaded in the middle of a chapter.
+why: >-
+  The game is long (ten chapters); losing or corrupting a save late in the story is the
+  most expensive failure a player can hit.
+
+scope:
+  include:
+    - Write saves and settings through a temporary file that replaces the old one.
+    - Let tests use their own save path instead of the player's save.
+    - Test unreadable, wrong-version, and missing saves, and a mid-story reload through the UI.
+  exclude:
+    - Save slots, cloud saves, or a new save format version.
+
+depends_on:
+  - TASK-011
+specs:
+  - .project-os/decisions/DEC-003-versioned-local-persistence.yaml
+relevant_files:
+  - godot/scripts/autoload/game_session.gd
+  - godot/scripts/autoload/settings.gd
+  - godot/scripts/autoload/workspace_session.gd
+  - godot/tests
+active_decisions:
+  - .project-os/decisions/DEC-003-versioned-local-persistence.yaml
+
+acceptance:
+  - A save is never left half-written in place of the previous one.
+  - Unreadable and wrong-version saves are kept aside and a new game starts.
+  - A game reloaded mid-chapter shows the same chat, Tickets, and Case File.
+  - Tests never touch the player's own save files.
+
+verification:
+  - Run the headless Godot suite.
+
+human_gate: false
+risk: medium

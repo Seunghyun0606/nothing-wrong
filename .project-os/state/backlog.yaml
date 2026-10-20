@@ -88,13 +88,67 @@ tasks:
   - TASK-008
   contract: .project-os/tasks/ready/TASK-009.yaml
   human_gate: false
-- id: TASK-010
-  title: Verify the T01-T04 prototype and run the playtest gate
+- id: TASK-011
+  title: Verify the shipped Ticket set as the MVP content
   role: developer
-  milestone: M2
+  milestone: M3
+  priority: P0
+  status: active
+  depends_on:
+  - TASK-009
+  contract: .project-os/tasks/ready/TASK-011.yaml
+  human_gate: false
+- id: TASK-012
+  title: Harden saves against interrupted writes, bad files, and mid-story reloads
+  role: developer
+  milestone: M4
   priority: P0
   status: ready
   depends_on:
-  - TASK-009
+  - TASK-011
+  contract: .project-os/tasks/ready/TASK-012.yaml
+  human_gate: false
+- id: TASK-013
+  title: Add a Windows export build gate
+  role: developer
+  milestone: M4
+  priority: P0
+  status: ready
+  depends_on:
+  - TASK-012
+  contract: .project-os/tasks/ready/TASK-013.yaml
+  human_gate: false
+- id: TASK-014
+  title: Check layouts at common desktop resolutions
+  role: developer
+  milestone: M4
+  priority: P1
+  status: ready
+  depends_on:
+  - TASK-012
+  contract: .project-os/tasks/ready/TASK-014.yaml
+  human_gate: false
+- id: TASK-015
+  title: Bring docs, terminology, and the playtest kit to the Godot build
+  role: developer
+  milestone: M4
+  priority: P1
+  status: ready
+  depends_on:
+  - TASK-013
+  - TASK-014
+  contract: .project-os/tasks/ready/TASK-015.yaml
+  human_gate: false
+- id: TASK-010
+  title: Run the full-game human playtest gate
+  role: developer
+  milestone: M4
+  priority: P0
+  status: ready
+  depends_on:
+  - TASK-012
+  - TASK-013
+  - TASK-014
+  - TASK-015
   contract: .project-os/tasks/ready/TASK-010.yaml
   human_gate: true

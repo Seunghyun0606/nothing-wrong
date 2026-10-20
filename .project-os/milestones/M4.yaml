@@ -2,14 +2,26 @@ id: M4
 name: MVP Hardening and Polish
 status: planned
 objective: >-
-  Turn the complete content set into a stable, coherent Web Desktop MVP candidate.
+  Turn the complete content set into a stable, coherent Godot desktop MVP candidate and
+  have a human play it before it is called done.
 entry_criteria:
   - M3 is complete.
 exit_criteria:
   - Critical flows have regression coverage and no unresolved critical defects.
-  - UX, accessibility, responsive behavior, persistence recovery, and feedback are polished.
-  - Player-facing terminology and documentation are consistent.
-  - The MVP candidate satisfies the configured quality gates.
-tasks: []
+  - Saves survive interrupted writes, unreadable files, and reloads mid-story.
+  - A Windows build exports with its data and starts without script errors.
+  - Layouts hold at common desktop resolutions.
+  - Player-facing terminology, documentation, and the playtest kit match the Godot build.
+  - A human playtest of the whole game is recorded and a human approves the MVP candidate.
+rebaseline: DEC-016 moved the human playtest (TASK-010) here as the final Human Gate.
+tasks:
+  - TASK-012
+  - TASK-013
+  - TASK-014
+  - TASK-015
+  - TASK-010
 human_gate:
-  required_on_completion: false
+  required_on_completion: true
+  reason: >-
+    Whether the game is enjoyable and ready to call an MVP candidate is a subjective
+    product judgment that automated checks cannot approve.

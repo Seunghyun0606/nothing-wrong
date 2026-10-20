@@ -1,0 +1,34 @@
+id: DEC-016
+title: M3 and M4 are rebaselined on the shipped story; the human playtest moves to the end of M4
+status: active
+decided_at: "2026-10-21"
+context: >-
+  M2 waited on a human playtest of T01–T04 before broad content production, but the project
+  owner directed production through DEC-005 and DEC-009 to DEC-015, and the game now ships
+  T01–T42 in ten chapters on the Godot client. M3 still named T05–T08 from the web-era
+  catalog and a Junior QA to QA Engineer promotion that DEC-010 removed. On 2026-10-20 the
+  project owner asked to bring the project records up to date and to carry out M3 and M4.
+decision: >-
+  The owner's direction to produce content and to proceed with M3 and M4 is recorded as the
+  M2 content-scaling decision, and M2 is closed. The six-question playtest is not dropped:
+  TASK-010 moves to M4 as its final Human Gate and covers the whole Godot game, so M4 cannot
+  complete without a human playtest and approval. M3 is the shipped Ticket set: the T05–T08
+  mechanics (No Bug, Cross Screen, Multiple Bugs, Mini Regression) are verified where the
+  story placed them, every Mutation is checked active and inactive, and progression is new
+  Tickets and tools (DEC-010), not a career title. M4 hardens persistence, adds a Windows
+  build gate, checks layouts at common resolutions, and brings the docs and playtest kit to
+  the Godot build.
+consequences:
+  - TASK-010's acceptance is unchanged in spirit but its scope becomes the full game; no agent may record its observations or its approval.
+  - The configured build gate is a Godot Windows export; the typecheck gate is the headless import and parse of every script.
+  - specs/feature/ticket-catalog.md maps the mechanics to the shipped Tickets.
+  - The career field in the save is kept for compatibility and never changes.
+supersedes_parts_of:
+  - .project-os/milestones/M2.yaml
+  - .project-os/milestones/M3.yaml
+applies_to:
+  - global
+references:
+  - .project-os/decisions/DEC-008-godot-only-development.yaml
+  - .project-os/decisions/DEC-010-notes-and-messenger-reporting.yaml
+  - .project-os/decisions/DEC-015-workday-directory-and-private-help.yaml

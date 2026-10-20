@@ -197,6 +197,90 @@ func test_t04_mutation_requires_gold_save20_and_three_items() -> void:
 	check_eq(Mutations.resolve("cart.discountRate", 0.0, _context("/shoply/cart", 3, "BASIC", "SAVE20"), mutations), 0.0, "basic")
 
 
+## Every Mutation shows when all of its conditions hold and hides when any one fails,
+## and Shoply reads every target a Mutation changes.
+func test_every_mutation_is_active_only_under_its_conditions() -> void:
+	var catalog := _catalog()
+	var product := FileAccess.get_file_as_string("res://scripts/ui/shoply/shoply_view.gd")
+	var count := 0
+	for ticket_id in catalog.ticket_ids():
+		for mutation in catalog.get_scenario(ticket_id)["mutations"]:
+			count += 1
+			var id := str(mutation["id"])
+			check(product.contains('mutate.call("%s"' % mutation["target"]), "%s changes a target Shoply reads" % id)
+			var conditions: Array = mutation.get("conditions", [])
+			var context: Variant = _context_for(conditions)
+			check(context != null and Mutations.is_active(mutation, context), "%s is active under its conditions" % id)
+			for index in conditions.size():
+				var broken: Variant = _context_for(conditions, index)
+				check(broken != null and not Mutations.is_active(mutation, broken),
+					"%s hides when %s %s fails" % [id, conditions[index]["field"], conditions[index]["operator"]])
+	check(count > 0, "the Ticket set has Mutations")
+
+
+## The product never knows which Ticket is being tested.
+func test_shoply_never_branches_on_a_ticket() -> void:
+	var ticket := RegEx.create_from_string("\\bT\\d{2}\\b|SCENARIO-|BUG-T|MUTATION-")
+	for path in ["res://scripts/ui/shoply/shoply_view.gd", "res://scripts/autoload/shoply_store.gd", "res://scripts/domain/shoply_rules.gd"]:
+		var found := ticket.search(FileAccess.get_file_as_string(path))
+		check(found == null, "%s mentions %s" % [path, found.get_string() if found != null else ""])
+
+
+## A context where every condition holds, except the one at `broken`, which fails.
+## Null when no value of the field does that.
+func _context_for(conditions: Array, broken := -1) -> Variant:
+	var context := _context("/shoply", 1)
+	var fields := {}
+	for condition in conditions:
+		fields[condition["field"]] = true
+	for field in fields:
+		var on_field: Array = conditions.filter(func(condition): return condition["field"] == field)
+		var wanted := func(value: Variant) -> bool:
+			_set_field(context, field, value)
+			for condition in on_field:
+				if Conditions.matches(condition, context) != (conditions.find(condition) != broken):
+					return false
+			return true
+		var chosen: Variant = null
+		var found := false
+		for value in _candidates(on_field):
+			if wanted.call(value):
+				chosen = value
+				found = true
+				break
+		if not found:
+			return null
+		_set_field(context, field, chosen)
+	return context
+
+
+## Values that pass or fail each condition on one field.
+static func _candidates(on_field: Array) -> Array:
+	var values: Array = []
+	for condition in on_field:
+		var value: Variant = condition["value"]
+		match typeof(value):
+			TYPE_STRING:
+				values.append_array([value, value + "x", "x" + value])
+			TYPE_INT, TYPE_FLOAT:
+				values.append_array([value, value + 1, value - 1])
+			TYPE_BOOL:
+				values.append_array([value, not value])
+			TYPE_ARRAY:
+				values.append_array(value + ["__other__"])
+	return values
+
+
+static func _set_field(context: Dictionary, field: String, value: Variant) -> void:
+	var parts := field.split(".")
+	var node: Dictionary = context[parts[0]]
+	for index in range(1, parts.size() - 1):
+		if not node.has(parts[index]):
+			node[parts[index]] = {}
+		node = node[parts[index]]
+	node[parts[-1]] = value
+
+
 func test_game_state_start_review_and_unlock() -> void:
 	var catalog := _catalog()
 	var state := GameState.create_initial(catalog.ticket_ids())
