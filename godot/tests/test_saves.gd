@@ -27,8 +27,42 @@ func test_a_save_cut_short_keeps_the_previous_one() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	check(SaveFile.exists(path), "the finished temporary file counts")
 	check_eq(SaveFile.read(path), "third", "and is read")
+	# The next save after such a crash puts that copy in place before writing again.
+	SaveFile.write(path, "fourth")
+	check_eq(SaveFile.read(path), "fourth", "saving goes on")
 	SaveFile.remove(path)
 	check(not SaveFile.exists(path), "removed with its temporary file")
+
+
+## A save is never written over the old one in place: when its temporary file cannot be
+## written, the old save is untouched.
+func test_a_save_is_never_written_in_place() -> void:
+	var path := "user://tests/in_place.json"
+	SaveFile.remove(path)
+	SaveFile.write(path, "old")
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(path + ".tmp"))
+	check(not SaveFile.write(path, "new"), "the write fails")
+	check_eq(FileAccess.get_file_as_string(path), "old", "the old save is whole")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path + ".tmp"))
+	SaveFile.remove(path)
+
+
+func test_unreadable_notes_are_kept_aside() -> void:
+	WorkspaceSession.persist = true
+	for text in ["{not json", JSON.stringify({ "version": 0, "state": {} }), JSON.stringify({ "version": 1, "state": "notes" })]:
+		SaveFile.remove(WorkspaceSession.backup_path)
+		SaveFile.write(WorkspaceSession.save_path, text)
+		WorkspaceSession.load_state()
+		check(WorkspaceSession.recovered_from_unreadable_save, "%s is set aside" % text)
+		check_eq(SaveFile.read(WorkspaceSession.backup_path), text, "and kept as it was")
+		check(WorkspaceSession.evidence.is_empty(), "the notes start empty")
+		WorkspaceSession.save()
+		check_eq(SaveFile.read(WorkspaceSession.backup_path), text, "a new note leaves the backup alone")
+	SaveFile.remove(WorkspaceSession.save_path)
+	SaveFile.remove(WorkspaceSession.backup_path)
+	WorkspaceSession.load_state()
+	check(not WorkspaceSession.recovered_from_unreadable_save, "no notes is just empty")
+	WorkspaceSession.persist = false
 
 
 func test_unreadable_and_outdated_saves_start_a_new_game() -> void:
@@ -63,6 +97,8 @@ func test_a_game_reloaded_mid_chapter_picks_up_where_it_was() -> void:
 	check_eq(GameSession.ticket_status("T01"), "RESOLVED", "T01 resolved before the restart")
 	var before: Dictionary = DesktopSession.messenger_log()
 	var notes := WorkspaceSession.evidence_for("T01").size()
+	var noted: Dictionary = WorkspaceSession.notes.duplicate(true)
+	var leads := GameState.lead_terms(GameSession.state)
 	var delivered: String = GameSession.state["story"].get("deliveredId", "")
 	check(delivered != "", "the chat was delivered")
 	_finish()
@@ -76,6 +112,8 @@ func test_a_game_reloaded_mid_chapter_picks_up_where_it_was() -> void:
 	desktop = _open()
 	check_eq(GameSession.ticket_status("T01"), "RESOLVED", "T01 is still resolved")
 	check_eq(WorkspaceSession.evidence_for("T01").size(), notes, "the notes are still there")
+	check_eq(WorkspaceSession.notes, noted, "word for word")
+	check_eq(GameState.lead_terms(GameSession.state), leads, "the leads from the console too")
 	var after: Dictionary = DesktopSession.messenger_log()
 	check_eq(after["entries"].size(), before["entries"].size(), "the same chat")
 	check_eq(after["pendingDiscovery"], before["pendingDiscovery"], "still pointing at the same record")

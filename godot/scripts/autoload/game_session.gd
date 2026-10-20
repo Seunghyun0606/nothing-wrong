@@ -48,9 +48,7 @@ func load_state() -> void:
 		and typeof(parsed.get("state")) == TYPE_DICTIONARY and parsed["state"].has("tickets"):
 		state = GameState.reconcile(parsed["state"], catalog)
 		return
-	SaveFile.write(backup_path, text)
-	SaveFile.remove(save_path)
-	recovered_from_unreadable_save = true
+	recovered_from_unreadable_save = SaveFile.set_aside(save_path, backup_path)
 	state = GameState.create_initial(catalog.ticket_ids())
 
 

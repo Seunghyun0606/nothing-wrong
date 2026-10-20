@@ -26,6 +26,8 @@ func _ready() -> void:
 
 	if GameSession.recovered_from_unreadable_save:
 		_notice = "Your previous save could not be read, so a new game was started. The old data was kept as a backup."
+	elif WorkspaceSession.recovered_from_unreadable_save:
+		_notice = "Your saved notes could not be read, so they start empty. The old notes were kept as a backup."
 	_render()
 
 

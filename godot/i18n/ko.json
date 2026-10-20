@@ -1575,5 +1575,6 @@
   "Horizon Leadership Program, 2018 cohort.": "Horizon 리더십 프로그램 2018년 기수.",
   "Maintains Horizon ID matching and the cross-system views.": "Horizon ID 매칭과 시스템 간 통합 뷰를 관리해요.",
   "Holds read access to correction audit metadata for UAT.": "UAT용 수정 감사 메타데이터 읽기 권한이 있어요.",
-  "The next Ticket comes in on %s at %s. Clock out when you're ready.": "다음 티켓은 %s %s에 들어와요. 정리되면 퇴근하세요."
+  "The next Ticket comes in on %s at %s. Clock out when you're ready.": "다음 티켓은 %s %s에 들어와요. 정리되면 퇴근하세요.",
+  "Your saved notes could not be read, so they start empty. The old notes were kept as a backup.": "저장된 노트를 읽을 수 없어 노트를 비운 채 시작합니다. 이전 노트는 백업으로 보관했습니다."
 }

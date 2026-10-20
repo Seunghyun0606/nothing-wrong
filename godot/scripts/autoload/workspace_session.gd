@@ -15,6 +15,10 @@ var interactions: Array = []
 var references: Dictionary = {}
 var persist := true
 var save_path := SaveFile.path("workspace.json")
+## Unreadable notes are kept here before the notes start empty.
+var backup_path := SaveFile.path("workspace.unreadable.json")
+## True when unreadable notes were set aside.
+var recovered_from_unreadable_save := false
 var _counter := 0
 
 
@@ -27,15 +31,20 @@ func load_state() -> void:
 	evidence = []
 	interactions = []
 	references = {}
+	recovered_from_unreadable_save = false
 	if not SaveFile.exists(save_path):
 		return
 	var parsed: Variant = JSON.parse_string(SaveFile.read(save_path))
-	if typeof(parsed) == TYPE_DICTIONARY and int(parsed.get("version", 0)) == SAVE_VERSION:
-		var saved: Dictionary = parsed.get("state", {})
+	if typeof(parsed) == TYPE_DICTIONARY and int(parsed.get("version", 0)) == SAVE_VERSION \
+		and typeof(parsed.get("state")) == TYPE_DICTIONARY:
+		var saved: Dictionary = parsed["state"]
 		notes = saved.get("notes", {})
 		evidence = saved.get("evidence", [])
 		interactions = saved.get("interactions", [])
 		references = saved.get("references", {})
+		return
+	# The next note would replace it; keep it whole first.
+	recovered_from_unreadable_save = SaveFile.set_aside(save_path, backup_path)
 
 
 func save() -> void:
