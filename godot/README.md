@@ -146,7 +146,8 @@ Edit content directly in `data/`: `scenarios.json` (tickets, story, chapters),
 `people.json` (the directory), and `shoply.json` (products and orders). Add the Korean
 text for every new string to `i18n/ko.json`; `tests/test_workstation.gd` fails when a
 ticket, story, or record string has no Korean, or when a key term (티켓, 보고, QA 노트,
-사건 파일, 조직도, 추리) is worded another way.
+사건 파일, 조직도, 추리, 📌 메모) is worded another way. The 📌 Note action is 메모 in Korean;
+기록 means the records the story turns up.
 
 ## Tests
 

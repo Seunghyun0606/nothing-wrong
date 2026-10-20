@@ -186,6 +186,9 @@ func test_key_terms_have_one_korean_wording() -> void:
 		"사건 파일": ["케이스 파일", "사건파일", "Case File"],
 		"조직도": ["디렉터리", "디렉토리"],
 		"추리": ["추론"],
+		# The 📌 Note action is 메모; 기록 is kept for the records the story turns up.
+		"📌 메모": ["📌 기록"],
+		"메모하": ["기록하고 보고", "기록한 뒤 보고"],
 	}
 	for source in ko:
 		for canonical in others:

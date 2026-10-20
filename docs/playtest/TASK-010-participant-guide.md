@@ -24,7 +24,7 @@ contain the answers.
 
 When a notification comes in, open it and read the briefing. Accept the Ticket in QA
 Notes and test in the Browser. If something does not match the requirements, press
-📌 Note and click it, then report it to the sender in Messenger. If everything holds,
+📌 Note (📌 메모) and click it, then report it to the sender in Messenger. If everything holds,
 report NO ISSUE FOUND. Afterwards the team may ask you to look something up and answer a
 question. At the end of a workday you clock out, and the next day you sign in again.
 
