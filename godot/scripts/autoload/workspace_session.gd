@@ -4,7 +4,7 @@ extends Node
 signal changed
 signal notes_changed
 
-const SAVE_PATH := "user://workspace.json"
+const SaveFile := preload("res://scripts/domain/save_file.gd")
 const SAVE_VERSION := 1
 const MAX_INTERACTIONS_PER_TICKET := 200
 
@@ -14,6 +14,7 @@ var interactions: Array = []
 ## Reference documents pinned to each Ticket's notes: { ticket_id: [attachment_id, ...] }.
 var references: Dictionary = {}
 var persist := true
+var save_path := SaveFile.path("workspace.json")
 var _counter := 0
 
 
@@ -26,9 +27,9 @@ func load_state() -> void:
 	evidence = []
 	interactions = []
 	references = {}
-	if not FileAccess.file_exists(SAVE_PATH):
+	if not SaveFile.exists(save_path):
 		return
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH))
+	var parsed: Variant = JSON.parse_string(SaveFile.read(save_path))
 	if typeof(parsed) == TYPE_DICTIONARY and int(parsed.get("version", 0)) == SAVE_VERSION:
 		var saved: Dictionary = parsed.get("state", {})
 		notes = saved.get("notes", {})
@@ -40,12 +41,10 @@ func load_state() -> void:
 func save() -> void:
 	if not persist:
 		return
-	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-	if file:
-		file.store_string(JSON.stringify({
-			"version": SAVE_VERSION,
-			"state": { "notes": notes, "evidence": evidence, "interactions": interactions, "references": references },
-		}))
+	SaveFile.write(save_path, JSON.stringify({
+		"version": SAVE_VERSION,
+		"state": { "notes": notes, "evidence": evidence, "interactions": interactions, "references": references },
+	}))
 
 
 func reset() -> void:

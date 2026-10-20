@@ -10,9 +10,11 @@ const Intranet := preload("res://scripts/domain/intranet.gd")
 const Review := preload("res://scripts/domain/review.gd")
 const HorizonData := preload("res://scripts/domain/horizon_data.gd")
 const Directory := preload("res://scripts/domain/directory.gd")
+const SaveFile := preload("res://scripts/domain/save_file.gd")
 
-const SAVE_PATH := "user://save.json"
-const BACKUP_PATH := "user://save.unreadable.json"
+var save_path := SaveFile.path("save.json")
+## An unreadable save is kept here before a new game starts.
+var backup_path := SaveFile.path("save.unreadable.json")
 
 var catalog: RefCounted
 var intranet: RefCounted
@@ -37,19 +39,17 @@ func _ready() -> void:
 
 func load_state() -> void:
 	recovered_from_unreadable_save = false
-	if not FileAccess.file_exists(SAVE_PATH):
+	if not SaveFile.exists(save_path):
 		state = GameState.create_initial(catalog.ticket_ids())
 		return
-	var text := FileAccess.get_file_as_string(SAVE_PATH)
+	var text := SaveFile.read(save_path)
 	var parsed: Variant = JSON.parse_string(text)
 	if typeof(parsed) == TYPE_DICTIONARY and int(parsed.get("version", 0)) == GameState.SAVE_VERSION \
 		and typeof(parsed.get("state")) == TYPE_DICTIONARY and parsed["state"].has("tickets"):
 		state = GameState.reconcile(parsed["state"], catalog)
 		return
-	var backup := FileAccess.open(BACKUP_PATH, FileAccess.WRITE)
-	if backup:
-		backup.store_string(text)
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+	SaveFile.write(backup_path, text)
+	SaveFile.remove(save_path)
 	recovered_from_unreadable_save = true
 	state = GameState.create_initial(catalog.ticket_ids())
 
@@ -57,9 +57,7 @@ func load_state() -> void:
 func save() -> void:
 	if not persist:
 		return
-	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-	if file:
-		file.store_string(JSON.stringify({ "version": GameState.SAVE_VERSION, "state": state }))
+	SaveFile.write(save_path, JSON.stringify({ "version": GameState.SAVE_VERSION, "state": state }))
 
 
 func commit(next: Dictionary) -> void:

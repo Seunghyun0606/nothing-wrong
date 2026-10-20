@@ -17,6 +17,11 @@ func _start() -> Control:
 	GameSession.state = GameState.create_initial(GameSession.catalog.ticket_ids())
 	GameSession.changed.emit()
 	WorkspaceSession.reset()
+	return _open()
+
+
+## Opens the workstation on whatever the sessions hold, as a restarted game does.
+func _open() -> Control:
 	DesktopSession.reset_layout()
 	DesktopSession.instant_messages = true
 	tree.root.size = Vector2i(1440, 900)

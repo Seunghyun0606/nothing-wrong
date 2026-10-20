@@ -6,13 +6,14 @@ extends Node
 signal language_changed
 signal sound_changed
 
-const SETTINGS_PATH := "user://settings.json"
+const SaveFile := preload("res://scripts/domain/save_file.gd")
 const KO_PATH := "res://i18n/ko.json"
 const LANGUAGES := ["ko", "en"]
 
 var language := "en"
 var sound := true
 var persist := true
+var settings_path := SaveFile.path("settings.json")
 
 
 func _ready() -> void:
@@ -24,7 +25,7 @@ func _ready() -> void:
 			translation.add_message(source, parsed[source])
 	TranslationServer.add_translation(translation)
 
-	var saved: Variant = JSON.parse_string(FileAccess.get_file_as_string(SETTINGS_PATH)) if FileAccess.file_exists(SETTINGS_PATH) else null
+	var saved: Variant = JSON.parse_string(SaveFile.read(settings_path)) if SaveFile.exists(settings_path) else null
 	if typeof(saved) == TYPE_DICTIONARY and LANGUAGES.has(saved.get("language", "")):
 		language = saved["language"]
 	else:
@@ -54,6 +55,4 @@ func set_sound(enabled: bool) -> void:
 func _save() -> void:
 	if not persist:
 		return
-	var file := FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)
-	if file:
-		file.store_string(JSON.stringify({ "language": language, "sound": sound }))
+	SaveFile.write(settings_path, JSON.stringify({ "language": language, "sound": sound }))
