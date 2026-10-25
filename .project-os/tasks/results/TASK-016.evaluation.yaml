@@ -1,0 +1,48 @@
+task: TASK-016
+decision: PASS
+status: pass
+summary: 'Every finding of the 2026-10-25 QA review has a recorded decision, and the
+  accepted ones are fixed with tests. Independent re-verification by Codex (CX-01,
+  partial: usage limit) reproduced two more gaps, both fixed in this task: a long
+  session could forget the visit to the screen under test, and saves with wrong kinds
+  one level down crashed. A second review found that first-build saves (numbers in
+  the profile) would be set aside and that a reload could stand in for a visit; both
+  fixed with tests.'
+critical_issues: 0
+evidence:
+- Implementation, test, and review handoffs are stored for TASK-016.
+- Codex re-verification artifacts in godot/build/qa-2026-10-26/ and docs/qa/2026-10-26-verification/report.md
+  (F02 42/49 before the cap fix, F04 675/675, F07 probe cases).
+- Second independent review (claude-reviewer-m4) of the save checks and the action
+  cap; its two defects are fixed.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 71 passed, 0 failed.
+  integration_test:
+    status: pass
+    result: test_full_story passes and its finished save passes the load checks after
+      a JSON round trip.
+  typecheck:
+    status: pass
+    result: Headless import and suite load without parse errors.
+  build:
+    status: pass
+    result: Windows export succeeds; self-check passes on the exported build and from
+      the editor binary.
+  independent_review:
+    status: pass
+    actor: claude-reviewer-m4, codex (CX-01, partial)
+  project_os:
+    status: pass
+    command: projectctl doctor
+residual_risk: Codex's visual review (CX-05) stopped before listing problems and should
+  be rerun. The dialogue balance (F09) is for the human playtest. Not committed yet.
+kind: evaluation
+role: evaluator
+actor: claude-evaluator
+quality:
+  passed: true
+  missing: []
+  failed: []

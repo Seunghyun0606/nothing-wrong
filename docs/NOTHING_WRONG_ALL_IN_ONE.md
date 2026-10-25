@@ -1136,8 +1136,8 @@ interface ImageNarrativeAsset {
 | `D-15` | **Mina 전직 QA 사건** | 이전 인력이 프로젝트에서 제외된 사실. 구체적 인물/사유의 상세 재구성은 보류. | 캐릭터 대사 발전 시 필요 |
 | `D-16` | **왜 감사가 못 잡았나** | 조사범위 분리 + Legacy ID 분리 + 일부 기존 지적 + 승인 예외/관리자 압력. 감사·공권력 전체를 무능/매수로 설정 금지. | Narrative QA 필수 |
 | `D-17` | **Murder Mystery 게임 종료 판정** | 플레이어는 증거 신뢰도에 따라 선택적 가설을 제출할 수 있으나 유죄를 확정할 수 없음. | UX/추리 스코어 미정 |
-| `D-18` | **Final Choice 및 엔딩** | `SHIP/HOLD`, 정식 이관·보존 등의 책임 있는 선택 후보만 정의. 구체적 결과는 미확정. | 필수 기획 결정 |
-| `D-19` | **이미지 일관성** | 7개 사진 제작 전 반복 인물 Face Sheet, Foundation 로고, Ridge Layout 확정. | 이미지 생성 단계 선행 |
+| `D-18` | **Final Choice 및 엔딩** | `SHIP/HOLD`, 정식 이관·보존 등의 책임 있는 선택 후보만 정의. 구체적 결과는 미확정. | **확정 (2026-10-25, DEC-017)**: Working as Intended / Hold and Escalate / Off the Project 3개 엔딩. `docs/story/CANON-MAP.md` 참조 |
+| `D-19` | **이미지 일관성** | 7개 사진 제작 전 반복 인물 Face Sheet, Foundation 로고, Ridge Layout 확정. | **확정 (2026-10-25, DEC-017)**: 기준 시트 후 사진 제작, `godot/assets/photos/` |
 | `D-20` | **캠페인 예상 시간** | 30+ Tickets로 5–7시간이 실제 가능한지 인적 플레이테스트 후 조정. | 템포/콘텐츠 분량 |
 
 ## 변경 관리 절차

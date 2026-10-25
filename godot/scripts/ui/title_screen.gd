@@ -12,17 +12,18 @@ var _confirming_reset := false
 
 
 func _ready() -> void:
-	var background := ColorRect.new()
-	background.color = P.SUBTLE
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(background)
+	add_child(Kit.backdrop("title", P.SUBTLE))
 
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(center)
+	# The title card sits over the quiet left side of the picture.
+	var left := CenterContainer.new()
+	left.set_anchors_preset(Control.PRESET_FULL_RECT)
+	left.anchor_right = 0.6
+	add_child(left)
+	var card := Kit.panel(Color(1, 1, 1, 0.94), Color.TRANSPARENT, 12, 36)
+	left.add_child(card)
 	_content = Kit.vbox(16)
-	_content.custom_minimum_size = Vector2(560, 0)
-	center.add_child(_content)
+	_content.custom_minimum_size = Vector2(540, 0)
+	card.add_child(_content)
 
 	if GameSession.recovered_from_unreadable_save:
 		_notice = "Your previous save could not be read, so a new game was started. The old data was kept as a backup."
@@ -34,7 +35,7 @@ func _ready() -> void:
 func _render() -> void:
 	Kit.clear(_content)
 	_content.add_child(Kit.kicker("Quality Operations Simulator"))
-	var title := Kit.heading("NOTHING WRONG", 64)
+	var title := Kit.heading("NOTHING WRONG", 56)
 	title.autowrap_mode = TextServer.AUTOWRAP_OFF
 	_content.add_child(title)
 	_content.add_child(Kit.label("Read the request. Test the product. Prove what happened.", 20, P.MUTED))

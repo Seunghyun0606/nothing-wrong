@@ -64,5 +64,33 @@ static func remove(target: String) -> void:
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(file))
 
 
+## Whether a value read from a save has the expected shape. `kind` is a Variant type,
+## "number" (JSON numbers come back as floats), or [container type, kind of each item] for
+## an Array or the values of a Dictionary.
+static func has_shape(value: Variant, kind: Variant) -> bool:
+	if kind is Array:
+		if typeof(value) != kind[0]:
+			return false
+		var items: Array = value.values() if value is Dictionary else value
+		return items.all(func(item): return has_shape(item, kind[1]))
+	if kind is String:
+		return typeof(value) in [TYPE_INT, TYPE_FLOAT]
+	return typeof(value) == kind
+
+
+## Whether every field a save has is of its kind (`kinds`: field -> kind, as has_shape).
+## Missing fields are allowed; the loader fills them in.
+static func fields_fit(saved: Dictionary, kinds: Dictionary) -> bool:
+	for key in kinds:
+		if saved.has(key) and not has_shape(saved[key], kinds[key]):
+			return false
+	return true
+
+
+## Whether a saved item has every field in `kinds`, each of its kind.
+static func has_fields(item: Variant, kinds: Dictionary) -> bool:
+	return typeof(item) == TYPE_DICTIONARY and kinds.keys().all(func(key): return item.has(key)) and fields_fit(item, kinds)
+
+
 static func _temporary(target: String) -> String:
 	return target + ".tmp"

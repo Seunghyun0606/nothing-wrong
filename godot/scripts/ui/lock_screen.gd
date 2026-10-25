@@ -13,10 +13,13 @@ var _signed := false
 
 
 func _ready() -> void:
-	var background := ColorRect.new()
-	background.color = P.DESK
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(background)
+	add_child(Kit.backdrop("lock", P.DESK))
+	# A light veil keeps the clock readable over the morning window.
+	var veil := ColorRect.new()
+	veil.color = Color(1, 1, 1, 0.35)
+	veil.set_anchors_preset(Control.PRESET_FULL_RECT)
+	veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(veil)
 
 	var center := CenterContainer.new()
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -26,7 +29,7 @@ func _ready() -> void:
 
 	_clock = Kit.label("", 96, P.TEXT, false)
 	_clock.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_date = Kit.label("", 20, P.MUTED, false)
+	_date = Kit.label("", 20, P.TEXT, false)
 	_date.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var clock_box := Kit.vbox(0)
 	clock_box.add_child(_clock)

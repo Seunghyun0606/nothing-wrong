@@ -1,0 +1,38 @@
+task: TASK-017
+decision: PASS
+status: pass
+summary: The story photos are images on the record views, with each defect drawn from
+  one source image and a text fallback.
+critical_issues: 0
+evidence:
+- Implementation handoff and automated test evidence are stored for TASK-017.
+- Independent review (claude-reviewer-m4) passed with zero critical issues; its two
+  minor findings are fixed.
+- Codex photo probe confirms Note targets and the missing-image fallback.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 71 passed, 0 failed.
+  integration_test:
+    status: pass
+    result: test_full_story passes through every photo Ticket.
+  typecheck:
+    status: pass
+  build:
+    status: pass
+    result: Export succeeds; both self-checks pass with 12 photos.
+  independent_review:
+    status: pass
+    actor: claude-reviewer-m4
+  project_os:
+    status: pass
+residual_risk: Face consistency is a visual judgement; CX-05 should be rerun. Not
+  committed yet.
+kind: evaluation
+role: evaluator
+actor: claude-evaluator
+quality:
+  passed: true
+  missing: []
+  failed: []

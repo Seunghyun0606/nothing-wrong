@@ -7,6 +7,7 @@
 extends Node
 
 const GameState := preload("res://scripts/domain/game_state.gd")
+const RecordView := preload("res://scripts/ui/horizon/record_view.gd")
 const CONTENT := [
 	"res://data/canon.json", "res://data/horizon.json", "res://data/intranet.json",
 	"res://data/key_terms.json", "res://data/people.json", "res://data/scenarios.json",
@@ -48,6 +49,15 @@ func _run() -> void:
 		"views": GameSession.horizon.views.size(),
 		"people": GameSession.directory.people.size(),
 	}
+	counts["photos"] = 0
+	for view in GameSession.horizon.views:
+		for photo in [view.get("photo", {})] + view["rows"].map(func(row): return row.get("photo", {})):
+			if photo.is_empty():
+				continue
+			if ResourceLoader.exists(RecordView.PHOTO_PATH % photo["asset"]):
+				counts["photos"] += 1
+			else:
+				problems.append("missing photo %s" % photo["asset"])
 	for key in counts:
 		if counts[key] == 0:
 			problems.append("no %s loaded" % key)

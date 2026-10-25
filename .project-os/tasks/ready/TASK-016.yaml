@@ -1,0 +1,56 @@
+id: TASK-016
+title: Resolve the 2026-10-25 QA review findings
+role: developer
+milestone: M4
+priority: P1
+status: ready
+
+objective: >-
+  Decide on each finding of the Codex QA review of 2026-10-25, fix the accepted ones with
+  tests that would have caught them, and record why the rest wait for the playtest.
+why: >-
+  The review found guidance that contradicts the rules (F01, F06), a NO ISSUE FOUND that
+  passes without checking the screen (F02), Korean conclusions that show particle
+  fallbacks (F04), a time contradiction (F05), saves in the wrong shape that bypass
+  recovery (F07), and a README that presents the frozen web build (F08).
+
+scope:
+  include:
+    - Guidance text, NO ISSUE FOUND coverage, the Korean conclusions, T26 and T21 wording, save shape checks, and the root README.
+    - A disposition record for every finding in docs/qa/.
+    - Playtest kit items for what only a human session can judge (F09).
+  exclude:
+    - Removing the wrong-answer time cost (DEC-012).
+    - Rewriting later-chapter dialogue without playtest evidence.
+    - Photo assets (TASK-017).
+
+depends_on:
+  - TASK-015
+specs:
+  - specs/feature/qa-core-loop.md
+relevant_files:
+  - docs/qa
+  - godot/scripts
+  - godot/data/scenarios.json
+  - godot/i18n/ko.json
+  - godot/tests
+  - README.md
+  - docs/playtest
+active_decisions:
+  - .project-os/decisions/DEC-012-deadlines-and-final-chapter.yaml
+  - .project-os/decisions/DEC-016-milestone-rebaseline.yaml
+
+acceptance:
+  - Every finding has a recorded accept or defer decision with a reason.
+  - A NO ISSUE FOUND report that never opened or noted the Ticket's screen is rejected, checked by a test.
+  - No Korean conclusion has a particle fallback or a form-dependent particle right after a blank, checked by a test.
+  - A save with missing fields loads with defaults, and a save with fields of the wrong kind is set aside, checked by a test.
+  - The answer prompt states the real cost of a wrong answer.
+
+verification:
+  - Run the headless Godot suite.
+  - Run the editor and exported self-checks.
+  - Run projectctl doctor.
+
+human_gate: false
+risk: low

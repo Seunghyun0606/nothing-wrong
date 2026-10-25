@@ -4022,7 +4022,7 @@
               "answer": "source data"
             }
           },
-          "success": "That is the turn. Not a migration bug: the original records already disagreed."
+          "success": "That is the turn. Not one migration bug: the gaps were there before ONE HORIZON copied anything. Next we find out who made them, and when."
         }
       }
     },
@@ -4717,7 +4717,7 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Medical supplies, patient transport, fire safety equipment, all to Horizon Ridge, all in the small hours of 17 October. That was not a training weekend any more."
+            "text": "Medical supplies, patient transport, fire safety equipment, all to Horizon Ridge, all from 23:20 on the night of 17 October. That was not a training weekend any more."
           }
         ],
         "clue": {
@@ -4875,7 +4875,7 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: INC-1017 has no original record. Note its status, report it with REQ-T27-01, and call it a data integrity problem."
+            "text": "Here's the answer: INC-1017's original record cannot be opened. Note its status, report it with REQ-T27-01, and call it a data integrity problem."
           }
         ]
       }
@@ -6398,7 +6398,7 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Ninety minutes before the alarm: Daniel, Grace, Kwon, and a man in a Foundation security jacket, on the terrace of Building B. Together. That's all the photo says."
+            "text": "About ninety minutes before the alarm, by the camera clock: Daniel, Grace, Kwon, and a man in a Foundation security jacket, on the terrace of Building B. Together. That's all the photo says."
           }
         ],
         "clue": {
@@ -7377,7 +7377,7 @@
       "id": "CH8",
       "canonAct": "ACT 5",
       "title": "Chapter 8 · The Foundation",
-      "synopsis": "Nothing in this chapter is broken. Discounts, promotions, and transfers all follow approved rules, and the rules all lead to Horizon Foundation.",
+      "synopsis": "No rule in this chapter is broken. Discounts, promotions, and transfers all follow approved rules, and the rules all lead to Horizon Foundation.",
       "quiet": true,
       "caseFileAfter": "T28",
       "channel": "# oh-business-rules",

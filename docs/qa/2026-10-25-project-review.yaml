@@ -1,0 +1,61 @@
+task: USER-QA-2026-10-25
+status: completed_with_findings
+kind: qa_result
+role: qa
+baseline_commit: ef3a593
+summary: >-
+  Godot 전체 진행·빌드·자체 점검은 통과했다. 안내와 시간 패널티 불일치,
+  담당 화면을 보지 않는 No Issue 판정, 사진 경험 공백 및 대사·한국어·저장
+  견고성 문제가 남는다. 제품 승인은 하지 않았다.
+product_assessment: needs_work
+report: docs/qa/2026-10-25-project-review.md
+files_changed:
+  - docs/qa/2026-10-25-project-review.md
+  - docs/qa/2026-10-25-project-review.yaml
+verification:
+  unit_and_integration:
+    status: pass
+    result: 64 passed, 0 failed; exit 0; includes T01-T42 UI flow
+  windows_export:
+    status: pass
+    artifact: godot/build/qa-2026-10-25/NothingWrong.exe
+  editor_self_check:
+    status: pass
+  exported_self_check:
+    status: pass
+  project_os_doctor:
+    status: pass
+  korean_format_tokens:
+    status: pass
+    entries: 1578
+    mismatches: 0
+  visual_render:
+    status: completed
+    resolutions: [1280x720, 1440x900, 1920x1080]
+    screenshots_per_resolution: 22
+    limitation: representative screenshots inspected; not every screen and size combination
+  exploratory_probes:
+    status: findings_reproduced
+    evidence:
+      - godot/build/qa-2026-10-25/probe.gd
+      - godot/build/qa-2026-10-25/probe.log
+      - godot/build/qa-2026-10-25/probe_save.gd
+      - godot/build/qa-2026-10-25/probe-save.log
+findings:
+  - {id: F01, priority: P1, category: confirmed_bug, summary: No-penalty UI contradicts the 20-minute wrong-deduction penalty}
+  - {id: F02, priority: P1, category: confirmed_bug, summary: T20 resolves as No Issue after visiting an unrelated Shoply page}
+  - {id: F03, priority: P1, category: experience_gap, summary: Photo crop and orientation work uses text cells instead of images}
+  - {id: F04, priority: P2, category: localization, summary: 14 of 19 Korean deduction templates expose particle alternatives}
+  - {id: F05, priority: P2, category: continuity, summary: T26 says early morning but records say 23:20}
+  - {id: F06, priority: P2, category: confirmed_bug, summary: ONE HORIZON ticket guidance still says to open Shoply}
+  - {id: F07, priority: P2, category: robustness, summary: Syntactically valid incomplete save bypasses recovery and causes a runtime error}
+  - {id: F08, priority: P2, category: documentation, summary: Root README presents the frozen web build as the current product}
+  - {id: F09, priority: P2, category: editorial_assessment, summary: Later dialogue overuses Mina as the interpreter of findings}
+review: agent_analysis_not_human_playtest
+human_gate:
+  task: TASK-010
+  satisfied: false
+  observations_fabricated: false
+canonical_state_changed: false
+product_files_changed: false
+commit: null

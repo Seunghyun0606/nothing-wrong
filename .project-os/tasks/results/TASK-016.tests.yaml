@@ -1,0 +1,23 @@
+task: TASK-016
+status: pass
+summary: The suite passes with the new review, save, terminology, and layout tests;
+  both self-checks and Project OS doctor pass.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 69 passed, 0 failed.
+  typecheck:
+    status: pass
+  build:
+    status: pass
+    result: Windows export; exported and editor self-checks print Self-check passed.
+  integration_test:
+    status: pass
+    result: test_full_story passes with the NO ISSUE FOUND screen check.
+  project_os:
+    status: pass
+    command: projectctl doctor
+kind: test
+role: qa
+actor: qa

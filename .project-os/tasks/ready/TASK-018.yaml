@@ -1,0 +1,48 @@
+id: TASK-018
+title: Apply the Codex Korean copy review and screen art
+role: developer
+milestone: M4
+priority: P2
+status: ready
+
+objective: >-
+  Decide on and apply the Codex Korean copy review (CX-04) and the Codex screen art
+  (CX-02): the title, lock screen, and desktop pictures and the game icon.
+why: >-
+  The review found Korean lines that claim more than the canon (T29, T41), speech levels
+  that slip (Grace), and four source lines wrong in both languages. The build had no icon
+  and plain-colour screens.
+
+scope:
+  include:
+    - A recorded decision for each Korean suggestion and each source fix, applied to ko.json and the content files.
+    - The title, lock, and desktop pictures with a plain-colour fallback, and the window and executable icon.
+  exclude:
+    - New dialogue, new Tickets, or changes to what the story proves.
+
+depends_on:
+  - TASK-017
+specs:
+  - docs/NOTHING_WRONG_ALL_IN_ONE.md
+relevant_files:
+  - godot/i18n/ko.json
+  - godot/data
+  - godot/assets/art
+  - godot/scripts/ui
+  - docs/qa/2026-10-26-korean-copy
+  - docs/art/2026-10-26
+active_decisions:
+  - .project-os/decisions/DEC-013-one-horizon-canon.yaml
+  - .project-os/decisions/DEC-017-endings-and-story-photos.yaml
+
+acceptance:
+  - Every suggestion and source fix has a recorded decision; changed English keys keep Korean, checked by a test.
+  - The title, lock, and desktop show their pictures and fall back to a colour when one is missing, checked by a test.
+  - The exported executable carries the game icon and its self-check passes.
+
+verification:
+  - Run the headless Godot suite.
+  - Export, check the executable icon, and run both self-checks.
+
+human_gate: false
+risk: low

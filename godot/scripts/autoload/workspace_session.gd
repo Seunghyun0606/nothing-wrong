@@ -5,8 +5,18 @@ signal changed
 signal notes_changed
 
 const SaveFile := preload("res://scripts/domain/save_file.gd")
+const ReportDraft := preload("res://scripts/domain/report_draft.gd")
 const SAVE_VERSION := 1
 const MAX_INTERACTIONS_PER_TICKET := 200
+## The kind of each saved field (SaveFile.has_shape). A note and an action must have every
+## field listed for it.
+const SAVED_KINDS := {
+	"notes": [TYPE_DICTIONARY, TYPE_STRING], "evidence": [TYPE_ARRAY, TYPE_DICTIONARY],
+	"interactions": [TYPE_ARRAY, TYPE_DICTIONARY], "references": [TYPE_DICTIONARY, [TYPE_ARRAY, TYPE_STRING]],
+}
+const EVIDENCE_KINDS := { "id": TYPE_STRING, "ticketId": TYPE_STRING, "context": TYPE_DICTIONARY, "snapshot": TYPE_DICTIONARY }
+const ACTION_KINDS := { "id": TYPE_STRING, "ticketId": TYPE_STRING, "type": TYPE_STRING }
+const ACTION_OPTIONAL_KINDS := { "target": TYPE_STRING, "payload": TYPE_DICTIONARY }
 
 var notes: Dictionary = {}
 var evidence: Array = []
@@ -36,7 +46,7 @@ func load_state() -> void:
 		return
 	var parsed: Variant = JSON.parse_string(SaveFile.read(save_path))
 	if typeof(parsed) == TYPE_DICTIONARY and int(parsed.get("version", 0)) == SAVE_VERSION \
-		and typeof(parsed.get("state")) == TYPE_DICTIONARY:
+		and _is_loadable(parsed.get("state")):
 		var saved: Dictionary = parsed["state"]
 		notes = saved.get("notes", {})
 		evidence = saved.get("evidence", [])
@@ -45,6 +55,20 @@ func load_state() -> void:
 		return
 	# The next note would replace it; keep it whole first.
 	recovered_from_unreadable_save = SaveFile.set_aside(save_path, backup_path)
+
+
+## Every field the notes have is of the right kind, and every note and action names its
+## Ticket. Missing fields start empty.
+static func _is_loadable(saved: Variant) -> bool:
+	if typeof(saved) != TYPE_DICTIONARY or not SaveFile.fields_fit(saved, SAVED_KINDS):
+		return false
+	for item in saved.get("evidence", []):
+		if not SaveFile.has_fields(item, EVIDENCE_KINDS) or typeof(item["context"].get("currentPath")) != TYPE_STRING:
+			return false
+	for item in saved.get("interactions", []):
+		if not SaveFile.has_fields(item, ACTION_KINDS) or not SaveFile.fields_fit(item, ACTION_OPTIONAL_KINDS):
+			return false
+	return true
 
 
 func save() -> void:
@@ -118,10 +142,37 @@ func record_interaction(ticket_id: String, type: String, target: String = "", pa
 	interactions.append(action)
 	var for_ticket := interactions.filter(func(item): return item["ticketId"] == ticket_id)
 	if for_ticket.size() > MAX_INTERACTIONS_PER_TICKET:
-		var dropped: Array = for_ticket.slice(0, for_ticket.size() - MAX_INTERACTIONS_PER_TICKET).map(func(item): return item["id"])
+		var dropped := _oldest_to_drop(for_ticket, for_ticket.size() - MAX_INTERACTIONS_PER_TICKET)
 		interactions = interactions.filter(func(item): return not dropped.has(item["id"]))
 	save()
 	changed.emit()
+
+
+## The ids of the `count` oldest actions to forget, keeping the latest report step on
+## every screen (reloads and captures are not steps), so a long session never forgets that
+## the screen under test was opened.
+static func _oldest_to_drop(actions: Array, count: int) -> Array:
+	var is_step := func(action: Dictionary) -> bool: return not ReportDraft.IGNORED_ACTIONS.has(action["type"])
+	var left := {}
+	for action in actions.filter(is_step):
+		var target: String = action.get("target", "")
+		left[target] = int(left.get(target, 0)) + 1
+	var dropped: Array = []
+	for action in actions:
+		var target: String = action.get("target", "")
+		if dropped.size() >= count:
+			break
+		if not is_step.call(action):
+			dropped.append(action["id"])
+		elif int(left[target]) > 1:
+			left[target] -= 1
+			dropped.append(action["id"])
+	for action in actions:
+		if dropped.size() >= count:
+			break
+		if not dropped.has(action["id"]):
+			dropped.append(action["id"])
+	return dropped
 
 
 func evidence_for(ticket_id: String) -> Array:

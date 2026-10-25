@@ -139,6 +139,36 @@ tasks:
   - TASK-014
   contract: .project-os/tasks/ready/TASK-015.yaml
   human_gate: false
+- id: TASK-016
+  title: Resolve the 2026-10-25 QA review findings
+  role: developer
+  milestone: M4
+  priority: P1
+  status: done
+  depends_on:
+  - TASK-015
+  contract: .project-os/tasks/ready/TASK-016.yaml
+  human_gate: false
+- id: TASK-017
+  title: Show the story photos as images on the record views
+  role: developer
+  milestone: M4
+  priority: P1
+  status: done
+  depends_on:
+  - TASK-016
+  contract: .project-os/tasks/ready/TASK-017.yaml
+  human_gate: false
+- id: TASK-018
+  title: Apply the Codex Korean copy review and screen art
+  role: developer
+  milestone: M4
+  priority: P2
+  status: done
+  depends_on:
+  - TASK-017
+  contract: .project-os/tasks/ready/TASK-018.yaml
+  human_gate: false
 - id: TASK-010
   title: Run the full-game human playtest gate
   role: developer
@@ -150,5 +180,8 @@ tasks:
   - TASK-013
   - TASK-014
   - TASK-015
+  - TASK-016
+  - TASK-017
+  - TASK-018
   contract: .project-os/tasks/ready/TASK-010.yaml
   human_gate: true

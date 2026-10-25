@@ -303,14 +303,14 @@ func _render_composer(log: Dictionary, current: String, active: String) -> void:
 				row.add_child(Kit.button("🔎 %s" % term, DesktopSession.search_intranet.bind(term)))
 			_composer.add_child(row)
 	elif pending != null and delivered >= entries.size() and GameState.on_board(pending):
-		_composer.add_child(Kit.label(Kit.tf("%s is waiting for your answer. A wrong guess costs nothing.", pending["askedBy"]["from"]), 13, P.WARNING))
+		_composer.add_child(Kit.label(_waiting_line(pending), 13, P.WARNING))
 		var board := Kit.primary(Kit.t("Open Case File and connect the clues"), DesktopSession.show_case_file)
 		board.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		_composer.add_child(board)
 	elif pending != null and delivered >= entries.size():
 		var reply := Kit.vbox(6)
 		reply.name = "Reply"
-		reply.add_child(Kit.label(Kit.tf("%s is waiting for your answer. A wrong guess costs nothing.", pending["askedBy"]["from"]), 13, P.WARNING))
+		reply.add_child(Kit.label(_waiting_line(pending), 13, P.WARNING))
 		var form: VBoxContainer = DeductionForm.new()
 		form.setup(pending)
 		reply.add_child(form)
@@ -510,3 +510,11 @@ func _entry(entry: Dictionary) -> Control:
 			text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			system.add_child(text)
 			return system
+
+
+## A wrong conclusion can be answered again but costs story time (MessengerLog.PENALTY);
+## the final decision has no wrong answer.
+static func _waiting_line(pending: Dictionary) -> String:
+	if pending.get("mode", "") == "choice":
+		return Kit.tf("%s is waiting for your decision.", pending["askedBy"]["from"])
+	return Kit.tf("%s is waiting for your answer. You can answer again, but a wrong guess costs %d minutes.", [pending["askedBy"]["from"], MessengerLog.PENALTY])

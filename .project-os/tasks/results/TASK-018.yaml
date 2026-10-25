@@ -1,0 +1,34 @@
+task: TASK-018
+status: pass
+summary: 'The Codex Korean copy review (CX-04, 52 suggestions) is applied: 50 as suggested,
+  2 reworded (T11 "여러 개"; T40 a neutral chain instead of command, to keep INFLUENCE),
+  and four lines wrong in both languages fixed at the source (SAVE10 has no minimum,
+  INC-1017''s original cannot be opened, CH8 breaks no rule rather than nothing, T38
+  is about ninety minutes by the camera clock). The Codex art (CX-02) is in the game:
+  the title, lock screen, and desktop pictures with a plain-colour fallback, and the
+  icon on the window and the executable.'
+files_changed:
+- godot/i18n/ko.json
+- godot/data/scenarios.json
+- godot/data/intranet.json
+- godot/assets/art
+- godot/scripts/ui/kit.gd
+- godot/scripts/ui/title_screen.gd
+- godot/scripts/ui/lock_screen.gd
+- godot/scripts/ui/desktop_screen.gd
+- godot/project.godot
+- godot/export_presets.cfg
+- godot/tests/test_workstation.gd
+- godot/README.md
+- docs/qa/2026-10-26-korean-copy/disposition.md
+- docs/art/2026-10-26/DISPOSITION.md
+evidence:
+- test_screens_show_their_art and test_every_story_and_ticket_string_has_korean pass.
+- The exported NothingWrong.exe icon was extracted and shows the game icon.
+acceptance:
+  status: pass
+commit: null
+baseline: uncommitted working tree on ef3a593
+kind: implementation
+role: developer
+actor: claude-developer

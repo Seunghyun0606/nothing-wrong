@@ -37,16 +37,10 @@ var _wait_label: Label
 
 
 func _ready() -> void:
-	var desk := ColorRect.new()
-	desk.color = P.DESK
-	desk.set_anchors_preset(Control.PRESET_FULL_RECT)
+	# Northstar's wallpaper: its faint star is the only mark on the desk.
+	var desk := Kit.backdrop("wallpaper", P.DESK)
+	desk.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(desk)
-	var wordmark := Kit.heading("NOTHING WRONG", 88, Color(1, 1, 1, 0.45))
-	wordmark.autowrap_mode = TextServer.AUTOWRAP_OFF
-	wordmark.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	wordmark.position = Vector2(-760, -200)
-	wordmark.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(wordmark)
 
 	var icons := Kit.vbox(10)
 	icons.name = "DesktopIcons"

@@ -806,6 +806,11 @@ func test_full_story() -> void:
 
 	DesktopSession.show_case_file()
 	check(find_named(desktop, "CaseFile") != null, "case file renders")
+	# A whole game's save, read back from JSON, still passes the shape checks on load.
+	check(GameState.is_loadable(JSON.parse_string(JSON.stringify(GameSession.state))), "the finished game's save loads")
+	var notes: Variant = JSON.parse_string(JSON.stringify({ "notes": WorkspaceSession.notes, "evidence": WorkspaceSession.evidence,
+		"interactions": WorkspaceSession.interactions, "references": WorkspaceSession.references }))
+	check(WorkspaceSession._is_loadable(notes), "and so do its notes")
 	_finish()
 
 

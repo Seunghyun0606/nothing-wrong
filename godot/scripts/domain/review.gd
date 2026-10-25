@@ -218,8 +218,8 @@ static func review_no_issue(report: Dictionary, scenario: Dictionary, attached: 
 			"Are you sure? Something in this Ticket still breaks a requirement. Try other quantities, accounts, and actions.",
 		])
 	var scoring: Dictionary = scenario["scoring"]
-	# Either a capture or a recorded visit to Shoply shows what was checked.
-	var covered: bool = not attached.is_empty() or not report.get("reproductionSteps", []).is_empty()
+	# A visit to, or a capture of, the screen under test shows what was checked.
+	var covered: bool = checked_screen(report, scenario, attached)
 	var scores := {
 		"detection": int(scoring["detection"]),
 		"reproduction": int(scoring["reproduction"]) if not report.get("reproductionSteps", []).is_empty() else 0,
@@ -230,8 +230,23 @@ static func review_no_issue(report: Dictionary, scenario: Dictionary, attached: 
 		"valid": covered,
 		"scores": scores,
 		"totalScore": _sum(scores),
-		"feedback": ["Correct call. Every requirement in scope holds, and your Evidence shows what you checked."] if covered else ["Did you open Shoply? Check it against the requirements before you report NO ISSUE FOUND."],
+		"feedback": ["Correct call. Every requirement in scope holds, and your Evidence shows what you checked."] if covered else ["Did you check the screen this Ticket is about? Open it from the Ticket in QA Notes and compare it with the requirements before you report NO ISSUE FOUND."],
 	}
+
+
+## The part of the workspace a Ticket tests: the record view it starts on, or Shoply as a
+## whole, since a Shoply Ticket walks from page to page.
+static func test_scope(scenario: Dictionary) -> String:
+	var start: String = scenario["ticket"]["startingContext"]["currentPath"]
+	return start if start.begins_with("/horizon/") else "/" + start.trim_prefix("/").get_slice("/", 0)
+
+
+## Whether the report shows a visit to, or a note on, the screen the Ticket tests.
+static func checked_screen(report: Dictionary, scenario: Dictionary, attached: Array) -> bool:
+	var scope := test_scope(scenario)
+	var paths: Array = report.get("reproductionSteps", []).map(func(step): return str(step.get("target", "")))
+	paths.append_array(attached.map(func(item): return str(item.get("context", {}).get("currentPath", ""))))
+	return paths.any(func(path): return path == scope or path.begins_with(scope + "/"))
 
 
 static func review_report(report: Dictionary, scenario: Dictionary, available_evidence: Array) -> Dictionary:

@@ -45,7 +45,7 @@ func load_state() -> void:
 	var text := SaveFile.read(save_path)
 	var parsed: Variant = JSON.parse_string(text)
 	if typeof(parsed) == TYPE_DICTIONARY and int(parsed.get("version", 0)) == GameState.SAVE_VERSION \
-		and typeof(parsed.get("state")) == TYPE_DICTIONARY and parsed["state"].has("tickets"):
+		and GameState.is_loadable(parsed.get("state")):
 		state = GameState.reconcile(parsed["state"], catalog)
 		return
 	recovered_from_unreadable_save = SaveFile.set_aside(save_path, backup_path)

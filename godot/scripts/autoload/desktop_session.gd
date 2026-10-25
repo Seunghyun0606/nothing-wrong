@@ -74,6 +74,8 @@ var _clock_tween: Tween
 ## Waiting Tickets the player opened, and the day starts they signed in for.
 var _opened := {}
 var _signed_in_for := {}
+## The Ticket the last recorded visit belongs to.
+var _visit_ticket := ""
 
 
 func _ready() -> void:
@@ -88,6 +90,7 @@ func _ready() -> void:
 	_gate_timer.timeout.connect(_advance_gate)
 	add_child(_gate_timer)
 	GameSession.changed.connect(_schedule_delivery)
+	GameSession.changed.connect(_note_started_ticket)
 
 
 func reset_layout() -> void:
@@ -351,6 +354,20 @@ static func action_for_path(path: String) -> String:
 	if path.contains("/product/") or path == "/shoply":
 		return "OPEN_PRODUCT"
 	return "NAVIGATE"
+
+
+## A Ticket started while the Browser already shows its starting screen counts that
+## screen as visited. Any other page left open from earlier work does not.
+func _note_started_ticket() -> void:
+	var active := GameSession.active_ticket_id()
+	if active == _visit_ticket:
+		return
+	_visit_ticket = active
+	if active == "" or tabs.is_empty():
+		return
+	var start: String = GameSession.scenario(active)["ticket"]["startingContext"]["currentPath"]
+	if location().get("path", "") == start:
+		_record_visit(location())
 
 
 func _record_visit(next: Dictionary) -> void:

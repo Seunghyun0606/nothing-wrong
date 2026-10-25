@@ -1,0 +1,29 @@
+task: TASK-016
+status: pass
+verdict: pass
+summary: 'Independent read of the uncommitted changes against the code, without running
+  it. NO ISSUE FOUND paths: visit targets and note paths are both location["path"],
+  the Shoply scope is /shoply for every Shoply start path, all six ONE HORIZON no-bug
+  screens exist, and the 200-action cap cannot realistically drop the only visit.
+  Real older saves pass is_loadable and reconcile fills missing fields. All 19 Korean
+  conclusions read correctly with every option. T26''s order times (23:20, 23:34,
+  23:51) support the new line. Two issues found here were fixed before this record:
+  a Ticket start counted a page left open from the previous Ticket (T05 could pass
+  on T04''s Shoply page; now only the Ticket''s starting screen counts, with a test),
+  and the participant guide left out that a sent-back report also costs 20 minutes.'
+critical_issues: 0
+findings:
+- severity: minor
+  file: godot/scripts/autoload/desktop_session.gd
+  summary: A start recorded any open workspace page as a visit, so T05 could pass
+    NO ISSUE FOUND on the page T04 left. Fixed; test_a_ticket_start_counts_only_its_own_screen.
+- severity: minor
+  file: docs/playtest/TASK-010-participant-guide.md
+  summary: The guide named only wrong answers as costing 20 minutes; rejected reports
+    do too. Fixed.
+residual_risk: Independent re-verification by the original QA reviewer (Codex CX-01)
+  is pending and is the evidence the evaluation waits for. Dialogue balance (F09)
+  is for the human playtest.
+kind: review
+role: reviewer
+actor: claude-reviewer-m4

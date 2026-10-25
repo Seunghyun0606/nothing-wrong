@@ -128,12 +128,23 @@ templates for 4.7.2 must be installed; the build goes to `godot/build/`, which i
   screen in `scripts/ui/horizon/record_view.gd`). Cells can be noted and reported like
   Shoply values. Tickets may offer several outcomes (`ticket.outcomes`: BUG,
   DATA_INTEGRITY, DOC_GAP).
+- **Photos (DEC-017):** a row's `photo` names an image in `assets/photos/` (`IMG001.jpg`)
+  and how the view draws it: `crop` (fractions of the image), `rotate`, and per-side or
+  per-device overrides (`source`, `target`, `byViewport`), so a thumbnail cut, a tablet
+  layout, or an unrotated preview is drawn from the one source image. Clicking a photo
+  shows it large; a Note on it records the column named by `notes`. The alt text and
+  metadata stay in the row, so a missing image never blocks play. The images were made
+  from one face and emblem reference sheet (`docs/story/photos/`).
 - **Canon gate:** `tests/test_canon.gd` fails if a chapter mentions something the story has
   not reached yet, or states what the canon leaves open (`data/canon.json`).
 - **No tutorial overlay:** the team's messages are the guide. Mina's T01 briefing
   explains noting and reporting; each Ticket offers "Stuck? Ask Mina for a hint" in QA
   Notes, answered in a direct message.
 - **Notifications** rise from behind the taskbar in the bottom-right corner.
+- **Art:** the title, lock screen, and desktop draw `assets/art/title.jpg`, `lock.jpg`, and
+  `wallpaper.jpg` (`Kit.backdrop`, which falls back to a plain colour), and the window and
+  executable use `assets/art/icon.png` / `icon.ico` (`modify_resources=true` in the export
+  preset embeds the icon). Sources and notes: `docs/art/2026-10-26/`.
 - **Browser tabs:** links and lead searches from other apps open in a new tab (up to six),
   so the page under test stays open; each tab keeps its own Back/Forward history.
 - **Sound:** synthesized effects and office ambience (`scripts/autoload/sfx.gd`); toggle on
@@ -162,9 +173,11 @@ ticket, story, or record string has no Korean, or when a key term (티켓, 보�
 - `tests/test_ui_flow.gd`: plays the real desktop scene by pressing its buttons:
   `test_full_story` plays T01–T42 and the Final; others cover notifications, the
   workday, hints, Arrange, and the directory.
-- `tests/test_saves.gd`: saves cut short, unreadable saves, and a reload mid-chapter.
-- `tests/test_workstation.gd`: Korean coverage and terminology, spec pinning, window
-  resizing and dragging, and windows that fit 1280x720 and 1024x640.
+- `tests/test_saves.gd`: saves cut short, unreadable saves, saves in the wrong shape, a
+  long session that keeps its screen visits, and a reload mid-chapter.
+- `tests/test_workstation.gd`: Korean coverage, terminology, and conclusions that read
+  with every option; photos and their drawn defects; spec pinning; window resizing and
+  dragging; and windows that fit 1280x720 and 1024x640.
 
 Tests (and the screenshot tour) save under `user://tests/`, never over the player's saves.
 
@@ -186,3 +199,5 @@ The third argument sets the screen size (default 1440x900).
 | `scripts/ui/apps/` | Messenger (+ report form), Browser (+ Console, Note), QA Notes (+ Case File) |
 | `scripts/ui/shoply/` | Shoply storefront pages; reads Mutations only through `mutate()` |
 | `data/` | Content: scenarios, records, record views, directory, Shoply catalog |
+| `assets/photos/` | Story and event photos shown on record views |
+| `assets/art/` | Title, lock screen, and desktop pictures, and the game icon |

@@ -1,0 +1,27 @@
+task: TASK-017
+status: pass
+verdict: pass
+summary: 'Two independent reads of the photo code without running it, plus Codex''s
+  photo probe. Note targets match the Tickets'' validEvidenceTargets for T14 (photo-thumbnails.IMG001.target.visible),
+  T32 (foundation-gallery.IMG003/IMG004.layout, tablet values), and T38 (archive-attachments.ATT-1012-02.orientation);
+  on T24 a photo Note records the visible column, which is consistent because the
+  photo does not show the album. IMG001''s crop removes the right-hand face and IMG007
+  is upright so rotating shows the defect. The export preset includes the photos.
+  Found and fixed: the enlarged photo kept the device of the moment it was clicked
+  (T32 tablet), and IMG-0388 reused IMG-0390 unchanged (now a different crop of the
+  same town hall).'
+critical_issues: 0
+findings:
+- severity: minor
+  file: godot/scripts/ui/horizon/record_view.gd
+  summary: The zoom stored the drawn photo, so switching to Tablet left the whole
+    IMG003 enlarged. Fixed; the zoom stores the row and side and redraws for the current
+    device.
+- severity: minor
+  file: godot/data/horizon.json
+  summary: IMG-0388 showed the same picture as IMG-0390. Fixed with a different crop.
+residual_risk: Faces are consistent by visual review, not by measurement. Codex's
+  full visual review (CX-05) at three sizes still has to list its findings.
+kind: review
+role: reviewer
+actor: claude-reviewer-m4

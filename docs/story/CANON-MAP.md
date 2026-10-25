@@ -90,9 +90,11 @@ The player works for Northstar Quality Services (`northstar.local`), as in the c
   a quantity and movement finding; its end use stays unrecorded. The Opportunity Program
   shows account and status signals (never logged in, no return, admin-managed contact,
   faces filed under other IDs), written up as signals, not findings (D-13).
-- NW-014's photo is shown as metadata and alt text until the photo assets exist (D-19):
-  a sun-in-a-ring emblem stands in for the Foundation symbol, which is not named before
-  Chapter 8.
+- The photos (IMG001–IMG007, D-19, DEC-017) are images on the record views, made from one
+  face and emblem reference sheet so the same people recur from 2018 to 2021; the record
+  views draw the thumbnail crop (NW-004), tablet layout (NW-022), and EXIF rotation
+  (NW-028) from the source image, and keep the alt text and metadata. The sun-in-a-ring
+  emblem is the Foundation symbol, which is not named before Chapter 8.
 
 - Chapter 9 never settles how Daniel died (D-14): the corrected timeline places him in two
   buildings, and the conclusion the game accepts is only that; "harmed on purpose" and
@@ -100,7 +102,7 @@ The player works for Northstar Quality Services (`northstar.local`), as in the c
   Community Trust through board seats (INFLUENCE), not owned (D-03). Mina explains the two
   QA engineers moved off the project before the player (D-15).
 
-## Endings (D-18, as decided)
+## Endings (D-18, confirmed by the owner on 2026-10-25, DEC-017)
 
 The Final (T42) is a release check (NO ISSUE FOUND: every area passes) with a coverage
 budget: three area inspections (`view.inspect`), and a finding stays hidden until its area
@@ -121,5 +123,5 @@ each chapter's closing line (DEC-012).
 
 ## Open decisions carried from the canon
 
-D-01 (year: 2021 used as proposed), D-19 (photo assets for NW-004/014/022/028; photos are
-metadata and alt text until then), D-20 (playtime, to be measured).
+D-01 (year: 2021 used as proposed), D-20 (playtime, to be measured). D-18 and D-19 are
+closed by DEC-017.

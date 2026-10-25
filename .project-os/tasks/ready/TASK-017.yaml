@@ -1,0 +1,53 @@
+id: TASK-017
+title: Show the story photos as images on the record views
+role: developer
+milestone: M4
+priority: P1
+status: ready
+
+objective: >-
+  Give IMG001–IMG007 and the ordinary event photos around them real images with the same
+  faces and emblem throughout, and draw each photo defect on the record views from one
+  source image.
+why: >-
+  The photo Tickets (T14, T24, T32, T36, T38) read as text tables, so the master
+  synopsis's visual relationship clues are missing (QA review F03, D-19). The owner asked
+  for images made with a Codex session in the game's mood (DEC-017).
+
+scope:
+  include:
+    - A face and emblem reference sheet generated first, then the photos, under godot/assets/photos/.
+    - A photo column on record views that have photos, with thumbnail crop, device layout, and rotation drawn by the view, and a larger view on click.
+    - Noting a photo records the column that describes it.
+    - Alt text and metadata stay, so a missing image never blocks play.
+  exclude:
+    - New Tickets, new clues, or changes to what a photo proves.
+    - Profile photo comparison for the Opportunity Program beyond the cohort photo.
+
+depends_on:
+  - TASK-016
+specs:
+  - docs/NOTHING_WRONG_ALL_IN_ONE.md
+relevant_files:
+  - godot/assets/photos
+  - godot/data/horizon.json
+  - godot/scripts/ui/horizon/record_view.gd
+  - godot/scripts/domain/horizon_data.gd
+  - godot/tests
+active_decisions:
+  - .project-os/decisions/DEC-013-one-horizon-canon.yaml
+  - .project-os/decisions/DEC-017-endings-and-story-photos.yaml
+
+acceptance:
+  - Every photo a record view names exists and renders, checked by a test.
+  - T14's thumbnail hides the right-hand face, T32's tablet layout crops, and T38's preview is rotated, drawn from the same source images, checked by a test.
+  - The same people are recognisable across IMG001, IMG003, IMG004, IMG005, and IMG007, and the photos show no harm, name tags, or legible text beyond the given banners (visual review).
+  - The exported build includes the photos and its self-check passes.
+
+verification:
+  - Run the headless Godot suite.
+  - Run the screenshot tour at 1280x720 and look at the photo views.
+  - Run the editor and exported self-checks.
+
+human_gate: false
+risk: medium

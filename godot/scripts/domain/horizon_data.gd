@@ -40,6 +40,28 @@ static func cell_target(view: Dictionary, key: String, side: String, column: Str
 	return "%s.%s.%s.%s" % [view["id"], key, side, column] if side != "" else "%s.%s.%s" % [view["id"], key, column]
 
 
+## The photo a row shows on one side and device, or {} for a row without one. `photo` names
+## the source image (`asset`) and how this screen draws it: `crop` ([x, y, w, h] as
+## fractions of the image) and `rotate` (degrees clockwise). `source`, `target`, and
+## `byViewport` override those on one side of a compare or on one device, so every defect
+## is drawn from the same picture. `notes` is the column a Note on the photo records.
+static func photo_on(row: Dictionary, side: String, viewport: String) -> Dictionary:
+	var photo: Dictionary = row.get("photo", {})
+	if photo.is_empty():
+		return {}
+	var shown := photo.duplicate()
+	for part in ["source", "target", "byViewport"]:
+		shown.erase(part)
+	if side != "":
+		shown.merge(photo.get(side, {}), true)
+	shown.merge(photo.get("byViewport", {}).get(viewport, {}), true)
+	return shown
+
+
+static func has_photos(view: Dictionary) -> bool:
+	return view["rows"].any(func(row): return row.has("photo"))
+
+
 ## A table row as the current device shows it: `byViewport` overrides some values on
 ## some devices (a gallery that breaks only on tablets).
 static func values_on(row: Dictionary, viewport: String) -> Dictionary:

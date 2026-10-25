@@ -1,0 +1,37 @@
+task: TASK-017
+status: pass
+summary: A Codex session generated a face and emblem reference sheet first, then IMG001-IMG007
+  and four ordinary event photos from it (brief and notes in docs/story/photos/).
+  The record views show a photo column; thumbnail crop (T14), tablet layout (T32),
+  and EXIF rotation (T38) are drawn from one source image; clicking enlarges a photo,
+  and the enlarged photo follows the device. A Note on a photo records the column
+  that describes it. Alt text and metadata stay, and a missing image shows "Image
+  unavailable". The self-check counts the packed photos. DEC-017 closes D-18 (the
+  three endings) and D-19.
+files_changed:
+- godot/assets/photos
+- godot/data/horizon.json
+- godot/scripts/domain/horizon_data.gd
+- godot/scripts/ui/horizon/record_view.gd
+- godot/scripts/autoload/self_check.gd
+- godot/tests/test_workstation.gd
+- godot/tests/screenshot_tour.gd
+- godot/README.md
+- docs/story/photos
+- docs/story/CANON-MAP.md
+- docs/NOTHING_WRONG_ALL_IN_ONE.md
+- .project-os/decisions/DEC-017-endings-and-story-photos.yaml
+evidence:
+- test_record_views_draw_their_photos (every named photo exists; crop, tablet, and
+  rotation drawn from the source).
+- Screenshot tour p-*.png at 1280x720 reviewed by eye, including the zoom and the
+  tablet gallery.
+- Codex photo probe (godot/build/qa-2026-10-26/photo-probe.log) confirms Note targets
+  and the missing-image fallback.
+acceptance:
+  status: pass
+commit: null
+baseline: uncommitted working tree on ef3a593
+kind: implementation
+role: developer
+actor: claude-developer

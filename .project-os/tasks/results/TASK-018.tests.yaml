@@ -1,0 +1,26 @@
+task: TASK-018
+status: pass
+summary: The suite passes with the art and Korean coverage tests; the export carries
+  the icon and both self-checks pass.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 71 passed, 0 failed.
+  typecheck:
+    status: pass
+  build:
+    status: pass
+    result: Export with modify_resources=true; executable icon checked; exported and
+      editor self-checks pass.
+  integration_test:
+    status: pass
+    result: test_full_story passes with the changed Korean and English lines.
+  visual:
+    status: pass
+    command: screenshot_tour.gd at 1280x720, ko
+    result: Title, lock, desktop, and side-by-side screens reviewed; lock date contrast
+      and title wrap fixed.
+kind: test
+role: qa
+actor: qa

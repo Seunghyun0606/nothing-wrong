@@ -50,6 +50,19 @@ not reached as "not reached".
 | Final decision and ending |  |  |
 | Quit and reopen mid-chapter: picked up where they were |  |  |
 
+## Things to watch for (from the 2026-10-25 QA review)
+
+Note what happens; do not prompt the participant about these.
+
+| Watch for | Observation |
+| --- | --- |
+| Time to the first report made without help (T01) |  |
+| Reports or NO ISSUE FOUND sent from the wrong screen, and whether the team's reply set them right |  |
+| Whether the 20-minute cost of a wrong conclusion was understood, and how it felt |  |
+| Whether the photos were looked at (T14, T24, T32, T38), and whether a face was recognised in a later photo |  |
+| Repetition or impatience before ONE HORIZON starts (Chapters 1–4, T01–T12) |  |
+| Whether the conclusions felt like the participant's own reasoning or like recalling what Mina had already said (Chapters 5–9) |  |
+
 For a defect, record the Ticket, starting state, actions, expected result, actual result,
 and whether it reproduced on a second attempt. Check before you record a participant's
 uncertainty as a software defect.

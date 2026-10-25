@@ -207,6 +207,25 @@ static func hbox(separation: int = 8) -> HBoxContainer:
 	return node
 
 
+## A full-screen picture from assets/art (title, lock, wallpaper), cropped to fill the
+## screen; the plain `fallback` colour when the picture is missing.
+static func backdrop(art: String, fallback: Color) -> Control:
+	var path := "res://assets/art/%s.jpg" % art
+	if not ResourceLoader.exists(path):
+		var plain := ColorRect.new()
+		plain.color = fallback
+		plain.set_anchors_preset(Control.PRESET_FULL_RECT)
+		return plain
+	var picture := TextureRect.new()
+	picture.name = "Backdrop"
+	picture.texture = load(path)
+	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	picture.set_anchors_preset(Control.PRESET_FULL_RECT)
+	picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return picture
+
+
 static func panel(bg: Color, border: Color = Color.TRANSPARENT, radius: int = 6, pad: int = 12) -> PanelContainer:
 	var node := PanelContainer.new()
 	node.add_theme_stylebox_override("panel", style(bg, border, radius, pad, pad))

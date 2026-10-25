@@ -1,0 +1,43 @@
+﻿HEAD:
+ef3a5936ca737f005751e76fca34fc4ca5fb68cf
+git status --short:
+warning: unable to access 'C:\Users\limse/.config/git/ignore': Permission denied
+warning: unable to access 'C:\Users\limse/.config/git/ignore': Permission denied
+ M .project-os/milestones/M4.yaml
+ M .project-os/state/backlog.yaml
+ M .project-os/state/current.yaml
+ M .project-os/tasks/ready/TASK-010.yaml
+ M README.md
+ M docs/NOTHING_WRONG_ALL_IN_ONE.md
+ M docs/playtest/TASK-010-participant-guide.md
+ M docs/playtest/TASK-010-session-template.md
+ M docs/story/CANON-MAP.md
+ M godot/README.md
+ M godot/data/horizon.json
+ M godot/data/scenarios.json
+ M godot/i18n/ko.json
+ M godot/scripts/autoload/desktop_session.gd
+ M godot/scripts/autoload/game_session.gd
+ M godot/scripts/autoload/self_check.gd
+ M godot/scripts/autoload/workspace_session.gd
+ M godot/scripts/domain/game_state.gd
+ M godot/scripts/domain/horizon_data.gd
+ M godot/scripts/domain/review.gd
+ M godot/scripts/ui/apps/browser_app.gd
+ M godot/scripts/ui/apps/messenger_app.gd
+ M godot/scripts/ui/apps/notes_app.gd
+ M godot/scripts/ui/horizon/record_view.gd
+ M godot/tests/screenshot_tour.gd
+ M godot/tests/test_review.gd
+ M godot/tests/test_saves.gd
+ M godot/tests/test_workstation.gd
+?? .project-os/decisions/DEC-017-endings-and-story-photos.yaml
+?? .project-os/tasks/ready/TASK-016.yaml
+?? .project-os/tasks/ready/TASK-017.yaml
+?? .project-os/tasks/results/TASK-016.review.yaml
+?? .project-os/tasks/results/TASK-016.tests.yaml
+?? .project-os/tasks/results/TASK-016.yaml
+?? docs/codex/
+?? docs/qa/
+?? docs/story/photos/
+?? godot/assets/

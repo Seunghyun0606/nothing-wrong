@@ -214,7 +214,7 @@ func _ticket_page(scenario: Dictionary) -> void:
 	elif status == "TESTING":
 		var callout := Kit.panel(P.ACCENT_SOFT, Color.TRANSPARENT, 6, 12)
 		var callout_body := Kit.vbox(6)
-		callout_body.add_child(Kit.label(Kit.tf("Testing. Open Shoply, press 📌 Note on anything that looks wrong, then report it to %s in Messenger.", ticket["sender"]["name"]), 14))
+		callout_body.add_child(Kit.label(Kit.tf("Testing. Open the screen below, press 📌 Note on anything that looks wrong, then report it to %s in Messenger.", ticket["sender"]["name"]), 14))
 		callout_body.add_child(Kit.long_link(Addresses.display(start_url), DesktopSession.open_url.bind(start_url)))
 		var report := Kit.button(Kit.tf("📝 Report to %s", ticket["sender"]["name"]), DesktopSession.open_report)
 		report.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN

@@ -138,4 +138,26 @@ func _tour() -> void:
 		await _shot("g13b-deduction-filled")
 		await _press("Mina Seo")
 		await _shot("g13c-deduction-reply")
+
+	# The photo views, with every Ticket open.
+	for id in GameSession.state["tickets"]:
+		GameSession.state["tickets"][id]["status"] = "RESOLVED"
+	if not DesktopSession.windows["browser"].get("maximized", false):
+		DesktopSession.toggle_maximize("browser")
+	for view in ["photo-thumbnails", "cms-albums", "foundation-gallery", "opportunity-program", "archive-attachments"]:
+		DesktopSession.open_url("https://qa.onehorizon.local/%s" % view)
+		await _shot("p-%s" % view)
+	DesktopSession.open_url("https://qa.onehorizon.local/photo-thumbnails")
+	await process_frame
+	var thumbnail := main.find_child("Photo_IMG001_Target", true, false) as Control
+	if thumbnail:
+		var click := InputEventMouseButton.new()
+		click.button_index = MOUSE_BUTTON_LEFT
+		click.pressed = true
+		thumbnail.gui_input.emit(click)
+		await _shot("p-photo-thumbnails-zoom")
+	DesktopSession.open_url("https://qa.onehorizon.local/foundation-gallery")
+	DesktopSession.set_viewport("TABLET")
+	await _shot("p-foundation-gallery-tablet")
+	DesktopSession.set_viewport("DESKTOP")
 	quit()

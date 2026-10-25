@@ -132,3 +132,28 @@ func test_no_issue_found_misses_a_real_defect_but_passes_a_clean_ticket() -> voi
 	var result := Review.review_report(report, clean, [evidence])
 	check(result["valid"], "clean ticket accepted")
 	check_eq(result["totalScore"], 100, "clean total")
+
+
+## NO ISSUE FOUND counts only when the screen under test was opened or noted: another
+## screen, however busy, is not a check of this Ticket.
+func test_no_issue_found_needs_the_screen_under_test() -> void:
+	var scenario: Dictionary = Catalog.load_from().get_scenario("T20")
+	check(scenario["expectedBugs"].is_empty(), "T20 has nothing to find")
+	var visit := func(path: String) -> Dictionary:
+		return { "id": "S0", "order": 0, "action": "NAVIGATE", "target": path }
+	var report := { "id": "R", "ticketId": "T20", "kind": "NO_ISSUE", "evidenceIds": [],
+		"reproductionSteps": [visit.call("/shoply/product/everyday-pack"), visit.call("/horizon/migration-history")] }
+	var result := Review.review_report(report, scenario, [])
+	check(not result["valid"], "a visit to Shoply and to another view does not check T20")
+	check(result["feedback"][0].contains("screen this Ticket is about"), "the team says which screen")
+	report["reproductionSteps"].append(visit.call("/horizon/identity-matching"))
+	check(Review.review_report(report, scenario, [])["valid"], "opening the matching screen does")
+	var noted := _evidence("T20", "/horizon/identity-matching", [], {})
+	report["reproductionSteps"] = []
+	report["evidenceIds"] = ["E1"]
+	check(Review.review_report(report, scenario, [noted])["valid"], "so does a note on it")
+	var t05: Dictionary = Catalog.load_from().get_scenario("T05")
+	report = { "id": "R", "ticketId": "T05", "kind": "NO_ISSUE", "evidenceIds": [], "reproductionSteps": [visit.call("/shoply/cart")] }
+	check(Review.review_report(report, t05, [])["valid"], "a Shoply Ticket may be checked on any Shoply page")
+	report["reproductionSteps"] = [visit.call("/horizon/identity-matching")]
+	check(not Review.review_report(report, t05, [])["valid"], "but not on a record view")

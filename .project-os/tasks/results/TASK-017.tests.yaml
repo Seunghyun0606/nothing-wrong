@@ -1,0 +1,27 @@
+task: TASK-017
+status: pass
+summary: The suite passes with the photo test; both self-checks report 12 photos;
+  the photo views were rendered and checked.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 71 passed, 0 failed.
+  typecheck:
+    status: pass
+  build:
+    status: pass
+    result: Windows export; exported and editor self-checks print Self-check passed
+      with photos 12.
+  integration_test:
+    status: pass
+    result: test_full_story plays T14, T24, T32, T36, and T38 with the photo column
+      present.
+  visual:
+    status: pass
+    command: screenshot_tour.gd at 1280x720, ko
+    result: p-photo-thumbnails, -zoom, cms-albums, foundation-gallery (desktop and
+      tablet), opportunity-program, archive-attachments reviewed.
+kind: test
+role: qa
+actor: qa

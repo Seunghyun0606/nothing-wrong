@@ -1,0 +1,45 @@
+task: TASK-016
+status: pass
+summary: 'Every finding of the 2026-10-25 Codex QA review has a recorded decision
+  in docs/qa/2026-10-25-review-disposition.md: F01-F08 accepted and fixed, F09 partly
+  accepted (two lines and the T21 proof order fixed; the dialogue balance moves to
+  the TASK-010 session template). The answer prompt states the 20-minute cost; NO
+  ISSUE FOUND needs a visit to or a note on the Ticket''s screen (Shoply as a whole,
+  or the record view), and a Ticket start counts only on its own starting screen;
+  the 19 Korean conclusions read with every option; T26 says 23:20 on the night of
+  17 October; the testing prompt names the screen below; game and notes saves are
+  checked by shape (missing fields filled, wrong kinds set aside); the root README
+  leads with the Godot build. Browser tabs now shrink so six tabs never widen the
+  window.'
+files_changed:
+- godot/scripts/domain/review.gd
+- godot/scripts/autoload/desktop_session.gd
+- godot/scripts/domain/game_state.gd
+- godot/scripts/autoload/game_session.gd
+- godot/scripts/autoload/workspace_session.gd
+- godot/scripts/ui/apps/messenger_app.gd
+- godot/scripts/ui/apps/notes_app.gd
+- godot/scripts/ui/apps/browser_app.gd
+- godot/data/scenarios.json
+- godot/i18n/ko.json
+- godot/tests/test_review.gd
+- godot/tests/test_saves.gd
+- godot/tests/test_workstation.gd
+- README.md
+- docs/playtest/TASK-010-participant-guide.md
+- docs/playtest/TASK-010-session-template.md
+- docs/qa/2026-10-25-review-disposition.md
+evidence:
+- test_no_issue_found_needs_the_screen_under_test (T20 counterexample, T05 any Shoply
+  page).
+- test_a_ticket_start_counts_only_its_own_screen (T04's page does not count for T05).
+- test_saves_in_the_wrong_shape_are_repaired_or_set_aside and the extended notes test.
+- test_korean_conclusions_read_with_every_option.
+- test_windows_fit_small_screens now opens six tabs at 1024x640.
+acceptance:
+  status: pass
+commit: null
+baseline: uncommitted working tree on ef3a593
+kind: implementation
+role: developer
+actor: claude-developer

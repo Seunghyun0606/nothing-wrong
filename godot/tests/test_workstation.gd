@@ -2,6 +2,8 @@
 extends "res://tests/ui_test_base.gd"
 
 const Kit := preload("res://scripts/ui/kit.gd")
+const RecordView := preload("res://scripts/ui/horizon/record_view.gd")
+const HorizonData := preload("res://scripts/domain/horizon_data.gd")
 
 
 func _content_strings() -> Array:
@@ -160,6 +162,11 @@ func test_windows_fit_small_screens() -> void:
 	tree.root.size = Vector2i(1024, 640)
 	for app in ["messenger", "browser", "notes"]:
 		_check_on_screen(desktop, app)
+	# A full row of tabs with long titles still fits.
+	for view in ["photo-thumbnails", "foundation-gallery", "opportunity-program", "archive-attachments", "release-validation", "identity-matching"]:
+		DesktopSession.open_tab(Addresses.parse("https://qa.onehorizon.local/%s" % view))
+	check_eq(DesktopSession.tabs.size(), DesktopSession.MAX_TABS, "every tab is open")
+	_check_on_screen(desktop, "browser")
 	tree.root.size = Vector2i(1440, 900)
 	_finish()
 
@@ -174,6 +181,93 @@ func _check_on_screen(desktop: Control, app: String) -> void:
 	var column: Control = window.get_children().filter(func(child): return child is VBoxContainer)[0]
 	check(column.get_combined_minimum_size().x <= window.size.x + 0.5,
 		"%s content needs %.0f px but the window is %.0f" % [app, column.get_combined_minimum_size().x, window.size.x])
+
+
+## Starting a Ticket on its own starting screen counts as a visit; a page left open from
+## the previous Ticket does not (T05 would otherwise pass NO ISSUE FOUND on T04's page).
+func test_a_ticket_start_counts_only_its_own_screen() -> void:
+	_start()
+	for id in ["T01", "T02", "T03", "T04"]:
+		GameSession.state["tickets"][id]["status"] = "RESOLVED"
+	var start: String = GameSession.scenario("T05")["ticket"]["startingContext"]["currentPath"]
+	DesktopSession.open_url("https://shoply.local/cart")
+	check(DesktopSession.location()["path"] != start, "T04's page is still open")
+	GameSession.start_ticket("T05")
+	check(WorkspaceSession.interactions_for("T05").is_empty(), "the old page is not a T05 visit")
+	GameSession.state["tickets"]["T05"]["status"] = "NEW"
+	GameSession.state["currentTicketId"] = null
+	GameSession.changed.emit()
+	DesktopSession.open_url(Addresses.path_url(start))
+	GameSession.start_ticket("T05")
+	check(WorkspaceSession.interactions_for("T05").any(func(action): return action.get("target", "") == start), "its own screen is")
+	_finish()
+
+
+## The title, lock screen, and desktop draw their pictures (DEC-017), and the window has
+## the game's icon.
+func test_screens_show_their_art() -> void:
+	for art in ["title", "lock", "wallpaper"]:
+		var backdrop := Kit.backdrop(art, Color.BLACK)
+		check(backdrop is TextureRect and (backdrop as TextureRect).texture != null, "%s picture" % art)
+		backdrop.free()
+	check(Kit.backdrop("missing", Color.BLACK) is ColorRect, "a missing picture falls back to a colour")
+	check(ResourceLoader.exists(str(ProjectSettings.get_setting("application/config/icon"))), "the icon exists")
+	var desktop := _start()
+	check(desktop.find_child("Backdrop", false, false) is TextureRect, "the desktop has its wallpaper")
+	_finish()
+
+
+## Every photo a record view names is there, and each defect is drawn from the one source
+## image: the thumbnail cut (T14), the tablet layout (T32), and the rotated preview (T38).
+func test_record_views_draw_their_photos() -> void:
+	var assets: Array = []
+	var rows := {}
+	for view in GameSession.horizon.views:
+		if view.has("photo"):
+			assets.append(view["photo"]["asset"])
+		for row in view["rows"]:
+			if row.has("photo"):
+				assets.append(row["photo"]["asset"])
+				rows["%s/%s" % [view["id"], row["key"]]] = row
+				check(row["photo"].get("notes", "") in view["columns"].map(func(column): return column["id"]),
+					"a Note on %s records one of its columns" % row["key"])
+	for asset in ["IMG001", "IMG002", "IMG003", "IMG004", "IMG005", "IMG006", "IMG007"]:
+		check(assets.has(asset), "%s is shown" % asset)
+	for asset in assets:
+		check(RecordView.photo_texture({ "asset": asset }) != null, "%s is in assets/photos" % asset)
+	var drawn := func(key: String, side: String, viewport: String) -> Texture2D:
+		return RecordView.photo_texture(HorizonData.photo_on(rows[key], side, viewport))
+	var original: Texture2D = drawn.call("photo-thumbnails/IMG001", "source", "DESKTOP")
+	var thumbnail: Texture2D = drawn.call("photo-thumbnails/IMG001", "target", "DESKTOP")
+	check(thumbnail.get_width() < original.get_width() and thumbnail.get_height() == original.get_height(), "the thumbnail cuts the right edge")
+	var gala: Texture2D = drawn.call("foundation-gallery/IMG003", "", "DESKTOP")
+	var gala_tablet: Texture2D = drawn.call("foundation-gallery/IMG003", "", "TABLET")
+	check(gala_tablet.get_width() * 2 < gala.get_width(), "the tablet hides most of the gala photo")
+	var preview: Texture2D = drawn.call("archive-attachments/ATT-1012-02", "", "DESKTOP")
+	var upright := RecordView.photo_texture({ "asset": "IMG007" })
+	check_eq(Vector2i(preview.get_width(), preview.get_height()), Vector2i(upright.get_height(), upright.get_width()), "the preview is turned")
+
+
+## A Korean conclusion reads as a sentence whichever option fills a blank: no 을(를)-style
+## fallback, and no particle that depends on the word before it right after a blank.
+func test_korean_conclusions_read_with_every_option() -> void:
+	var ko: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Settings.KO_PATH))
+	var after_blank := RegEx.create_from_string("\\{\\w+\\}(을|를|이|가|은|는|과|와|으로|로|였|라는|\\()")
+	var fallback := RegEx.create_from_string("\\((을|를|이|가|은|는|과|와|으)\\)")
+	var checked := 0
+	for scenario in GameSession.catalog.scenarios:
+		var story: Variant = scenario.get("story", null)
+		if story == null or not story.has("deduction"):
+			continue
+		var sentence: String = ko.get(story["deduction"]["sentence"], "")
+		check(sentence != "", "%s has Korean" % story["deduction"]["id"])
+		var found := after_blank.search(sentence)
+		check(found == null, "%s: %s" % [story["deduction"]["id"], found.get_string() if found else ""])
+		for blank in story["deduction"]["blanks"].values():
+			for option in blank["options"]:
+				check(fallback.search(str(ko.get(option, option))) == null, "%s option %s" % [story["deduction"]["id"], option])
+		checked += 1
+	check_eq(checked, 19, "every conclusion")
 
 
 ## Each key term reads the same in every Korean line: no English left in, no second wording.

@@ -1,0 +1,35 @@
+task: TASK-018
+decision: PASS
+status: pass
+summary: The Korean copy review and the screen art are applied with recorded decisions,
+  tests, and an icon on the executable.
+critical_issues: 0
+evidence:
+- Implementation handoff and automated test evidence are stored for TASK-018.
+- Independent review (claude-reviewer-m4) found no defects in the Korean or art changes.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 71 passed, 0 failed.
+  integration_test:
+    status: pass
+  typecheck:
+    status: pass
+  build:
+    status: pass
+    result: Export succeeds with the icon; both self-checks pass.
+  independent_review:
+    status: pass
+    actor: claude-reviewer-m4
+  project_os:
+    status: pass
+residual_risk: Not committed yet; godot/assets/ is untracked and must be added with
+  the commit.
+kind: evaluation
+role: evaluator
+actor: claude-evaluator
+quality:
+  passed: true
+  missing: []
+  failed: []

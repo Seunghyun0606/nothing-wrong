@@ -1,15 +1,29 @@
 # Nothing Wrong
 
-QA investigation simulation game. The repository contains T01 through T04: refresh-safe journeys from Company login
-through Shoply testing, Evidence, Bug Report, deterministic QA Review, progression,
-and resolved Dashboard return.
+QA investigation game for Windows. The player is a new QA engineer: work arrives in
+Messenger, the player tests a fake shop and later a client's migrated records in the
+Browser, notes what breaks a requirement in QA Notes, reports it, and pieces together
+what happened behind the work. The game ships Tickets T01–T42 in ten chapters and a final
+release decision with three endings.
 
-## Requirements
+**The product is the Godot 4.7 client in [`godot/`](godot/README.md)** (DEC-008). Run,
+build, test, and content instructions are in [godot/README.md](godot/README.md) and
+[docs/development/TESTING.md](docs/development/TESTING.md). Project state and decisions
+live in [PROJECT.md](PROJECT.md) and `.project-os/`; the story canon is
+[docs/NOTHING_WRONG_ALL_IN_ONE.md](docs/NOTHING_WRONG_ALL_IN_ONE.md) and
+[docs/story/CANON-MAP.md](docs/story/CANON-MAP.md).
+
+## Frozen web prototype (reference only)
+
+Everything below describes the first React/Vite prototype (T01–T04) in `src/`. It is kept
+as a reference, is not updated, and is not the game. Do not develop it further.
+
+### Requirements
 
 - Node.js 24 or another version supported by the locked Vite toolchain
 - npm 11+
 
-## Local Development
+### Local Development
 
 ```bash
 npm install
@@ -18,7 +32,7 @@ npm run dev
 
 The development server prints its local URL. The bootstrap route is `/start`.
 
-## Current Prototype
+### Current Prototype
 
 The implemented journey is:
 
@@ -40,7 +54,7 @@ are reconciled with new catalog Tickets without losing progress. After T03, the
 Account Switcher unlocks for T04, which applies a conditional discount Mutation for
 Gold + SAVE20 + quantity three or more.
 
-## Verification
+### Verification
 
 ```bash
 npm run typecheck
@@ -56,10 +70,10 @@ Install the Playwright Chromium runtime once before the full end-to-end run if i
 npx playwright install chromium
 ```
 
-See [docs/development/TESTING.md](docs/development/TESTING.md) for the critical-flow
-checklist, architecture acceptance evidence, and manual verification procedure.
+The web prototype's own critical-flow checklist is kept in the history of
+[docs/development/TESTING.md](docs/development/TESTING.md), which now covers the Godot build.
 
-## Module Boundaries
+### Module Boundaries
 
 - `src/app`: application composition, providers, and the main router
 - `src/game`: framework-independent game domain and engines

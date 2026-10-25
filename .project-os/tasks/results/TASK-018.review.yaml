@@ -1,0 +1,19 @@
+task: TASK-018
+status: pass
+verdict: pass
+summary: 'Independent read of the Korean and art changes. Every changed ko.json line
+  matches its English key; every new deduction sentence reads with each option; %s,
+  %d, and {name} placeholders match in count and order across ko.json. Canon holds:
+  no forbidden words in ko.json, scenarios.json, or intranet.json; Daniel''s fate
+  stays an accident on record; Northstar lines read as influence; photos stay acquaintance
+  only. All six changed English strings have Korean. Kit.backdrop falls back when
+  a file is missing; the desktop keeps the old mouse handling; the art has import
+  files; the icon settings are consistent. "%s is waiting in QA Notes." and "Back
+  to %s" are unused keys (harmless).'
+critical_issues: 0
+findings: []
+residual_risk: Wording nuance is an editorial judgement; Korean players in TASK-010
+  are the real check. Not committed yet.
+kind: review
+role: reviewer
+actor: claude-reviewer-m4

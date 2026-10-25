@@ -13,12 +13,17 @@ exit_criteria:
   - Layouts hold at common desktop resolutions.
   - Player-facing terminology, documentation, and the playtest kit match the Godot build.
   - A human playtest of the whole game is recorded and a human approves the MVP candidate.
-rebaseline: DEC-016 moved the human playtest (TASK-010) here as the final Human Gate.
+rebaseline: >-
+  DEC-016 moved the human playtest (TASK-010) here as the final Human Gate. TASK-016 and
+  TASK-017 (the 2026-10-25 QA review and the story photos, DEC-017) come before it.
 tasks:
   - TASK-012
   - TASK-013
   - TASK-014
   - TASK-015
+  - TASK-016
+  - TASK-017
+  - TASK-018
   - TASK-010
 human_gate:
   required_on_completion: true

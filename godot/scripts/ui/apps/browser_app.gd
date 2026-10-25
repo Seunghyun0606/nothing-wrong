@@ -565,12 +565,20 @@ func _render_tabs() -> void:
 		var tab := PanelContainer.new()
 		tab.add_theme_stylebox_override("panel", Kit.style(P.SURFACE if active else Color.TRANSPARENT, P.BORDER if active else Color.TRANSPARENT, 6, 6, 0))
 		tab.name = "Tab%d" % index
+		# Tabs share the row like a browser's: each takes an equal share and long titles
+		# end in an ellipsis, so a full row never widens the window.
+		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var row := Kit.hbox(2)
 		tab.add_child(row)
 		var title := Kit.button(titles[index], DesktopSession.switch_tab.bind(index), "FlatLink")
 		title.name = "TabTitle"
 		title.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 		title.add_theme_color_override("font_color", P.TEXT if active else P.MUTED)
+		title.clip_text = true
+		title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		title.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		title.custom_minimum_size = Vector2(40, 0)
 		title.tooltip_text = Addresses.display(Addresses.format(DesktopSession.tab_location(index)))
 		row.add_child(title)
 		var close := Kit.button("×", DesktopSession.close_tab.bind(index), "FlatLink")
@@ -583,6 +591,11 @@ func _render_tabs() -> void:
 	add.name = "NewTab"
 	add.tooltip_text = "New tab"
 	_tab_row.add_child(add)
+	var rest := Control.new()
+	rest.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rest.size_flags_stretch_ratio = maxf(0.01, DesktopSession.MAX_TABS - titles.size())
+	rest.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_tab_row.add_child(rest)
 
 
 ## A short title for a tab, like a page title.

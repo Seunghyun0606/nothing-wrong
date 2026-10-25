@@ -1,0 +1,32 @@
+id: DEC-017
+title: The three built endings are final, and the story photos become images
+status: active
+decided_at: "2026-10-25"
+context: >-
+  The master synopsis left the Final's outcomes open (D-18: only SHIP/HOLD candidates) and
+  the photos unmade until the faces and the Foundation emblem were fixed (D-19). The game
+  ships three provisional endings (DEC-012) and shows IMG001–IMG007 as metadata and alt
+  text. The Codex QA review of 2026-10-25 (F03) found the photo Tickets read as text tables.
+  On 2026-10-25 the project owner told the team to proceed with the endings as built and to
+  make the images with a Codex session in the game's mood.
+decision: >-
+  D-18 is closed with the three endings in data/scenarios.json: Working as Intended
+  (default: SHIP, or HOLD without the full chain or the formal channel), Hold and Escalate
+  (HOLD, through Compliance and the external auditor, with the full record chain), and Off
+  the Project (anything sent to a journalist off the record). D-19 is closed by a face and
+  emblem reference sheet generated first and used for every photo, so the same people are
+  recognisable from 2018 to 2021. The photos are ordinary corporate PR pictures; only who
+  stands next to whom carries meaning. Record views show the photo itself, with crop,
+  rotation, and device layout applied by the game from one source image, and keep the alt
+  text and metadata so a missing image never blocks play.
+consequences:
+  - The ending texts and their conditions are canon; changing them needs a new decision.
+  - Photo files live in godot/assets/photos/ and are named by asset ID (IMG001.jpg); defects (thumbnail crop, tablet layout, EXIF rotation) are drawn by the record view, not baked into separate files.
+  - Photos never prove more than acquaintance, show no harm, and name no one; tags stay CMS face-match suggestions.
+applies_to:
+  - global
+references:
+  - .project-os/decisions/DEC-012-deadlines-and-final-chapter.yaml
+  - .project-os/decisions/DEC-013-one-horizon-canon.yaml
+  - docs/qa/2026-10-25-project-review.md
+  - docs/story/CANON-MAP.md

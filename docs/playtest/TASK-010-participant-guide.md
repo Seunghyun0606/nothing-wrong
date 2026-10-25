@@ -3,7 +3,9 @@
 This session tests the game, not you. You play a new QA engineer at a testing company.
 Work arrives in Messenger. You test a fake shop and, later, a client's records, and you
 report what does not match the requirements. Along the way you piece together what is
-going on behind the work. Clicking around costs you nothing, and neither do wrong answers.
+going on behind the work. Clicking around costs you nothing. A report the team sends
+back, or a wrong answer to the team's question, takes 20 minutes of the workday; you can
+always try again.
 Please say aloud what you expect, notice, or find confusing as you play.
 
 ## Start
@@ -25,7 +27,7 @@ contain the answers.
 When a notification comes in, open it and read the briefing. Accept the Ticket in QA
 Notes and test in the Browser. If something does not match the requirements, press
 📌 Note (📌 메모) and click it, then report it to the sender in Messenger. If everything holds,
-report NO ISSUE FOUND. Afterwards the team may ask you to look something up and answer a
+report NO ISSUE FOUND after checking the screen the Ticket is about. Afterwards the team may ask you to look something up and answer a
 question. At the end of a workday you clock out, and the next day you sign in again.
 
 If you get stuck, try QA Notes' "Stuck? Ask … for a hint" link first. Then tell the

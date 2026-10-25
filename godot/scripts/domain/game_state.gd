@@ -2,7 +2,27 @@
 ## applyReview.ts, and answerDeduction.ts. Every function returns a new state.
 extends RefCounted
 
+const SaveFile := preload("res://scripts/domain/save_file.gd")
+
 const SAVE_VERSION := 1
+
+## The kind of each saved field (SaveFile.has_shape), checked before a save is loaded.
+const SAVED_KINDS := {
+	"profile": TYPE_DICTIONARY, "unlockedTools": [TYPE_ARRAY, TYPE_STRING],
+	"reportHistory": [TYPE_ARRAY, TYPE_DICTIONARY], "reviewHistory": [TYPE_ARRAY, TYPE_DICTIONARY],
+	"story": TYPE_DICTIONARY,
+}
+const TICKET_KINDS := { "reportIds": [TYPE_ARRAY, TYPE_STRING] }
+## Fields the game reads without checking, so an item that has the field must have them.
+const PROFILE_FIELDS := { "name": TYPE_STRING }
+const LEAD_FIELDS := { "term": TYPE_STRING, "ticketId": TYPE_STRING }
+const PROGRESS_FIELDS := { "attempts": TYPE_ARRAY, "solved": TYPE_BOOL }
+const STORY_KINDS := {
+	"deductions": [TYPE_DICTIONARY, TYPE_DICTIONARY], "foundDocuments": [TYPE_ARRAY, TYPE_STRING],
+	"leads": [TYPE_ARRAY, TYPE_DICTIONARY], "deliveredCount": "number", "readCount": "number",
+	"deliveredId": TYPE_STRING, "inspected": [TYPE_DICTIONARY, TYPE_ARRAY],
+	"hintsAsked": TYPE_DICTIONARY, "readIn": TYPE_DICTIONARY, "searchMisses": [TYPE_DICTIONARY, "number"],
+}
 
 const ALLOWED_TRANSITIONS := {
 	"NEW": ["ACCEPTED"],
@@ -43,22 +63,52 @@ static func transition(from: String, to: String) -> String:
 	return to
 
 
-## Adds Tickets that appeared in the catalog and restores tools earned by resolved Tickets.
+## Whether a saved state can be loaded: every field it has is of the right kind. Fields it
+## lacks are filled in by reconcile(); a state that fails here is set aside instead.
+static func is_loadable(state: Variant) -> bool:
+	if typeof(state) != TYPE_DICTIONARY or not SaveFile.has_shape(state.get("tickets"), [TYPE_DICTIONARY, TYPE_DICTIONARY]):
+		return false
+	for ticket in state["tickets"].values():
+		if not ALLOWED_TRANSITIONS.has(ticket.get("status")) or not SaveFile.fields_fit(ticket, TICKET_KINDS):
+			return false
+	if not SaveFile.fields_fit(state, SAVED_KINDS) or not SaveFile.fields_fit(state.get("story", {}), STORY_KINDS):
+		return false
+	if state.has("profile") and not SaveFile.has_fields(state["profile"], PROFILE_FIELDS):
+		return false
+	var story: Dictionary = state.get("story", {})
+	if not story.get("leads", []).all(func(lead): return SaveFile.has_fields(lead, LEAD_FIELDS)):
+		return false
+	if not story.get("deductions", {}).values().all(func(progress): return SaveFile.has_fields(progress, PROGRESS_FIELDS)):
+		return false
+	# Each report is read with the review at the same index.
+	if state.get("reviewHistory", []).size() < state.get("reportHistory", []).size():
+		return false
+	var current: Variant = state.get("currentTicketId")
+	return current == null or (typeof(current) == TYPE_STRING and state["tickets"].has(current))
+
+
+## Adds Tickets that appeared in the catalog, fills in fields an older or damaged save
+## lacks, and restores tools earned by resolved Tickets.
 static func reconcile(state: Dictionary, catalog: RefCounted) -> Dictionary:
 	var next := state.duplicate(true)
+	var initial := create_initial([])
+	for key in initial:
+		if not next.has(key):
+			next[key] = initial[key]
+	for key in initial["story"]:
+		if not next["story"].has(key):
+			next["story"][key] = initial["story"][key]
 	for id in catalog.ticket_ids():
 		if not next["tickets"].has(id):
 			next["tickets"][id] = new_ticket_state()
+		if not next["tickets"][id].has("reportIds"):
+			next["tickets"][id]["reportIds"] = []
 	for scenario in catalog.scenarios:
 		var id: String = scenario["ticket"]["id"]
 		if next["tickets"][id]["status"] == "RESOLVED":
 			for tool in scenario.get("progression", {}).get("unlockedTools", []):
 				if not next["unlockedTools"].has(tool):
 					next["unlockedTools"].append(tool)
-	if not next.has("story"):
-		next["story"] = { "deductions": {}, "deliveredCount": 0, "readCount": 0 }
-	if not next["story"].has("foundDocuments"):
-		next["story"]["foundDocuments"] = []
 	for key in ["deliveredCount", "readCount"]:
 		next["story"][key] = int(next["story"].get(key, 0))
 	return next
