@@ -1,0 +1,52 @@
+id: TASK-019
+title: Directory badge photos, Shoply product photos, and the Codex text audit
+role: developer
+milestone: M4
+priority: P2
+status: ready
+
+objective: >-
+  Show first-week badge photos in the directory with the story explaining them (DEC-018),
+  give Shoply's products photos, and apply the accepted Codex text audit (CX-07): English
+  copy, canon consistency, and unused Korean keys.
+why: >-
+  The owner asked for directory photos taken at hire and for the delegated Codex work to
+  proceed. The audit found chapter synopses that reveal or overstate, a T04 record that
+  shows a future change, and T41 wording that implies ownership.
+
+scope:
+  include:
+    - Badge photos with their year on the directory card and page, a pending entry for the player, and Mina's lines at T13 and T24.
+    - Product photos on Shoply's grid and product page with a colour fallback.
+    - The accepted English, canon, and unused-key changes, with matching Korean.
+  exclude:
+    - Any line confirming that the 2008 photo and the event photos show the same person.
+
+depends_on:
+  - TASK-018
+specs:
+  - docs/NOTHING_WRONG_ALL_IN_ONE.md
+relevant_files:
+  - godot/data
+  - godot/i18n/ko.json
+  - godot/assets/people
+  - godot/assets/products
+  - godot/scripts/ui
+  - docs/qa/2026-10-26-text-audit
+  - docs/art/2026-10-26-badges
+active_decisions:
+  - .project-os/decisions/DEC-013-one-horizon-canon.yaml
+  - .project-os/decisions/DEC-018-directory-badge-photos.yaml
+
+acceptance:
+  - Every directory person with a photo shows it with its year; product pages show photos; missing images fall back; checked by a test.
+  - The T13 and T24 lines explain the badge photos, checked by a test.
+  - Every audit item has a recorded decision; removed Korean keys are absent from all sources.
+
+verification:
+  - Run the headless Godot suite.
+  - Export and run both self-checks.
+  - Codex CX-08 dry run of the playtest kit and memory measurement on this tree.
+
+human_gate: false
+risk: low

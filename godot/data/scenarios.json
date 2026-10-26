@@ -1612,7 +1612,7 @@
           "role": "QA Lead"
         },
         "priority": "HIGH",
-        "request": "Gold members say their order page shows more than they paid at checkout. Place a real order and compare.",
+        "request": "Gold members say their order page shows more than they paid at checkout. Place a test order and compare.",
         "scope": [
           "Checkout",
           "Order details",
@@ -1749,7 +1749,7 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "We look anyway. Place a real order as a Gold member with SAVE20, then open it from Orders."
+            "text": "We look anyway. Place a test order as a Gold member with SAVE20, then open it from Orders."
           }
         ],
         "debrief": [
@@ -2887,6 +2887,11 @@
             "from": "Mina Seo",
             "role": "QA Lead",
             "text": "One account upgraded itself in transit. Sync defect, logged. And yes, COMMUNITY is a real tier here. Horizon likes the word."
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "text": "Grace is in the directory now, with the client contacts. The photos there are badge photos from everyone's first week. Mine is from 2016, back when I had a fringe."
           }
         ],
         "clue": {
@@ -3035,7 +3040,7 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: IMG001's thumbnail cuts the young man on the right. Note the Target description and report it with REQ-T14-01."
+            "text": "Here's the answer: IMG001's thumbnail crops out the young man on the right. Note the Target description and report it with REQ-T14-01."
           }
         ]
       }
@@ -3490,7 +3495,7 @@
         "hints": [
           {
             "id": "HINT-T18-01",
-            "text": "A record missing from Target is still a record."
+            "text": "Compare Source with Target: a row missing from Target still counts."
           }
         ],
         "status": "NEW"
@@ -3993,7 +3998,7 @@
             "after": 3,
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Here's the answer: each system moved in its own year, and the orchestrator copies as-is. Nothing here is broken: report NO ISSUE FOUND."
+            "text": "Here's the answer: each system moved in its own run, and the orchestrator copies as-is. Nothing here is broken: report NO ISSUE FOUND."
           }
         ],
         "deduction": {
@@ -4406,6 +4411,12 @@
             "role": "QA Lead",
             "text": "Not in the channel for this one; Grace reads everything there. A leadership retreat at Horizon Ridge, filed as a community event, and she is tagged in it. The emblem on the lectern means nothing to me yet.",
             "channel": "@Mina Seo"
+          },
+          {
+            "from": "Mina Seo",
+            "role": "QA Lead",
+            "channel": "@Mina Seo",
+            "text": "Her directory photo is a badge photo from 2008 and barely looks like her now. The tag comes from the CMS face match, so I go by the records, not the face."
           },
           {
             "from": "Mina Seo",
@@ -5751,7 +5762,7 @@
         "hints": [
           {
             "id": "HINT-T34-01",
-            "text": "Do the arithmetic the screen shows, then the ledger."
+            "text": "Check the screen's arithmetic against the ledger."
           }
         ],
         "status": "NEW"
@@ -6698,7 +6709,7 @@
           {
             "from": "Mina Seo",
             "role": "QA Lead",
-            "text": "Horizon Holdings answers to Horizon Community Trust, and the Trust to Horizon Foundation. The public tree stops one step short of that."
+            "text": "Horizon Holdings answers to Horizon Community Trust, and the Trust to Horizon Foundation. The public tree stops at Holdings."
           },
           {
             "from": "Alex Han",
@@ -6740,7 +6751,7 @@
           "role": "QA Lead"
         },
         "priority": "HIGH",
-        "request": "Check that every vendor record names its legal parent and its controlling interest.",
+        "request": "Check each vendor's legal parent and source of influence; either may be none.",
         "scope": [
           "Vendor records",
           "Organization master"
@@ -6748,7 +6759,7 @@
         "requirements": [
           {
             "id": "REQ-T41-01",
-            "description": "Every vendor record names its legal parent and its controlling interest."
+            "description": "Each vendor record states its legal parent and its source of influence, or none."
           },
           {
             "id": "REQ-T41-02",
@@ -6847,7 +6858,7 @@
           },
           "mode": "board",
           "prompt": "Case file: what does the chain show, and what can't it show? Open the Case File, read your clues, and fill in what they prove.",
-          "sentence": "Daniel opened a case on {topic} on 12 October; it was closed the day after he died, and the companies he questioned, and {employer}, answer to {top}.",
+          "sentence": "Daniel opened a case on {topic} on 12 October. It closed the day after he died; {employer} and the firms he questioned answer to {top}.",
           "blanks": {
             "topic": {
               "options": [
@@ -7148,7 +7159,7 @@
     {
       "id": "CH3",
       "title": "Chapter 3 · Holdout",
-      "synopsis": "The Autumn Release shipped clean. Over the weekend, Gold members start paying more than they should, and someone wants the numbers kept that way until Monday.",
+      "synopsis": "The Autumn Release is out. Over the weekend, Gold members start paying more than they should, and someone wants the numbers kept that way until Monday.",
       "finaleDeductionId": "DED-T09",
       "deadline": {
         "label": "Billing run",
@@ -7213,7 +7224,7 @@
     {
       "id": "CH4",
       "title": "Chapter 4 · Rollback",
-      "synopsis": "A week later, Platform rolls everything back. Leadership meets at 09:00 to hear whether Shoply is finally clean.",
+      "synopsis": "After the weekend, Platform rolls everything back. Leadership meets at 09:00 to hear whether Shoply is finally clean.",
       "finaleDeductionId": "DED-T12",
       "deadline": {
         "label": "Leadership review",
@@ -7351,7 +7362,7 @@
       "id": "CH7",
       "canonAct": "ACT 4",
       "title": "Chapter 7 · Zero Incident",
-      "synopsis": "The dashboard says nothing happened in October 2021. The benefits ledger says someone died. The records of one employee cannot all be true at once.",
+      "synopsis": "The dashboard counts no major incidents in its scope for October 2021. The benefits ledger records a death. The records of one employee cannot all be true at once.",
       "quiet": true,
       "caseFileAfter": "T28",
       "channel": "# oh-benefits-settlement",
@@ -7409,7 +7420,7 @@
       "id": "CH9",
       "canonAct": "ACT 6",
       "title": "Chapter 9 · Daniel's Last Case",
-      "synopsis": "Daniel Park was investigating the Foundation's vendors when he died. His case was closed the next day. The chain of control reaches further than anyone wrote down, including to Northstar.",
+      "synopsis": "Daniel Park's internal-control cases are in the archive. Check what survives the migration, and follow the records as far as they go.",
       "quiet": true,
       "caseFileAfter": "T28",
       "channel": "# oh-document-archive",

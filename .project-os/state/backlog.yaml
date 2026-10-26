@@ -169,6 +169,16 @@ tasks:
   - TASK-017
   contract: .project-os/tasks/ready/TASK-018.yaml
   human_gate: false
+- id: TASK-019
+  title: Directory badge photos, Shoply product photos, and the Codex text audit
+  role: developer
+  milestone: M4
+  priority: P2
+  status: done
+  depends_on:
+  - TASK-018
+  contract: .project-os/tasks/ready/TASK-019.yaml
+  human_gate: false
 - id: TASK-010
   title: Run the full-game human playtest gate
   role: developer
@@ -183,5 +193,6 @@ tasks:
   - TASK-016
   - TASK-017
   - TASK-018
+  - TASK-019
   contract: .project-os/tasks/ready/TASK-010.yaml
   human_gate: true

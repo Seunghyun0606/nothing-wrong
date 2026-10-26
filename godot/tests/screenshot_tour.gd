@@ -160,4 +160,11 @@ func _tour() -> void:
 	DesktopSession.set_viewport("TABLET")
 	await _shot("p-foundation-gallery-tablet")
 	DesktopSession.set_viewport("DESKTOP")
+	# The directory's badge photos and Shoply's product photos.
+	DesktopSession.open_url("https://people.northstar.local")
+	await _shot("p-directory")
+	DesktopSession.open_url("https://people.northstar.local/mina-seo")
+	await _shot("p-person")
+	DesktopSession.open_url("https://shoply.local")
+	await _shot("p-shoply-home")
 	quit()

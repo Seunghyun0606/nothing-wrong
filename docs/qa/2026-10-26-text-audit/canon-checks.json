@@ -1,0 +1,65 @@
+{
+  "method": "Python static cross-checks; no Godot execution",
+  "timeline": [
+    {
+      "log": "BADGE-B",
+      "raw": "2021-10-18 05:48 UTC",
+      "local": "2021-10-17 22:48",
+      "displayed": "2021-10-17 22:48",
+      "expected_defect": false
+    },
+    {
+      "log": "ALARM",
+      "raw": "2021-10-18 06:06 UTC",
+      "local": "2021-10-17 23:06",
+      "displayed": "2021-10-17 23:06",
+      "expected_defect": false
+    },
+    {
+      "log": "MED-EVENT",
+      "raw": "2021-10-18 06:11 UTC",
+      "local": "2021-10-17 23:11",
+      "displayed": "2021-10-17 23:11",
+      "expected_defect": false
+    },
+    {
+      "log": "VEH-FS01",
+      "raw": "2021-10-18 06:18 UTC",
+      "local": "2021-10-17 23:18",
+      "displayed": "2021-10-18 06:18",
+      "expected_defect": true
+    },
+    {
+      "log": "TRANSFER",
+      "raw": "2021-10-18 07:14 UTC",
+      "local": "2021-10-18 00:14",
+      "displayed": "2021-10-18 00:14",
+      "expected_defect": false
+    }
+  ],
+  "inventory": {
+    "received": 1200,
+    "patient_use": 380,
+    "disposed": 24,
+    "transferred": 675,
+    "balance": 121
+  },
+  "payroll": {
+    "gross": 5200,
+    "tax": 410,
+    "pension": 190,
+    "community": 260,
+    "net": 4340
+  },
+  "benefit_total": 86240,
+  "historical_orders": 15,
+  "historical_order_targets": 14,
+  "regular_salary_months": [
+    "2021-11",
+    "2021-12",
+    "2022-01"
+  ],
+  "scenarios": 42,
+  "chapters": 10,
+  "deductions": 19
+}

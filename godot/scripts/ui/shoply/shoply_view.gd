@@ -180,8 +180,10 @@ func _home(page: VBoxContainer) -> void:
 		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var body := Kit.vbox(8)
 		card.add_child(body)
-		var art := ColorRect.new()
-		art.color = ACCENTS.get(product.get("accent", ""), P.SHOP_CORAL)
+		var art: Control = Kit.picture("products/%s" % product["id"])
+		if art == null:
+			art = ColorRect.new()
+			art.color = ACCENTS.get(product.get("accent", ""), P.SHOP_CORAL)
 		art.custom_minimum_size = Vector2(0, 140)
 		body.add_child(art)
 		body.add_child(_caps(product["category"], P.SHOP_MUTED))
@@ -199,12 +201,15 @@ func _product(page: VBoxContainer, product_id: String) -> void:
 		return
 	var row := _row(36)
 	page.add_child(row)
-	var art := Kit.panel(ACCENTS.get(product.get("accent", ""), P.SHOP_CORAL), Color.TRANSPARENT, 2, 24)
+	var photo := Kit.picture("products/%s" % product["id"])
+	var art := Kit.panel(ACCENTS.get(product.get("accent", ""), P.SHOP_CORAL), Color.TRANSPARENT, 2, 0 if photo else 24)
 	art.custom_minimum_size = Vector2(0 if narrow else 420, 300)
 	art.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if photo:
+		art.add_child(photo)
 	var art_label := _caps(product.get("tagline", ""), P.SHOP_INK)
 	art_label.size_flags_vertical = Control.SIZE_SHRINK_END
-	art.add_child(art_label)
+	art.add_child(Kit.margin(art_label, 24, 24, 24, 24) if photo else art_label)
 	row.add_child(art)
 	var copy := Kit.vbox(12)
 	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL

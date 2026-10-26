@@ -2473,14 +2473,14 @@
         },
         {
           "id": "control",
-          "label": "Controlling interest"
+          "label": "Source of influence"
         },
         {
           "id": "type",
           "label": "Type"
         }
       ],
-      "note": "Control types: INDEPENDENT, INFLUENCE (board seats or voting rights), PARTNER (community partner agreement).",
+      "note": "Control types: INDEPENDENT, INFLUENCE (board seats or voting rights), PARTNER (community partner agreement). A dash (—) means none on record.",
       "console": [
         "info: 4 records validated against the control codebook"
       ],

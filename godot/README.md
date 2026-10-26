@@ -17,7 +17,8 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`,
 `user://settings.json`). Each is written to a temporary file that then replaces the old
 one, so a save cut short leaves the previous one whole; an unreadable save is kept as
 `user://save.unreadable.json` and a new game starts. **New game** on the title screen
-resets them.
+(shown once there is progress, with a confirmation) resets progress, Evidence, and notes;
+the language and sound settings stay.
 
 ## Build
 
@@ -104,14 +105,18 @@ templates for 4.7.2 must be installed; the build goes to `godot/build/`, which i
 - **Directory:** `people.northstar.local` (linked from the new tab page and from names in
   Messenger) lists our team and the client contacts: title, team, manager, address, and
   what each person looks after (`data/people.json`). Each entry shows from the Ticket that
-  introduces it (`since`), so it never runs ahead of the story.
+  introduces it (`since`), so it never runs ahead of the story. Photos are badge photos
+  from each person's first week (`photo.taken`, DEC-018), so they may not look like the
+  person now; Mina says so at T13 and T24. Images live in `assets/people/`, and Shoply's
+  product photos in `assets/products/` (`Kit.picture`, with initials or a colour block as
+  the fallback).
 - **Key terms:** chat messages and clue cards show record IDs, codes, dates, times, and
   the names in `data/key_terms.json` in bold (`scripts/domain/key_terms.gd`).
 - **Text input:** the window's IME is switched on whenever a text field takes focus
   (`scripts/ui/main.gd`), for Korean input in search and notes.
 - **Chapters:** Chapter 1 (T01–T04) finds why RC3 broke; Chapter 2 (T05–T07) finds who
   opened the archive, through device-specific defects and a chain of records; Chapter 3
-  (T08–T09, the weekend after release) finds who approved it, through a real order and a
+  (T08–T09, the weekend after release) finds who approved it, through a test order and a
   Gold-only coupon holdout; Chapter 4 (T10–T12, the Monday after) checks the rollback with
   the plan's remaining Ticket types: a cross-screen comparison (T10), a Ticket with two
   defects that both have to be reported (T11), and a regression pass over last week's
@@ -201,3 +206,4 @@ The third argument sets the screen size (default 1440x900).
 | `data/` | Content: scenarios, records, record views, directory, Shoply catalog |
 | `assets/photos/` | Story and event photos shown on record views |
 | `assets/art/` | Title, lock screen, and desktop pictures, and the game icon |
+| `assets/people/`, `assets/products/` | Directory badge photos and Shoply product photos |

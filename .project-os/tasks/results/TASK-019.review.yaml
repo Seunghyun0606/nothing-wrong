@@ -1,0 +1,26 @@
+task: TASK-019
+status: pass
+verdict: pass
+summary: 'Independent read of the changes. None of the 292 removed Korean keys appears
+  in any source, raw or escaped, and no runtime-built key can produce one; every changed
+  English string has Korean with the same placeholders; canon holds (no line confirms
+  the 2008 photo is the woman in the event photos; influence, not ownership; acquaintance
+  only). Portrait and product photo fallbacks work; no evidence target or Mutation
+  changed. Two narrow save edge cases: old T41 reports keep the old requirement text
+  (its Korean key restored), and a save made in the ~0.9 s between the new T24 line
+  and the next could see one line twice (accepted, documented).'
+critical_issues: 0
+findings:
+- severity: minor
+  file: godot/i18n/ko.json
+  summary: Old T41 reports would show the replaced requirement in English. Fixed by
+    keeping its Korean key.
+- severity: minor
+  file: godot/data/scenarios.json
+  summary: Inserting the T24 line shifts indexed ids; a save in a ~0.9 s window repeats
+    one line. Accepted.
+residual_risk: Codex usage limits cut CX-08 part B's headless run at 75 loops; the
+  windowed 300-loop run completed. Not committed yet.
+kind: review
+role: reviewer
+actor: claude-reviewer-m4

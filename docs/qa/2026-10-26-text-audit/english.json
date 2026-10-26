@@ -1,0 +1,101 @@
+[
+  {
+    "file": "godot/data/scenarios.json",
+    "path": "$.scenarios[7].ticket.request",
+    "current": "Gold members say their order page shows more than they paid at checkout. Place a real order and compare.",
+    "suggested": "Gold members say their order page shows more than they paid at checkout. Place a test order and compare.",
+    "category": "clarity",
+    "severity": "P2",
+    "reason": "T08 runs on a staging site. \"Real order\" can suggest a live purchase; \"test order\" names the action accurately. New Korean key and revised Korean meaning required."
+  },
+  {
+    "file": "godot/data/scenarios.json",
+    "path": "$.scenarios[7].story.briefing[2].text",
+    "current": "We look anyway. Place a real order as a Gold member with SAVE20, then open it from Orders.",
+    "suggested": "We look anyway. Place a test order as a Gold member with SAVE20, then open it from Orders.",
+    "category": "clarity",
+    "severity": "P2",
+    "reason": "Same staging-versus-live ambiguity as the T08 request. Keep both instructions consistent. New Korean key and revised Korean meaning required."
+  },
+  {
+    "file": "godot/data/scenarios.json",
+    "path": "$.scenarios[13].story.assist[1].text",
+    "current": "Here's the answer: IMG001's thumbnail cuts the young man on the right. Note the Target description and report it with REQ-T14-01.",
+    "suggested": "Here's the answer: IMG001's thumbnail crops out the young man on the right. Note Target and report it with REQ-T14-01.",
+    "category": "clarity",
+    "severity": "P3",
+    "reason": "\"Cuts the young man\" lacks \"out\" and can describe an injury. This is an image crop. New Korean key required; the existing Korean meaning can be retained."
+  },
+  {
+    "file": "godot/data/scenarios.json",
+    "path": "$.scenarios[17].ticket.hints[0].text",
+    "current": "A record missing from Target is still a record.",
+    "suggested": "Compare missing Target rows with Source.",
+    "category": "clarity",
+    "severity": "P3",
+    "reason": "The tautology does not tell a stuck player what to compare. This names the two columns without supplying the answer. New Korean key and revised Korean meaning required."
+  },
+  {
+    "file": "godot/data/scenarios.json",
+    "path": "$.scenarios[20].story.assist[1].text",
+    "current": "Here's the answer: each system moved in its own year, and the orchestrator copies as-is. Nothing here is broken: report NO ISSUE FOUND.",
+    "suggested": "Here's the answer: each system moved in its own run, and the orchestrator copies as-is. Nothing here is broken: report NO ISSUE FOUND.",
+    "category": "clarity",
+    "severity": "P2",
+    "reason": "\"Each system moved in its own year\" suggests five distinct years. The view shows five systems across three years, each in a separate run. New Korean key and revised Korean meaning required."
+  },
+  {
+    "file": "godot/data/scenarios.json",
+    "path": "$.scenarios[33].ticket.hints[0].text",
+    "current": "Do the arithmetic the screen shows, then the ledger.",
+    "suggested": "Check the screen's arithmetic against the ledger.",
+    "category": "grammar",
+    "severity": "P3",
+    "reason": "\"Do the arithmetic ... then the ledger\" leaves out the second verb and obscures the comparison. New Korean key required; the existing Korean meaning can be retained."
+  },
+  {
+    "file": "godot/data/scenarios.json",
+    "path": "$.scenarios[40].ticket.request",
+    "current": "Check that every vendor record names its legal parent and its controlling interest.",
+    "suggested": "Check each vendor's legal parent and source of influence, allowing none.",
+    "category": "clarity",
+    "severity": "P1",
+    "reason": "\"Controlling interest\" commonly means an ownership stake, but the record uses board seats and a partner agreement. Preserve INFLUENCE and allow the explicit none states described in canon C01. The approved Korean already distinguishes influence from equity; add the none qualification. New Korean key and revised Korean meaning required."
+  },
+  {
+    "file": "godot/data/scenarios.json",
+    "path": "$.scenarios[40].ticket.requirements[0].description",
+    "current": "Every vendor record names its legal parent and its controlling interest.",
+    "suggested": "Each vendor states its legal parent and source of influence, or none.",
+    "category": "clarity",
+    "severity": "P1",
+    "reason": "REQ-T41-01 repeats the ownership-stake ambiguity. Keep parent and influence distinct, and allow none so the wording fits the complete-record answer (canon C01). Add that qualification to the approved Korean meaning. New Korean key and revised Korean meaning required."
+  },
+  {
+    "file": "godot/data/scenarios.json",
+    "path": "$.scenarios[40].story.deduction.sentence",
+    "current": "Daniel opened a case on {topic} on 12 October; it was closed the day after he died, and the companies he questioned, and {employer}, answer to {top}.",
+    "suggested": "Daniel opened a case on {topic} on 12 October. It closed the day after he died; {employer} and the firms he questioned answer to {top}.",
+    "category": "grammar",
+    "severity": "P2",
+    "reason": "The nested \"and ... and\" hides the two subjects. Two clauses make the conclusion easier to read; all placeholders and the limited control claim remain. New Korean key required; the existing Korean meaning can be retained."
+  },
+  {
+    "file": "godot/data/scenarios.json",
+    "path": "$.chapters[6].synopsis",
+    "current": "The dashboard says nothing happened in October 2021. The benefits ledger says someone died. The records of one employee cannot all be true at once.",
+    "suggested": "The dashboard counts no major incidents in scope. The benefits ledger records a death. Check where one employee's records disagree.",
+    "category": "clarity",
+    "severity": "P1",
+    "reason": "The dashboard reports zero major incidents within its reporting scope, not that nothing happened. The original wording erases that distinction; see the canon report. Its death reference is already gated until T28 and is not an early reveal. New Korean key and revised Korean meaning required."
+  },
+  {
+    "file": "godot/data/scenarios.json",
+    "path": "$.chapters[8].synopsis",
+    "current": "Daniel Park was investigating the Foundation's vendors when he died. His case was closed the next day. The chain of control reaches further than anyone wrote down, including to Northstar.",
+    "suggested": "Daniel Park's internal-control cases are in the archive. Check what survives the migration, and follow the records as far as they go.",
+    "category": "exposition",
+    "severity": "P2",
+    "reason": "Alex has only handed over the archive at the end of CH8. This synopsis supplies the T37 closure and T41 Northstar conclusion before those tasks. New Korean key and revised Korean meaning required."
+  }
+]

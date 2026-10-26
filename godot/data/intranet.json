@@ -124,7 +124,7 @@
         "Reason: \"ship new promo branches automatically\"",
         "Edited by: m.reyes",
         "Next run (02:14): matched 1 release branch and 6 archived branches.",
-        "Thursday 19:05: exp/* and promo/* removed again (m.reyes). release/* still included."
+        "Scheduled for Thursday 19:05, after code freeze: remove exp/* and promo/* again (m.reyes). release/* stays included."
       ],
       "keywordsKo": [
         "병합 규칙",

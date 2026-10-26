@@ -1,0 +1,40 @@
+task: TASK-019
+status: pass
+summary: 'The directory shows first-week badge photos with their year (DEC-018); the
+  player''s own entry says the photo is pending; Mina explains at T13 that directory
+  photos are first-week badge photos and at T24 that Grace''s is from 2008 and she
+  goes by the records. Shoply''s products have photos. The Codex text audit (CX-07)
+  is applied: seven canon fixes (CH3, CH4, CH7, CH9 synopses; T04 history as a scheduled
+  change; T40; T41 wording and the view''s "Source of influence" column), eleven English
+  edits with Korean, and 292 unused Korean keys removed after checking every source.
+  The playtest kit now names the real controls (Start test, Send report, Nothing is
+  wrong), the fresh-save steps, and the English client screens (CX-08 part A).'
+files_changed:
+- godot/data/people.json
+- godot/data/scenarios.json
+- godot/data/intranet.json
+- godot/data/horizon.json
+- godot/i18n/ko.json
+- godot/assets/people
+- godot/assets/products
+- godot/scripts/ui/kit.gd
+- godot/scripts/ui/apps/browser_app.gd
+- godot/scripts/ui/shoply/shoply_view.gd
+- godot/tests/test_workstation.gd
+- godot/tests/screenshot_tour.gd
+- godot/README.md
+- docs/playtest/TASK-010-participant-guide.md
+- docs/playtest/TASK-010-session-template.md
+- .project-os/decisions/DEC-018-directory-badge-photos.yaml
+evidence:
+- test_directory_badge_photos_and_product_photos passes.
+- Korean screenshot tour with an untranslated-string probe showed only intended English
+  (storefront, names, URLs).
+- Decisions in docs/qa/2026-10-26-text-audit/DISPOSITION.md and docs/art/2026-10-26-badges/DISPOSITION.md.
+acceptance:
+  status: pass
+commit: null
+baseline: uncommitted working tree on e94fde8
+kind: implementation
+role: developer
+actor: claude-developer

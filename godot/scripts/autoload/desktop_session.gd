@@ -26,6 +26,8 @@ const MESSAGE_DELAY := 0.9
 const FIRST_MESSAGE_DELAY := 1.8
 const TOAST_SECONDS := 7.0
 const MAX_TABS := 6
+## Back/Forward keeps this many pages per tab, so a long session does not grow without end.
+const MAX_HISTORY := 50
 ## Seconds before a waiting Ticket's notification, or the end of the day, shows up.
 const NOTIFY_DELAY := 2.5
 ## Seconds the clock takes to run forward to the next Ticket.
@@ -305,6 +307,8 @@ func navigate(next: Dictionary) -> void:
 	var tab := _tab()
 	tab["history"] = tab["history"].slice(0, tab["index"] + 1)
 	tab["history"].append(next)
+	if tab["history"].size() > MAX_HISTORY:
+		tab["history"] = tab["history"].slice(tab["history"].size() - MAX_HISTORY)
 	tab["index"] = tab["history"].size() - 1
 	_record_visit(next)
 	changed.emit()

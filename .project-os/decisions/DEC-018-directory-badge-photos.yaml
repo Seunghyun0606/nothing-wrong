@@ -1,0 +1,26 @@
+id: DEC-018
+title: The directory shows badge photos from each person's first week
+status: active
+decided_at: "2026-10-26"
+context: >-
+  The directory (people.northstar.local) showed initials only. The image bible wants the
+  player to recognise people in photos on their own after seeing internal profiles, and
+  says that looking like someone is not the same as being identified. Grace Yoon is the
+  only person both in the directory and in the event photos (untagged in IMG001 at T14,
+  tagged by face match in IMG002 at T24 and IMG003 at T32).
+decision: >-
+  On 2026-10-26 the project owner asked for photos in the directory, taken when each
+  person joined, with the story making it clear in passing that they may not look like
+  the person now. Each directory entry shows its badge photo and the year it was taken;
+  the player's own entry says the photo is pending. Mina mentions at T13 that directory
+  photos are first-week badge photos (hers is from 2016), and at T24 that Grace's is
+  from 2008 and that she goes by the records, not the face.
+consequences:
+  - Grace's 2008 badge photo is the same woman as in the event photos at a younger age with different styling, recognisable but not proof; no line confirms the match.
+  - Nobody else in the directory may resemble Daniel Park, Samuel Kwon, the Horizon CEO, or the Foundation security director.
+  - Photos live in godot/assets/people/<id>.jpg; a missing photo falls back to initials.
+applies_to:
+  - global
+references:
+  - .project-os/decisions/DEC-017-endings-and-story-photos.yaml
+  - docs/codex/CX-06-badge-and-product-photos.md

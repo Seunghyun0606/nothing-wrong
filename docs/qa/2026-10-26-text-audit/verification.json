@@ -1,0 +1,77 @@
+{
+  "task": "CX-07",
+  "role": "read-only text audit",
+  "status": "completed_with_findings",
+  "verified_at_utc": "2026-10-25T20:11:32.341993+00:00",
+  "baseline_commit": "e94fde81cae7a7c6fbb68180a2feaac3f03f5141",
+  "checks": {
+    "json_schema": "PASS",
+    "current_source_exact_match": "PASS",
+    "replacement_length": "PASS",
+    "deduction_placeholders": "PASS",
+    "current_english_keys_in_korean_catalog": "PASS",
+    "unused_key_membership_and_disjointness": "PASS",
+    "key_catalog_partition": "PASS",
+    "source_hashes": "PASS",
+    "git_inventory": "RECORDED"
+  },
+  "counts": {
+    "english": 11,
+    "english_priorities": {
+      "P2": 5,
+      "P3": 3,
+      "P1": 3
+    },
+    "canon": 7,
+    "canon_priorities": {
+      "P1": 3,
+      "P2": 3,
+      "P3": 1
+    },
+    "korean_catalog": 1584,
+    "unused": 306,
+    "unsure": 3
+  },
+  "source_files_hashed": 50,
+  "source_drift": [],
+  "initial_git_status": [
+    " M godot/data/people.json",
+    " M godot/data/scenarios.json",
+    " M godot/i18n/ko.json",
+    "?? docs/codex/CX-06-badge-and-product-photos.md",
+    "?? docs/codex/CX-07-text-audit.md"
+  ],
+  "final_git_status": [
+    " M godot/data/people.json",
+    " M godot/data/scenarios.json",
+    " M godot/i18n/ko.json",
+    " M godot/scripts/ui/apps/browser_app.gd",
+    " M godot/scripts/ui/kit.gd",
+    " M godot/scripts/ui/shoply/shoply_view.gd",
+    " M godot/tests/test_workstation.gd",
+    "?? .project-os/decisions/DEC-018-directory-badge-photos.yaml",
+    "?? docs/art/2026-10-26-badges/",
+    "?? docs/codex/CX-06-badge-and-product-photos.md",
+    "?? docs/codex/CX-07-text-audit.md",
+    "?? docs/codex/CX-08-playtest-dry-run-and-memory.md",
+    "?? docs/qa/2026-10-26-text-audit/",
+    "?? godot/assets/people/",
+    "?? godot/assets/products/"
+  ],
+  "additional_non_audit_git_entries": [
+    " M godot/scripts/ui/apps/browser_app.gd",
+    " M godot/scripts/ui/kit.gd",
+    " M godot/scripts/ui/shoply/shoply_view.gd",
+    " M godot/tests/test_workstation.gd",
+    "?? .project-os/decisions/DEC-018-directory-badge-photos.yaml",
+    "?? docs/art/2026-10-26-badges/",
+    "?? docs/codex/CX-08-playtest-dry-run-and-memory.md",
+    "?? godot/assets/people/",
+    "?? godot/assets/products/"
+  ],
+  "godot": "NOT RUN (brief forbids it)",
+  "human_playtest": "NOT RUN",
+  "product_files_changed": false,
+  "canonical_state_changed": false,
+  "notes": "Static checks validate reports and evidence, not product fixes. Additional non-audit Git entries surfaced at final verification, including three UI scripts; all 50 original source hashes still match, including those scripts. No audit write targets were outside this output folder. C02/E11 and C03/E10 describe the same issues from two review perspectives; do not add part counts as unique defects."
+}

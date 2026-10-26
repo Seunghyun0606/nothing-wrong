@@ -24,6 +24,7 @@ tasks:
   - TASK-016
   - TASK-017
   - TASK-018
+  - TASK-019
   - TASK-010
 human_gate:
   required_on_completion: true

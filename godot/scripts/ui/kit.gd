@@ -207,23 +207,32 @@ static func hbox(separation: int = 8) -> HBoxContainer:
 	return node
 
 
+## A picture from res://assets (e.g. "people/grace-yoon"), cropped to fill its box, or
+## null when the file is not there.
+static func picture(asset: String) -> TextureRect:
+	var path := "res://assets/%s.jpg" % asset
+	if not ResourceLoader.exists(path):
+		return null
+	var image := TextureRect.new()
+	image.texture = load(path)
+	image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	return image
+
+
 ## A full-screen picture from assets/art (title, lock, wallpaper), cropped to fill the
 ## screen; the plain `fallback` colour when the picture is missing.
 static func backdrop(art: String, fallback: Color) -> Control:
-	var path := "res://assets/art/%s.jpg" % art
-	if not ResourceLoader.exists(path):
+	var image := picture("art/%s" % art)
+	if image == null:
 		var plain := ColorRect.new()
 		plain.color = fallback
 		plain.set_anchors_preset(Control.PRESET_FULL_RECT)
 		return plain
-	var picture := TextureRect.new()
-	picture.name = "Backdrop"
-	picture.texture = load(path)
-	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	picture.set_anchors_preset(Control.PRESET_FULL_RECT)
-	picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return picture
+	image.name = "Backdrop"
+	image.set_anchors_preset(Control.PRESET_FULL_RECT)
+	image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return image
 
 
 static func panel(bg: Color, border: Color = Color.TRANSPARENT, radius: int = 6, pad: int = 12) -> PanelContainer:

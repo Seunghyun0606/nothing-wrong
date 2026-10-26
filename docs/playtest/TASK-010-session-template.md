@@ -20,10 +20,17 @@ fields blank rather than inventing results.
 ## Setup
 
 1. Build the game (see `godot/README.md`, **Build**) and run its `--self-check`.
-2. Start from a fresh save: choose **New game** on the title screen, or delete
-   `save.json`, `workspace.json`, and `settings.json` from
-   `%APPDATA%\Godot\app_userdata\Nothing Wrong` (keep the `tests` folder).
-3. Give the participant only the [participant guide](TASK-010-participant-guide.md),
+2. Start from a fresh save. If the title screen shows **Start work**, progress is
+   already fresh. If it shows **Continue work**, choose **New game**, then **Yes, start
+   a new game**; this clears progress, evidence, and notes but keeps the language and
+   sound settings, so choose the session's language on the title screen. (Avoid deleting
+   files by hand. If you must, close the game and delete `save.json` and
+   `workspace.json` together with any `.json.tmp` file of the same name in
+   `%APPDATA%\Godot\app_userdata\Nothing Wrong`; keep the `tests` folder and any
+   `.unreadable.json` backups.)
+3. Run both self-checks from `godot/README.md`, **Build**, and require the
+   "Self-check passed" line and exit code 0 from each.
+4. Give the participant only the [participant guide](TASK-010-participant-guide.md),
    not `docs/development/TESTING.md`, the specs, or the story docs. They contain the answers.
 
 ## Journey and observations
@@ -48,7 +55,7 @@ not reached as "not reached".
 | Chapter 5 onward: ONE HORIZON records, directory, private messages |  |  |
 | Asked for a hint in a direct message (if used) |  |  |
 | Final decision and ending |  |  |
-| Quit and reopen mid-chapter: picked up where they were |  |  |
+| Quit and reopen mid-chapter: progress and notes picked up where they were (window layout and Browser tabs start fresh) |  |  |
 
 ## Things to watch for (from the 2026-10-25 QA review)
 

@@ -1,0 +1,25 @@
+task: TASK-019
+status: pass
+summary: The suite passes; both self-checks pass; Codex CX-08 drove the kit through
+  the build in both languages and measured 300 windowed loops.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 72 passed, 0 failed.
+  typecheck:
+    status: pass
+  build:
+    status: pass
+    result: Windows export; exported and editor self-checks print Self-check passed.
+  integration_test:
+    status: pass
+    result: test_full_story passes with the changed text; CX-08 kit run had zero failed
+      assertions in English and Korean.
+  memory:
+    status: pass
+    result: 300 windowed loops with photos, directory, and products; nodes, objects,
+      textures flat; static growth matches notes (docs/qa/cx08/memory.md).
+kind: test
+role: qa
+actor: qa

@@ -217,6 +217,42 @@ func test_screens_show_their_art() -> void:
 	_finish()
 
 
+## A tab keeps its last MAX_HISTORY pages (CX-08b found history growing without end).
+func test_browser_history_is_capped() -> void:
+	_start()
+	for index in DesktopSession.MAX_HISTORY + 30:
+		DesktopSession.navigate(Addresses.shoply("/shoply/product/%d" % index))
+	check_eq(DesktopSession._tab()["history"].size(), DesktopSession.MAX_HISTORY, "history stays capped")
+	check_eq(DesktopSession.location()["path"], "/shoply/product/%d" % (DesktopSession.MAX_HISTORY + 29), "on the newest page")
+	DesktopSession.go_back()
+	check_eq(DesktopSession.location()["path"], "/shoply/product/%d" % (DesktopSession.MAX_HISTORY + 28), "Back still works")
+	_finish()
+
+
+## The directory shows first-week badge photos with their year (DEC-018), the story says
+## so before a photo tags Grace, and Shoply's products have photos.
+func test_directory_badge_photos_and_product_photos() -> void:
+	for person in GameSession.directory.people:
+		if person.has("photo"):
+			check(Kit.picture("people/%s" % person["photo"]["asset"]) != null, "%s has a badge photo" % person["id"])
+			check(str(person["photo"]["taken"]).is_valid_int(), "%s's photo has a year" % person["id"])
+	for product in ShoplyStore.products:
+		check(Kit.picture("products/%s" % product["id"]) != null, "%s has a photo" % product["id"])
+	var said := func(ticket: String, words: String) -> bool:
+		var story: Dictionary = GameSession.scenario(ticket)["story"]
+		return (story["briefing"] + story["debrief"]).any(func(message): return message["text"].contains(words))
+	check(said.call("T13", "badge photos from everyone's first week"), "T13 says what the directory photos are")
+	check(said.call("T24", "badge photo from 2008"), "T24 says Grace's photo is old")
+	var desktop := _start()
+	DesktopSession.open_app("messenger")
+	DesktopSession.navigate(Addresses.people("mina-seo"))
+	var page: Node = find_named(desktop, "PersonPage")
+	check(page != null and find_named(page, "BadgePhoto") != null, "Mina's page shows her badge photo")
+	var texts: Array = page.find_children("*", "Label", true, false).map(func(label): return label.text) if page else []
+	check(texts.has("Badge photo · 2016"), "with the year it was taken")
+	_finish()
+
+
 ## Every photo a record view names is there, and each defect is drawn from the one source
 ## image: the thumbnail cut (T14), the tablet layout (T32), and the rotated preview (T38).
 func test_record_views_draw_their_photos() -> void:

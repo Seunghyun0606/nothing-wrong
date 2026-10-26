@@ -469,7 +469,7 @@ func _person_chip(id: String, arrived: Array) -> Control:
 	chip.custom_minimum_size = Vector2(230, 0)
 	var row := Kit.hbox(10)
 	chip.add_child(row)
-	row.add_child(Kit.avatar(Kit.initials(person_name(person)), 36))
+	row.add_child(_portrait(person, 36))
 	var text := Kit.vbox(0)
 	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var name := Kit.link(person_name(person), DesktopSession.navigate.bind(Addresses.people(id)))
@@ -486,7 +486,20 @@ func _person_page(person: Dictionary, arrived: Array) -> Control:
 	var page := Kit.vbox(16)
 	page.name = "PersonPage"
 	var top := Kit.hbox(16)
-	top.add_child(Kit.avatar(Kit.initials(person_name(person)), 64))
+	var badge := Kit.vbox(4)
+	badge.add_child(_portrait(person, 96))
+	# Badge photos are taken in a person's first week and never updated.
+	var caption := Kit.label("", 12, P.MUTED)
+	caption.custom_minimum_size = Vector2(96, 0)
+	if person.has("photo"):
+		caption.text = Kit.tf("Badge photo · %s", person["photo"]["taken"])
+		caption.autowrap_mode = TextServer.AUTOWRAP_OFF
+		caption.tooltip_text = Kit.t("Taken in their first week. People change; the photo does not.")
+		caption.mouse_filter = Control.MOUSE_FILTER_PASS
+	elif person["id"] == Directory.YOU:
+		caption.text = Kit.t("Badge photo pending: taken in your first week.")
+	badge.add_child(caption)
+	top.add_child(badge)
 	var who := Kit.vbox(2)
 	who.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var name := Kit.heading(person_name(person), 26)
@@ -530,6 +543,18 @@ func _person_page(person: Dictionary, arrived: Array) -> Control:
 		for fact in facts:
 			page.add_child(Kit.rich("•  %s" % Kit.t(fact), 15))
 	return page
+
+
+## A person's badge photo at the given size, or their initials when there is none.
+static func _portrait(person: Dictionary, size: int) -> Control:
+	var photo: TextureRect = Kit.picture("people/%s" % person.get("photo", {}).get("asset", "")) if person.has("photo") else null
+	if photo == null:
+		return Kit.avatar(Kit.initials(person_name(person)), size)
+	photo.name = "BadgePhoto"
+	photo.custom_minimum_size = Vector2(size, size)
+	photo.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	photo.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	return photo
 
 
 static func _field(grid: GridContainer, label: String, value: Control) -> void:
