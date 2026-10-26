@@ -1,0 +1,47 @@
+id: TASK-020
+title: Pre-playtest checks from Codex (saves, package, accessibility, performance)
+role: developer
+milestone: M4
+priority: P1
+status: ready
+
+objective: >-
+  Act on the Codex pre-playtest checks CX-09 to CX-12: old-save compatibility, the
+  playtest build package, readability and keyboard access, and performance.
+why: >-
+  The owner deferred the full QA review until after the playtest and asked for these
+  four checks first, so the build handed to participants is small, loads existing saves,
+  and can be played and read comfortably.
+
+scope:
+  include:
+    - A recorded decision for each finding; fixes for keyboard blockers, low-contrast text over pictures, weak focus, export size, and idle CPU.
+    - The facilitator checklist and the save-compatibility scope in the docs.
+  exclude:
+    - Migrating saves from the first Godot prototype build.
+    - The full QA review (after TASK-010).
+
+depends_on:
+  - TASK-019
+specs:
+  - docs/playtest/TASK-010-session-template.md
+relevant_files:
+  - godot/scripts/ui
+  - godot/project.godot
+  - godot/export_presets.cfg
+  - docs/qa
+  - docs/playtest
+active_decisions:
+  - .project-os/decisions/DEC-016-milestone-rebaseline.yaml
+
+acceptance:
+  - Note targets take keyboard focus and the notes editor lets Tab and Escape leave, checked by a test.
+  - QA scratch is excluded from the export and the game is capped at 60 frames a second, checked by a test.
+  - Every CX-09 to CX-12 finding has a recorded decision.
+
+verification:
+  - Run the headless Godot suite.
+  - Export, check the size, and run both self-checks.
+
+human_gate: false
+risk: low

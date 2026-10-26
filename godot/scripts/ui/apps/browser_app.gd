@@ -771,7 +771,7 @@ func _refresh_markers() -> void:
 		var marker := Button.new()
 		marker.name = "Mark%s" % str(node.get_meta("evidence_target")).replace(".", "_")
 		marker.flat = false
-		marker.focus_mode = Control.FOCUS_NONE
+		marker.focus_mode = Control.FOCUS_ALL
 		marker.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		for state in ["normal", "focus", "disabled"]:
 			marker.add_theme_stylebox_override(state, normal)

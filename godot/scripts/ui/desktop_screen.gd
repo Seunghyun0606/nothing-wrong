@@ -62,6 +62,7 @@ func _ready() -> void:
 		var glyph := Kit.label(ICONS[app], 34, P.TEXT, false)
 		glyph.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		var caption := Kit.label(DesktopSession.APP_TITLES[app], 14, P.TEXT, false)
+		Kit.halo(caption, 4)
 		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		for part in [glyph, caption]:
 			part.mouse_filter = Control.MOUSE_FILTER_IGNORE

@@ -1,0 +1,236 @@
+[
+  {
+    "attempt": 1,
+    "sync_build_ms": 50.518,
+    "to_first_draw_ms": 55.605,
+    "view": "shoply-product-photos"
+  },
+  {
+    "attempt": 2,
+    "sync_build_ms": 48.602,
+    "to_first_draw_ms": 51.54,
+    "view": "shoply-product-photos"
+  },
+  {
+    "attempt": 3,
+    "sync_build_ms": 48.429,
+    "to_first_draw_ms": 51.501,
+    "view": "shoply-product-photos"
+  },
+  {
+    "attempt": 1,
+    "cached_variants_after": 6,
+    "cached_variants_before": 0,
+    "device": "DESKTOP",
+    "sync_build_ms": 137.366,
+    "to_first_draw_ms": 143.907,
+    "view": "photo-thumbnails"
+  },
+  {
+    "attempt": 2,
+    "cached_variants_after": 6,
+    "cached_variants_before": 6,
+    "device": "DESKTOP",
+    "sync_build_ms": 15.438,
+    "to_first_draw_ms": 19.435,
+    "view": "photo-thumbnails"
+  },
+  {
+    "attempt": 3,
+    "cached_variants_after": 6,
+    "cached_variants_before": 6,
+    "device": "DESKTOP",
+    "sync_build_ms": 16.083,
+    "to_first_draw_ms": 20.075,
+    "view": "photo-thumbnails"
+  },
+  {
+    "attempt": 1,
+    "sync_build_ms": 5.781,
+    "to_first_draw_ms": 10.571,
+    "view": "photo-zoom-IMG001-Target"
+  },
+  {
+    "attempt": 2,
+    "sync_build_ms": 5.737,
+    "to_first_draw_ms": 9.9,
+    "view": "photo-zoom-IMG001-Target"
+  },
+  {
+    "attempt": 3,
+    "sync_build_ms": 5.76,
+    "to_first_draw_ms": 10.394,
+    "view": "photo-zoom-IMG001-Target"
+  },
+  {
+    "attempt": 1,
+    "cached_variants_after": 10,
+    "cached_variants_before": 6,
+    "device": "DESKTOP",
+    "sync_build_ms": 115.485,
+    "to_first_draw_ms": 122.819,
+    "view": "cms-albums"
+  },
+  {
+    "attempt": 2,
+    "cached_variants_after": 10,
+    "cached_variants_before": 10,
+    "device": "DESKTOP",
+    "sync_build_ms": 20.259,
+    "to_first_draw_ms": 26.972,
+    "view": "cms-albums"
+  },
+  {
+    "attempt": 3,
+    "cached_variants_after": 10,
+    "cached_variants_before": 10,
+    "device": "DESKTOP",
+    "sync_build_ms": 20.349,
+    "to_first_draw_ms": 26.997,
+    "view": "cms-albums"
+  },
+  {
+    "attempt": 1,
+    "cached_variants_after": 13,
+    "cached_variants_before": 10,
+    "device": "DESKTOP",
+    "sync_build_ms": 87.536,
+    "to_first_draw_ms": 91.75,
+    "view": "foundation-gallery"
+  },
+  {
+    "attempt": 2,
+    "cached_variants_after": 13,
+    "cached_variants_before": 13,
+    "device": "DESKTOP",
+    "sync_build_ms": 16.351,
+    "to_first_draw_ms": 19.933,
+    "view": "foundation-gallery"
+  },
+  {
+    "attempt": 3,
+    "cached_variants_after": 13,
+    "cached_variants_before": 13,
+    "device": "DESKTOP",
+    "sync_build_ms": 15.33,
+    "to_first_draw_ms": 18.89,
+    "view": "foundation-gallery"
+  },
+  {
+    "attempt": 1,
+    "cached_variants_after": 14,
+    "cached_variants_before": 13,
+    "device": "DESKTOP",
+    "sync_build_ms": 41.878,
+    "to_first_draw_ms": 48.13,
+    "view": "opportunity-program"
+  },
+  {
+    "attempt": 2,
+    "cached_variants_after": 14,
+    "cached_variants_before": 14,
+    "device": "DESKTOP",
+    "sync_build_ms": 19.041,
+    "to_first_draw_ms": 24.249,
+    "view": "opportunity-program"
+  },
+  {
+    "attempt": 3,
+    "cached_variants_after": 14,
+    "cached_variants_before": 14,
+    "device": "DESKTOP",
+    "sync_build_ms": 16.605,
+    "to_first_draw_ms": 20.347,
+    "view": "opportunity-program"
+  },
+  {
+    "attempt": 1,
+    "cached_variants_after": 15,
+    "cached_variants_before": 14,
+    "device": "DESKTOP",
+    "sync_build_ms": 101.615,
+    "to_first_draw_ms": 105.771,
+    "view": "archive-attachments"
+  },
+  {
+    "attempt": 2,
+    "cached_variants_after": 15,
+    "cached_variants_before": 15,
+    "device": "DESKTOP",
+    "sync_build_ms": 13.965,
+    "to_first_draw_ms": 16.967,
+    "view": "archive-attachments"
+  },
+  {
+    "attempt": 3,
+    "cached_variants_after": 15,
+    "cached_variants_before": 15,
+    "device": "DESKTOP",
+    "sync_build_ms": 15.196,
+    "to_first_draw_ms": 18.463,
+    "view": "archive-attachments"
+  },
+  {
+    "attempt": 1,
+    "cached_variants_after": 17,
+    "cached_variants_before": 15,
+    "device": "TABLET",
+    "sync_build_ms": 61.765,
+    "to_first_draw_ms": 65.364,
+    "view": "foundation-gallery"
+  },
+  {
+    "attempt": 2,
+    "cached_variants_after": 17,
+    "cached_variants_before": 17,
+    "device": "TABLET",
+    "sync_build_ms": 14.319,
+    "to_first_draw_ms": 17.585,
+    "view": "foundation-gallery"
+  },
+  {
+    "attempt": 3,
+    "cached_variants_after": 17,
+    "cached_variants_before": 17,
+    "device": "TABLET",
+    "sync_build_ms": 14.266,
+    "to_first_draw_ms": 17.535,
+    "view": "foundation-gallery"
+  },
+  {
+    "attempt": 1,
+    "sync_build_ms": 60.252,
+    "to_first_draw_ms": 71.841,
+    "view": "directory-badge-photos"
+  },
+  {
+    "attempt": 2,
+    "sync_build_ms": 62.871,
+    "to_first_draw_ms": 72.323,
+    "view": "directory-badge-photos"
+  },
+  {
+    "attempt": 3,
+    "sync_build_ms": 58.229,
+    "to_first_draw_ms": 68.03,
+    "view": "directory-badge-photos"
+  },
+  {
+    "attempt": 1,
+    "sync_build_ms": 63.911,
+    "to_first_draw_ms": 72.301,
+    "view": "person-badge-photo"
+  },
+  {
+    "attempt": 2,
+    "sync_build_ms": 67.669,
+    "to_first_draw_ms": 74.471,
+    "view": "person-badge-photo"
+  },
+  {
+    "attempt": 3,
+    "sync_build_ms": 65.227,
+    "to_first_draw_ms": 72.419,
+    "view": "person-badge-photo"
+  }
+]

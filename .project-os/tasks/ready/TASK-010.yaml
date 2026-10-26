@@ -30,6 +30,7 @@ depends_on:
   - TASK-017
   - TASK-018
   - TASK-019
+  - TASK-020
 specs:
   - specs/ux/first-playable-flow.md
   - docs/playtest/TASK-010-participant-guide.md

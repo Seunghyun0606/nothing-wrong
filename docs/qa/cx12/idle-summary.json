@@ -1,0 +1,25 @@
+{
+  "elapsed_s": 60.00032769993413,
+  "samples": 58,
+  "cpu_time_s": 60.015625,
+  "cpu_one_core_percent": 100.02549536086265,
+  "cpu_machine_percent": 8.335457946738554,
+  "interval_one_core_min_percent": 97.26538316915311,
+  "interval_one_core_max_percent": 103.04368675626907,
+  "working_set_bytes": {
+    "start": 287506432,
+    "end": 287518720,
+    "mean": 287519708.6896552,
+    "min": 287506432,
+    "max": 287592448,
+    "delta": 12288
+  },
+  "private_bytes": {
+    "start": 317444096,
+    "end": 317485056,
+    "mean": 317489999.44827586,
+    "min": 317444096,
+    "max": 317640704,
+    "delta": 40960
+  }
+}

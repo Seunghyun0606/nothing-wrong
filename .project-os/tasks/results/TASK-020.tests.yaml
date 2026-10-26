@@ -1,0 +1,20 @@
+task: TASK-020
+status: pass
+summary: The suite passes; export and both self-checks pass; lock and desktop rendered
+  and checked.
+verification:
+  unit_test:
+    status: pass
+    command: Godot --headless --path godot -s tests/run_tests.gd
+    result: 74 passed, 0 failed.
+  typecheck:
+    status: pass
+  build:
+    status: pass
+    result: Export 120.6 MiB; exported and editor self-checks print Self-check passed.
+  integration_test:
+    status: pass
+    result: test_full_story passes with the 60 fps cap and focus changes.
+kind: test
+role: qa
+actor: qa

@@ -73,6 +73,8 @@ static func build_theme() -> Theme:
 	theme.set_stylebox("normal", "PrimaryButton", style(P.ACCENT, P.ACCENT, 6, 16, 9))
 	theme.set_stylebox("hover", "PrimaryButton", style(P.ACCENT_HOVER, P.ACCENT_HOVER, 6, 16, 9))
 	theme.set_stylebox("pressed", "PrimaryButton", style(P.ACCENT_HOVER, P.ACCENT_HOVER, 6, 16, 9))
+	# The fill is already the accent colour, so keyboard focus needs a dark ring to show.
+	theme.set_stylebox("focus", "PrimaryButton", style(Color.TRANSPARENT, P.TEXT, 6, 16, 9, 3))
 	theme.set_stylebox("disabled", "PrimaryButton", style(P.BORDER, P.BORDER, 6, 16, 9))
 	for state in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color", "font_hover_pressed_color"]:
 		theme.set_color(state, "PrimaryButton", Color.WHITE)
@@ -173,6 +175,13 @@ static func button(text: String, on_press: Callable, variation: String = "") -> 
 	node.theme_type_variation = variation
 	node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	node.pressed.connect(on_press)
+	return node
+
+
+## A soft light outline around text drawn over a picture, so it reads on any part of it.
+static func halo(node: Control, size: int = 6) -> Control:
+	node.add_theme_constant_override("outline_size", size)
+	node.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.8))
 	return node
 
 

@@ -179,6 +179,16 @@ tasks:
   - TASK-018
   contract: .project-os/tasks/ready/TASK-019.yaml
   human_gate: false
+- id: TASK-020
+  title: Pre-playtest checks from Codex (saves, package, accessibility, performance)
+  role: developer
+  milestone: M4
+  priority: P1
+  status: done
+  depends_on:
+  - TASK-019
+  contract: .project-os/tasks/ready/TASK-020.yaml
+  human_gate: false
 - id: TASK-010
   title: Run the full-game human playtest gate
   role: developer
@@ -194,5 +204,6 @@ tasks:
   - TASK-017
   - TASK-018
   - TASK-019
+  - TASK-020
   contract: .project-os/tasks/ready/TASK-010.yaml
   human_gate: true

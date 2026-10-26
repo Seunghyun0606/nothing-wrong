@@ -30,6 +30,8 @@ func _ready() -> void:
 	_clock = Kit.label("", 96, P.TEXT, false)
 	_clock.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_date = Kit.label("", 20, P.TEXT, false)
+	Kit.halo(_clock, 10)
+	Kit.halo(_date, 6)
 	_date.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var clock_box := Kit.vbox(0)
 	clock_box.add_child(_clock)

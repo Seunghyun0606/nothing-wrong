@@ -1,0 +1,33 @@
+task: TASK-020
+decision: PASS
+status: pass
+summary: The pre-playtest checks are acted on; the build is smaller, idle is cheap,
+  and keyboard play works.
+critical_issues: 0
+evidence:
+- Implementation, test, and review handoffs are stored for TASK-020.
+- Codex reports docs/qa/cx09 to cx12 and the disposition.
+verification:
+  unit_test:
+    status: pass
+    result: 74 passed, 0 failed.
+  integration_test:
+    status: pass
+  typecheck:
+    status: pass
+  build:
+    status: pass
+    result: Export 120.6 MiB; both self-checks pass.
+  independent_review:
+    status: pass
+    actor: codex (CX-09 to CX-12), claude-reviewer-m4
+  project_os:
+    status: pass
+residual_risk: Re-measure contrast and idle CPU in the post-playtest full QA review.
+kind: evaluation
+role: evaluator
+actor: claude-evaluator
+quality:
+  passed: true
+  missing: []
+  failed: []

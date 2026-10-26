@@ -288,6 +288,12 @@ func _ticket_page(scenario: Dictionary) -> void:
 	_note_editor.custom_minimum_size = Vector2(0, 110)
 	_note_editor.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	_note_editor.placeholder_text = "Observations, hypotheses, reproduction details…"
+	# Tab and Shift+Tab move on to the next control, and Escape leaves the editor.
+	_note_editor.tab_input_mode = false
+	_note_editor.gui_input.connect(func(event):
+		if event.is_action_pressed("ui_cancel"):
+			_note_editor.release_focus()
+			_note_editor.accept_event())
 	_note_editor.text = WorkspaceSession.notes.get(ticket_id, "")
 	_note_editor.text_changed.connect(func(): WorkspaceSession.set_note(ticket_id, _note_editor.text))
 	notes_section.add_child(_note_editor)

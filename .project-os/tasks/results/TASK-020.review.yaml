@@ -1,0 +1,17 @@
+task: TASK-020
+status: pass
+verdict: pass
+summary: 'Independent QA by Codex found the issues (CX-09 old saves, CX-11 keyboard
+  and contrast measurements, CX-12 export size and idle CPU); each has a decision.
+  The fixes are small and targeted: focus mode on markers, TextEdit tab_input_mode
+  and Escape, theme outline and focus styles, one export filter, one project setting.
+  Saves from ef3a593 onward load fully (12/12 in CX-09); the prototype-save limitation
+  is documented, not hidden.'
+critical_issues: 0
+findings: []
+residual_risk: The fixes are verified by tests and screenshots, not by a re-run of
+  Codex's measurement probes; the full QA review after TASK-010 should re-measure
+  contrast and idle CPU.
+kind: review
+role: reviewer
+actor: claude-reviewer-m4

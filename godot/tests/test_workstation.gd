@@ -217,6 +217,25 @@ func test_screens_show_their_art() -> void:
 	_finish()
 
 
+## Keyboard play (CX-11): Note targets take focus, and the notes editor lets Tab move on.
+## Builds stay small and idle stays cheap (CX-12).
+func test_keyboard_reach_and_build_settings() -> void:
+	var desktop := _start()
+	GameSession.start_ticket("T01")
+	DesktopSession.open_url("https://shoply.local/product/everyday-pack")
+	DesktopSession.open_app("browser")
+	check(press(desktop, "📌 Note"), "note mode")
+	var marker := find_named(desktop, "Markproduct_price") as Button
+	check(marker != null and marker.focus_mode == Control.FOCUS_ALL, "a Note target takes keyboard focus")
+	DesktopSession.show_ticket("T01")
+	var editor := find_named(desktop, "MyNotes") as TextEdit
+	check(editor != null and not editor.tab_input_mode, "Tab leaves the notes editor")
+	_finish()
+	check_eq(int(ProjectSettings.get_setting("application/run/max_fps")), 60, "the game draws at most 60 frames a second")
+	var preset := FileAccess.get_file_as_string("res://export_presets.cfg")
+	check(preset.contains('exclude_filter="tests/*, build/*"'), "QA scratch builds are not exported")
+
+
 ## A tab keeps its last MAX_HISTORY pages (CX-08b found history growing without end).
 func test_browser_history_is_capped() -> void:
 	_start()

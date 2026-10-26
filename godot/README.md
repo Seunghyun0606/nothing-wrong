@@ -18,7 +18,9 @@ Saves live in Godot's user folder (`user://save.json`, `user://workspace.json`,
 one, so a save cut short leaves the previous one whole; an unreadable save is kept as
 `user://save.unreadable.json` and a new game starts. **New game** on the title screen
 (shown once there is progress, with a confirmation) resets progress, Evidence, and notes;
-the language and sound settings stay.
+the language and sound settings stay. Saves from builds since `ef3a593` (2026-10-21) load
+in full; saves from the first Godot build (`9131493`) keep their progress and notes, but
+some of their old chat can repeat or be missing (`docs/qa/cx09/report.md`).
 
 ## Build
 
@@ -33,7 +35,9 @@ not report GDScript runtime errors, so the editor run is the one that catches th
 `| Out-String` makes PowerShell wait for the game and set `$LASTEXITCODE`.
 
 The preset (`export_presets.cfg`) includes `data/*.json` and `i18n/*.json` and leaves
-out `tests/`. `--self-check` (`scripts/autoload/self_check.gd`) parses every content
+out `tests/` and `build/` (QA scratch, which once added 221 MiB). The game draws at most 60
+frames a second (`application/run/max_fps`), so an idle desktop does not keep a CPU core
+busy. `--self-check` (`scripts/autoload/self_check.gd`) parses every content
 file, opens each screen once on a session that saves nothing, and prints `Self-check
 passed` with exit 0 only when nothing is missing and no error was logged. A build that
 prints anything else, or nothing (a script that does not parse), has failed;

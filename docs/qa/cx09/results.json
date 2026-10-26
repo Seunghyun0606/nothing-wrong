@@ -1,0 +1,832 @@
+{
+  "task": "CX-09",
+  "head": "1c8f0d9bb9fde3946a7ad346cfc6f653cd3e1e09",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "verdict": "FAIL: earliest-build chat replay and legacy deduction transcript loss",
+  "fixtures": 16,
+  "all_loaded": true,
+  "all_saved_fields_preserved": true,
+  "all_desktops_and_apps_opened": true,
+  "load_and_ui_runtime_errors": 0,
+  "assertion_pass_cases": 12,
+  "test_copies_removed": true,
+  "isolated_user_folder_empty": true,
+  "results": [
+    {
+      "actually_delivered": [
+        "SCENARIO-T06:briefing:3",
+        "SCENARIO-T06:ticket"
+      ],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [
+        "SCENARIO-T01:briefing:3",
+        "SCENARIO-T01:deduction",
+        "SCENARIO-T04:clue",
+        "SCENARIO-T04:deduction"
+      ],
+      "checks": 24,
+      "current_entries": 64,
+      "desktop_opened": true,
+      "detail": "All 5 Tickets resolved; every available deduction and Case File answer saved; all available specs pinned.",
+      "evidence_preserved": true,
+      "failures": [
+        "all historical chat entry IDs retained"
+      ],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 62,
+      "logged_errors": [],
+      "missing_entry_ids": [
+        "SCENARIO-T01:reply:0",
+        "SCENARIO-T01:response:0",
+        "SCENARIO-T01:reply:1",
+        "SCENARIO-T01:response:1",
+        "SCENARIO-T02:reply:0",
+        "SCENARIO-T02:response:0",
+        "SCENARIO-T03:reply:0",
+        "SCENARIO-T03:response:0",
+        "SCENARIO-T03:reply:1",
+        "SCENARIO-T03:response:1",
+        "SCENARIO-T04:board:0",
+        "SCENARIO-T04:boardResponse:0"
+      ],
+      "notes_preserved": true,
+      "old_entries": 62,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "furthest",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "9131493",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "1d5148dcd8ee321819443290d1d6b34e345396794279ce96d0d4fd6c93d974e5",
+        "workspace.json": "a58472b64246fee0b82fd35110d6d31618755d391a2739d9a962ed0ba5b21ceb"
+      },
+      "fixture_counts": {
+        "tickets": 5,
+        "resolved": 5,
+        "notes": 5,
+        "evidence": 5,
+        "interactions": 5,
+        "pinned_references": 5,
+        "deductions": 4
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [
+        "SCENARIO-T01:briefing:3",
+        "SCENARIO-T01:deduction",
+        "SCENARIO-T04:clue",
+        "SCENARIO-T04:deduction"
+      ],
+      "checks": 24,
+      "current_entries": 54,
+      "desktop_opened": true,
+      "detail": "T05 TESTING; earliest build has no Chapter 2 deduction. T03 was answered wrong once then solved.",
+      "evidence_preserved": true,
+      "failures": [
+        "all historical chat entry IDs retained"
+      ],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 54,
+      "logged_errors": [],
+      "missing_entry_ids": [
+        "SCENARIO-T01:reply:0",
+        "SCENARIO-T01:response:0",
+        "SCENARIO-T01:reply:1",
+        "SCENARIO-T01:response:1",
+        "SCENARIO-T02:reply:0",
+        "SCENARIO-T02:response:0",
+        "SCENARIO-T03:reply:0",
+        "SCENARIO-T03:response:0",
+        "SCENARIO-T03:reply:1",
+        "SCENARIO-T03:response:1",
+        "SCENARIO-T04:board:0",
+        "SCENARIO-T04:boardResponse:0"
+      ],
+      "notes_preserved": true,
+      "old_entries": 58,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "mid-ch2",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "9131493",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "222f571054bd69b401cda902f44d61bc0ed1fdeb6f84f777b3d5d412302ddd88",
+        "workspace.json": "d7b09399aaeabc04b48b3a16996479529827ebf376267a3e52559b8722d6657e"
+      },
+      "fixture_counts": {
+        "tickets": 5,
+        "resolved": 4,
+        "notes": 5,
+        "evidence": 4,
+        "interactions": 4,
+        "pinned_references": 4,
+        "deductions": 4
+      }
+    },
+    {
+      "actually_delivered": [
+        "SCENARIO-T01:debrief:0",
+        "SCENARIO-T01:debrief:1"
+      ],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [
+        "SCENARIO-T01:briefing:3"
+      ],
+      "checks": 24,
+      "current_entries": 9,
+      "desktop_opened": true,
+      "detail": "T01 RESOLVED, notes/evidence/spec and all available chat delivered; before deduction.",
+      "evidence_preserved": true,
+      "failures": [
+        "no already delivered entry queued again",
+        "actual delivery never repeats an old delivered entry"
+      ],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 7,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 7,
+      "references_preserved": true,
+      "replay_candidates": [
+        "SCENARIO-T01:debrief:0",
+        "SCENARIO-T01:debrief:1"
+      ],
+      "replayed_ids": [
+        "SCENARIO-T01:debrief:0",
+        "SCENARIO-T01:debrief:1"
+      ],
+      "state": "t01",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "9131493",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "810b23a926a412b82cf3134848a409a293ca4325dbe35bb5a0f1a4a5699f6819",
+        "workspace.json": "ebe1360a954a85e7134c6f5b6fd740436992b937d7b6f56435b6ccbb9c810901"
+      },
+      "fixture_counts": {
+        "tickets": 5,
+        "resolved": 1,
+        "notes": 1,
+        "evidence": 1,
+        "interactions": 1,
+        "pinned_references": 1,
+        "deductions": 0
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [
+        "SCENARIO-T01:briefing:3",
+        "SCENARIO-T01:deduction"
+      ],
+      "checks": 24,
+      "current_entries": 12,
+      "desktop_opened": true,
+      "detail": "T01 RESOLVED; legacy option-id attempt, wrong exactly once.",
+      "evidence_preserved": true,
+      "failures": [
+        "all historical chat entry IDs retained"
+      ],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 12,
+      "logged_errors": [],
+      "missing_entry_ids": [
+        "SCENARIO-T01:reply:0",
+        "SCENARIO-T01:response:0"
+      ],
+      "notes_preserved": true,
+      "old_entries": 12,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "t01-wrong",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "9131493",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "3ba09a8d8dcfada37e4d135423d6dc3c82c97fe8453336f4e00d8b5566b1e122",
+        "workspace.json": "ebe1360a954a85e7134c6f5b6fd740436992b937d7b6f56435b6ccbb9c810901"
+      },
+      "fixture_counts": {
+        "tickets": 5,
+        "resolved": 1,
+        "notes": 1,
+        "evidence": 1,
+        "interactions": 1,
+        "pinned_references": 1,
+        "deductions": 1
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [
+        "SCENARIO-T08:briefing:2",
+        "SCENARIO-T21:answerReply:0",
+        "SCENARIO-T24:debrief:1",
+        "SCENARIO-T26:debrief:0",
+        "SCENARIO-T38:debrief:0",
+        "SCENARIO-T40:debrief:0"
+      ],
+      "checks": 24,
+      "current_entries": 375,
+      "desktop_opened": true,
+      "detail": "All 42 Tickets resolved; every available deduction and Case File answer saved; all available specs pinned.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 375,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 373,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "furthest",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "ef3a593",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "5d49875d93aff5ab39fc615a322c906bb5bdb3dcc0260b11d56dd8dc5b3628ba",
+        "workspace.json": "28f1378fd5fe13684ec62edd9b8b5753df0ed972f337e6d30e522efd5c8d7f01"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 42,
+        "notes": 42,
+        "evidence": 43,
+        "interactions": 43,
+        "pinned_references": 5,
+        "deductions": 19
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [],
+      "checks": 24,
+      "current_entries": 80,
+      "desktop_opened": true,
+      "detail": "T06 RESOLVED; DED-T06 answered wrong exactly once and still unsolved.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 80,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 80,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "mid-ch2",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "ef3a593",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "d0a44f062f75286b6c2e046e50be1378972a234cf67b34dc65099373bc742fd3",
+        "workspace.json": "f72205ce04fc2ad0915d9bf1bd4575072c7e4808c0a8c96c4744a8c108cf285e"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 6,
+        "notes": 6,
+        "evidence": 6,
+        "interactions": 6,
+        "pinned_references": 5,
+        "deductions": 5
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [],
+      "checks": 24,
+      "current_entries": 9,
+      "desktop_opened": true,
+      "detail": "T01 RESOLVED, notes/evidence/spec and all available chat delivered; before deduction.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 9,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 9,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "t01",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "ef3a593",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "b08bce75e317559b7b359ea513faaff6bb345623f2deedafe77fc118fb4e1e89",
+        "workspace.json": "328c01ab08f77b0fb60e614be1e917f3db5c13e3dcdd95b1a287c18fc458806e"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 1,
+        "notes": 1,
+        "evidence": 1,
+        "interactions": 1,
+        "pinned_references": 1,
+        "deductions": 0
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [
+        "SCENARIO-T08:briefing:2",
+        "SCENARIO-T24:debrief:1",
+        "SCENARIO-T40:debrief:0"
+      ],
+      "checks": 24,
+      "current_entries": 375,
+      "desktop_opened": true,
+      "detail": "All 42 Tickets resolved; every available deduction and Case File answer saved; all available specs pinned.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 375,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 373,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "furthest",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "adf74eb",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "7afb35aaee17205348efe9226757b39faec4cfd33682c13f12ff62e7a779a09d",
+        "workspace.json": "890b574f6b711f45effd2e2795638245a324351dd5d2ee69981a5bae18c5bf7f"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 42,
+        "notes": 42,
+        "evidence": 43,
+        "interactions": 43,
+        "pinned_references": 5,
+        "deductions": 19
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [],
+      "checks": 24,
+      "current_entries": 80,
+      "desktop_opened": true,
+      "detail": "T06 RESOLVED; DED-T06 answered wrong exactly once and still unsolved.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 80,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 80,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "mid-ch2",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "adf74eb",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "560c8cc71c7c2edd014e58f7f0277aef89e82ab3b2f3798c3da44919d8736fd0",
+        "workspace.json": "14b40035efc42a6d163105c1222ad72b87d1486794eeba7e7c008d6e9e8bd5ea"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 6,
+        "notes": 6,
+        "evidence": 6,
+        "interactions": 6,
+        "pinned_references": 5,
+        "deductions": 5
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [],
+      "checks": 24,
+      "current_entries": 9,
+      "desktop_opened": true,
+      "detail": "T01 RESOLVED, notes/evidence/spec and all available chat delivered; before deduction.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 9,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 9,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "t01",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "adf74eb",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "352fb83c7da9b2f0fc77b219f4a754329ef463e421f3eb89553ad31bc67bb6aa",
+        "workspace.json": "240045934ff63019bce44adfd626cf49fd23c09fb98b40641dbca87c33bbe486"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 1,
+        "notes": 1,
+        "evidence": 1,
+        "interactions": 1,
+        "pinned_references": 1,
+        "deductions": 0
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [
+        "SCENARIO-T08:briefing:2",
+        "SCENARIO-T24:debrief:1",
+        "SCENARIO-T40:debrief:0"
+      ],
+      "checks": 24,
+      "current_entries": 375,
+      "desktop_opened": true,
+      "detail": "All 42 Tickets resolved; every available deduction and Case File answer saved; all available specs pinned.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 375,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 373,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "furthest",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "e94fde8",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "3b76e8482b3dc436c23be05555cb79c7dcd1b7d782eaf87e6a3510c12fa3c1a7",
+        "workspace.json": "1a7a84a5eef980710abd4df9f313a986506ce3aa8a6be2bb75e402b3aee02588"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 42,
+        "notes": 42,
+        "evidence": 43,
+        "interactions": 43,
+        "pinned_references": 5,
+        "deductions": 19
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [],
+      "checks": 24,
+      "current_entries": 80,
+      "desktop_opened": true,
+      "detail": "T06 RESOLVED; DED-T06 answered wrong exactly once and still unsolved.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 80,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 80,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "mid-ch2",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "e94fde8",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "d18133cdcee27fbaca230fc2f9b8bfe2909cde4ed44030f49b5a8f444005e77b",
+        "workspace.json": "e8d404ecfd03e623f7caa92089177774f6d9c40cca2b4b4c61a9270088b0cce0"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 6,
+        "notes": 6,
+        "evidence": 6,
+        "interactions": 6,
+        "pinned_references": 5,
+        "deductions": 5
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [],
+      "checks": 24,
+      "current_entries": 9,
+      "desktop_opened": true,
+      "detail": "T01 RESOLVED, notes/evidence/spec and all available chat delivered; before deduction.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 9,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 9,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "t01",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "e94fde8",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "0d347a7ee30841cb5584c83682eb96d782cfbc9c1ebbe99d60d30e32d09d3f34",
+        "workspace.json": "abeda22c5638e33a598cd79cd3a3dd6415c9b43a3f1d6036b545a1ae348e90d5"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 1,
+        "notes": 1,
+        "evidence": 1,
+        "interactions": 1,
+        "pinned_references": 1,
+        "deductions": 0
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [],
+      "checks": 24,
+      "current_entries": 375,
+      "desktop_opened": true,
+      "detail": "All 42 Tickets resolved; every available deduction and Case File answer saved; all available specs pinned.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 375,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 375,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "furthest",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "HEAD",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "5a1b07a852616c83d7f127e5713713a80148a4f4610e6ba8f94449f07dd2e325",
+        "workspace.json": "42b764ca96c91782fc4dc4e19d84a42cedf57f084fdef0529c0933335f5b7c95"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 42,
+        "notes": 42,
+        "evidence": 43,
+        "interactions": 43,
+        "pinned_references": 5,
+        "deductions": 19
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [],
+      "checks": 24,
+      "current_entries": 80,
+      "desktop_opened": true,
+      "detail": "T06 RESOLVED; DED-T06 answered wrong exactly once and still unsolved.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 80,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 80,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "mid-ch2",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "HEAD",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "612bfb4894b8028fabf31b8d5a529912da2094d8fccc5423e114a0bb9278c803",
+        "workspace.json": "9909a629ca24c9a607a4c9e7b001514bb035231cb02586d7a3586c612589a53f"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 6,
+        "notes": 6,
+        "evidence": 6,
+        "interactions": 6,
+        "pinned_references": 5,
+        "deductions": 5
+      }
+    },
+    {
+      "actually_delivered": [],
+      "apps_opened": [
+        "messenger",
+        "browser",
+        "notes"
+      ],
+      "chat_text_changes": [],
+      "checks": 24,
+      "current_entries": 9,
+      "desktop_opened": true,
+      "detail": "T01 RESOLVED, notes/evidence/spec and all available chat delivered; before deduction.",
+      "evidence_preserved": true,
+      "failures": [],
+      "game_field_changes": [],
+      "game_loadable": true,
+      "game_set_aside": false,
+      "interactions_preserved": true,
+      "loaded_delivered": 9,
+      "logged_errors": [],
+      "missing_entry_ids": [],
+      "notes_preserved": true,
+      "old_entries": 9,
+      "references_preserved": true,
+      "replay_candidates": [],
+      "replayed_ids": [],
+      "state": "t01",
+      "ticket_mismatches": [],
+      "unread_before_open": 0,
+      "version": "HEAD",
+      "workspace_loadable": true,
+      "workspace_set_aside": false,
+      "fixture_sha256": {
+        "save.json": "c4c981e6aa54a58d93b69a9de9b1b3544f3ecc9fb344f227d8054920b95a7063",
+        "workspace.json": "253c6002d68066ad3106ffd72d8118db86b5b138cf78c1ee223581f1361d5599"
+      },
+      "fixture_counts": {
+        "tickets": 42,
+        "resolved": 1,
+        "notes": 1,
+        "evidence": 1,
+        "interactions": 1,
+        "pinned_references": 1,
+        "deductions": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+task: TASK-020
+status: pass
+summary: 'Decisions for CX-09 to CX-12 are in docs/qa/2026-10-26-cx09-12-disposition.md.
+  Fixed: Note targets take keyboard focus; the notes editor lets Tab move on and Escape
+  leave; a light halo keeps the lock-screen clock and date and the desktop icon names
+  readable over the pictures; primary buttons show a dark focus ring; the export leaves
+  out build/ (342 MiB to 121 MiB); the game is capped at 60 frames a second. First-prototype
+  saves are a documented limitation; the facilitator checklist reads the commit from
+  the package.'
+files_changed:
+- godot/scripts/ui/kit.gd
+- godot/scripts/ui/lock_screen.gd
+- godot/scripts/ui/desktop_screen.gd
+- godot/scripts/ui/apps/browser_app.gd
+- godot/scripts/ui/apps/notes_app.gd
+- godot/project.godot
+- godot/export_presets.cfg
+- godot/tests/test_workstation.gd
+- godot/README.md
+- docs/playtest/TASK-010-facilitator-checklist.md
+- docs/qa/2026-10-26-cx09-12-disposition.md
+evidence:
+- test_keyboard_reach_and_build_settings passes.
+- Exported exe is 120.6 MiB; both self-checks pass.
+acceptance:
+  status: pass
+commit: null
+baseline: uncommitted working tree on 1c8f0d9
+kind: implementation
+role: developer
+actor: claude-developer
