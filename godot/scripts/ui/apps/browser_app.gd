@@ -779,6 +779,10 @@ func _refresh_markers() -> void:
 			marker.add_theme_stylebox_override(state, hover)
 		marker.tooltip_text = Observations.describe(_observation_of(node))
 		marker.pressed.connect(note.bind(node))
+		# A target reached with Tab scrolls into view, so the focus ring is never hidden.
+		marker.focus_entered.connect(func():
+			if is_instance_valid(node) and node.is_inside_tree():
+				_stage.ensure_control_visible(node))
 		_markers.add_child(marker)
 		_marked.append([node, marker])
 	_place_markers()

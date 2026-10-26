@@ -1,0 +1,5 @@
+﻿matrix,screen,target,rect,full_rect,problem,priority
+supplement-en-1280x720,all-markers/product/everyday-pack,Markproduct_stock-Enter,"[0.0, 0.0, 0.0, 0.0]","[650.0, 679.0, 585.0, 26.0]",reachable marker focus is wholly outside ancestor clip,P2
+supplement-en-1280x720,all-markers/product/everyday-pack,Markproduct_stock-Space,"[0.0, 0.0, 0.0, 0.0]","[650.0, 679.0, 585.0, 26.0]",reachable marker focus is wholly outside ancestor clip,P2
+supplement-ko-1280x720,all-markers/product/everyday-pack,Markproduct_stock-Enter,"[0.0, 0.0, 0.0, 0.0]","[650.0, 679.0, 585.0, 26.0]",reachable marker focus is wholly outside ancestor clip,P2
+supplement-ko-1280x720,all-markers/product/everyday-pack,Markproduct_stock-Space,"[0.0, 0.0, 0.0, 0.0]","[650.0, 679.0, 585.0, 26.0]",reachable marker focus is wholly outside ancestor clip,P2

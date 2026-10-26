@@ -230,6 +230,14 @@ func test_keyboard_reach_and_build_settings() -> void:
 	DesktopSession.show_ticket("T01")
 	var editor := find_named(desktop, "MyNotes") as TextEdit
 	check(editor != null and not editor.tab_input_mode, "Tab leaves the notes editor")
+	# Focus follows the front window (CX-13): a control in a window behind it lets go.
+	editor.grab_focus()
+	DesktopSession.open_app("messenger")
+	var owner := desktop.get_viewport().gui_get_focus_owner()
+	check(owner == null or not desktop.windows["notes"].is_ancestor_of(owner), "focus leaves the window that went behind")
+	var scroll := Kit.scroll(Control.new())
+	check(scroll.follow_focus, "scrolling pages bring the focused control into view")
+	scroll.free()
 	_finish()
 	check_eq(int(ProjectSettings.get_setting("application/run/max_fps")), 60, "the game draws at most 60 frames a second")
 	var preset := FileAccess.get_file_as_string("res://export_presets.cfg")

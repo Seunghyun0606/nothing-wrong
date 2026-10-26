@@ -261,11 +261,22 @@ func _toggle_app(app: String) -> void:
 		DesktopSession.open_app(app)
 
 
+## Keyboard focus stays in the front window: a control in a window behind it lets go.
+func _drop_focus_behind(front: String) -> void:
+	var owner := get_viewport().gui_get_focus_owner()
+	if owner == null or front == "" or not windows.has(front):
+		return
+	for app in windows:
+		if app != front and windows[app].is_ancestor_of(owner):
+			owner.release_focus()
+
+
 func _sync() -> void:
 	if not is_inside_tree():
 		return
 	var order: Array = DesktopSession.APPS.duplicate()
 	order.sort_custom(func(a, b): return DesktopSession.windows[a]["z"] < DesktopSession.windows[b]["z"])
+	_drop_focus_behind(DesktopSession.focused_app)
 	for app in order:
 		windows_layer.move_child(windows[app], -1)
 	var unread: int = DesktopSession.messenger_log()["unread"]

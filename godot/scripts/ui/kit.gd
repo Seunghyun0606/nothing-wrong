@@ -269,6 +269,8 @@ static func spacer() -> Control:
 static func scroll(child: Control) -> ScrollContainer:
 	var node := ScrollContainer.new()
 	node.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	# Keyboard focus scrolls the focused control into view.
+	node.follow_focus = true
 	node.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	child.size_flags_horizontal = Control.SIZE_EXPAND_FILL

@@ -184,7 +184,7 @@ func _conversation_button(conversation: String, selected: bool, unread: int) -> 
 	if unread > 0:
 		var badge := Kit.panel(P.DANGER, Color.TRANSPARENT, 9, 0)
 		badge.name = "Unread"
-		var count := Kit.label(str(unread), 11, Color.WHITE, false)
+		var count := Kit.label(str(unread), 12, Color.WHITE, false)
 		count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		count.custom_minimum_size = Vector2(20, 0)
 		badge.add_child(count)

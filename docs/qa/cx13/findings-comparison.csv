@@ -1,0 +1,372 @@
+﻿screen,text,size_px,category,cx11,cx13,disposition
+probe-en-1280x720/g0-title,Start work,,weak primary focus,1,0,not flagged now
+probe-en-1280x720/g1-lock,Sign in,,weak primary focus,1,0,not flagged now
+probe-en-1280x720/g1-lock,Tuesday,20,contrast,1,0,not flagged now
+probe-en-1280x720/g10-chat-debrief,MS,7,small text,1,1,still flagged
+probe-en-1280x720/g10-chat-debrief,The team is waiting for what you find on the intranet.,13,contrast,1,1,still flagged
+probe-en-1280x720/g11-search,Platform team / automation,13,contrast,1,1,still flagged
+probe-en-1280x720/g11-search,Release management,13,contrast,1,1,still flagged
+probe-en-1280x720/g11-search,Shoply engineering / version history,13,contrast,1,1,still flagged
+probe-en-1280x720/g12-record,Shoply engineering / version history,14,contrast,1,1,still flagged
+probe-en-1280x720/g13-deduction,,,offscreen focus,2,2,still flagged
+probe-en-1280x720/g13-deduction,Leo Ortiz,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13-deduction,MS,7,small text,1,1,still flagged
+probe-en-1280x720/g13-deduction,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13-deduction,Mina Seo,,offscreen focus,6,12,still flagged
+probe-en-1280x720/g13-deduction,"Mina Seo is waiting for your answer. You can answer again, but a wrong guess costs 20 minutes.",13,contrast,1,1,still flagged
+probe-en-1280x720/g13-deduction,Open Case File,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13-deduction,Open T01 in QA Notes,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13-deduction,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1280x720/g13-deduction,Shoply engineering / version history,14,contrast,1,1,still flagged
+probe-en-1280x720/g13-deduction,📎 Checkout interaction specification,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13-deduction,🔗 Checkout interaction specification,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13-deduction,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13b-deduction-filled,,,offscreen focus,2,2,still flagged
+probe-en-1280x720/g13b-deduction-filled,Leo Ortiz,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13b-deduction-filled,MS,7,small text,1,1,still flagged
+probe-en-1280x720/g13b-deduction-filled,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13b-deduction-filled,Mina Seo,,offscreen focus,6,12,still flagged
+probe-en-1280x720/g13b-deduction-filled,"Mina Seo is waiting for your answer. You can answer again, but a wrong guess costs 20 minutes.",13,contrast,1,1,still flagged
+probe-en-1280x720/g13b-deduction-filled,Open Case File,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13b-deduction-filled,Open T01 in QA Notes,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13b-deduction-filled,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1280x720/g13b-deduction-filled,Send deduction,,weak primary focus,1,0,not flagged now
+probe-en-1280x720/g13b-deduction-filled,Shoply engineering / version history,14,contrast,1,1,still flagged
+probe-en-1280x720/g13b-deduction-filled,📎 Checkout interaction specification,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13b-deduction-filled,🔗 Checkout interaction specification,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13b-deduction-filled,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g13c-deduction-reply,MS,7,small text,1,1,still flagged
+probe-en-1280x720/g13c-deduction-reply,"Mina Seo is waiting for your answer. You can answer again, but a wrong guess costs 20 minutes.",13,contrast,1,1,still flagged
+probe-en-1280x720/g13c-deduction-reply,Shoply engineering / version history,14,contrast,1,1,still flagged
+probe-en-1280x720/g2-desktop,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1280x720/g3-messenger,Marcus Reyes,,offscreen focus,2,2,still flagged
+probe-en-1280x720/g3-messenger,Mina Seo,,offscreen focus,2,2,still flagged
+probe-en-1280x720/g3-messenger,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1280x720/g4-notes-ticket,HIGH,12,contrast,1,1,still flagged
+probe-en-1280x720/g4-notes-ticket,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g4-notes-ticket,Mina Seo,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g4-notes-ticket,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1280x720/g4-notes-ticket,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1280x720/g4-notes-ticket,Start test,,weak primary focus,1,0,not flagged now
+probe-en-1280x720/g4a-storefront,AUTUMN ESSENTIALS,12,contrast,1,1,still flagged
+probe-en-1280x720/g4a-storefront,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1280x720/g4a-storefront,shoply.local/product/everyday-pack,,covered focus,1,1,still flagged
+probe-en-1280x720/g4b-notes-testing,,,offscreen focus,2,2,still flagged
+probe-en-1280x720/g4b-notes-testing,HIGH,12,contrast,1,1,still flagged
+probe-en-1280x720/g4b-notes-testing,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g4b-notes-testing,Mina Seo,,offscreen focus,2,4,still flagged
+probe-en-1280x720/g4b-notes-testing,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1280x720/g4b-notes-testing,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1280x720/g4c-spec-side-by-side,BAGS / EVERYDAY,12,contrast,1,1,still flagged
+probe-en-1280x720/g5-cart,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-en-1280x720/g5a-noting,,,offscreen focus,2,2,still flagged
+probe-en-1280x720/g5a-noting,Evidence-cart_subtotal,,keyboard activation,1,0,not flagged now
+probe-en-1280x720/g5a-noting,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g5a-noting,Mina Seo,,offscreen focus,2,4,still flagged
+probe-en-1280x720/g5a-noting,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1280x720/g5a-noting,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-en-1280x720/g5a-noting,shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g5a-noting,📝 Report to Mina Seo,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g5b-report-form,,,offscreen focus,2,2,still flagged
+probe-en-1280x720/g5b-report-form,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g5b-report-form,Mina Seo,,offscreen focus,4,8,still flagged
+probe-en-1280x720/g5b-report-form,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1280x720/g5b-report-form,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-en-1280x720/g5b-report-form,shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g5b-report-form,📝 Report to Mina Seo,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g5b-report-form,🔗 Checkout interaction specification,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g5b-report-form,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-en-1280x720/g5c-reply,1,11,small text,1,1,still flagged
+probe-en-1280x720/g5c-reply,MS,7,small text,1,1,still flagged
+probe-en-1280x720/g5c-reply,The team is waiting for you in # shoply-autumn-release.,13,contrast,1,1,still flagged
+probe-en-1280x720/g5c-reply,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-en-1280x720/g6-checkout,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-en-1280x720/g6b-console,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-en-1280x720/g6c-noting,Evidence-checkout_confirmButton,,clipped focus sample,0,1,newly flagged / expanded traversal
+probe-en-1280x720/g6c-noting,Evidence-checkout_confirmButton,,keyboard activation,1,0,not flagged now
+probe-en-1280x720/g6c-noting,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-en-1280x720/g7-notes,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-en-1280x720/g7-notes,Send report,,weak primary focus,1,0,not flagged now
+probe-en-1280x720/p-shoply-home,AUTUMN ESSENTIALS,12,contrast,1,1,still flagged
+probe-en-1280x720/x-case-file,Add to bag,,offscreen focus,2,2,still flagged
+probe-en-1280x720/x-case-file,Leo Ortiz,,offscreen focus,2,2,still flagged
+probe-en-1280x720/x-case-file,Marcus Reyes,,offscreen focus,2,2,still flagged
+probe-en-1280x720/x-case-file,Mina Seo,,offscreen focus,12,12,still flagged
+probe-en-1280x720/x-case-file,Open T01 in QA Notes,,offscreen focus,2,2,still flagged
+probe-en-1280x720/x-case-file,🔗 Checkout interaction specification,,offscreen focus,2,2,still flagged
+probe-en-1280x720/x-case-file,🔗 shoply.local/product/everyday-pack,,offscreen focus,2,2,still flagged
+probe-en-1280x720/x-clock-out,Clock out,,weak primary focus,1,0,not flagged now
+probe-en-1280x720/x-clock-out,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1280x720/x-shoply-product,BAGS / EVERYDAY,12,contrast,1,1,still flagged
+probe-en-1920x1080/g0-title,Start work,,weak primary focus,1,0,not flagged now
+probe-en-1920x1080/g1-lock,8:50 AM,96,contrast,1,0,not flagged now
+probe-en-1920x1080/g1-lock,Sign in,,weak primary focus,1,0,not flagged now
+probe-en-1920x1080/g10-chat-debrief,MS,7,small text,1,1,still flagged
+probe-en-1920x1080/g10-chat-debrief,The team is waiting for what you find on the intranet.,13,contrast,1,1,still flagged
+probe-en-1920x1080/g11-search,Platform team / automation,13,contrast,1,1,still flagged
+probe-en-1920x1080/g11-search,Release management,13,contrast,1,1,still flagged
+probe-en-1920x1080/g11-search,Shoply engineering / version history,13,contrast,1,1,still flagged
+probe-en-1920x1080/g12-record,Shoply engineering / version history,14,contrast,1,1,still flagged
+probe-en-1920x1080/g13-deduction,,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/g13-deduction,Leo Ortiz,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g13-deduction,MS,7,small text,1,1,still flagged
+probe-en-1920x1080/g13-deduction,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g13-deduction,Mina Seo,,offscreen focus,6,12,still flagged
+probe-en-1920x1080/g13-deduction,"Mina Seo is waiting for your answer. You can answer again, but a wrong guess costs 20 minutes.",13,contrast,1,1,still flagged
+probe-en-1920x1080/g13-deduction,Open T01 in QA Notes,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g13-deduction,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1920x1080/g13-deduction,Shoply engineering / version history,14,contrast,1,1,still flagged
+probe-en-1920x1080/g13-deduction,🔗 Checkout interaction specification,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g13-deduction,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g13b-deduction-filled,,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/g13b-deduction-filled,Leo Ortiz,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g13b-deduction-filled,MS,7,small text,1,1,still flagged
+probe-en-1920x1080/g13b-deduction-filled,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g13b-deduction-filled,Mina Seo,,offscreen focus,6,12,still flagged
+probe-en-1920x1080/g13b-deduction-filled,"Mina Seo is waiting for your answer. You can answer again, but a wrong guess costs 20 minutes.",13,contrast,1,1,still flagged
+probe-en-1920x1080/g13b-deduction-filled,Open T01 in QA Notes,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g13b-deduction-filled,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1920x1080/g13b-deduction-filled,Send deduction,,weak primary focus,1,0,not flagged now
+probe-en-1920x1080/g13b-deduction-filled,Shoply engineering / version history,14,contrast,1,1,still flagged
+probe-en-1920x1080/g13b-deduction-filled,🔗 Checkout interaction specification,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g13b-deduction-filled,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g13c-deduction-reply,MS,7,small text,1,1,still flagged
+probe-en-1920x1080/g13c-deduction-reply,"Mina Seo is waiting for your answer. You can answer again, but a wrong guess costs 20 minutes.",13,contrast,1,1,still flagged
+probe-en-1920x1080/g13c-deduction-reply,Shoply engineering / version history,14,contrast,1,1,still flagged
+probe-en-1920x1080/g2-desktop,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1920x1080/g3-messenger,Marcus Reyes,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/g3-messenger,Mina Seo,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/g3-messenger,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1920x1080/g4-notes-ticket,HIGH,12,contrast,1,1,still flagged
+probe-en-1920x1080/g4-notes-ticket,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g4-notes-ticket,Mina Seo,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g4-notes-ticket,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1920x1080/g4-notes-ticket,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1920x1080/g4-notes-ticket,Start test,,weak primary focus,1,0,not flagged now
+probe-en-1920x1080/g4a-storefront,AUTUMN ESSENTIALS,12,contrast,1,1,still flagged
+probe-en-1920x1080/g4a-storefront,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1920x1080/g4a-storefront,shoply.local/product/everyday-pack,,covered focus,1,1,still flagged
+probe-en-1920x1080/g4b-notes-testing,,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/g4b-notes-testing,HIGH,12,contrast,1,1,still flagged
+probe-en-1920x1080/g4b-notes-testing,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g4b-notes-testing,Mina Seo,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g4b-notes-testing,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1920x1080/g4b-notes-testing,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1920x1080/g4c-spec-side-by-side,BAGS / EVERYDAY,12,contrast,1,1,still flagged
+probe-en-1920x1080/g5-cart,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-en-1920x1080/g5a-noting,,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/g5a-noting,Evidence-cart_subtotal,,keyboard activation,1,0,not flagged now
+probe-en-1920x1080/g5a-noting,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g5a-noting,Mina Seo,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g5a-noting,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1920x1080/g5a-noting,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-en-1920x1080/g5b-report-form,,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/g5b-report-form,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g5b-report-form,Mina Seo,,offscreen focus,4,8,still flagged
+probe-en-1920x1080/g5b-report-form,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-en-1920x1080/g5b-report-form,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-en-1920x1080/g5b-report-form,🔗 Checkout interaction specification,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g5b-report-form,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-en-1920x1080/g5c-reply,1,11,small text,1,1,still flagged
+probe-en-1920x1080/g5c-reply,MS,7,small text,1,1,still flagged
+probe-en-1920x1080/g5c-reply,The team is waiting for you in # shoply-autumn-release.,13,contrast,1,1,still flagged
+probe-en-1920x1080/g5c-reply,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-en-1920x1080/g6-checkout,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-en-1920x1080/g6b-console,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-en-1920x1080/g6c-noting,Evidence-checkout_confirmButton,,keyboard activation,1,0,not flagged now
+probe-en-1920x1080/g6c-noting,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-en-1920x1080/g7-notes,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-en-1920x1080/g7-notes,Send report,,weak primary focus,1,0,not flagged now
+probe-en-1920x1080/p-shoply-home,AUTUMN ESSENTIALS,12,contrast,1,1,still flagged
+probe-en-1920x1080/x-case-file,Leo Ortiz,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/x-case-file,Marcus Reyes,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/x-case-file,Mina Seo,,offscreen focus,12,12,still flagged
+probe-en-1920x1080/x-case-file,Open T01 in QA Notes,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/x-case-file,🔗 Checkout interaction specification,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/x-case-file,🔗 shoply.local/product/everyday-pack,,offscreen focus,2,2,still flagged
+probe-en-1920x1080/x-clock-out,Clock out,,weak primary focus,1,0,not flagged now
+probe-en-1920x1080/x-clock-out,QA Notes,14,contrast,1,0,not flagged now
+probe-en-1920x1080/x-shoply-product,BAGS / EVERYDAY,12,contrast,1,1,still flagged
+probe-ko-1280x720/g0-title,Start work,,weak primary focus,1,0,not flagged now
+probe-ko-1280x720/g1-lock,Sign in,,weak primary focus,1,0,not flagged now
+probe-ko-1280x720/g1-lock,오전 8:50,96,contrast,1,0,not flagged now
+probe-ko-1280x720/g1-lock,화요일,20,contrast,1,0,not flagged now
+probe-ko-1280x720/g10-chat-debrief,MS,7,small text,1,1,still flagged
+probe-ko-1280x720/g10-chat-debrief,팀이 당신이 인트라넷에서 찾아낼 기록을 기다리고 있습니다.,13,contrast,1,1,still flagged
+probe-ko-1280x720/g11-search,Shoply 엔지니어링 / 버전 기록,13,contrast,1,1,still flagged
+probe-ko-1280x720/g11-search,릴리스 관리,13,contrast,1,1,still flagged
+probe-ko-1280x720/g11-search,플랫폼팀 / 자동화,13,contrast,1,1,still flagged
+probe-ko-1280x720/g12-record,Shoply 엔지니어링 / 버전 기록,14,contrast,1,1,still flagged
+probe-ko-1280x720/g13-deduction,,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/g13-deduction,MS,7,small text,1,1,still flagged
+probe-ko-1280x720/g13-deduction,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13-deduction,Mina Seo,,offscreen focus,6,12,still flagged
+probe-ko-1280x720/g13-deduction,"Mina Seo 님이 답을 기다립니다. 다시 답할 수 있지만, 틀리면 20분이 더 걸립니다.",13,contrast,1,1,still flagged
+probe-ko-1280x720/g13-deduction,Open Case File,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13-deduction,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1280x720/g13-deduction,QA 노트에서 T01 열기,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13-deduction,Shoply 엔지니어링 / 버전 기록,14,contrast,1,1,still flagged
+probe-ko-1280x720/g13-deduction,📎 결제 화면 인터랙션 명세,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13-deduction,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13-deduction,🔗 결제 화면 인터랙션 명세,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13b-deduction-filled,,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/g13b-deduction-filled,MS,7,small text,1,1,still flagged
+probe-ko-1280x720/g13b-deduction-filled,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13b-deduction-filled,Mina Seo,,offscreen focus,6,12,still flagged
+probe-ko-1280x720/g13b-deduction-filled,"Mina Seo 님이 답을 기다립니다. 다시 답할 수 있지만, 틀리면 20분이 더 걸립니다.",13,contrast,1,1,still flagged
+probe-ko-1280x720/g13b-deduction-filled,Open Case File,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13b-deduction-filled,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1280x720/g13b-deduction-filled,QA 노트에서 T01 열기,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13b-deduction-filled,Send deduction,,weak primary focus,1,0,not flagged now
+probe-ko-1280x720/g13b-deduction-filled,Shoply 엔지니어링 / 버전 기록,14,contrast,1,1,still flagged
+probe-ko-1280x720/g13b-deduction-filled,📎 결제 화면 인터랙션 명세,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13b-deduction-filled,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13b-deduction-filled,🔗 결제 화면 인터랙션 명세,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g13c-deduction-reply,MS,7,small text,1,1,still flagged
+probe-ko-1280x720/g13c-deduction-reply,"Mina Seo 님이 답을 기다립니다. 다시 답할 수 있지만, 틀리면 20분이 더 걸립니다.",13,contrast,1,1,still flagged
+probe-ko-1280x720/g13c-deduction-reply,Shoply 엔지니어링 / 버전 기록,14,contrast,1,1,still flagged
+probe-ko-1280x720/g2-desktop,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1280x720/g3-messenger,Marcus Reyes,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/g3-messenger,Mina Seo,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/g3-messenger,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1280x720/g4-notes-ticket,HIGH,12,contrast,1,1,still flagged
+probe-ko-1280x720/g4-notes-ticket,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g4-notes-ticket,Mina Seo,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g4-notes-ticket,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1280x720/g4-notes-ticket,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1280x720/g4-notes-ticket,Start test,,weak primary focus,1,0,not flagged now
+probe-ko-1280x720/g4a-storefront,AUTUMN ESSENTIALS,12,contrast,1,1,still flagged
+probe-ko-1280x720/g4a-storefront,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1280x720/g4a-storefront,shoply.local/product/everyday-pack,,covered focus,1,1,still flagged
+probe-ko-1280x720/g4b-notes-testing,,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/g4b-notes-testing,HIGH,12,contrast,1,1,still flagged
+probe-ko-1280x720/g4b-notes-testing,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g4b-notes-testing,Mina Seo,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g4b-notes-testing,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1280x720/g4b-notes-testing,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1280x720/g4c-spec-side-by-side,BAGS / EVERYDAY,12,contrast,1,1,still flagged
+probe-ko-1280x720/g5-cart,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-ko-1280x720/g5a-noting,,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/g5a-noting,Evidence-cart_subtotal,,keyboard activation,1,0,not flagged now
+probe-ko-1280x720/g5a-noting,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g5a-noting,Mina Seo,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g5a-noting,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1280x720/g5a-noting,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-ko-1280x720/g5a-noting,shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g5a-noting,📝 Mina Seo님에게 보고,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g5b-report-form,,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/g5b-report-form,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g5b-report-form,Mina Seo,,offscreen focus,3,6,still flagged
+probe-ko-1280x720/g5b-report-form,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1280x720/g5b-report-form,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-ko-1280x720/g5b-report-form,shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g5b-report-form,📝 Mina Seo님에게 보고,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g5b-report-form,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-ko-1280x720/g5c-reply,# shoply-autumn-release에서 팀이 기다리고 있어요.,13,contrast,1,1,still flagged
+probe-ko-1280x720/g5c-reply,1,11,small text,1,1,still flagged
+probe-ko-1280x720/g5c-reply,MS,7,small text,1,1,still flagged
+probe-ko-1280x720/g5c-reply,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-ko-1280x720/g6-checkout,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-ko-1280x720/g6b-console,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-ko-1280x720/g6c-noting,Evidence-checkout_confirmButton,,clipped focus sample,0,1,newly flagged / expanded traversal
+probe-ko-1280x720/g6c-noting,Evidence-checkout_confirmButton,,keyboard activation,1,0,not flagged now
+probe-ko-1280x720/g6c-noting,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-ko-1280x720/g7-notes,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-ko-1280x720/g7-notes,Send report,,weak primary focus,1,0,not flagged now
+probe-ko-1280x720/p-shoply-home,AUTUMN ESSENTIALS,12,contrast,1,1,still flagged
+probe-ko-1280x720/x-case-file,Add to bag,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/x-case-file,Leo Ortiz,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/x-case-file,Marcus Reyes,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/x-case-file,Mina Seo,,offscreen focus,12,12,still flagged
+probe-ko-1280x720/x-case-file,QA 노트에서 T01 열기,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/x-case-file,🔗 shoply.local/product/everyday-pack,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/x-case-file,🔗 결제 화면 인터랙션 명세,,offscreen focus,2,2,still flagged
+probe-ko-1280x720/x-clock-out,Clock out,,weak primary focus,1,0,not flagged now
+probe-ko-1280x720/x-clock-out,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1280x720/x-shoply-product,BAGS / EVERYDAY,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g0-title,Start work,,weak primary focus,1,0,not flagged now
+probe-ko-1920x1080/g1-lock,Sign in,,weak primary focus,1,0,not flagged now
+probe-ko-1920x1080/g1-lock,오전 8:50,96,contrast,1,0,not flagged now
+probe-ko-1920x1080/g10-chat-debrief,MS,7,small text,1,1,still flagged
+probe-ko-1920x1080/g10-chat-debrief,팀이 당신이 인트라넷에서 찾아낼 기록을 기다리고 있습니다.,13,contrast,1,1,still flagged
+probe-ko-1920x1080/g11-search,Shoply 엔지니어링 / 버전 기록,13,contrast,1,1,still flagged
+probe-ko-1920x1080/g11-search,릴리스 관리,13,contrast,1,1,still flagged
+probe-ko-1920x1080/g11-search,플랫폼팀 / 자동화,13,contrast,1,1,still flagged
+probe-ko-1920x1080/g12-record,Shoply 엔지니어링 / 버전 기록,14,contrast,1,1,still flagged
+probe-ko-1920x1080/g13-deduction,,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/g13-deduction,MS,7,small text,1,1,still flagged
+probe-ko-1920x1080/g13-deduction,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g13-deduction,Mina Seo,,offscreen focus,6,12,still flagged
+probe-ko-1920x1080/g13-deduction,"Mina Seo 님이 답을 기다립니다. 다시 답할 수 있지만, 틀리면 20분이 더 걸립니다.",13,contrast,1,1,still flagged
+probe-ko-1920x1080/g13-deduction,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1920x1080/g13-deduction,QA 노트에서 T01 열기,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g13-deduction,Shoply 엔지니어링 / 버전 기록,14,contrast,1,1,still flagged
+probe-ko-1920x1080/g13-deduction,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g13-deduction,🔗 결제 화면 인터랙션 명세,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g13b-deduction-filled,,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/g13b-deduction-filled,MS,7,small text,1,1,still flagged
+probe-ko-1920x1080/g13b-deduction-filled,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g13b-deduction-filled,Mina Seo,,offscreen focus,6,12,still flagged
+probe-ko-1920x1080/g13b-deduction-filled,"Mina Seo 님이 답을 기다립니다. 다시 답할 수 있지만, 틀리면 20분이 더 걸립니다.",13,contrast,1,1,still flagged
+probe-ko-1920x1080/g13b-deduction-filled,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1920x1080/g13b-deduction-filled,QA 노트에서 T01 열기,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g13b-deduction-filled,Send deduction,,weak primary focus,1,0,not flagged now
+probe-ko-1920x1080/g13b-deduction-filled,Shoply 엔지니어링 / 버전 기록,14,contrast,1,1,still flagged
+probe-ko-1920x1080/g13b-deduction-filled,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g13b-deduction-filled,🔗 결제 화면 인터랙션 명세,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g13c-deduction-reply,MS,7,small text,1,1,still flagged
+probe-ko-1920x1080/g13c-deduction-reply,"Mina Seo 님이 답을 기다립니다. 다시 답할 수 있지만, 틀리면 20분이 더 걸립니다.",13,contrast,1,1,still flagged
+probe-ko-1920x1080/g13c-deduction-reply,Shoply 엔지니어링 / 버전 기록,14,contrast,1,1,still flagged
+probe-ko-1920x1080/g2-desktop,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1920x1080/g3-messenger,Marcus Reyes,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/g3-messenger,Mina Seo,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/g3-messenger,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1920x1080/g4-notes-ticket,HIGH,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g4-notes-ticket,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g4-notes-ticket,Mina Seo,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g4-notes-ticket,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1920x1080/g4-notes-ticket,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1920x1080/g4-notes-ticket,Start test,,weak primary focus,1,0,not flagged now
+probe-ko-1920x1080/g4a-storefront,AUTUMN ESSENTIALS,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g4a-storefront,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1920x1080/g4a-storefront,shoply.local/product/everyday-pack,,covered focus,1,1,still flagged
+probe-ko-1920x1080/g4b-notes-testing,,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/g4b-notes-testing,HIGH,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g4b-notes-testing,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g4b-notes-testing,Mina Seo,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g4b-notes-testing,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1920x1080/g4b-notes-testing,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1920x1080/g4c-spec-side-by-side,BAGS / EVERYDAY,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g5-cart,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g5a-noting,,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/g5a-noting,Evidence-cart_subtotal,,keyboard activation,1,0,not flagged now
+probe-ko-1920x1080/g5a-noting,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g5a-noting,Mina Seo,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g5a-noting,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1920x1080/g5a-noting,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g5b-report-form,,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/g5b-report-form,Marcus Reyes,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g5b-report-form,Mina Seo,,offscreen focus,3,6,still flagged
+probe-ko-1920x1080/g5b-report-form,QA Notes text editor,,editor trap,2,0,not flagged now
+probe-ko-1920x1080/g5b-report-form,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g5b-report-form,🔗 shoply.local/product/everyday-pack,,offscreen focus,1,2,still flagged
+probe-ko-1920x1080/g5c-reply,# shoply-autumn-release에서 팀이 기다리고 있어요.,13,contrast,1,1,still flagged
+probe-ko-1920x1080/g5c-reply,1,11,small text,1,1,still flagged
+probe-ko-1920x1080/g5c-reply,MS,7,small text,1,1,still flagged
+probe-ko-1920x1080/g5c-reply,YOUR SELECTION,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g6-checkout,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g6b-console,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g6c-noting,Evidence-checkout_confirmButton,,keyboard activation,1,0,not flagged now
+probe-ko-1920x1080/g6c-noting,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g7-notes,SECURE CHECKOUT,12,contrast,1,1,still flagged
+probe-ko-1920x1080/g7-notes,Send report,,weak primary focus,1,0,not flagged now
+probe-ko-1920x1080/p-shoply-home,AUTUMN ESSENTIALS,12,contrast,1,1,still flagged
+probe-ko-1920x1080/x-case-file,Leo Ortiz,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/x-case-file,Marcus Reyes,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/x-case-file,Mina Seo,,offscreen focus,12,12,still flagged
+probe-ko-1920x1080/x-case-file,QA 노트에서 T01 열기,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/x-case-file,🔗 shoply.local/product/everyday-pack,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/x-case-file,🔗 결제 화면 인터랙션 명세,,offscreen focus,2,2,still flagged
+probe-ko-1920x1080/x-clock-out,Clock out,,weak primary focus,1,0,not flagged now
+probe-ko-1920x1080/x-clock-out,QA 노트,14,contrast,1,0,not flagged now
+probe-ko-1920x1080/x-shoply-product,BAGS / EVERYDAY,12,contrast,1,1,still flagged
